@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{697B7CDD-68C6-4B85-90F1-2F3791DE0689}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MainSpider</RootNamespace>
-    <AssemblyName>MainSpider</AssemblyName>
+    <RootNamespace>Larpx.ResourceSpider.MainSpider</RootNamespace>
+    <AssemblyName>Larpx.ResourceSpider.MainSpider</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

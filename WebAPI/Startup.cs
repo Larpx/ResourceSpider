@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace WebAPI
+namespace Larpx.ResourceSpider.WebAPI
 {
     public class Startup
     {

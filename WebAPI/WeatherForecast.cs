@@ -1,6 +1,6 @@
 using System;
 
-namespace WebAPI
+namespace Larpx.ResourceSpider.WebAPI
 {
     public class WeatherForecast
     {

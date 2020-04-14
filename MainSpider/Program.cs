@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace MainSpider
+namespace Larpx.ResourceSpider.MainSpider
 {
     class Program
     {
