@@ -13,10 +13,6 @@ namespace MainSpider
         {
             try
             {
-
-
-
-
                 //m_oLogger.LogInfo("Test");
                 //throw new Exception("66");
             }
