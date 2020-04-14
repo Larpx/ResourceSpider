@@ -1,15 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Larpx.Logs;
+using System;
+using System.IO;
 
 namespace MainSpider
 {
     class Program
     {
-        static void Main(string[] args)
+        static string sLoggerPath = "../Logs";
+        static Logger m_oLogger = new ConsoleLogger() + new TextFileLogger(new DirectoryInfo(sLoggerPath));
+
+        public static void Main(string[] args)
         {
+            try
+            {
+                m_oLogger.LogInfo("Test");
+                throw new Exception("66");
+            }
+            catch (Exception ex)
+            {
+                m_oLogger.LogException(ex);
+            }
         }
     }
 }
