@@ -13,8 +13,12 @@ namespace MainSpider
         {
             try
             {
-                m_oLogger.LogInfo("Test");
-                throw new Exception("66");
+
+
+
+
+                //m_oLogger.LogInfo("Test");
+                //throw new Exception("66");
             }
             catch (Exception ex)
             {
