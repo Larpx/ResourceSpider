@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Larpx.ResourceSpider.Web</AssemblyName>
     <RootNamespace>Larpx.ResourceSpider.Web</RootNamespace>
+    <UserSecretsId>666ca354-3186-46a0-971e-66aa3376f42e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

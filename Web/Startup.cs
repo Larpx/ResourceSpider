@@ -13,12 +13,15 @@ namespace Larpx.ResourceSpider.Web
             Configuration = configuration;
         }
 
+        private string _moviesApiKey = null;
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            _moviesApiKey = Configuration["Movies:ServiceApiKey"];
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
