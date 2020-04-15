@@ -1,0 +1,47 @@
+﻿using System;
+
+namespace Larpx.ResourceSpider.Enties
+{
+    ///<summary>
+    ///
+    ///</summary>
+    public partial class Setting
+    {
+        public Setting()
+        {
+
+            this.GUID = Guid.NewGuid();
+            this.Deleted = false;
+
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:newid()
+        /// Nullable:False
+        /// </summary>           
+        public Guid GUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Key { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Value { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public bool Deleted { get; set; }
+
+    }
+}

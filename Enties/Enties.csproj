@@ -10,4 +10,15 @@
     <PackageReference Include="sqlSugarCore" Version="5.0.0.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SQLSugarT4.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SQLSugarT4.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
 </Project>
