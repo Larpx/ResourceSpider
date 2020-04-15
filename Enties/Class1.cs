@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common
+namespace Enties
 {
     public class Class1
     {
