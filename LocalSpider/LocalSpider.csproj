@@ -37,10 +37,13 @@
       <HintPath>..\packages\Ivony.Core.1.1.1\lib\Ivony.Core.dll</HintPath>
     </Reference>
     <Reference Include="Ivony.Html, Version=3.0.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ivony.Html.3.0.12.0\lib\net40\Ivony.Html.dll</HintPath>
+      <HintPath>..\packages\Jumony.Core.3.0.18\lib\Ivony.Html.dll</HintPath>
     </Reference>
     <Reference Include="Ivony.Html.Parser, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ivony.Html.Parser.3.0.0.0\lib\net40\Ivony.Html.Parser.dll</HintPath>
+      <HintPath>..\packages\Jumony.Core.3.0.18\lib\Ivony.Html.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="Ivony.Html.Parser.Regulars, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jumony.Core.3.0.18\lib\Ivony.Html.Parser.Regulars.dll</HintPath>
     </Reference>
     <Reference Include="Larpx.Logs">
       <HintPath>..\Reference\Larpx.Logs\Larpx.Logs.dll</HintPath>
