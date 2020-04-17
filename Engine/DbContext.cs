@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Larpx.ResourceSpider.Enties
+namespace Larpx.ResourceSpider.Engine
 {
-
     public class DbContext<T> where T : class, new()
     {
         public DbContext()

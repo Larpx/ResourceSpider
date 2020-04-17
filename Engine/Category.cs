@@ -1,25 +1,24 @@
 ﻿using System;
 
-namespace Larpx.ResourceSpider.Enties
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class ResourceData
+    public partial class Category
     {
-        public ResourceData()
+        public Category()
         {
-
             this.GUID = Guid.NewGuid();
             this.Date = DateTime.Now;
-            this.ResourceType = Convert.ToByte("0");
             this.Status = Convert.ToByte("0");
-            this.Size = Convert.ToInt64("0");
+            this.Priority = Convert.ToByte("0");
             this.Processed = Convert.ToByte("0");
+            this.UpdateTime = DateTime.Now;
+            this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = false;
 
         }
-
         /// <summary>
         /// Desc:
         /// Default:newid()
@@ -39,7 +38,21 @@ namespace Larpx.ResourceSpider.Enties
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid ObjectGUID { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string NameChs { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string URL { get; set; }
 
         /// <summary>
         /// Desc:
@@ -50,48 +63,6 @@ namespace Larpx.ResourceSpider.Enties
 
         /// <summary>
         /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string URL { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Original { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string File { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public byte URLType { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary>           
-        public byte ResourceType { get; set; }
-
-        /// <summary>
-        /// Desc:
         /// Default:0
         /// Nullable:False
         /// </summary>           
@@ -99,31 +70,10 @@ namespace Larpx.ResourceSpider.Enties
 
         /// <summary>
         /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string Password { get; set; }
-
-        /// <summary>
-        /// Desc:
         /// Default:0
-        /// Nullable:True
+        /// Nullable:False
         /// </summary>           
-        public long? Size { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string Md5 { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string Hash { get; set; }
+        public byte Priority { get; set; }
 
         /// <summary>
         /// Desc:
@@ -134,10 +84,17 @@ namespace Larpx.ResourceSpider.Enties
 
         /// <summary>
         /// Desc:
-        /// Default:
-        /// Nullable:True
+        /// Default:DateTime.Now
+        /// Nullable:False
         /// </summary>           
-        public string Memo { get; set; }
+        public DateTime UpdateTime { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public int UpdateTimes { get; set; }
 
         /// <summary>
         /// Desc:

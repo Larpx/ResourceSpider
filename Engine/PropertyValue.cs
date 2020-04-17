@@ -1,16 +1,17 @@
 ﻿using System;
 
-namespace Larpx.ResourceSpider.Enties
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Setting
+    public partial class PropertyValue
     {
-        public Setting()
+        public PropertyValue()
         {
 
             this.GUID = Guid.NewGuid();
+            this.Type = Convert.ToByte("0");
             this.Deleted = false;
 
         }
@@ -27,14 +28,28 @@ namespace Larpx.ResourceSpider.Enties
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string Key { get; set; }
+        public Guid KeyGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public byte Type { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string Value { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string NameChs { get; set; }
 
         /// <summary>
         /// Desc:

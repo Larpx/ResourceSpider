@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace Larpx.ResourceSpider.Enties
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class PropertyDetail
+    public partial class Setting
     {
-        public PropertyDetail()
+        public Setting()
         {
 
             this.GUID = Guid.NewGuid();
@@ -27,35 +27,14 @@ namespace Larpx.ResourceSpider.Enties
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid LinkGUID { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid PropertyKeyGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string KeyText { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public Guid? PropertyValueGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string ValueText { get; set; }
+        public string Value { get; set; }
 
         /// <summary>
         /// Desc:

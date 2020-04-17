@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{697B7CDD-68C6-4B85-90F1-2F3791DE0689}</ProjectGuid>
+    <ProjectGuid>{A2F0C1F2-41C2-424A-A15B-1B58B548472E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Larpx.ResourceSpider.MainSpider</RootNamespace>
-    <AssemblyName>Larpx.ResourceSpider.MainSpider</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>LocalSpider</RootNamespace>
+    <AssemblyName>LocalSpider</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -66,10 +66,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="MSScriptControl">
       <Guid>{0E59F1D2-1FBE-11D0-8FF2-00A0D10038BC}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -81,6 +77,14 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonHelper\CommonHelper.csproj">
+      <Project>{1bfefaa8-8dd6-4f5b-bdbd-481ff7e5c6d9}</Project>
+      <Name>CommonHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{ab904ef4-a208-41b0-a84e-3569c10d769f}</Project>
       <Name>Engine</Name>

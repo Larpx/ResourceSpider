@@ -1,18 +1,16 @@
 ﻿using System;
 
-namespace Larpx.ResourceSpider.Enties
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class SystemLog
+    public partial class PropertyDetail
     {
-        public SystemLog()
+        public PropertyDetail()
         {
 
             this.GUID = Guid.NewGuid();
-            this.IP = Convert.ToInt64("0");
-            this.Date = DateTime.Now;
             this.Deleted = false;
 
         }
@@ -29,49 +27,35 @@ namespace Larpx.ResourceSpider.Enties
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid ManagerGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary>           
-        public long IP { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:DateTime.Now
-        /// Nullable:False
-        /// </summary>           
-        public DateTime Date { get; set; }
+        public Guid LinkGUID { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string Message { get; set; }
+        public Guid PropertyKeyGUID { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Module { get; set; }
+        public string KeyText { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Action { get; set; }
+        public Guid? PropertyValueGUID { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Result { get; set; }
+        public string ValueText { get; set; }
 
         /// <summary>
         /// Desc:

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common
+namespace CommonHelper
 {
     public class Class1
     {

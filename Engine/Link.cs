@@ -1,24 +1,25 @@
 ﻿using System;
 
-namespace Larpx.ResourceSpider.Enties
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Category
+    public partial class Link
     {
-        public Category()
+        public Link()
         {
+
             this.GUID = Guid.NewGuid();
             this.Date = DateTime.Now;
-            this.Status = Convert.ToByte("0");
-            this.Priority = Convert.ToByte("0");
+            this.Type = Convert.ToByte("0");
             this.Processed = Convert.ToByte("0");
             this.UpdateTime = DateTime.Now;
             this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = false;
 
         }
+
         /// <summary>
         /// Desc:
         /// Default:newid()
@@ -36,7 +37,35 @@ namespace Larpx.ResourceSpider.Enties
         /// <summary>
         /// Desc:
         /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public Guid? CategoryGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
         /// Nullable:False
+        /// </summary>           
+        public string SN { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string URL { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
         /// </summary>           
         public string Name { get; set; }
 
@@ -52,7 +81,42 @@ namespace Larpx.ResourceSpider.Enties
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string URL { get; set; }
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string TitleChs { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Brief { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string BriefChs { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Detail { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string DetailChs { get; set; }
 
         /// <summary>
         /// Desc:
@@ -66,14 +130,7 @@ namespace Larpx.ResourceSpider.Enties
         /// Default:0
         /// Nullable:False
         /// </summary>           
-        public byte Status { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary>           
-        public byte Priority { get; set; }
+        public byte Type { get; set; }
 
         /// <summary>
         /// Desc:
@@ -95,6 +152,13 @@ namespace Larpx.ResourceSpider.Enties
         /// Nullable:False
         /// </summary>           
         public int UpdateTimes { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Remark { get; set; }
 
         /// <summary>
         /// Desc:

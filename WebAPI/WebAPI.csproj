@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Enties\Enties.csproj" />
+    <ProjectReference Include="..\Enties\EntiesCore.csproj" />
   </ItemGroup>
 
 
