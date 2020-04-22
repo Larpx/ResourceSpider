@@ -14,6 +14,7 @@ namespace Larpx.ResourceSpider.CommonHelper
         private string appid;
         private string sAppsec;
         private readonly string sURL = "https://fanyi-api.baidu.com/api/trans/vip/translate";
+        private JavaScriptHelper javaScriptHelper = new JavaScriptHelper();
 
         /// <summary>
         /// Google语言类型：
@@ -209,14 +210,14 @@ namespace Larpx.ResourceSpider.CommonHelper
 
             //if(File.Exists())
             var GetTkkJS = File.ReadAllText("./Scripts/gettk.js");
-            var tk = ExecuteScript("token(\"" + text + "\")", GetTkkJS);
+            var tk = javaScriptHelper.ExecuteScript("token(\"" + text + "\")", GetTkkJS);
 
             string googleTransUrl = "https://translate.google.cn/translate_a/single?client=webapp&sl=" + fromLanguage + "&tl=" + toLanguage + "&hl=" + toLanguage + "&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=1&ssel=3&tsel=0&kc=1&tk=" + tk + "&q=" + HttpUtility.UrlEncode(text);
             var ResultHtml = GetResultHtml(googleTransUrl, cc, "translate.google.cn");
 
             dynamic TempResult = Newtonsoft.Json.JsonConvert.DeserializeObject(ResultHtml);
 
-            string ResultText = "";
+            string ResultText;
             if (TempResult[5].Count == 1 && TempResult[5][0].Count > 2 && TempResult[5][0][2].Count > 1 && TempResult[5][0][2][1].Count == 1)
                 //全翻译，全部为中文
                 ResultText = Convert.ToString(TempResult[5][0][2][1][0]);
@@ -296,31 +297,6 @@ namespace Larpx.ResourceSpider.CommonHelper
             return cookie;
         }
 
-        /// <summary>
-        /// 执行JS
-        /// </summary>
-        /// <param name="sExpression">参数体</param>
-        /// <param name="sCode">JavaScript代码的字符串</param>
-        /// <returns></returns>
-        private string ExecuteScript(string sExpression, string sCode)
-        {
-
-            MSScriptControl.ScriptControl scriptControl = new MSScriptControl.ScriptControl();
-            scriptControl.UseSafeSubset = true;
-            scriptControl.Language = "JScript";
-            scriptControl.AddCode(sCode);
-            try
-            {
-                string str = scriptControl.Eval(sExpression).ToString();
-                return str;
-            }
-            catch (Exception ex)
-            {
-                string str = ex.Message;
-            }
-            return null;
-        }
-
         #endregion
     }
 
@@ -328,6 +304,7 @@ namespace Larpx.ResourceSpider.CommonHelper
     {
         private string sBaseURL = "https://translate.google.cn";
         private CookieContainer oCookieContainer = null;
+        private JavaScriptHelper javaScriptHelper = new JavaScriptHelper();
 
         /// <summary>
         /// Google语言类型：
@@ -364,7 +341,7 @@ namespace Larpx.ResourceSpider.CommonHelper
                 return "";
 
             var GetTkkJS = File.ReadAllText("./Scripts/gettk.js");
-            var tk = ExecuteScript("token(\"" + text + "\")", GetTkkJS);
+            var tk = javaScriptHelper.ExecuteScript("token(\"" + text + "\")", GetTkkJS);
 
             string googleTransUrl = sBaseURL + "/translate_a/single?client=webapp&sl=" + fromLanguage + "&tl=" + toLanguage + "&hl=" + toLanguage + "&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=1&ssel=3&tsel=0&kc=1&tk=" + tk + "&q=" + HttpUtility.UrlEncode(text);
             var ResultHtml = GetResultHtml(googleTransUrl, oCookieContainer);
@@ -455,30 +432,6 @@ namespace Larpx.ResourceSpider.CommonHelper
                     return null;
             }
             return cookie;
-        }
-
-        /// <summary>
-        /// 执行JS
-        /// </summary>
-        /// <param name="sExpression">参数体</param>
-        /// <param name="sCode">JavaScript代码的字符串</param>
-        /// <returns></returns>
-        private string ExecuteScript(string sExpression, string sCode)
-        {
-            MSScriptControl.ScriptControl scriptControl = new MSScriptControl.ScriptControl();
-            scriptControl.UseSafeSubset = true;
-            scriptControl.Language = "JScript";
-            scriptControl.AddCode(sCode);
-            try
-            {
-                string str = scriptControl.Eval(sExpression).ToString();
-                return str;
-            }
-            catch (Exception ex)
-            {
-                string str = ex.Message;
-            }
-            return null;
         }
 
         #endregion
