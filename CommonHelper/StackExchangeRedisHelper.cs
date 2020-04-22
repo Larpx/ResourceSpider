@@ -36,8 +36,20 @@ namespace Larpx.ResourceSpider.CommonHelper
         /// </summary>
         public StackExchangeRedisHelper()
         {
+            if (string.IsNullOrEmpty(ConnectionString))
+                throw new Exception("链接字符串为空");
+
             _connection = ConnectionMultiplexer.Connect(ConnectionString);
             _db = GetDatabase();
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public StackExchangeRedisHelper(string sConnectionString,int? db)
+        {
+            _connection = ConnectionMultiplexer.Connect(sConnectionString);
+            _db = GetDatabase(db);
         }
 
         /// <summary>
@@ -46,6 +58,9 @@ namespace Larpx.ResourceSpider.CommonHelper
         /// <param name="db"></param>
         public StackExchangeRedisHelper(int? db)
         {
+            if (string.IsNullOrEmpty(ConnectionString))
+                throw new Exception("链接字符串为空");
+
             _connection = ConnectionMultiplexer.Connect(ConnectionString);
             _db = GetDatabase(db);
         }
