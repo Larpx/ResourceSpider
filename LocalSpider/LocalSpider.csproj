@@ -84,9 +84,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonHelper\CommonHelper.csproj">
+    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{1bfefaa8-8dd6-4f5b-bdbd-481ff7e5c6d9}</Project>
-      <Name>CommonHelper</Name>
+      <Name>BaseLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{ab904ef4-a208-41b0-a84e-3569c10d769f}</Project>

@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Larpx.ResourceSpider.BaseLibrary</AssemblyName>
+    <RootNamespace>Larpx.ResourceSpider.BaseLibrary</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.Android.csproj" />
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.DotNet2.csproj" />
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.DotNet4.5.csproj" />
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.DotNet4.5.csproj.user" />
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.DotNet4.csproj" />
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.Mono.csproj" />
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.NetStandard.csproj" />
+    <None Include="HtmlTitle\AutoCSer.HtmlTitle.NetStandard.NoJIT.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore" Version="3.5.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.linux-x64" Version="3.5.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.osx-x64" Version="3.5.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.win-x64" Version="3.5.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.win-x86" Version="3.5.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.Core" Version="3.3.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="StackExchange.Redis" Version="2.1.30" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HtmlTitle\bin\Release\NetStandard\netstandard2.0\" />
+  </ItemGroup>
+
+</Project>
