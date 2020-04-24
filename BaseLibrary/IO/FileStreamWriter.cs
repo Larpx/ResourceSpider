@@ -405,7 +405,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.IO
                 }
                 finally { Monitor.Exit(bufferLock); }
             }
-            if (!isWritting) AutoCSer.Threading.ThreadPool.Tiny.FastStart(this, AutoCSer.Threading.Thread.CallType.FileStreamWriteFile);
+            if (!isWritting) Threading.ThreadPool.Tiny.FastStart(this, Threading.Thread.CallType.FileStreamWriteFile);
             return fileBufferLength;
         }
         /// <summary>
@@ -455,7 +455,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.IO
                     catch (Exception error)
                     {
                         isError = true;
-                        AutoCSer.Threading.ThreadPool.Tiny.FastStart(this, AutoCSer.Threading.Thread.CallType.FileStreamWriterDispose);
+                        Threading.ThreadPool.Tiny.FastStart(this, Threading.Thread.CallType.FileStreamWriterDispose);
                     }
                 }
                 while (index != count) isErrorWait |= bufferArray[index++].Error(this);

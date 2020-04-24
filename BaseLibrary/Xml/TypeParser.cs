@@ -1,8 +1,8 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 #if !NOJIT
 using/**/System.Reflection.Emit;
@@ -638,7 +638,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             ///// <summary>
             ///// 成员选择
             ///// </summary>
-            //public AutoCSer.Metadata.MemberFilters MemberFilter;
+            //public Metadata.MemberFilters MemberFilter;
             /// <summary>
             /// 成员解析器
             /// </summary>
@@ -820,7 +820,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     ++index;
                     names += *(short*)names + sizeof(short);
                 }
-                AutoCSer.StateSearcher.CharSearcher searcher = new AutoCSer.StateSearcher.CharSearcher(memberSearcher);
+                StateSearcher.CharSearcher searcher = new StateSearcher.CharSearcher(memberSearcher);
                 Pointer.Size name = new Pointer.Size();
                 byte isTagEnd = 0;
                 if (onUnknownName == null)
@@ -884,7 +884,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     ++index;
                     names += *(short*)names + sizeof(short);
                 }
-                AutoCSer.StateSearcher.CharSearcher searcher = new AutoCSer.StateSearcher.CharSearcher(memberSearcher);
+                StateSearcher.CharSearcher searcher = new StateSearcher.CharSearcher(memberSearcher);
                 Pointer.Size name = new Pointer.Size();
                 byte isTagEnd = 0;
                 try
@@ -968,7 +968,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     if ((name.Data = parser.GetName(ref name.ByteSize, ref isTagEnd)) == null) break;
                     if (isTagEnd == 0)
                     {
-                        if (arrayItemName.Length != name.ByteSize || !AutoCSer.Memory.SimpleEqualNotNull((byte*)itemFixed, name.Byte, name.ByteSize << 1))
+                        if (arrayItemName.Length != name.ByteSize || !Memory.SimpleEqualNotNull((byte*)itemFixed, name.Byte, name.ByteSize << 1))
                         {
                             parser.State = ParseState.NotArrayItem;
                             return -1;
@@ -1047,7 +1047,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             if (type.IsEnum)
             {
                 Type enumType = System.Enum.GetUnderlyingType(type);
-                if (AutoCSer.Metadata.TypeAttribute.GetAttribute<FlagsAttribute>(type) == null)
+                if (Metadata.TypeAttribute.GetAttribute<FlagsAttribute>(type) == null)
                 {
                     if (enumType == typeof(uint)) DefaultParser = EnumUInt.Parse;
                     else if (enumType == typeof(byte)) DefaultParser = EnumByte.Parse;
@@ -1142,7 +1142,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     }
                     if (type.IsValueType)
                     {
-                        foreach (AutoCSer.Metadata.AttributeMethod attributeMethod in AutoCSer.Metadata.AttributeMethod.GetStatic(type))
+                        foreach (Metadata.AttributeMethod attributeMethod in Metadata.AttributeMethod.GetStatic(type))
                         {
                             if (attributeMethod.Method.ReturnType == typeof(bool))
                             {
@@ -1172,7 +1172,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     else
                     {
                         Type refType = type.MakeByRefType();
-                        foreach (AutoCSer.Metadata.AttributeMethod attributeMethod in AutoCSer.Metadata.AttributeMethod.GetStatic(type))
+                        foreach (Metadata.AttributeMethod attributeMethod in Metadata.AttributeMethod.GetStatic(type))
                         {
                             if (attributeMethod.Method.ReturnType == typeof(bool))
                             {
@@ -1194,7 +1194,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     bool isBox = false;
                     if (type.IsValueType && fields.Length + properties.Length == 1)
                     {
-                        BoxSerializeAttribute boxSerialize = AutoCSer.Metadata.TypeAttribute.GetAttribute<BoxSerializeAttribute>(type);
+                        BoxSerializeAttribute boxSerialize = Metadata.TypeAttribute.GetAttribute<BoxSerializeAttribute>(type);
                         if (boxSerialize != null && boxSerialize.IsXml)
                         {
                             isBox = true;
@@ -1265,7 +1265,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                                 {
                                     *(short*)write = (short)((name.Length + 2) * sizeof(char));
                                     *(char*)(write + sizeof(short)) = '<';
-                                    fixed (char* nameFixed = name) AutoCSer.Extension.StringExtension.SimpleCopyNotNull(nameFixed, (char*)(write + (sizeof(short) + sizeof(char))), name.Length);
+                                    fixed (char* nameFixed = name) Extension.StringExtension.SimpleCopyNotNull(nameFixed, (char*)(write + (sizeof(short) + sizeof(char))), name.Length);
                                     *(char*)(write += (sizeof(short) + sizeof(char)) + (name.Length << 1)) = '>';
                                     write += sizeof(char);
                                 }
@@ -1273,7 +1273,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                             *(short*)write = 0;
                         }
                         if (type.IsGenericType) memberSearcher = ParseMethodCache.GetGenericDefinitionMemberSearcher(type, names);
-                        else memberSearcher = AutoCSer.StateSearcher.CharBuilder.Create(names, true).Pointer;
+                        else memberSearcher = StateSearcher.CharBuilder.Create(names, true).Pointer;
                     }
                 }
             }

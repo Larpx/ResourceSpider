@@ -3,7 +3,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Net;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
@@ -19,13 +19,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         /// <summary>
         /// 请求域名缓冲区池
         /// </summary>
-        private static readonly AutoCSer.SubBuffer.Pool hostBufferPool = AutoCSer.SubBuffer.Pool.GetPool(SubBuffer.Size.Byte256);
+        private static readonly SubBuffer.Pool hostBufferPool = SubBuffer.Pool.GetPool(SubBuffer.Size.Byte256);
         /// <summary>
         /// HTTP服务版本号
         /// </summary>
         private static readonly byte[] httpVersion = (@" HTTP/1.1
 Connection: Close
-User-Agent: Mozilla/5.0 (" + AutoCSer.Pub.HttpSpiderUserAgent + @")
+User-Agent: Mozilla/5.0 (" + Pub.HttpSpiderUserAgent + @")
 Host: ").getBytes();
         /// <summary>
         /// HASH重定向名称
@@ -189,7 +189,7 @@ Host: ").getBytes();
             hostBufferPool.Get(ref hostBuffer);
             socketCallback = onSocket;
 #if !DOTNET2
-            socketAsync = AutoCSer.Net.SocketAsyncEventArgsPool.Get();
+            socketAsync = Net.SocketAsyncEventArgsPool.Get();
             socketAsync.Completed += socketCallback;
             socketAsync.SetBuffer(buffer.Buffer, buffer.StartIndex, bufferSize);
 #endif
@@ -204,7 +204,7 @@ Host: ").getBytes();
             if (socketAsync != null)
             {
                 socketAsync.Completed -= socketCallback;
-                AutoCSer.Net.SocketAsyncEventArgsPool.PushNotNull(ref socketAsync);
+                Net.SocketAsyncEventArgsPool.PushNotNull(ref socketAsync);
             }
 #endif
             buffer.TryFree();
@@ -227,7 +227,7 @@ Host: ").getBytes();
                 //DisposeSocket();
                 if (Socket != null)
                 {
-                    AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
+                    Net.TcpServer.CommandBase.ShutdownClient(Socket);
                     Socket = null;
                 }
                 this.uri = null;
@@ -259,7 +259,7 @@ Host: ").getBytes();
             string uriString = uri.UriString;
             this.uri = uri;
             if (uriString == null) return get(ref uri.UriBytes, 0, false);
-            AutoCSer.SubBuffer.Pool pool = AutoCSer.SubBuffer.Pool.GetPool(uriString.Length);
+            SubBuffer.Pool pool = SubBuffer.Pool.GetPool(uriString.Length);
             SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
             pool.Get(ref buffer);
             try
@@ -267,7 +267,7 @@ Host: ").getBytes();
                 fixed (char* uriFixed = uriString)
                 fixed (byte* dataFixed = buffer.Buffer)
                 {
-                    AutoCSer.Extension.StringExtension.WriteBytesNotNull(uriFixed, uriString.Length, dataFixed + buffer.StartIndex);
+                    Extension.StringExtension.WriteBytesNotNull(uriFixed, uriString.Length, dataFixed + buffer.StartIndex);
                 }
                 SubArray<byte> uriArray = new SubArray<byte>(buffer.StartIndex, uriString.Length, buffer.Buffer);
                 return get(ref uriArray, 0, false);
@@ -479,7 +479,7 @@ Host: ").getBytes();
                             if (isHttps)
                             {
                                 string host;
-                                fixed (byte* hostFixed = hostBuffer.Buffer) host = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(hostFixed + hostBuffer.StartIndex, hostSize);
+                                fixed (byte* hostFixed = hostBuffer.Buffer) host = Extension.Memory_WebClient.BytesToStringNotEmpty(hostFixed + hostBuffer.StartIndex, hostSize);
                                 if (validateCertificate == null)
                                 {
                                     validateCertificate = onValidateCertificate;
@@ -680,7 +680,7 @@ Host: ").getBytes();
                                 {
                                     if (responseEncoding != null) callback(ref buffer, responseEncoding);
                                     else if (this.uri.Encoding != null) callback(ref buffer, this.uri.Encoding);
-                                    else callback(ref buffer, AutoCSer.ChineseEncoder.ChineseEncoding(bufferFixed + buffer.StartIndex, isChunked || contentLength > bufferSize ? bufferSize : contentLength) ?? Encoding.UTF8);
+                                    else callback(ref buffer, ChineseEncoder.ChineseEncoding(bufferFixed + buffer.StartIndex, isChunked || contentLength > bufferSize ? bufferSize : contentLength) ?? Encoding.UTF8);
                                     return true;
                                 }
                                 return false;
@@ -848,7 +848,7 @@ Host: ").getBytes();
                                 byte* start = current;
                                 while (*++current != 13) ;
                                 int length = (int)(current - start);
-                                AutoCSer.SubBuffer.PoolBufferFull uri = default(AutoCSer.SubBuffer.PoolBufferFull);
+                                SubBuffer.PoolBufferFull uri = default(SubBuffer.PoolBufferFull);
                                 if (*start == '/')
                                 {
 #if DOTNET2
@@ -856,7 +856,7 @@ Host: ").getBytes();
 #else
                                     int hostIndex = isHttps ? 8 : 7, uriLength = length + hostSize + hostIndex, port = ((IPEndPoint)socketAsync.RemoteEndPoint).Port;
 #endif
-                                    AutoCSer.SubBuffer.Pool pool = AutoCSer.SubBuffer.Pool.GetPool(uriLength);
+                                    SubBuffer.Pool pool = SubBuffer.Pool.GetPool(uriLength);
                                     pool.Get(ref uri);
                                     try
                                     {
@@ -868,7 +868,7 @@ Host: ").getBytes();
                                         }
                                         Buffer.BlockCopy(hostBuffer.Buffer, hostBuffer.StartIndex, uri.Buffer, uri.StartIndex + hostIndex, hostSize);
                                         Buffer.BlockCopy(buffer.Buffer, (int)(start - bufferFixed), uri.Buffer, uri.StartIndex + hostSize + hostIndex, length);
-                                        AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
+                                        Net.TcpServer.CommandBase.ShutdownClient(Socket);
                                         Socket = null;
                                         SubArray<byte> uriArray = new SubArray<byte>(uri.StartIndex, uriLength, uri.Buffer);
                                         get(ref uriArray, port, true);
@@ -877,12 +877,12 @@ Host: ").getBytes();
                                 }
                                 else
                                 {
-                                    AutoCSer.SubBuffer.Pool pool = AutoCSer.SubBuffer.Pool.GetPool(length);
+                                    SubBuffer.Pool pool = SubBuffer.Pool.GetPool(length);
                                     pool.Get(ref uri);
                                     try
                                     {
                                         Buffer.BlockCopy(buffer.Buffer, (int)(start - bufferFixed), uri.Buffer, uri.StartIndex, length);
-                                        AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
+                                        Net.TcpServer.CommandBase.ShutdownClient(Socket);
                                         Socket = null;
                                         SubArray<byte> uriArray = new SubArray<byte>(uri.StartIndex, length, uri.Buffer);
                                         get(ref uriArray, 0, true);
@@ -944,10 +944,10 @@ Host: ").getBytes();
                                 isEncoding = 1;
                                 byte* start = current;
                                 while (*current != 13 && *current != ';') ++current;
-                                string encodingString = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(start, (int)(current - start));
+                                string encodingString = Extension.Memory_WebClient.BytesToStringNotEmpty(start, (int)(current - start));
                                 try
                                 {
-                                    responseEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
+                                    responseEncoding = EncodingCacheOther.GetEncoding(encodingString);
                                 }
                                 catch
                                 {
@@ -1151,10 +1151,10 @@ Host: ").getBytes();
                                 while (*start == '"' || *start == '\'') ++start;
                                 byte* encoding = start;
                                 while ((uint)((*start | 0x20) - 'a') < 26 || (uint)(*start - '0') < 10 || *start == '-') ++start;
-                                string encodingString = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(encoding, (int)(start - encoding));
+                                string encodingString = Extension.Memory_WebClient.BytesToStringNotEmpty(encoding, (int)(start - encoding));
                                 try
                                 {
-                                    htmlEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
+                                    htmlEncoding = EncodingCacheOther.GetEncoding(encodingString);
                                 }
                                 catch
                                 {
@@ -1184,8 +1184,8 @@ Host: ").getBytes();
                         else if (this.uri.Encoding != null) callback(ref buffer, this.uri.Encoding);
                         else
                         {
-                            callback(ref buffer, AutoCSer.ChineseEncoder.ChineseEncoding(bufferStart, (int)(start - bufferStart))
-                                ?? AutoCSer.ChineseEncoder.ChineseEncoding(start, bufferIndex - (int)(start - bufferFixed))
+                            callback(ref buffer, ChineseEncoder.ChineseEncoding(bufferStart, (int)(start - bufferStart))
+                                ?? ChineseEncoder.ChineseEncoding(start, bufferIndex - (int)(start - bufferFixed))
                                 ?? Encoding.UTF8);
                         }
                         return true;
@@ -1203,11 +1203,11 @@ Host: ").getBytes();
         {
             if (bufferIndex > buffer.StartIndex)
             {
-                AutoCSer.SubBuffer.PoolBufferFull newBuffer = default(AutoCSer.SubBuffer.PoolBufferFull);
+                SubBuffer.PoolBufferFull newBuffer = default(SubBuffer.PoolBufferFull);
                 task.BufferPool.Get(ref newBuffer);
                 try
                 {
-                    int count = AutoCSer.IO.Compression.GzipDeCompressor.Get(buffer.Buffer, buffer.StartIndex, bufferIndex - buffer.StartIndex, ref newBuffer);
+                    int count = IO.Compression.GzipDeCompressor.Get(buffer.Buffer, buffer.StartIndex, bufferIndex - buffer.StartIndex, ref newBuffer);
                     if (count != 0)
                     {
                         bufferIndex = (currentIndex = newBuffer.StartIndex) + count;

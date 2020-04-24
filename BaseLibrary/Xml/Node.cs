@@ -117,7 +117,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     {
                         fixed (char* xmlFixed = String.String)
                         {
-                            if (AutoCSer.Memory.SimpleEqualNotNull((byte*)(xmlFixed + attribute.Key.StartIndex), (byte*)nameStart, nameSize << 1))
+                            if (Memory.SimpleEqualNotNull((byte*)(xmlFixed + attribute.Key.StartIndex), (byte*)nameStart, nameSize << 1))
                             {
                                 index = attribute.Value;
                                 return true;

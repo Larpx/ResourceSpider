@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
@@ -98,7 +98,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
             {
                 if (xmlDocument == null)
                 {
-                    xmlDocument = Parameter == null ? string.Empty : AutoCSer.CodeGenerator.XmlDocument.Get(method, Parameter);
+                    xmlDocument = Parameter == null ? string.Empty : CodeGenerator.XmlDocument.Get(method, Parameter);
                 }
                 return xmlDocument.Length == 0 ? null : xmlDocument;
             }

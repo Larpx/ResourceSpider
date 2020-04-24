@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
@@ -8,7 +8,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// <summary>
     /// TCP 服务器端同步调用
     /// </summary>
-    public abstract class ServerCallBase : AutoCSer.Threading.TimestampTaskLinkNode<ServerCallBase>
+    public abstract class ServerCallBase : Threading.TimestampTaskLinkNode<ServerCallBase>
     {
         /// <summary>
         /// 添加任务队列（不允许添加重复的任务实例，否则可能造成严重后果）
@@ -21,7 +21,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             switch (taskType)
             {
-                case ServerTaskType.ThreadPool: return System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall) || AutoCSer.Threading.LinkTask.Task.CheckAdd(this);
+                case ServerTaskType.ThreadPool: return System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall) || Threading.LinkTask.Task.CheckAdd(this);
                 case ServerTaskType.Timeout: return Threading.LinkTask.Task.CheckAdd(this);
                 case ServerTaskType.TcpTask: return ServerCallTask.Task.CheckAdd(this);
                 case ServerTaskType.TcpQueue: return ServerCallQueue.Default.CheckAdd(this);

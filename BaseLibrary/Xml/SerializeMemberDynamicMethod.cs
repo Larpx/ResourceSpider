@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.Extension;
-using AutoCSer.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Metadata;
 using System.Reflection;
 using Larpx.ResourceSpider.BaseLibrary.Emit;
 #if !NOJIT

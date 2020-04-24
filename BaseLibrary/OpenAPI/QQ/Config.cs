@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
 {
@@ -42,7 +42,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
         {
             get
             {
-                if (encodeRedirectUri == null) encodeRedirectUri = AutoCSer.Net.WebClient.UriCreator.Encode(redirect_uri);
+                if (encodeRedirectUri == null) encodeRedirectUri = Net.WebClient.UriCreator.Encode(redirect_uri);
                 return encodeRedirectUri;
             }
         }
@@ -78,7 +78,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
                         int.TryParse(query, out token.expires_in);
                     }
                 }
-                if (!token.IsToken) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, data);
+                if (!token.IsToken) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, data);
             }
             return token;
         }
@@ -89,7 +89,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
         /// <returns>API调用,失败返回null</returns>
         public API GetApi(string code)
         {
-            if (string.IsNullOrEmpty(site)) AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, "网站名称不能为空");
+            if (string.IsNullOrEmpty(site)) Log.Pub.Log.Add(Log.LogType.Error, "网站名称不能为空");
             else
             {
                 Token token = getToken(code);
@@ -127,11 +127,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
         public API GetApiByJson(string tokenOpenId)
         {
             TokenOpenId value = new TokenOpenId();
-            return AutoCSer.Json.Parser.Parse(tokenOpenId, ref value) ? GetApi(value) : null;
+            return Json.Parser.Parse(tokenOpenId, ref value) ? GetApi(value) : null;
         }
         /// <summary>
         /// 默认配置
         /// </summary>
-        public static readonly Config Default = AutoCSer.Config.Loader.Get<Config>() ?? new Config();
+        public static readonly Config Default = Config.Loader.Get<Config>() ?? new Config();
     }
 }

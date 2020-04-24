@@ -1,7 +1,6 @@
-﻿using System;
-using AutoCSer.Extension;
+﻿using Larpx.ResourceSpider.BaseLibrary.Extension;
+using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
 {
@@ -36,6 +35,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             }
             return nullValue;
         }
+
         /// <summary>
         /// 获取枚举数组
         /// </summary>
@@ -49,6 +49,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             return values;
         }
     }
+
     /// <summary>
     /// 枚举属性获取器
     /// </summary>
@@ -62,6 +63,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// 属性集合
         /// </summary>
         private static attributeType[] attributeArray;
+
         /// <summary>
         /// 属性集合
         /// </summary>
@@ -73,6 +75,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
                 return attributeArray;
             }
         }
+
         /// <summary>
         /// 获取枚举属性集合
         /// </summary>
@@ -82,13 +85,14 @@ namespace Larpx.ResourceSpider.BaseLibrary
             int length = GetMaxValue(-1) + 1;
             if (length != 0)
             {
-                if (length >= 1024) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn, typeof(enumType).fullName() + " 枚举数组过大 " + length.toString());
+                if (length >= 1024)
+                    throw new Exception(" 枚举数组过大 " + length.toString());
                 int index;
                 attributeType[] names = new attributeType[length];
                 //Type enumAttributeType = typeof(attributeType);
                 foreach (FieldInfo field in typeof(enumType).GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
-                    foreach(attributeType attribute in field.GetCustomAttributes(typeof(attributeType), false))
+                    foreach (attributeType attribute in field.GetCustomAttributes(typeof(attributeType), false))
                     {
                         if ((index = ((IConvertible)field.GetValue(null)).ToInt32(null)) < length) names[index] = attribute;
                         break;
@@ -103,7 +107,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// </summary>
         /// <param name="index">索引</param>
         /// <returns>属性</returns>
-        
+
         public static attributeType Array(int index)
         {
             return (uint)index < (uint)AttributeArray.Length ? AttributeArray[index] : null;

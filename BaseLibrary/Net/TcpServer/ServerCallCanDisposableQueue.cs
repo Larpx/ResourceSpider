@@ -1,4 +1,4 @@
-﻿using AutoCSer.Extension;
+﻿using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System;
 using System.Threading;
 
@@ -12,7 +12,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 日志接口
         /// </summary>
-        protected readonly AutoCSer.Log.ILog log;
+        protected readonly Log.ILog log;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
@@ -23,16 +23,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="isBackground">是否后台线程</param>
         /// <param name="isStart">是否启动线程</param>
         /// <param name="log">日志接口</param>
-        internal ServerCallCanDisposableQueue(bool isBackground, bool isStart, AutoCSer.Log.ILog log = null) : base(isBackground, isStart)
+        internal ServerCallCanDisposableQueue(bool isBackground, bool isStart, Log.ILog log = null) : base(isBackground, isStart)
         {
-            this.log = log ?? AutoCSer.Log.Pub.Log;
+            this.log = log ?? Log.Pub.Log;
         }
         /// <summary>
         /// TCP 服务器端同步调用队列处理
         /// </summary>
         /// <param name="isBackground">是否后台线程</param>
         /// <param name="log">日志接口</param>
-        public ServerCallCanDisposableQueue(bool isBackground = true, AutoCSer.Log.ILog log = null) : this(isBackground, true, log) { }
+        public ServerCallCanDisposableQueue(bool isBackground = true, Log.ILog log = null) : this(isBackground, true, log) { }
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -49,7 +49,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             do
             {
                 WaitHandle.Wait();
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) Threading.ThreadYield.YieldOnly();
                 ServerCallBase value = head;
                 end = null;
                 head = null;

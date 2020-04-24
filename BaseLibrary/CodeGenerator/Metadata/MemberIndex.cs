@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -91,7 +91,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <summary>
         /// 类型成员集合缓存
         /// </summary>
-        private static readonly Dictionary<Type, MemberIndex[]> memberCache = DictionaryCreator.CreateOnly<Type, MemberIndex[]>();
+        private static readonly Dictionary<Type, MemberIndex[]> memberCache = new Dictionary<Type, MemberIndex[]>();
         /// <summary>
         /// 根据类型获取成员信息集合
         /// </summary>
@@ -133,7 +133,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <returns>成员信息集合</returns>
         
         public static MemberIndex[] GetMembers<attributeType>(Type type, MemberFilters filter, bool isAttribute, bool isBaseType)
-            where attributeType : AutoCSer.Metadata.IgnoreMemberAttribute
+            where attributeType : Metadata.IgnoreMemberAttribute
         {
             return find<MemberIndex, attributeType>(GetMembers(type, filter), isAttribute, isBaseType);
         }
@@ -142,7 +142,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <summary>
         /// 类型成员集合缓存
         /// </summary>
-        private static readonly Dictionary<Type, MemberIndex[]> staticMemberCache = DictionaryCreator.CreateOnly<Type, MemberIndex[]>();
+        private static readonly Dictionary<Type, MemberIndex[]> staticMemberCache = new Dictionary<Type, MemberIndex[]>();
         /// <summary>
         /// 根据类型获取成员信息集合
         /// </summary>
@@ -184,7 +184,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <returns>成员信息集合</returns>
         
         public static MemberIndex[] GetStaticMembers<attributeType>(Type type, MemberFilters filter, bool isAttribute, bool isBaseType)
-            where attributeType : AutoCSer.Metadata.IgnoreMemberAttribute
+            where attributeType : Metadata.IgnoreMemberAttribute
         {
             return find<MemberIndex, attributeType>(GetStaticMembers(type, filter), isAttribute, isBaseType);
         }

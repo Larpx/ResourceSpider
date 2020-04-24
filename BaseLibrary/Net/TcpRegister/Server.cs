@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
-using AutoCSer.Net.TcpInternalServer;
+using Net.TcpInternalServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// TCP 内部注册服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Name = Server.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.TcpRegister, CommandIdentityEnmuType = typeof(command))]
+    [Net.TcpInternalServer.Server(Name = Server.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.TcpRegister, CommandIdentityEnmuType = typeof(command))]
     public partial class Server :  TimeVerifyServer
     {
         /// <summary>
@@ -52,7 +52,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
-        [TcpServer.Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(IsVerifyMethod = true, ServerTask = Net.TcpServer.ServerTaskType.Queue, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox)]
         protected override bool verify(ServerSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
             if (base.verify(sender, userID, randomPrefix, md5Data, ref ticks))
@@ -77,7 +77,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// </summary>
         /// <param name="sender"></param>
         
-        public static void SetReadCommand(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
+        public static void SetReadCommand(Net.TcpInternalServer.ServerSocketSender sender)
         {
             sender.SetCommand((int)command.getLog);
         }
@@ -86,8 +86,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="onLog">TCP 服务注册通知委托</param>
-        [TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.QueueLink, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual void getLog(ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallback<ServerLog> onLog)
+        [TcpServer.KeepCallbackMethod(ServerTask = Net.TcpServer.ServerTaskType.QueueLink, ClientTask = Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox)]
+        protected virtual void getLog(ServerSocketSender sender, Net.TcpServer.ServerCallback<ServerLog> onLog)
         {
             ClientInfo client = new UnionType { Value = sender.ClientObject }.ClientInfo;
             foreach (ServerSet serverSet in serverSets.Values)
@@ -105,7 +105,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// </summary>
         /// <param name="server">TCP 服务信息</param>
         /// <returns>注册状态</returns>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = Net.TcpServer.ServerTaskType.Queue, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox)]
         protected virtual bool appendLog(ServerLog server)
         {
             if (server != null && server.HostToIpAddress())
@@ -127,7 +127,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
                         if (serverSets.TryGetValue(server.Name, out serverSet)) serverSet.Remove(server);
                         break;
                     default:
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, "未知的 TCP 内部注册服务更新日志类型 " + server.toJson());
+                        Log.Pub.Log.Add(Log.LogType.Error, "未知的 TCP 内部注册服务更新日志类型 " + server.toJson());
                         return false;
                 }
                 if (isLog)

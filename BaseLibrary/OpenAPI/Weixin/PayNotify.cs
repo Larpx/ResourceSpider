@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 #pragma warning disable
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
@@ -65,8 +65,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="name"></param>
         /// <returns></returns>
         
-        [AutoCSer.Xml.UnknownName]
-        private unsafe static bool parseCoupon(AutoCSer.Xml.Parser parser, ref PayNotify value, ref Pointer.Size name)
+        [Xml.UnknownName]
+        private unsafe static bool parseCoupon(Xml.Parser parser, ref PayNotify value, ref Pointer.Size name)
         {
             return value.parseCoupon(parser, name.Char);
         }
@@ -76,7 +76,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="parser"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        protected unsafe bool parseCoupon(AutoCSer.Xml.Parser parser, char* name)
+        protected unsafe bool parseCoupon(Xml.Parser parser, char* name)
         {
             int index;
             char code = *(name + 7);
@@ -104,7 +104,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <returns></returns>
         private unsafe int getCouponIndex(string name, char* nameStart)
         {
-            if (AutoCSer.Extension.String_Weixin.SimpleEqual(name, nameStart))
+            if (Extension.String_Weixin.SimpleEqual(name, nameStart))
             {
                 int index = *(nameStart += name.Length) - '0';
                 do
@@ -149,7 +149,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
             {
                 if (config == null) config = Config.Default;
                 if (appid == config.appid && mch_id == config.mch_id && Sign<PayNotify>.Check(this, config.key, sign)) return true;
-                config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "微信支付回调验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "微信支付回调验证错误 " + Json.Serializer.Serialize(this));
             }
             return false;
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -9,7 +9,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
     /// <summary>
     /// XML 解析器
     /// </summary>
-    public unsafe sealed partial class Parser : AutoCSer.Threading.Link<Parser>
+    public unsafe sealed partial class Parser :Threading.Link<Parser>
     {
         /// <summary>
         /// 公共默认配置参数
@@ -30,7 +30,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 成员位图
         /// </summary>
-        public AutoCSer.Metadata.MemberMap MemberMap { internal get; set; }
+        publicMetadata.MemberMap MemberMap { internal get; set; }
         /// <summary>
         /// 集合子节点名称
         /// </summary>
@@ -183,7 +183,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                                 State = ParseState.NoteError;
                             }
                             else if ((end -= (2 + bootName.Length)) > current && *(int*)end == ('<' + ('/' << 16))
-                                && AutoCSer.Memory.SimpleEqualNotNull((byte*)bootNameFixed, (byte*)(end + 2), bootName.Length << 1))
+                                &&Memory.SimpleEqualNotNull((byte*)bootNameFixed, (byte*)(end + 2), bootName.Length << 1))
                             {
                                 goto START;
                             }
@@ -222,7 +222,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                         space();
                         if (State != ParseState.Success) return;
                     }
-                    if (*current == '<' && AutoCSer.Memory.SimpleEqualNotNull((byte*)bootNameFixed, (byte*)(++current), bootName.Length << 1))
+                    if (*current == '<' &&Memory.SimpleEqualNotNull((byte*)bootNameFixed, (byte*)(++current), bootName.Length << 1))
                     {
                         if (((bits[*(byte*)(current += bootName.Length)] & spaceBit) | *(((byte*)current) + 1)) != 0)
                         {
@@ -704,7 +704,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             space();
             if (State == ParseState.Success)
             {
-                if (*(int*)current == '<' + ('/' << 16) && *(current + (2 + nameSize)) == '>' && AutoCSer.Memory.SimpleEqualNotNull((byte*)(current + 2), (byte*)nameStart, nameSize << 1) && current != end)
+                if (*(int*)current == '<' + ('/' << 16) && *(current + (2 + nameSize)) == '>' &&Memory.SimpleEqualNotNull((byte*)(current + 2), (byte*)nameStart, nameSize << 1) && current != end)
                 {
                     current += nameSize + 3;
                     return 1;
@@ -973,7 +973,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                 index = -1;
                 return true;
             }
-            else if (AutoCSer.Memory.SimpleEqualNotNull((byte*)current, names += sizeof(short), length))
+            else if (Memory.SimpleEqualNotNull((byte*)current, names += sizeof(short), length))
             {
                 current = (char*)((byte*)current + length);
                 return true;
@@ -990,7 +990,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             if (*(int*)current == '<' + ('/' << 16))
             {
                 int length = *(short*)names - sizeof(char);
-                if (AutoCSer.Memory.SimpleEqualNotNull((byte*)current + sizeof(int), names + (sizeof(short) + sizeof(char)), length) && current != end)
+                if (Memory.SimpleEqualNotNull((byte*)current + sizeof(int), names + (sizeof(short) + sizeof(char)), length) && current != end)
                 {
                     current = (char*)((byte*)current + (length + sizeof(int)));
                     return 1;
@@ -1006,7 +1006,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <returns></returns>
         internal int IsArrayItem(char* nameStart, int nameSize)
         {
-            if (*(int*)current == '<' + ('/' << 16) && *(current + (2 + nameSize)) == '>' && AutoCSer.Memory.SimpleEqualNotNull((byte*)(current + 2), (byte*)nameStart, nameSize << 1) && current != end)
+            if (*(int*)current == '<' + ('/' << 16) && *(current + (2 + nameSize)) == '>' &&Memory.SimpleEqualNotNull((byte*)(current + 2), (byte*)nameStart, nameSize << 1) && current != end)
             {
                 current += nameSize + 3;
                 return 0;
@@ -1551,7 +1551,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     {
                         if (type.Key == typeof(valueType))
                         {
-                            value = AutoCSer.MemberCopy.Copyer<valueType>.MemberwiseClone((valueType)type.Value);
+                            value =MemberCopy.Copyer<valueType>.MemberwiseClone((valueType)type.Value);
                             return;
                         }
                     }
@@ -1578,7 +1578,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             {
                 if (type.Key == typeof(valueType)) return;
             }
-            anonymousTypes.Add(new KeyValue<Type, object>(typeof(valueType), AutoCSer.MemberCopy.Copyer<valueType>.MemberwiseClone(value)));
+            anonymousTypes.Add(new KeyValue<Type, object>(typeof(valueType),MemberCopy.Copyer<valueType>.MemberwiseClone(value)));
         }
         /// <summary>
         /// 引用类型对象解析
@@ -1758,7 +1758,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             if (count == -1) value = default(dictionaryType);
             else
             {
-                Dictionary<keyType, valueType> dictionary = AutoCSer.DictionaryCreator.CreateAny<keyType, valueType>(count);
+                Dictionary<keyType, valueType> dictionary =DictionaryCreator.CreateAny<keyType, valueType>(count);
                 if (count != 0)
                 {
                     foreach (KeyValuePair<keyType, valueType> keyValue in values)
@@ -2049,13 +2049,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 字符 Decode 转码
         /// </summary>
-        private static readonly AutoCSer.StateSearcher.AsciiSearcher decodeSearcher;
+        private static readonlyStateSearcher.AsciiSearcher decodeSearcher;
 
         static Parser()
         {
             byte* bits = (byte*)Unmanaged.GetStatic64(256, false);
             Bits = new Pointer { Data = bits };
-            AutoCSer.Memory.Fill((ulong*)bits, ulong.MaxValue, 256 >> 3);
+           Memory.Fill((ulong*)bits, ulong.MaxValue, 256 >> 3);
             bits['\t'] &= (spaceBit | targetStartCheckBit | attributeNameSearchBit) ^ 255;
             bits['\r'] &= (spaceBit | targetStartCheckBit | attributeNameSearchBit) ^ 255;
             bits['\n'] &= (spaceBit | targetStartCheckBit | attributeNameSearchBit) ^ 255;
@@ -2066,7 +2066,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             bits['>'] &= (targetStartCheckBit | attributeNameSearchBit) ^ 255;
             bits['='] &= attributeNameSearchBit ^ 255;
 
-            parseMethods = AutoCSer.DictionaryCreator.CreateOnly<Type, MethodInfo>();
+            parseMethods =new Dictionary<Type, MethodInfo>();
             foreach (MethodInfo method in typeof(Parser).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (method.IsDefined(typeof(ParseMethod), false))
@@ -2330,7 +2330,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                 , new KeyValue<string, int>("zwj;", 8205)
                 , new KeyValue<string, int>("zwnj;", 8204)
             };
-            decodeSearcher = new AutoCSer.StateSearcher.AsciiSearcher(new AutoCSer.StateSearcher.AsciiBuilder(chars, true).Data.Pointer);
+            decodeSearcher = newStateSearcher.AsciiSearcher(newStateSearcher.AsciiBuilder(chars, true).Data.Pointer);
         }
     }
 }

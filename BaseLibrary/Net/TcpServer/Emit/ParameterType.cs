@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Collections.Generic;
 using System.Threading;
 using System.Reflection.Emit;
@@ -74,15 +74,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
         /// <summary>
         /// 二进制数据序列化类型配置构造函数
         /// </summary>
-        private static readonly ConstructorInfo serializeAttributeConstructorInfo = typeof(AutoCSer.BinarySerialize.SerializeAttribute).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(bool) }, null);
+        private static readonly ConstructorInfo serializeAttributeConstructorInfo = typeof(BinarySerialize.SerializeAttribute).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(bool) }, null);
         /// <summary>
         /// 序列化包装处理配置构造函数
         /// </summary>
-        private static readonly ConstructorInfo boxSerializeAttributeConstructorInfo = typeof(AutoCSer.Metadata.BoxSerializeAttribute).GetConstructor(NullValue<Type>.Array);
+        private static readonly ConstructorInfo boxSerializeAttributeConstructorInfo = typeof(Metadata.BoxSerializeAttribute).GetConstructor(NullValue<Type>.Array);
         /// <summary>
         /// JSON 序列化成员配置构造函数
         /// </summary>
-        private static readonly ConstructorInfo jsonIgnoreMemberAttributeConstructorInfo = typeof(AutoCSer.Json.IgnoreMemberAttribute).GetConstructor(NullValue<Type>.Array);
+        private static readonly ConstructorInfo jsonIgnoreMemberAttributeConstructorInfo = typeof(Json.IgnoreMemberAttribute).GetConstructor(NullValue<Type>.Array);
         /// <summary>
         /// 逻辑真值参数
         /// </summary>
@@ -92,9 +92,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
         /// </summary>
         private static readonly object[] falseParameter = new object[] { false };
         /// <summary>
-        /// 返回值接口类型 AutoCSer.Net.IReturnParameter[]
+        /// 返回值接口类型 Net.IReturnParameter[]
         /// </summary>
-        private static readonly Dictionary<Type, Type> returnInterfaceTypes = DictionaryCreator.CreateOnly<Type, Type>();
+        private static readonly Dictionary<Type, Type> returnInterfaceTypes = new Dictionary<Type, Type>();
         /// <summary>
         /// 返回值接口类型
         /// </summary>
@@ -144,10 +144,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                     interfaces = returnInterfaces;
                     if (!returnInterfaceTypes.TryGetValue(returnType, out interfaces[0]))
                     {
-                        returnInterfaceTypes.Add(returnType, interfaces[0] = typeof(AutoCSer.Net.IReturnParameter<>).MakeGenericType(returnType));
+                        returnInterfaceTypes.Add(returnType, interfaces[0] = typeof(Net.IReturnParameter<>).MakeGenericType(returnType));
                     }
                 }
-                TypeBuilder typeBuilder = Larpx.ResourceSpider.BaseLibrary.Emit.Builder.Module.Builder.DefineType("AutoCSer.Net.TcpServer.Emit.ParameterType" + (++typeIndex).toString(), TypeAttributes.AutoLayout | TypeAttributes.Public, typeof(ValueType), interfaces);
+                TypeBuilder typeBuilder = Larpx.ResourceSpider.BaseLibrary.Emit.Builder.Module.Builder.DefineType("Net.TcpServer.Emit.ParameterType" + (++typeIndex).toString(), TypeAttributes.AutoLayout | TypeAttributes.Public, typeof(ValueType), interfaces);
                 foreach (ParameterInfo parameter in parameters) typeBuilder.DefineField(parameter.Name, parameter.elementType(), FieldAttributes.Public);
                 if (returnType != typeof(void))
                 {
@@ -175,7 +175,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                     setReturnGenerator.Emit(OpCodes.Ret);
                     typeBuilder.DefineMethodOverride(setReturnMethodBuilder, returnPropertySetMethod);
 
-                    //AutoCSer.Net.IReturnParameter<@MethodReturnType.FullName>
+                    //Net.IReturnParameter<@MethodReturnType.FullName>
                     PropertyBuilder returnPropertyBuilder = typeBuilder.DefineProperty(ReturnValue.ReturnParameterName, PropertyAttributes.None, returnProperty.PropertyType, null);
                     returnPropertyBuilder.SetGetMethod(getReturnMethodBuilder);
                     returnPropertyBuilder.SetSetMethod(setReturnMethodBuilder);

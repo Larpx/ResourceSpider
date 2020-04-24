@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Log;
+using Log;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {
@@ -21,7 +21,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="verifyMethod">验证委托</param>
-        public Client(TcpInternalServer.ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Func<TcpInternalServer.ClientSocketSender, bool> verifyMethod = null)
+        public Client(TcpInternalServer.ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, Net.TcpServer.ClientLoadRoute<Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Func<TcpInternalServer.ClientSocketSender, bool> verifyMethod = null)
             : base(attribute, maxTimeoutSeconds, onCustomData, log, clientRoute)
         {
             this.verifyMethod = verifyMethod;

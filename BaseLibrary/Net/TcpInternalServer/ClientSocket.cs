@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -132,7 +132,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                             {
                                 if (isErrorLog)
                                 {
-                                    ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接成功 " + ipAddress.ToString() + ":" + port.toString());
+                                    ClientCreator.CommandClient.Log.Add(Log.LogType.Debug, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接成功 " + ipAddress.ToString() + ":" + port.toString());
                                 }
                                 return;
                             }
@@ -146,7 +146,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     if (!isErrorLog)
                     {
                         isErrorLog = true;
-                        ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, error, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
+                        ClientCreator.CommandClient.Log.Add(Log.LogType.Debug, error, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
                     }
                 }
                 if (isReceiveAsync)
@@ -204,7 +204,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             }
             catch (Exception error)
             {
-                Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Log.Add(Log.LogType.Debug, error);
             }
             if (CheckCreateVersion())
             {

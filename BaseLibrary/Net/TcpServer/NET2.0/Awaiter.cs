@@ -11,7 +11,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 等待事件
         /// </summary>
-        private AutoCSer.Threading.WaitHandle waitHandle;
+        private Threading.WaitHandle waitHandle;
         /// <summary>
         /// 异步等待
         /// </summary>
@@ -58,7 +58,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 等待事件
         /// </summary>
-        private AutoCSer.Threading.WaitHandle waitHandle;
+        private Threading.WaitHandle waitHandle;
         /// <summary>
         /// 异步等待
         /// </summary>

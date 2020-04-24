@@ -17,7 +17,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 类型集合访问锁
         /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<Type, Xml.Node> typeLock = new AutoCSer.Threading.LockLastDictionary<Type, Xml.Node>();
+        private Threading.LockLastDictionary<Type, Xml.Node> typeLock = new Threading.LockLastDictionary<Type, Xml.Node>();
         /// <summary>
         /// 类型名称流
         /// </summary>
@@ -42,7 +42,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         using (typeNameStream)
                         {
                             typeNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = typeNameStream, IsXml = true };
+                            Extension.TypeCodeGenerator.NameBuilder nameBuilder = new Extension.TypeCodeGenerator.NameBuilder { NameStream = typeNameStream, IsXml = true };
                             nameBuilder.Xml(type);
                             typeName = typeNameStream.ToString();
                         }
@@ -73,7 +73,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 字段集合访问锁
         /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<FieldInfo, Xml.Node> fieldLock = new AutoCSer.Threading.LockLastDictionary<FieldInfo, Xml.Node>();
+        private Threading.LockLastDictionary<FieldInfo, Xml.Node> fieldLock = new Threading.LockLastDictionary<FieldInfo, Xml.Node>();
         /// <summary>
         /// 字段
         /// </summary>
@@ -98,7 +98,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         using (fieldNameStream)
                         {
                             fieldNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = fieldNameStream, IsXml = true };
+                            Extension.TypeCodeGenerator.NameBuilder nameBuilder = new Extension.TypeCodeGenerator.NameBuilder { NameStream = fieldNameStream, IsXml = true };
                             nameBuilder.Xml(field.DeclaringType);
                             fieldNameStream.Write('.');
                             fieldNameStream.SimpleWriteNotNull(field.Name);
@@ -131,7 +131,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 属性集合访问锁
         /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<PropertyInfo, Xml.Node> propertyLock = new AutoCSer.Threading.LockLastDictionary<PropertyInfo, Xml.Node>();
+        private Threading.LockLastDictionary<PropertyInfo, Xml.Node> propertyLock = new Threading.LockLastDictionary<PropertyInfo, Xml.Node>();
         /// <summary>
         /// 属性
         /// </summary>
@@ -156,7 +156,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         using (propertyNameStream)
                         {
                             propertyNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = propertyNameStream, IsXml = true };
+                            Extension.TypeCodeGenerator.NameBuilder nameBuilder = new Extension.TypeCodeGenerator.NameBuilder { NameStream = propertyNameStream, IsXml = true };
                             nameBuilder.Xml(property.DeclaringType);
                             propertyNameStream.Write('.');
                             propertyNameStream.SimpleWriteNotNull(property.Name);
@@ -189,7 +189,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 方法集合访问锁
         /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<MethodInfo, Xml.Node> methodLock = new AutoCSer.Threading.LockLastDictionary<MethodInfo, Xml.Node>();
+        private Threading.LockLastDictionary<MethodInfo, Xml.Node> methodLock = new Threading.LockLastDictionary<MethodInfo, Xml.Node>();
         /// <summary>
         /// 方法名称流
         /// </summary>
@@ -214,7 +214,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         using (methodNameStream)
                         {
                             methodNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = methodNameStream, IsXml = true };
+                            Extension.TypeCodeGenerator.NameBuilder nameBuilder = new Extension.TypeCodeGenerator.NameBuilder { NameStream = methodNameStream, IsXml = true };
                             nameBuilder.Xml(method.DeclaringType);
                             methodNameStream.Write('.');
                             string name = method.Name;
@@ -293,7 +293,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         {
                             fixed (char* attributeFixed = node.Key.String)
                             {
-                                if (AutoCSer.Memory.SimpleEqualNotNull((byte*)parameterFixed, (byte*)(attributeFixed + attribute.StartIndex), parameterName.Length << 1))
+                                if (Memory.SimpleEqualNotNull((byte*)parameterFixed, (byte*)(attributeFixed + attribute.StartIndex), parameterName.Length << 1))
                                 {
                                     return node.Value.String.Length == 0 ? string.Empty : node.Value.String.ToString();
                                 }

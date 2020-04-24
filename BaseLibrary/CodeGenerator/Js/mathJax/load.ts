@@ -34,14 +34,14 @@ module AutoCSer {
                     }
                 }
             }
-            if (Values.length) MathJax.Hub.Queue(['Typeset', MathJax.Hub, Values, {}], AutoCSer.Pub.ThisFunction(MathJaxLoader, MathJaxLoader.FixedBorder, [null, Values]));
+            if (Values.length) MathJax.Hub.Queue(['Typeset', MathJax.Hub, Values, {}], Pub.ThisFunction(MathJaxLoader, MathJaxLoader.FixedBorder, [null, Values]));
         }
         private static FixedBorder(Element: HTMLElement, Elements: HTMLElement[] = null) {
             if (Elements) {
                 for (var Index = 0; Index - Elements.length; this.FixedBorder(Elements[Index++]));
             }
             else if (Element) {
-                for (var Elements = new AutoCSer.HtmlElement('.MathJax/nobr/span', Element).GetElements(), Index = Elements.length; Index;) {
+                for (var Elements = new HtmlElement('.MathJax/nobr/span', Element).GetElements(), Index = Elements.length; Index;) {
                     var Nodes = Elements[--Index].childNodes;
                     if (Nodes.length > 1) {
                         var Span = Nodes[1] as HTMLElement;
@@ -62,14 +62,14 @@ module AutoCSer {
                 this.IsLoad = true;
                 var config = document.createElement('script');
                 config.type = 'text/x-mathjax-config';
-                config.text = 'AutoCSer.MathJaxLoader.LoadConfig();';
+                config.text = 'MathJaxLoader.LoadConfig();';
                 document.getElementsByTagName('head')[0].appendChild(config);
             }
             Pub.OnModule(['mathJax/MathJax'], OnLoad, true);
         }
         private static ShowElement(Element: HTMLElement) {
             var MathJax = this.Get();
-            MathJax.Hub.Queue(['Typeset', MathJax.Hub, Element], AutoCSer.Pub.ThisFunction(MathJaxLoader, MathJaxLoader.FixedBorder, [Element]));
+            MathJax.Hub.Queue(['Typeset', MathJax.Hub, Element], Pub.ThisFunction(MathJaxLoader, MathJaxLoader.FixedBorder, [Element]));
         }
         static TryShow(Element: HTMLElement, Text: string) {
             if (Text) {

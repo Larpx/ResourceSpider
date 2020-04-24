@@ -35,7 +35,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             /// <summary>
             /// 缓存数量
             /// </summary>
-            private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
+            private readonly static int maxCount =Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
             /// <summary>
             /// 是否需要释放资源
             /// </summary>
@@ -114,7 +114,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             public valueType Pop()
             {
                 valueType headValue;
-                while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPop);
                 do
                 {
                     if ((headValue = head) == null)
@@ -226,7 +226,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
 
             static YieldPool()
             {
-                AutoCSer.Pub.ClearCaches += clearCache;
+               Pub.ClearCaches += clearCache;
             }
         }
     }

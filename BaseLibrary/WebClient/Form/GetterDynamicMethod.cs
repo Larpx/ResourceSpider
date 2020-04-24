@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif

@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
     /// <summary>
     /// 远程表达式成员配置
     /// </summary>
-    public sealed class MemberAttribute : AutoCSer.Metadata.IgnoreMemberAttribute
+    public sealed class MemberAttribute : Metadata.IgnoreMemberAttribute
     {
         /// <summary>
         /// 自定义成员编号，用于表达式节点名称冲突问题，默认为 0 表示不编号

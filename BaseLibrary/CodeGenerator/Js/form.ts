@@ -1,10 +1,10 @@
 ﻿/// <reference path = "./base.page.ts" />
 'use strict';
 //基本表单	<div FORM="YYY.user" id="XXX"><input name="name1" /><input name="name2" /></div>
-//AutoCSer.Form.Forms.XXX.SubmitName='name2';
-//AutoCSer.Form.Forms.XXX.OnSubmit.Add(AAA);
-//AutoCSer.Form.Forms.XXX.Start({name1:{MaxLength:32,OnVerify:/^[0-9A-Z_\.]+@[0-9A-Z_\.]+$/gi,ErrorInfo:'错误'},name2:{...}});
-//AutoCSer.Form.Forms.XXX.GetValue();
+//Form.Forms.XXX.SubmitName='name2';
+//Form.Forms.XXX.OnSubmit.Add(AAA);
+//Form.Forms.XXX.Start({name1:{MaxLength:32,OnVerify:/^[0-9A-Z_\.]+@[0-9A-Z_\.]+$/gi,ErrorInfo:'错误'},name2:{...}});
+//Form.Forms.XXX.GetValue();
 module AutoCSer {
     interface IFormElement {
         NullValue: string;
@@ -184,7 +184,7 @@ module AutoCSer {
                         ReturnValue = null;
                         Element.focus();
                         if (this.OnError.Get().length) this.OnError.Function(FormElement);
-                        else if (FormElement.ErrorInfo) AutoCSer.Pub.Alert(FormElement.ErrorInfo);
+                        else if (FormElement.ErrorInfo) Pub.Alert(FormElement.ErrorInfo);
                         break;
                     }
                     ReturnValue[Element.name] = Value;

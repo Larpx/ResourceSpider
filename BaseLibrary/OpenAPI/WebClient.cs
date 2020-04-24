@@ -2,8 +2,8 @@
 using System.Text;
 using System.Threading;
 using System.Collections.Specialized;
-using AutoCSer.Extension;
-using AutoCSer.Net.WebClient;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Net.WebClient;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
 {
@@ -99,30 +99,30 @@ Content-Type: ".getBytes();
                 }
                 foreach (KeyValue<byte[], byte[]> keyValue in form)
                 {
-                    AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
+                    Extension.Memory_OpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
                     write += contentDispositionData.Length;
                     if (keyValue.Key.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(keyValue.Key, write, keyValue.Key.Length);
+                        Memory.SimpleCopyNotNull64(keyValue.Key, write, keyValue.Key.Length);
                         write += keyValue.Key.Length;
                     }
                     *write++ = (byte)'"';
                     *(int*)write = 0x0a0d0a0d;
-                    AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(keyValue.Value, write += sizeof(int), keyValue.Value.Length);
+                    Extension.Memory_OpenAPI.CopyNotNull(keyValue.Value, write += sizeof(int), keyValue.Value.Length);
                     write += keyValue.Value.Length;
                     *(short*)write = 0x0a0d;
                     write += sizeof(short);
-                    AutoCSer.Memory.SimpleCopyNotNull64(bodyFixed, write, 40);
+                    Memory.SimpleCopyNotNull64(bodyFixed, write, 40);
                     write += 40;
                 }
-                AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
+                Extension.Memory_OpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
                 write += contentDispositionData.Length;
                 fixed (char* filenameFixed = filename)
                 {
                     for (char* start = filenameFixed, end = filenameFixed + filename.Length; start != end; *write++ = (byte)*start++) ;
                     if (filenameData.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(filenameData, write, filenameData.Length);
+                        Memory.SimpleCopyNotNull64(filenameData, write, filenameData.Length);
                         write += filenameData.Length;
                     }
                     for (char* start = filenameFixed, end = filenameFixed + filename.Length; start != end; *write++ = (byte)*start++) ;
@@ -132,22 +132,22 @@ Content-Type: ".getBytes();
                 {
                     if (contentTypeData.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(contentTypeData, write, contentTypeData.Length);
+                        Memory.SimpleCopyNotNull64(contentTypeData, write, contentTypeData.Length);
                         write += contentTypeData.Length;
                     }
                     if (contentType.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(contentType, write, contentType.Length);
+                        Memory.SimpleCopyNotNull64(contentType, write, contentType.Length);
                         write += contentType.Length;
                     }
                 }
                 *(int*)write = 0x0a0d0a0d;
                 write += sizeof(int);
-                AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(data, write, data.Length);
+                Extension.Memory_OpenAPI.CopyNotNull(data, write, data.Length);
                 write += data.Length;
                 *(short*)write = 0x0a0d;
                 write += sizeof(short);
-                AutoCSer.Memory.SimpleCopyNotNull64(bodyFixed, write, 40);
+                Memory.SimpleCopyNotNull64(bodyFixed, write, 40);
                 *(int*)(write + 40) = (int)('-' + ('-' << 8) + 0x0a0d0000);
             }
             Request request = new Request
@@ -160,7 +160,7 @@ Content-Type: ".getBytes();
             Monitor.Enter(webClientLock);
             try
             {
-                webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, header);
+                webClient.Headers.Add(Net.Http.HeaderName.ContentType, header);
                 return webClient.CrawlHtml(ref request, encoding);
             }
             finally { Monitor.Exit(webClientLock); }

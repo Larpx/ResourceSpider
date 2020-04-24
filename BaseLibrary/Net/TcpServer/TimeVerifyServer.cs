@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Runtime.CompilerServices;
@@ -47,7 +47,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     byte* start = dataFixed + buffer.StartIndex;
                     *(ulong*)start = randomPrefix;
                     *(long*)(start + sizeof(ulong)) = ticks;
-                    AutoCSer.Extension.StringExtension.SimpleCopyNotNull64(valueFixed, (char*)(start + (sizeof(ulong) + sizeof(long))), value.Length);
+                    Extension.StringExtension.SimpleCopyNotNull64(valueFixed, (char*)(start + (sizeof(ulong) + sizeof(long))), value.Length);
                 }
                 return md5.ComputeHash(buffer.Buffer, buffer.StartIndex, (value.Length << 1) + (sizeof(ulong) + sizeof(long)));
             }
@@ -126,8 +126,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
-        [AutoCSer.Net.TcpOpenServer.Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
-        [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
+        [Net.TcpOpenServer.Method(IsVerifyMethod = true, ServerTask = Net.TcpServer.ServerTaskType.Queue, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
+        [Method(IsVerifyMethod = true, ServerTask = Net.TcpServer.ServerTaskType.Queue, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
         protected virtual bool verify(serverSocketSenderType sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
             return server.CheckVerifyString() || verify(sender, randomPrefix, server.Attribute.VerifyString, md5Data, ref ticks);

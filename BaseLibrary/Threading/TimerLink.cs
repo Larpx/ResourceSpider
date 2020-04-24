@@ -8,7 +8,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
     /// 定时链表
     /// </summary>
     /// <typeparam name="timerType"></typeparam>
-    internal abstract class TimerLink<timerType> : AutoCSer.Threading.DoubleLink<timerType>
+    internal abstract class TimerLink<timerType> : Threading.DoubleLink<timerType>
         where timerType : TimerLink<timerType>
     {
         /// <summary>

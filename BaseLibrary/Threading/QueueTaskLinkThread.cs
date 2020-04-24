@@ -1,4 +1,4 @@
-﻿using AutoCSer.Extension;
+﻿using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -23,7 +23,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <param name="value"></param>
         internal void Add(taskType value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.YieldOnly();
             if (head == null)
             {
                 end = value;
@@ -45,7 +45,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <returns></returns>
         public bool CheckAdd(taskType value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.YieldOnly();
             if (value.LinkNext == null && value != end)
             {
                 if (head == null)
@@ -73,7 +73,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <param name="end"></param>
         internal void Add(taskType head, taskType end)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.YieldOnly();
             if (this.head == null)
             {
                 this.end = end;
@@ -96,7 +96,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             do
             {
                 WaitHandle.Wait();
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.YieldOnly();
                 taskType value = head;
                 end = null;
                 head = null;
@@ -114,7 +114,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                       Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
                 while (value != null);
@@ -160,7 +160,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             {
                 if (node != null)
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.YieldOnly();
                     add(node);
                 }
             }
@@ -192,7 +192,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             {
                 if (node != null)
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.YieldOnly();
                     if (node.LinkNext == null && node != end)
                     {
                         add(node);
@@ -210,7 +210,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                 taskType node = head, next = head.LinkNext;
                 if (next == null)
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.YieldOnly();
                     head = next = head.LinkNext;
                     System.Threading.Interlocked.Exchange(ref queueLock, 0);
                     node.LinkNext = null;

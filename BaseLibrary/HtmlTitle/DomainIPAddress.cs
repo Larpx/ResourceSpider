@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
@@ -48,14 +48,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
                 fixed (byte* domainFixed = domain.Array)
                 {
                     byte* domainStart = domainFixed + domain.StartIndex;
-                    AutoCSer.Memory.ToLowerNotNull(domainStart, domainStart + domain.Length);
+                    Memory.ToLowerNotNull(domainStart, domainStart + domain.Length);
                     HashBytes key = domain;
                     DomainIPAddress value;
                     Monitor.Enter(domainIpLock);
                     try
                     {
                         value = domainIps.Get(ref key, default(DomainIPAddress));
-                        if (value.Ips != null && value.Timeout < AutoCSer.Date.NowTime.Now)
+                        if (value.Ips != null && value.Timeout < Date.NowTime.Now)
                         {
                             domainIps.Remove(ref key, out value);
                             value.Ips = null;
@@ -76,7 +76,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
                         value.Ips = Dns.GetHostEntry(value.Domain).AddressList;
                         if (value.Ips.Length != 0)
                         {
-                            value.Timeout = AutoCSer.Date.NowTime.Now.AddTicks(domainIpTimeoutTicks);
+                            value.Timeout = Date.NowTime.Now.AddTicks(domainIpTimeoutTicks);
                             setDomainIp(key.Copy(), ref value);
                             return value.Ips;
                         }
@@ -86,7 +86,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                Log.Pub.Log.Add(Log.LogType.Error, error);
             }
             return null;
         }

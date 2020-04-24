@@ -17,8 +17,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         
-        [AutoCSer.Json.SerializeCustom]
-        private static void toJson(AutoCSer.Json.Serializer serializer, OpenIdMessage value)
+        [Json.SerializeCustom]
+        private static void toJson(Json.Serializer serializer, OpenIdMessage value)
         {
             serializer.CustomWriteFirstName("touser");
             serializer.TypeSerialize(value.touser);

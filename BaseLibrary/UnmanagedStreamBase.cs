@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
@@ -96,7 +96,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         {
             if (length < UnmanagedPool.TinySize) length = UnmanagedPool.TinySize;
             void* newData = Unmanaged.Get(length, false);
-            AutoCSer.Memory.CopyNotNull(Data.Data, newData, ByteSize);
+            Memory.CopyNotNull(Data.Data, newData, ByteSize);
             if (IsUnmanaged) Unmanaged.Free(ref Data);
             Data.Set(newData, length);
             IsUnmanaged = true;
@@ -134,7 +134,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             {
                 int length = value.Length << 1;
                 prepSize(length);
-                AutoCSer.Extension.StringExtension.CopyNotNull(value, Data.Byte + ByteSize);
+                Extension.StringExtension.CopyNotNull(value, Data.Byte + ByteSize);
                 ByteSize += length;
             }
         }
@@ -157,7 +157,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         //    {
         //        int length = value.Length << 1;
         //        prepLength(length);
-        //        fixed (char* valueFixed = value.String) AutoCSer.Memory.CopyNotNull(valueFixed + value.StartIndex, Data.Byte + Length, length);
+        //        fixed (char* valueFixed = value.String) Memory.CopyNotNull(valueFixed + value.StartIndex, Data.Byte + Length, length);
         //        Length += length;
         //    }
         //}
@@ -172,7 +172,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             prepSize(count <<= 1);
             fixed (char* valueFixed = value)
             {
-                AutoCSer.Memory.CopyNotNull(valueFixed + index, Data.Byte + ByteSize, count);
+                Memory.CopyNotNull(valueFixed + index, Data.Byte + ByteSize, count);
             }
             ByteSize += count;
         }
@@ -195,7 +195,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         {
             int length = count << 1;
             prepSize(length);
-            AutoCSer.Memory.CopyNotNull(start, Data.Byte + ByteSize, length);
+            Memory.CopyNotNull(start, Data.Byte + ByteSize, length);
             ByteSize += length;
         }
         /// <summary>
@@ -214,7 +214,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         {
             int length = value.Length << 1;
             prepSize(length);
-            fixed (char* valueFixed = value.String) AutoCSer.Memory.CopyNotNull(valueFixed + value.Start, Data.Byte + ByteSize, length);
+            fixed (char* valueFixed = value.String) Memory.CopyNotNull(valueFixed + value.Start, Data.Byte + ByteSize, length);
             ByteSize += length;
         }
         /// <summary>

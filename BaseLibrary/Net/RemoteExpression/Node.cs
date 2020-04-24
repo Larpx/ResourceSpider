@@ -39,14 +39,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        protected virtual void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer) { }
+        protected virtual void serializeParameter(BinarySerialize.Serializer serializer) { }
         /// <summary>
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         
-        internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
+        internal void Serialize(BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
         {
             serializer.Stream.Write(checker.ServerNodeIds[GetType()]);
             serializeParameter(serializer);
@@ -58,9 +58,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         
-        protected void serializeParent(AutoCSer.BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
+        protected void serializeParent(BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
         {
-            if (Parent == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
+            if (Parent == null) serializer.Stream.Write(BinarySerialize.Serializer.NullValue);
             else Parent.Serialize(serializer, checker);
         }
         /// <summary>
@@ -70,10 +70,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         
-        protected void serializeParameter<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, parameterType parameter)
+        protected void serializeParameter<parameterType>(BinarySerialize.Serializer serializer, parameterType parameter)
         {
-            if (parameter == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
-            else AutoCSer.BinarySerialize.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
+            if (parameter == null) serializer.Stream.Write(BinarySerialize.Serializer.NullValue);
+            else BinarySerialize.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
         }
         /// <summary>
         /// 参数序列化
@@ -82,21 +82,21 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         
-        protected void serializeParameterStruct<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, ref parameterType parameter)
+        protected void serializeParameterStruct<parameterType>(BinarySerialize.Serializer serializer, ref parameterType parameter)
         {
-            AutoCSer.BinarySerialize.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
+            BinarySerialize.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
         }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        protected virtual void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer) { }
+        protected virtual void deSerializeParameter(BinarySerialize.DeSerializer deSerializer) { }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
         
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(BinarySerialize.DeSerializer deSerializer)
         {
             deSerializeParameter(deSerializer);
             deSerializeParent(deSerializer);
@@ -106,7 +106,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <param name="value"></param>
-        internal static void DeSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer, out Node value)
+        internal static void DeSerialize(BinarySerialize.DeSerializer deSerializer, out Node value)
         {
             (value = createNodes.Array[deSerializer.ReadInt()]()).deSerialize(deSerializer);
         }
@@ -114,7 +114,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// 反序列化父节点
         /// </summary>
         /// <param name="deSerializer"></param>
-        protected void deSerializeParent(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        protected void deSerializeParent(BinarySerialize.DeSerializer deSerializer)
         {
             if (deSerializer.CheckNullValue() != 0) DeSerialize(deSerializer, out Parent);
         }
@@ -125,9 +125,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="deSerializer"></param>
         /// <param name="parameter"></param>
         
-        protected void deSerializeParameter<parameterType>(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
+        protected void deSerializeParameter<parameterType>(BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
         {
-            if (deSerializer.CheckNullValue() != 0) AutoCSer.BinarySerialize.TypeDeSerializer<parameterType>.DeSerialize(deSerializer, ref parameter);
+            if (deSerializer.CheckNullValue() != 0) BinarySerialize.TypeDeSerializer<parameterType>.DeSerialize(deSerializer, ref parameter);
         }
         /// <summary>
         /// 参数反序列化
@@ -136,22 +136,22 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="deSerializer"></param>
         /// <param name="parameter"></param>
         
-        protected void deSerializeParameterStruct<parameterType>(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
+        protected void deSerializeParameterStruct<parameterType>(BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
         {
-            AutoCSer.BinarySerialize.TypeDeSerializer<parameterType>.StructDeSerialize(deSerializer, ref parameter);
+            BinarySerialize.TypeDeSerializer<parameterType>.StructDeSerialize(deSerializer, ref parameter);
         }
         /// <summary>
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        protected virtual void serializeParameter(AutoCSer.Json.Serializer serializer) { }
+        protected virtual void serializeParameter(Json.Serializer serializer) { }
         /// <summary>
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         
-        internal void Serialize(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
+        internal void Serialize(Json.Serializer serializer, ServerNodeIdChecker checker)
         {
             serializeStart(serializer, checker);
             serializeParameter(serializer);
@@ -163,7 +163,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         
-        protected void serializeStart(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
+        protected void serializeStart(Json.Serializer serializer, ServerNodeIdChecker checker)
         {
             serializer.CharStream.Write('[');
             serializer.CallSerialize(checker.ServerNodeIds[GetType()]);
@@ -174,7 +174,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         
-        protected void serializeParent(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
+        protected void serializeParent(Json.Serializer serializer, ServerNodeIdChecker checker)
         {
             if (Parent != null)
             {
@@ -190,10 +190,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         
-        protected void serializeParameter<parameterType>(AutoCSer.Json.Serializer serializer, parameterType parameter)
+        protected void serializeParameter<parameterType>(Json.Serializer serializer, parameterType parameter)
         {
             if (parameter == null) serializer.CharStream.WriteJsonNull();
-            else AutoCSer.Json.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
+            else Json.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
         }
         /// <summary>
         /// 参数序列化
@@ -202,21 +202,21 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         
-        protected void serializeParameterStruct<parameterType>(AutoCSer.Json.Serializer serializer, ref parameterType parameter)
+        protected void serializeParameterStruct<parameterType>(Json.Serializer serializer, ref parameterType parameter)
         {
-            AutoCSer.Json.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
+            Json.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
         }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
         /// <param name="parser"></param>
-        protected virtual void deSerializeParameter(AutoCSer.Json.Parser parser) { }
+        protected virtual void deSerializeParameter(Json.Parser parser) { }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
         /// <param name="parser"></param>
         
-        private void deSerialize(AutoCSer.Json.Parser parser)
+        private void deSerialize(Json.Parser parser)
         {
             deSerializeParameter(parser);
             deSerializeParent(parser);
@@ -226,7 +226,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// </summary>
         /// <param name="parser"></param>
         /// <param name="value"></param>
-        internal static void DeSerialize(AutoCSer.Json.Parser parser, ref Node value)
+        internal static void DeSerialize(Json.Parser parser, ref Node value)
         {
             if (*parser.Current++ == '[')
             {
@@ -241,7 +241,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// 客户端反序列化返回值
         /// </summary>
         /// <param name="parser"></param>
-        protected void deSerializeParent(AutoCSer.Json.Parser parser)
+        protected void deSerializeParent(Json.Parser parser)
         {
             if (parser.ParseState == Json.ParseState.Success)
             {
@@ -264,13 +264,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <typeparam name="parameterType"></typeparam>
         /// <param name="parser"></param>
         /// <param name="parameter"></param>
-        protected void deSerializeParameter<parameterType>(AutoCSer.Json.Parser parser, ref parameterType parameter)
+        protected void deSerializeParameter<parameterType>(Json.Parser parser, ref parameterType parameter)
         {
             if (parser.ParseState == Json.ParseState.Success)
             {
                 if (*parser.Current++ == ',')
                 {
-                    AutoCSer.Json.TypeParser<parameterType>.Parse(parser, ref parameter);
+                    Json.TypeParser<parameterType>.Parse(parser, ref parameter);
                     return;
                 }
                 parser.ParseState = Json.ParseState.Custom;
@@ -376,7 +376,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <summary>
         /// 服务端节点类型集合
         /// </summary>
-        private static readonly Dictionary<Type, int> types = DictionaryCreator.CreateOnly<Type, int>();
+        private static readonly Dictionary<Type, int> types = new Dictionary<Type, int>();
         /// <summary>
         /// 服务端节点类型集合访问锁
         /// </summary>
@@ -468,7 +468,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
             /// 创建客户端返回值类型
             /// </summary>
             /// <returns>创建客户端返回值类型</returns>
-            private static AutoCSer.Net.RemoteExpression.ReturnValue createReturnValue() { return new AutoCSer.Net.RemoteExpression.ReturnValue<returnType>(); }
+            private static Net.RemoteExpression.ReturnValue createReturnValue() { return new Net.RemoteExpression.ReturnValue<returnType>(); }
         }
         /// <summary>
         /// 远程表达式节点

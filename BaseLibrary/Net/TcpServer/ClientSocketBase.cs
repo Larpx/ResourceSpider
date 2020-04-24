@@ -3,8 +3,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -205,7 +205,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             if (socket != null)
             {
                 ClientCreator.OnDisposeSocket(this);
-                AutoCSer.Net.TcpServer.CommandBuffer.ShutdownClient(socket);
+                Net.TcpServer.CommandBuffer.ShutdownClient(socket);
             }
         }
         /// <summary>
@@ -268,7 +268,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             ClientCreator.CommandClient.SocketWait.PulseReset();
             if (Socket != null)
             {
-                AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
+                Net.TcpServer.CommandBase.ShutdownClient(Socket);
                 Socket = null;
             }
             Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
@@ -285,7 +285,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             }
             if (Socket != null)
             {
-                AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
+                Net.TcpServer.CommandBase.ShutdownClient(Socket);
                 Socket = null;
             }
         }
@@ -408,7 +408,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             if (deSerializer == null)
             {
                 deSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                deSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig, null);
+                deSerializer.SetTcpServer(BinarySerialize.DeSerializer.DefaultConfig, null);
             }
             bool isValue = deSerializer.DeSerializeTcpServer(ref data, ref value);
             if (Interlocked.CompareExchange(ref ReceiveDeSerializer, deSerializer, null) != null) deSerializer.Free();

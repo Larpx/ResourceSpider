@@ -58,7 +58,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     disposePool();
                 }
             }
-            if (!isDisposed) AutoCSer.DomainUnload.Unloader.Add(this, AutoCSer.DomainUnload.Type.ThreadPoolDispose);
+            if (!isDisposed)DomainUnload.Unloader.Add(this,DomainUnload.Type.ThreadPoolDispose);
         }
         /// <summary>
         /// 释放资源
@@ -99,8 +99,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         internal void FastStart(Action task)
         {
             Thread thread = threads.Pop();
-            if (thread == null) new Thread(this, task, AutoCSer.Threading.Thread.CallType.Action);
-            else thread.RunTask(task, AutoCSer.Threading.Thread.CallType.Action);
+            if (thread == null) new Thread(this, task,Threading.Thread.CallType.Action);
+            else thread.RunTask(task,Threading.Thread.CallType.Action);
         }
         /// <summary>
         /// 获取一个线程并执行任务
@@ -108,7 +108,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务委托调用类型</param>
         
-        internal void FastStart(object task, AutoCSer.Threading.Thread.CallType taskType)
+        internal void FastStart(object task,Threading.Thread.CallType taskType)
         {
             Thread thread = threads.Pop();
             if (thread == null) new Thread(this, task, taskType);
@@ -120,7 +120,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         ///// <param name="task">任务委托</param>
         ///// <param name="taskType">任务委托调用类型</param>
         //
-        //internal void CheckStart(object task, AutoCSer.Threading.Thread.CallType taskType)
+        //internal void CheckStart(object task,Threading.Thread.CallType taskType)
         //{
         //    Thread thread = threads.Pop();
         //    if (thread == null)
@@ -167,7 +167,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal ThreadPool GetClear()
             {
-                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
+                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkDoublePop);
                 ThreadPool end = End;
                 End = null;
                 System.Threading.Interlocked.Exchange(ref linkLock, 0);
@@ -180,7 +180,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal void Push(ThreadPool value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePush);
+                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkDoublePush);
                 if (End != null)
                 {
                     End.exitNext = value;
@@ -196,7 +196,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             /// <returns>是否成功</returns>
             internal int Pop(ThreadPool value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
+                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkDoublePop);
                 ThreadPool previous = value.exitPrevious, next = value.exitNext;
                 if (previous == null)
                 {
@@ -293,7 +293,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
 
         static ThreadPool()
         {
-            AutoCSer.Pub.ClearCaches += clearCache;
+           Pub.ClearCaches += clearCache;
             Date.NowTime.OnTimeFlag = true;
         }
     }

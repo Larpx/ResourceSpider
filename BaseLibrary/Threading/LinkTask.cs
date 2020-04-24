@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -70,7 +70,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                         return;
                     }
                 }
-                AutoCSer.Threading.ThreadYield.YieldOnly();
+               Threading.ThreadYield.YieldOnly();
             }
             while (true);
         }
@@ -109,7 +109,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                         if (System.Threading.Interlocked.CompareExchange(ref isThread, 1, 0) == 0) runThread();
                         return 1;
                     }
-                    AutoCSer.Threading.ThreadYield.YieldOnly();
+                   Threading.ThreadYield.YieldOnly();
                 }
                 else return 0;
             }
@@ -127,7 +127,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+               Log.Pub.Log.Add(Log.LogType.Error, error);
                 Run();
             }
         }
@@ -165,7 +165,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                       Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
                 while (value != null);
@@ -212,7 +212,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                       Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
             }

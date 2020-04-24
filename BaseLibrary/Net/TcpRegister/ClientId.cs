@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
     /// <summary>
     /// TCP 服务端标识
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct ClientId
     {

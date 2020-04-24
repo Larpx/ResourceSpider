@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Reflection;
-using AutoCSer.Extension;
-using AutoCSer.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Metadata;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -69,9 +69,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                     {
                         numberToStringMethod = null;
                         generator.Emit(OpCodes.Box, nullableType);
-                        generator.Emit(OpCodes.Callvirt, AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
+                        generator.Emit(OpCodes.Callvirt, Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
                     }
-                    else generator.Emit(OpCodes.Call, (numberToStringMethod = AutoCSer.Net.WebClient.Emit.Pub.GetNumberToStringMethod(nullableType)) ?? AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(nullableType));
+                    else generator.Emit(OpCodes.Call, (numberToStringMethod = Net.WebClient.Emit.Pub.GetNumberToStringMethod(nullableType)) ?? Net.WebClient.Emit.Pub.GetToStringMethod(nullableType));
                     generator.Emit(OpCodes.Stelem_Ref);
                     generator.MarkLabel(end);
                 }
@@ -86,9 +86,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                     {
                         numberToStringMethod = null;
                         generator.Emit(OpCodes.Box, type);
-                        generator.Emit(OpCodes.Callvirt, AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
+                        generator.Emit(OpCodes.Callvirt, Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
                     }
-                    else generator.Emit(OpCodes.Call, (numberToStringMethod = AutoCSer.Net.WebClient.Emit.Pub.GetNumberToStringMethod(type)) ?? AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(type));
+                    else generator.Emit(OpCodes.Call, (numberToStringMethod = Net.WebClient.Emit.Pub.GetNumberToStringMethod(type)) ?? Net.WebClient.Emit.Pub.GetToStringMethod(type));
                     generator.Emit(OpCodes.Stelem_Ref);
                 }
                 if (numberToStringMethod != null) return false;
@@ -108,7 +108,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 if (isValueType) generator.Emit(OpCodes.Ldarga_S, 0);
                 else generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldfld, field);
-                if (type != typeof(string)) generator.Emit(OpCodes.Callvirt, AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(type));
+                if (type != typeof(string)) generator.Emit(OpCodes.Callvirt, Net.WebClient.Emit.Pub.GetToStringMethod(type));
                 generator.Emit(OpCodes.Stelem_Ref);
                 if (type != typeof(string)) generator.MarkLabel(end);
             }
@@ -146,9 +146,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                     {
                         numberToStringMethod = null;
                         generator.Emit(OpCodes.Box, nullableType);
-                        generator.Emit(OpCodes.Callvirt, AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
+                        generator.Emit(OpCodes.Callvirt, Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
                     }
-                    else generator.Emit(OpCodes.Call, (numberToStringMethod = AutoCSer.Net.WebClient.Emit.Pub.GetNumberToStringMethod(nullableType)) ?? AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(nullableType));
+                    else generator.Emit(OpCodes.Call, (numberToStringMethod = Net.WebClient.Emit.Pub.GetNumberToStringMethod(nullableType)) ?? Net.WebClient.Emit.Pub.GetToStringMethod(nullableType));
                     generator.Emit(OpCodes.Stelem_Ref);
                     generator.MarkLabel(end);
                 }
@@ -163,9 +163,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                     {
                         numberToStringMethod = null;
                         generator.Emit(OpCodes.Box, type);
-                        generator.Emit(OpCodes.Callvirt, AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
+                        generator.Emit(OpCodes.Callvirt, Net.WebClient.Emit.Pub.GetToStringMethod(typeof(object)));
                     }
-                    else generator.Emit(OpCodes.Call, (numberToStringMethod = AutoCSer.Net.WebClient.Emit.Pub.GetNumberToStringMethod(type)) ?? AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(type));
+                    else generator.Emit(OpCodes.Call, (numberToStringMethod = Net.WebClient.Emit.Pub.GetNumberToStringMethod(type)) ?? Net.WebClient.Emit.Pub.GetToStringMethod(type));
                     generator.Emit(OpCodes.Stelem_Ref);
                 }
                 if (numberToStringMethod != null) return false;
@@ -185,7 +185,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 if (isValueType) generator.Emit(OpCodes.Ldarga_S, 0);
                 else generator.Emit(OpCodes.Ldarg_0);
                 generator.call(method);
-                if (type != typeof(string)) generator.Emit(OpCodes.Callvirt, AutoCSer.Net.WebClient.Emit.Pub.GetToStringMethod(type));
+                if (type != typeof(string)) generator.Emit(OpCodes.Callvirt, Net.WebClient.Emit.Pub.GetToStringMethod(type));
                 generator.Emit(OpCodes.Stelem_Ref);
                 if (type != typeof(string)) generator.MarkLabel(end);
             }

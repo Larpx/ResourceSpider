@@ -27,6 +27,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
                     return default(valueType);
                 }
             }
+
             /// <summary>
             /// 当前数据元素
             /// </summary>
@@ -37,29 +38,32 @@ namespace Larpx.ResourceSpider.BaseLibrary
                     return default(valueType);
                 }
             }
+
             /// <summary>
             /// 转到下一个数据元素
             /// </summary>
             /// <returns>是否存在下一个数据元素</returns>
-            
             public bool MoveNext()
             {
                 return false;
             }
+
             /// <summary>
             /// 重置枚举器状态
             /// </summary>
-            
             public void Reset() { }
+
             /// <summary>
             /// 释放枚举器
             /// </summary>
             public void Dispose() { }
         }
+
         /// <summary>
         /// 空枚举实例
         /// </summary>
         internal static readonly IEnumerator<valueType> Empty = new EmptyEnumerator();
+
         /// <summary>
         /// 数组枚举器
         /// </summary>
@@ -70,18 +74,22 @@ namespace Larpx.ResourceSpider.BaseLibrary
             /// 被枚举数组
             /// </summary>
             private valueType[] array;
+
             /// <summary>
             /// 当前位置
             /// </summary>
             private int currentIndex;
+
             /// <summary>
             /// 结束位置
             /// </summary>
             private int endIndex;
+
             /// <summary>
             /// 起始位置
             /// </summary>
             private int startIndex;
+
             /// <summary>
             /// 数组枚举器
             /// </summary>
@@ -93,6 +101,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
                 endIndex = value.Length;
                 currentIndex = startIndex - 1;
             }
+
             /// <summary>
             /// 数组枚举器
             /// </summary>
@@ -106,6 +115,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
                 this.endIndex = endIndex;
                 currentIndex = startIndex - 1;
             }
+
             /// <summary>
             /// 当前数据元素
             /// </summary>
@@ -113,6 +123,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             {
                 get { return array[currentIndex]; }
             }
+
             /// <summary>
             /// 当前数据元素
             /// </summary>
@@ -120,25 +131,26 @@ namespace Larpx.ResourceSpider.BaseLibrary
             {
                 get { return array[currentIndex]; }
             }
+
             /// <summary>
             /// 转到下一个数据元素
             /// </summary>
             /// <returns>是否存在下一个数据元素</returns>
-            
             public bool MoveNext()
             {
                 if (++currentIndex != endIndex) return true;
                 --currentIndex;
                 return false;
             }
+
             /// <summary>
             /// 重置枚举器状态
             /// </summary>
-            
             public void Reset()
             {
                 currentIndex = startIndex - 1;
             }
+
             /// <summary>
             /// 释放枚举器
             /// </summary>

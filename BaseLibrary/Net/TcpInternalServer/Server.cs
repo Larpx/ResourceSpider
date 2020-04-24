@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -19,7 +19,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <summary>
         /// TCP 内部注册随机标识
         /// </summary>
-        private readonly ulong RegisterRandom = AutoCSer.Random.Default.SecureNextULong() ^ (ulong)AutoCSer.Random.Hash;
+        private readonly ulong RegisterRandom = Random.Default.SecureNextULong() ^ (ulong)Random.Hash;
         /// <summary>
         /// TCP 内部注册服务客户端
         /// </summary>
@@ -72,10 +72,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
         
-        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
-            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpInternalServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
+        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, serverCallQueue, onCustomData, log, Threading.Thread.CallType.TcpInternalServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
-            if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + ServerAttribute.ServerName);
+            if (!attribute.IsServer) Log.Add(Log.LogType.Warn, "配置未指明的 TCP 服务端 " + ServerAttribute.ServerName);
         }
         /// <summary>
         /// 停止服务监听
@@ -102,9 +102,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     {
                         if (tcpRegisterClient.Register(this)) 
                         {
-                            Log.Add(AutoCSer.Log.LogType.Info, ServerAttribute.ServerName + " 注册 " + Attribute.Host + ":" + Port.toString() + " => " + Attribute.ClientRegisterHost + ":" + Attribute.ClientRegisterPort.toString());
+                            Log.Add(Log.LogType.Info, ServerAttribute.ServerName + " 注册 " + Attribute.Host + ":" + Port.toString() + " => " + Attribute.ClientRegisterHost + ":" + Attribute.ClientRegisterPort.toString());
                         }
-                        else Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部服务注册 " + ServerAttribute.ServerName + " 失败 ");
+                        else Log.Add(Log.LogType.Error, "TCP 内部服务注册 " + ServerAttribute.ServerName + " 失败 ");
                     }
                     return true;
                 }
@@ -152,7 +152,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }
@@ -196,7 +196,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }

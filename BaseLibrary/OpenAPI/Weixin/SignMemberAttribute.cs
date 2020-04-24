@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
     /// <summary>
     /// 签名计算成员配置
     /// </summary>
-    internal sealed class SignMemberAttribute : AutoCSer.Metadata.IgnoreMemberAttribute
+    internal sealed class SignMemberAttribute : Metadata.IgnoreMemberAttribute
     {
         /// <summary>
         /// 默认签名计算成员配置

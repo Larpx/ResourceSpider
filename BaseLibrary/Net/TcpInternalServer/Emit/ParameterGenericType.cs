@@ -1,14 +1,14 @@
 ﻿using System;
-using AutoCSer.Threading;
+using Threading;
 using System.Reflection;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {
     /// <summary>
     /// 输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ParameterGenericType : AutoCSer.Net.TcpServer.Emit.ParameterGenericType
+    internal abstract partial class ParameterGenericType : Net.TcpServer.Emit.ParameterGenericType
     {
         /// <summary>
         /// TCP 内部服务客户端
@@ -26,7 +26,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ParameterGenericType> cache = new LockLastDictionary<Type, ParameterGenericType>();
+        private static readonly Threading.LockLastDictionary<Type, ParameterGenericType> cache = new LockLastDictionary<Type, ParameterGenericType>();
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -76,7 +76,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         /// <param name="callback"></param>
         /// <param name="outputParameter"></param>
         /// <returns></returns>
-        internal delegate ReturnType ClientSocketSenderWaitGet(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<parameterType> callback, ref parameterType outputParameter);
+        internal delegate ReturnType ClientSocketSenderWaitGet(CommandInfo identityCommand, ref Net.TcpServer.AutoWaitReturnValue<parameterType> callback, ref parameterType outputParameter);
         /// <summary>
         /// 获取异步回调
         /// </summary>

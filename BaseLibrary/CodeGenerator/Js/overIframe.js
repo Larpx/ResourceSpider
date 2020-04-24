@@ -5,24 +5,24 @@ var AutoCSer;
     var OverIframe = (function () {
         function OverIframe(Parameter) {
             if (Parameter === void 0) { Parameter = null; }
-            AutoCSer.Pub.GetParameter(this, OverIframe.DefaultParameter, Parameter);
-            var Identity = ++AutoCSer.Pub.Identity;
+            Pub.GetParameter(this, OverIframe.DefaultParameter, Parameter);
+            var Identity = ++Pub.Identity;
             this.Id = '_' + Identity + '_OVER_';
             this.TableId = '_' + Identity + '_OVERTABLE_';
             this.IframeId = '_' + Identity + '_OVERIFRAME_';
             this.InputId0 = '_' + Identity + '_OVERINPUT0_';
             this.InputId1 = '_' + Identity + '_OVERINPUT1_';
-            AutoCSer.HtmlElement.$Create('div').Style('position', 'absolute').Styles('width,height', '100%').Display(0).Set('id', this.Id)
+            HtmlElement.$Create('div').Style('position', 'absolute').Styles('width,height', '100%').Display(0).Set('id', this.Id)
                 .Html("<table id='" + this.TableId + "' cellspacing='0' cellpadding='0' border='0' width='100%' height='100%' style='background-color:#444444;'><tr height='100%'><td width='100%' height='100%' align='center'><iframe id='" + this.IframeId + "' name='" + this.IframeId + "' frameborder='0' marginwidth='0' marginheight='0' vspace='0' hspace='0' allowtransparency='true' scrolling='no'></iframe></td></tr></table>")
                 .To();
-            AutoCSer.HtmlElement.$Id(this.TableId).Opacity(90);
-            this.MoveFunction = AutoCSer.Pub.ThisFunction(this, this.Move);
-            this.FocusFunction = AutoCSer.Pub.ThisFunction(this, this.Focus);
-            this.OnLoad = new AutoCSer.Events();
-            frames[this.IframeId].onload = AutoCSer.Pub.ThisFunction(this, this.LoadIframe);
+            HtmlElement.$Id(this.TableId).Opacity(90);
+            this.MoveFunction = Pub.ThisFunction(this, this.Move);
+            this.FocusFunction = Pub.ThisFunction(this, this.Focus);
+            this.OnLoad = new Events();
+            frames[this.IframeId].onload = Pub.ThisFunction(this, this.LoadIframe);
         }
         OverIframe.prototype.Move = function () {
-            var Iframe = frames[this.IframeId], IframeElement = AutoCSer.HtmlElement.$Id(this.IframeId);
+            var Iframe = frames[this.IframeId], IframeElement = HtmlElement.$Id(this.IframeId);
             try {
                 if (this.Width == null)
                     IframeElement.Set('width', Iframe.document.body.scrollWidth || Iframe.document.documentElement.scrollWidth);
@@ -30,14 +30,14 @@ var AutoCSer;
                     IframeElement.Set('height', Iframe.document.body.scrollHeight || Iframe.document.documentElement.scrollHeight);
             }
             catch (e) { }
-            AutoCSer.HtmlElement.$Id(this.Id).Style('zIndex', 0).Style('top', AutoCSer.HtmlElement.$GetScrollTop() + 'px').Style('left', AutoCSer.HtmlElement.$GetScrollLeft() + 'px').TopIndex();
+            HtmlElement.$Id(this.Id).Style('zIndex', 0).Style('top', HtmlElement.$GetScrollTop() + 'px').Style('left', HtmlElement.$GetScrollLeft() + 'px').TopIndex();
         };
         OverIframe.prototype.Hide = function (IsOnHide) {
             if (IsOnHide === void 0) { IsOnHide = true; }
             if (this.Interval)
                 clearTimeout(this.Interval);
             frames[this.IframeId].document.onblur = null;
-            AutoCSer.HtmlElement.$Id(this.Id).Styles('top,left', '0px').Display(0);
+            HtmlElement.$Id(this.Id).Styles('top,left', '0px').Display(0);
             if (IsOnHide && this.OnHide)
                 this.OnHide.Function();
         };
@@ -51,8 +51,8 @@ var AutoCSer;
         OverIframe.prototype.Show = function (ReLoad) {
             if (ReLoad === void 0) { ReLoad = true; }
             this.Hide(false);
-            var Iframe = frames[this.IframeId], IframeElement = AutoCSer.HtmlElement.$Id(this.IframeId);
-            AutoCSer.HtmlElement.$Id(this.Id).Display(1);
+            var Iframe = frames[this.IframeId], IframeElement = HtmlElement.$Id(this.IframeId);
+            HtmlElement.$Id(this.Id).Display(1);
             this.Move();
             this.Interval = setInterval(this.MoveFunction, 500);
             if (ReLoad) {
@@ -82,9 +82,9 @@ var AutoCSer;
             this.Show();
         };
         OverIframe.prototype.LoadIframe = function () {
-            if (AutoCSer.HtmlElement.$Id(this.Id).Style0('display') == '') {
+            if (HtmlElement.$Id(this.Id).Style0('display') == '') {
                 var Iframe = frames[this.IframeId];
-                AutoCSer.HtmlElement.$Id(this.IframeId).Set('width', this.Width ? this.Width : (Iframe.document.body.scrollWidth || Iframe.document.documentElement.scrollWidth))
+                HtmlElement.$Id(this.IframeId).Set('width', this.Width ? this.Width : (Iframe.document.body.scrollWidth || Iframe.document.documentElement.scrollWidth))
                     .Set('height', this.Height ? this.Height : (Iframe.document.body.scrollHeight || Iframe.document.documentElement.scrollHeight));
                 this.OnLoad.Function();
                 this.AppendInput(this.InputId0);
@@ -112,6 +112,6 @@ var AutoCSer;
         OverIframe.DefaultParameter = { WaitingImage: '//__STATICDOMAIN__/upFile/waiting.gif', IframePath: null, IframeCode: null, Width: null, Height: null };
         return OverIframe;
     }());
-    AutoCSer.OverIframe = OverIframe;
-    AutoCSer.Pub.OnLoad(OverIframe.CreateDefault, OverIframe, true);
+    OverIframe = OverIframe;
+    Pub.OnLoad(OverIframe.CreateDefault, OverIframe, true);
 })(AutoCSer || (AutoCSer = {}));

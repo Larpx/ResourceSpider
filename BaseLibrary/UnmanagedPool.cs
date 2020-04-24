@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
@@ -46,7 +46,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         
         public byte* TryGet()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.UnmanagedPoolFreePop);
+            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.UnmanagedPoolFreePop);
             if (free != null)
             {
                 byte* value = free;
@@ -84,7 +84,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         
         internal void Push(byte* buffer)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.UnmanagedPoolFreePush);
+            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.UnmanagedPoolFreePush);
             *(byte**)buffer = free;
             free = buffer;
             System.Threading.Interlocked.Exchange(ref freeLock, 0);
@@ -104,7 +104,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// <param name="count">保留缓存数据数量</param>
         private void clear(int count)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.UnmanagedPoolFreePop);
+            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.UnmanagedPoolFreePop);
             byte* head = free;
             free = null;
             System.Threading.Interlocked.Exchange(ref freeLock, 0);
@@ -118,7 +118,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
                     {
                         if (*(byte**)end == null)
                         {
-                            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.UnmanagedPoolFreePush);
+                            while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.UnmanagedPoolFreePush);
                             *(byte**)end = free;
                             free = head;
                             System.Threading.Interlocked.Exchange(ref freeLock, 0);
@@ -127,7 +127,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
                         end = *(byte**)end;
                     }
                     byte* next = *(byte**)end;
-                    while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.UnmanagedPoolFreePush);
+                    while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.UnmanagedPoolFreePush);
                     *(byte**)end = free;
                     free = head;
                     System.Threading.Interlocked.Exchange(ref freeLock, 0);
@@ -200,7 +200,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
 
         static UnmanagedPool()
         {
-            pools = AutoCSer.DictionaryCreator.CreateInt<UnmanagedPool>();
+            pools = DictionaryCreator.CreateInt<UnmanagedPool>();
             pools.Add(TinySize, Tiny = new UnmanagedPool(TinySize));
             pools.Add(DefaultSize, Default = new UnmanagedPool(DefaultSize));
         }

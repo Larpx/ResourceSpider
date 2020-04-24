@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
     /// <summary>
     /// TCP 内部注册读取服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Name = ReaderServer.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.TcpRegisterReader)]
+    [Net.TcpInternalServer.Server(Name = ReaderServer.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.TcpRegisterReader)]
     public partial class ReaderServer : TcpInternalServer.TimeVerifyServer
     {
         /// <summary>
@@ -25,7 +25,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// TCP 服务端注册
         /// </summary>
         /// <returns>TCP 服务端标识</returns>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
+        [TcpServer.Method(ServerTask = Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
         
         private ClientId register()
         {
@@ -36,7 +36,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// </summary>
         /// <param name="clientId">TCP 服务端标识</param>
         /// <param name="onLog">TCP 服务注册通知委托</param>
-        [TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.KeepCallbackMethod(ServerTask = Net.TcpServer.ServerTaskType.Synchronous, ClientTask = Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox)]
         
         private void getLog(ClientId clientId, Func<TcpServer.ReturnValue<Log>, bool> onLog)
         {

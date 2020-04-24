@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Metadata;
-using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using Metadata;
+using CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Reflection;
@@ -17,7 +17,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 成员信息缓存集合
         /// </summary>
-        private static Dictionary<Type, Dictionary<HashString, AutoCSer.Metadata.MemberIndexInfo>> memberCache = DictionaryCreator.CreateOnly<Type, Dictionary<HashString, AutoCSer.Metadata.MemberIndexInfo>>();
+        private static Dictionary<Type, Dictionary<HashString, Metadata.MemberIndexInfo>> memberCache = new Dictionary<Type, Dictionary<HashString, Metadata.MemberIndexInfo>>();
         /// <summary>
         /// 成员树节点
         /// </summary>
@@ -74,7 +74,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             /// <summary>
             /// Ajax视图输出参数
             /// </summary>
-            internal AutoCSer.WebView.OutputAjaxAttribute OutputAjax;
+            internal WebView.OutputAjaxAttribute OutputAjax;
             /// <summary>
             /// 是否忽略null值输出
             /// </summary>
@@ -99,11 +99,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             /// <summary>
             /// 成员名称+成员信息集合
             /// </summary>
-            internal Dictionary<HashString, AutoCSer.Metadata.MemberIndexInfo> Members
+            internal Dictionary<HashString, Metadata.MemberIndexInfo> Members
             {
                 get
                 {
-                    Dictionary<HashString, AutoCSer.Metadata.MemberIndexInfo> values;
+                    Dictionary<HashString, Metadata.MemberIndexInfo> values;
                     Type type = Type.Type;
                     if (!memberCache.TryGetValue(type, out values))
                     {
@@ -115,10 +115,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                             {
                                 Type returnType = method.ReturnType;
                                 if (returnType.IsGenericType && !method.IsGenericMethod && (returnType = returnType.BaseType) != null
-                                    && returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(AutoCSer.Net.TcpServer.Awaiter<,>) && method.GetParameters().Length == 0)
+                                    && returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Net.TcpServer.Awaiter<,>) && method.GetParameters().Length == 0)
                                 {
                                     HashString name = method.Name;
-                                    if (!values.ContainsKey(name)) values.Add(name, new AutoCSer.CodeGenerator.Metadata.MethodIndex(method, returnType.GetGenericArguments()[0]));
+                                    if (!values.ContainsKey(name)) values.Add(name, new CodeGenerator.Metadata.MethodIndex(method, returnType.GetGenericArguments()[0]));
                                 }
                             }
                         }
@@ -128,7 +128,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                                 .groupCount(value => value.Member.Name)
                                 .getFind(value => value.Value != 1)
                                 .GetArray(value => value.Key));
-                            AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, Type.FullName + " : " + output, true);
+                            Log.Pub.Log.WaitThrow(Log.LogType.All, error, Type.FullName + " : " + output, true);
                         }
                     }
                     return values;
@@ -143,19 +143,19 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             /// <param name="path">当前节点成员名称</param>
             /// <param name="outputAjax">Ajax视图输出参数</param>
             /// <param name="isAwaitMethod">是否 await 函数</param>
-            internal MemberNode(TreeTemplate template, ExtensionType type, ref SubString name, string path, AutoCSer.WebView.OutputAjaxAttribute outputAjax, bool isAwaitMethod)
+            internal MemberNode(TreeTemplate template, ExtensionType type, ref SubString name, string path, WebView.OutputAjaxAttribute outputAjax, bool isAwaitMethod)
             {
                 this.template = template;
                 this.Type = type;
                 this.name = name;
                 template.IsAwaitMethod |= (this.IsAwaitMethod = isAwaitMethod);
                 Path = path;
-                OutputAjax = outputAjax ?? AutoCSer.WebView.OutputAjaxAttribute.Null;
+                OutputAjax = outputAjax ?? WebView.OutputAjaxAttribute.Null;
                 if (OutputAjax.IsAllMember)
                 {
                     foreach (MemberIndexInfo member in Members.Values)
                     {
-                        if (!member.IsIgnore && ((outputAjax = member.GetAttribute<AutoCSer.WebView.OutputAjaxAttribute>(true)) == null || (outputAjax.IsSetup && outputAjax.BindingName == null)))
+                        if (!member.IsIgnore && ((outputAjax = member.GetAttribute<WebView.OutputAjaxAttribute>(true)) == null || (outputAjax.IsSetup && outputAjax.BindingName == null)))
                         {
                             SubString memberName = member.Member.Name;
                             Get(ref memberName, false);
@@ -166,8 +166,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                 {
                     foreach (MemberIndexInfo member in Members.Values)
                     {
-                        //if (member.Member.customAttribute<AutoCSer.code.ignore>(true) == null)
-                        if (!member.IsIgnore && (outputAjax = member.GetAttribute<AutoCSer.WebView.OutputAjaxAttribute>(true)) != null && outputAjax.IsSetup && outputAjax.BindingName == null)
+                        //if (member.Member.customAttribute<code.ignore>(true) == null)
+                        if (!member.IsIgnore && (outputAjax = member.GetAttribute<WebView.OutputAjaxAttribute>(true)) != null && outputAjax.IsSetup && outputAjax.BindingName == null)
                         {
                             SubString memberName = member.Member.Name;
                             Get(ref memberName, false);
@@ -203,12 +203,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                 bool isPath = true;
                 if (name.Length != 0)
                 {
-                    AutoCSer.Metadata.MemberIndexInfo member;
+                    Metadata.MemberIndexInfo member;
                     if (Members.TryGetValue(name, out member))
                     {
-                        //if (member.Member.customAttribute<AutoCSer.code.ignore>(true) != null) isPath = false;
+                        //if (member.Member.customAttribute<code.ignore>(true) != null) isPath = false;
                         if (member.IsIgnore) isPath = false;
-                        AutoCSer.WebView.OutputAjaxAttribute outputAjax = member.GetAttribute<AutoCSer.WebView.OutputAjaxAttribute>(true);
+                        WebView.OutputAjaxAttribute outputAjax = member.GetAttribute<WebView.OutputAjaxAttribute>(true);
                         if (outputAjax != null)
                         {
                             if (outputAjax.BindingName != null)
@@ -272,11 +272,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 子段程序代码集合
         /// </summary>
-        internal Dictionary<string, string> PartCodes = DictionaryCreator.CreateOnly<string, string>();
+        internal Dictionary<string, string> PartCodes = new Dictionary<string, string>();
         /// <summary>
         /// 成员树
         /// </summary>
-        protected Dictionary<MemberNode, Dictionary<HashString, MemberNode>> memberPaths = DictionaryCreator.CreateOnly<MemberNode, Dictionary<HashString, MemberNode>>();
+        protected Dictionary<MemberNode, Dictionary<HashString, MemberNode>> memberPaths = new Dictionary<MemberNode, Dictionary<HashString, MemberNode>>();
         /// <summary>
         /// 当前成员节点集合
         /// </summary>
@@ -605,7 +605,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 模板command+解析器
         /// </summary>
-        protected Dictionary<string, Action<nodeType>> creators = DictionaryCreator.CreateOnly<string, Action<nodeType>>();
+        protected Dictionary<string, Action<nodeType>> creators = new Dictionary<string, Action<nodeType>>();
         /// <summary>
         /// 引用代码树节点
         /// </summary>

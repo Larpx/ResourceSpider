@@ -10,4 +10,4 @@
             })();
         
 
-AutoCSer.Pub.LoadModule('ace/ace');
+Pub.LoadModule('ace/ace');

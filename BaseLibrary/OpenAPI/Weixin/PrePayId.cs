@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -24,7 +24,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
             if (IsReturn)
             {
                 if (appid == config.appid && mch_id == config.mch_id && Sign<PrePayId>.Check(this, config.key, sign)) return true;
-                config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + Json.Serializer.Serialize(this));
             }
             return false;
         }

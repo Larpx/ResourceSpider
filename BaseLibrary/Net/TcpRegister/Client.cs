@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 using System.Net;
 
@@ -26,7 +26,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        private readonly AutoCSer.Net.TcpServer.CheckSocketVersion checkSocketVersion;
+        private readonly Net.TcpServer.CheckSocketVersion checkSocketVersion;
         /// <summary>
         /// TCP 注册服务访问锁
         /// </summary>
@@ -62,7 +62,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 #else
             this.serviceName = serviceName;
             servers = HashSetCreator.CreateAny<IServer>();
-            registerClient = new Server.TcpInternalClient(TcpInternalServer.ServerAttribute.GetConfig(serviceName, typeof(AutoCSer.Net.TcpRegister.Server)));
+            registerClient = new Server.TcpInternalClient(TcpInternalServer.ServerAttribute.GetConfig(serviceName, typeof(Net.TcpRegister.Server)));
             logHandle = onLog;
             checkSocketVersion = registerClient._TcpClient_.CreateCheckSocketVersion(onNewSocket);
 #endif
@@ -94,11 +94,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
                         }
                         finally { Monitor.Exit(registerLock); }
                     }
-                    else registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, "TCP 注册服务客户端 " + serviceName + " 获取日志失败");
+                    else registerClient._TcpClient_.Log.Add(Log.LogType.Error, "TCP 注册服务客户端 " + serviceName + " 获取日志失败");
                 }
                 catch (Exception error)
                 {
-                    registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, error, null, true);
+                    registerClient._TcpClient_.Log.Add(Log.LogType.Error, error, null, true);
                 }
             }
 #endif
@@ -116,7 +116,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
                     case LogType.RegisterServer: registerServer(result.Value); return;
                     case LogType.RemoveServer: removeServer(result.Value); return;
                     default:
-                        registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, "未知的 TCP 内部注册服务更新日志类型 " + result.Value.toJson());
+                        registerClient._TcpClient_.Log.Add(Log.LogType.Error, "未知的 TCP 内部注册服务更新日志类型 " + result.Value.toJson());
                         return;
                 }
             }
@@ -240,7 +240,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// <summary>
         /// TCP注册服务客户端缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<HashString, Client> clients = new AutoCSer.Threading.LockEquatableLastDictionary<HashString, Client>();
+        private static readonly Threading.LockEquatableLastDictionary<HashString, Client> clients = new Threading.LockEquatableLastDictionary<HashString, Client>();
         /// <summary>
         /// 获取 TCP 注册服务客户端
         /// </summary>
@@ -260,7 +260,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                 }
                 finally { clients.Exit(); }
                 return client;

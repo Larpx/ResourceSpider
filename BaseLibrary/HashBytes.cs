@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
 {
@@ -75,7 +74,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// <summary>
         /// 复制 HASH 的字节数组
         /// </summary>
-        
+
         internal void CopyData()
         {
             SubArray = new SubArray<byte>(SubArray.GetArray());

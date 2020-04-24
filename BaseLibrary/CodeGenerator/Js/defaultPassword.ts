@@ -32,5 +32,5 @@ module AutoCSer {
             }
         }
     }
-    new AutoCSer.Declare(DefaultPassword, 'DefaultPassword', 'focus', 'Src');
+    new Declare(DefaultPassword, 'DefaultPassword', 'focus', 'Src');
 }

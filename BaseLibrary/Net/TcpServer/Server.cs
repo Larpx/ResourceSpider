@@ -1,9 +1,9 @@
 ﻿using System;
-using AutoCSer.Log;
+using Log;
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
@@ -72,7 +72,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// JSON 序列化配置
         /// </summary>
-        internal static readonly AutoCSer.Json.SerializeConfig JsonConfig;
+        internal static readonly Json.SerializeConfig JsonConfig;
 
         /// <summary>
         /// 默认验证函数调用次数
@@ -127,16 +127,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         }
         static Server()
         {
-            JsonConfig = AutoCSer.Json.ConfigLoader.GetUnion(typeof(AutoCSer.Json.SerializeConfig)).SerializeConfig;
-            if (JsonConfig == null) JsonConfig = AutoCSer.Json.SerializeConfig.CreateInternal();
-            else JsonConfig = AutoCSer.MemberCopy.Copyer<AutoCSer.Json.SerializeConfig>.MemberwiseClone(JsonConfig);
+            JsonConfig = Json.ConfigLoader.GetUnion(typeof(Json.SerializeConfig)).SerializeConfig;
+            if (JsonConfig == null) JsonConfig = Json.SerializeConfig.CreateInternal();
+            else JsonConfig = MemberCopy.Copyer<Json.SerializeConfig>.MemberwiseClone(JsonConfig);
             JsonConfig.IsInfinityToNaN = false;
         }
 
         /// <summary>
         /// 自定义队列
         /// </summary>
-        private readonly AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue;
+        private readonly Net.TcpServer.IServerCallQueueSet serverCallQueue;
         /// <summary>
         /// 自定义数据包处理
         /// </summary>
@@ -144,7 +144,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 获取客户端请求线程调用类型
         /// </summary>
-        private readonly AutoCSer.Threading.Thread.CallType getSocketThreadCallType;
+        private readonly Threading.Thread.CallType getSocketThreadCallType;
 
         /// <summary>
         /// TCP 服务客户端
@@ -158,7 +158,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, Threading.Thread.CallType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
             : base(attribute, verify, log, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
             this.serverCallQueue = serverCallQueue;
@@ -192,9 +192,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         protected void startGetSocket()
         {
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, getSocketThreadCallType);
+            Threading.ThreadPool.TinyBackground.FastStart(this, getSocketThreadCallType);
             Thread.Sleep(0);
-            AutoCSer.DomainUnload.Unloader.Add(this, DomainUnload.Type.TcpCommandBaseDispose);
+            DomainUnload.Unloader.Add(this, DomainUnload.Type.TcpCommandBaseDispose);
         }
         /// <summary>
         /// 自定义数据包处理
@@ -203,7 +203,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         internal void CustomData(ref SubArray<byte> data)
         {
-            if (onCustomData == null) Log.Add(AutoCSer.Log.LogType.Info, "客户端自定义数据包被丢弃");
+            if (onCustomData == null) Log.Add(Log.LogType.Info, "客户端自定义数据包被丢弃");
             else
             {
                 try
@@ -212,7 +212,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                 }
             }
         }
@@ -261,7 +261,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, Threading.Thread.CallType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
             : base(attribute, verify, serverCallQueue, onCustomData, log, getSocketThreadCallType, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
         }

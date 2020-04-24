@@ -36,7 +36,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// </summary>
         /// <param name="data">非托管内存起始指针</param>
         /// <param name="size"></param>
-        [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [System.Runtime.CompilerServices.MethodImpl(MethodImpl.AggressiveInlining)]
         internal static void FreeStatic(ref byte* data, int size)
         {
             if (data != null)

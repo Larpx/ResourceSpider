@@ -86,7 +86,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
                 data.Array = null;
                 Socket = null;
                 LinkNext = null;
-                AutoCSer.Threading.RingPool<CustomDataCommand>.Default.PushNotNull(this);
+                Threading.RingPool<CustomDataCommand>.Default.PushNotNull(this);
                 return nextBuild;
             }
             buildInfo.isFullSend = 1;

@@ -177,7 +177,7 @@ module AutoCSer {
                 Range.select();
             }
             else {
-                var Selection = AutoCSer.HtmlElement.$Id(this.EditorFrameId).Element0()['contentWindow'].getSelection();
+                var Selection = HtmlElement.$Id(this.EditorFrameId).Element0()['contentWindow'].getSelection();
                 if (Selection.rangeCount) {
                     var Range = Selection.getRangeAt(0);
                     Selection.removeAllRanges();
@@ -770,6 +770,6 @@ module AutoCSer {
         static PasteLinkRegex = /https?\:\/\/[a-z0-9\/~@%&_,;'=\$\^\(\)\+\{\}\.\[\]\-]+\??[a-z0-9\/~@%&_,;'=\$\^\(\)\+\{\}\.\[\]\-]*(#!?)?[a-z0-9\/~@%&_,;'=\$\^\(\)\+\{\}\.\[\]\-]*/gi;
         static IsPasteImage = !Pub.IE && window.atob && window['Blob'] && window['Uint8Array'] && window['FormData'];
     }
-    new AutoCSer.Declare(HtmlEditor, 'HtmlEditor', 'click', 'Src');
+    new Declare(HtmlEditor, 'HtmlEditor', 'click', 'Src');
     Pub.LoadModule('htmlEditor');
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net
@@ -8,7 +8,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     /// <summary>
     /// 套接字链表
     /// </summary>
-    internal sealed class SocketLink : AutoCSer.Threading.Link<SocketLink>
+    internal sealed class SocketLink : Threading.Link<SocketLink>
     {
         /// <summary>
         /// 套接字
@@ -44,7 +44,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         /// <param name="serverSocket"></param>
         /// <returns></returns>
         
-        internal SocketLink Start(AutoCSer.Net.TcpOpenServer.Server server, ref AutoCSer.Net.TcpOpenServer.ServerSocket serverSocket)
+        internal SocketLink Start(Net.TcpOpenServer.Server server, ref Net.TcpOpenServer.ServerSocket serverSocket)
         {
             serverSocket = new TcpOpenServer.ServerSocket(server, ref Socket);
             serverSocket.Start();

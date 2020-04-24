@@ -13,21 +13,21 @@ var AutoCSer;
         __extends(MouseMenu, _super);
         function MouseMenu(Parameter) {
             _super.call(this, Parameter);
-            AutoCSer.Pub.GetParameter(this, MouseMenu.DefaultParameter, Parameter);
-            AutoCSer.Pub.GetEvents(this, MouseMenu.DefaultEvents, Parameter);
-            this.HideFunction = AutoCSer.Pub.ThisFunction(this, this.Hide);
-            this.MouseOutFunction = AutoCSer.Pub.ThisFunction(this, this.MouseOut);
-            this.Start(this.Event || AutoCSer.DeclareEvent.Default);
+            Pub.GetParameter(this, MouseMenu.DefaultParameter, Parameter);
+            Pub.GetEvents(this, MouseMenu.DefaultEvents, Parameter);
+            this.HideFunction = Pub.ThisFunction(this, this.Hide);
+            this.MouseOutFunction = Pub.ThisFunction(this, this.MouseOut);
+            this.Start(this.Event || DeclareEvent.Default);
         }
         MouseMenu.prototype.Start = function (Event) {
             if (!Event.IsGetOnly) {
                 this.OnStart.Function(this);
-                var Element = AutoCSer.HtmlElement.$IdElement(this.Id);
+                var Element = HtmlElement.$IdElement(this.Id);
                 if (Element != this.Element) {
                     this.Element = Element;
-                    AutoCSer.HtmlElement.$AddEvent(Element, ['mouseout'], this.MouseOutFunction);
+                    HtmlElement.$AddEvent(Element, ['mouseout'], this.MouseOutFunction);
                     if (this.IsMouseMove)
-                        AutoCSer.HtmlElement.$AddEvent(Element, ['mousemove'], AutoCSer.Pub.ThisEvent(this, this.ReShow));
+                        HtmlElement.$AddEvent(Element, ['mousemove'], Pub.ThisEvent(this, this.ReShow));
                     this.CheckMenuParameter(true);
                 }
                 this.ClearInterval();
@@ -37,14 +37,14 @@ var AutoCSer;
         };
         MouseMenu.prototype.CheckMenuParameter = function (IsStart) {
             if (IsStart === void 0) { IsStart = false; }
-            var Element = AutoCSer.HtmlElement.$Id(this.MenuId);
+            var Element = HtmlElement.$Id(this.MenuId);
             if (Element.Element0()) {
-                var Parameter = AutoCSer.HtmlElement.$Attribute(Element.Element0(), 'mousemenu');
+                var Parameter = HtmlElement.$Attribute(Element.Element0(), 'mousemenu');
                 if (Parameter != null) {
                     var Id = eval('(' + Parameter + ')').Id;
                     if (Id != this.Id) {
                         Parameter = null;
-                        var Menu = AutoCSer.Declare.Getters['MouseMenu'](Id, true);
+                        var Menu = Declare.Getters['MouseMenu'](Id, true);
                         if (Menu) {
                             Menu.Remove();
                             Element.Set('mousemenu', '{Id:"' + this.Id + '"}');
@@ -62,7 +62,7 @@ var AutoCSer;
         MouseMenu.prototype.Show = function (Event) {
             this.ShowMenu();
             if (this.IsMove)
-                this.ReShow(Event, AutoCSer.HtmlElement.$Id(this.Id));
+                this.ReShow(Event, HtmlElement.$Id(this.Id));
             this.OnShowed.Function();
         };
         MouseMenu.prototype.MouseOut = function () {
@@ -83,9 +83,9 @@ var AutoCSer;
         MouseMenu.prototype.Remove = function () {
             this.ClearInterval();
             this.ShowView = null;
-            var Element = AutoCSer.HtmlElement.$Id(this.Id);
+            var Element = HtmlElement.$Id(this.Id);
             Element.DeleteEvent('mouseout', this.MouseOutFunction);
-            AutoCSer.HtmlElement.$Id(this.MenuId).Set('mousemenu', '').DeleteEvent('mouseout', this.MouseOutFunction);
+            HtmlElement.$Id(this.MenuId).Set('mousemenu', '').DeleteEvent('mouseout', this.MouseOutFunction);
             this.Element = null;
         };
         MouseMenu.prototype.ReShow = function (Event, Element) {
@@ -98,21 +98,21 @@ var AutoCSer;
         MouseMenu.DefaultParameter = { Timeout: 100, IsMouseMove: 0 };
         MouseMenu.DefaultEvents = { OnMove: null };
         return MouseMenu;
-    }(AutoCSer.Menu));
-    AutoCSer.MouseMenu = MouseMenu;
+    }(Menu));
+    MouseMenu = MouseMenu;
     var MouseMenuEnum = (function () {
         function MouseMenuEnum(Value, Show) {
             this.Value = Value;
             this.Show = Show || Value;
         }
         MouseMenuEnum.prototype.ToJson = function (IsIgnore, IsNameQuery, IsSortName, Parents) {
-            return AutoCSer.Pub.ToJson(this.Value, IsIgnore, IsNameQuery, IsSortName, Parents);
+            return Pub.ToJson(this.Value, IsIgnore, IsNameQuery, IsSortName, Parents);
         };
         MouseMenuEnum.prototype.toString = function () {
             return this.Value;
         };
         return MouseMenuEnum;
     }());
-    AutoCSer.MouseMenuEnum = MouseMenuEnum;
-    new AutoCSer.Declare(MouseMenu, 'MouseMenu', 'mouseover', 'ParameterId');
+    MouseMenuEnum = MouseMenuEnum;
+    new Declare(MouseMenu, 'MouseMenu', 'mouseover', 'ParameterId');
 })(AutoCSer || (AutoCSer = {}));

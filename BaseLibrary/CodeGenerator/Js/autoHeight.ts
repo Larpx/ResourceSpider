@@ -65,5 +65,5 @@ module AutoCSer {
             this.IsStart = false;
         }
     }
-    new AutoCSer.Declare(AutoHeight, 'AutoHeight', 'focus', 'Src');
+    new Declare(AutoHeight, 'AutoHeight', 'focus', 'Src');
 }

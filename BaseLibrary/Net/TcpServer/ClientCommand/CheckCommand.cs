@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
                 //*(uint*)(write + sizeof(int)) |= (uint)(CommandFlags.NullData | CommandFlags.NullIndex);
                 *(uint*)(write + sizeof(int)) |= (uint)CommandFlags.NullData;
                 stream.ByteSize += sizeof(int) + sizeof(uint);
-                AutoCSer.Threading.RingPool<CheckCommand>.Default.PushNotNull(this);
+                Threading.RingPool<CheckCommand>.Default.PushNotNull(this);
             }
             else LinkNext = null;
             return nextBuild;
@@ -51,7 +51,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
         
         internal static CheckCommand Get(ClientSocket socket)
         {
-            CheckCommand command = AutoCSer.Threading.RingPool<CheckCommand>.Default.Pop();
+            CheckCommand command = Threading.RingPool<CheckCommand>.Default.Pop();
             if (command == null)
             {
                 try
@@ -60,7 +60,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
                 }
                 catch (Exception error)
                 {
-                    socket.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                    socket.Log.Add(Log.LogType.Debug, error);
                     return null;
                 }
             }

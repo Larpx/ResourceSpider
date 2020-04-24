@@ -47,7 +47,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
+                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
@@ -71,7 +71,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
+                ClientCommand.OutputCommand<outputParameterType> command = Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
@@ -96,7 +96,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
+                ClientCommand.InputCommand<inputParameterType> command = Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall.Call, ref inputParameter);
@@ -132,7 +132,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
+                ClientCommand.CallCommand command = Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall.Call);

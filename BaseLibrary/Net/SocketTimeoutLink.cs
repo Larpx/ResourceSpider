@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net
@@ -103,7 +103,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         
         private void waitCancelTimeout()
         {
-            while (isSetReceiveTimeout == 0) AutoCSer.Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SocketTimeoutLinkCancelTimeout);
+            while (isSetReceiveTimeout == 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SocketTimeoutLinkCancelTimeout);
             isSetReceiveTimeout = 0;
         }
         /// <summary>
@@ -127,7 +127,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         {
             if (Interlocked.CompareExchange(ref Socket, null, socket) == socket)
             {
-                AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
+               Net.TcpServer.CommandBase.CloseServer(socket);
             }
         }
         /// <summary>
@@ -138,7 +138,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         {
             Socket socket = Socket;
             Socket = null;
-            if (socket != null) AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
+            if (socket != null)Net.TcpServer.CommandBase.CloseServer(socket);
         }
         ///// <summary>
         ///// 释放套接字
@@ -160,7 +160,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         //        }
         //        catch
         //        {
-        //            AutoCSer.Log.CatchCount.Add(AutoCSer.Log.CatchCount.Type.SocketTimeoutLink_Dispose);
+        //           Log.CatchCount.Add(Log.CatchCount.Type.SocketTimeoutLink_Dispose);
         //        }
         //    }
         //}
@@ -168,7 +168,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         /// <summary>
         /// 套接字超时
         /// </summary>
-        internal sealed class TimerLink : AutoCSer.Threading.TimerLink<TimerLink>
+        internal sealed class TimerLink :Threading.TimerLink<TimerLink>
         {
             /// <summary>
             /// 链表首节点
@@ -210,7 +210,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
             internal void Push(SocketTimeoutLink value, Socket socket, ushort count = 0)
             {
                 value.setTimeout(currentSeconds + seconds, socket, count);
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePush);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimerLinkQueuePush);
                 if (End == null)
                 {
                     End = Head = value;
@@ -232,7 +232,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
             internal void Cancel(SocketTimeoutLink value)
             {
                 value.waitCancelTimeout();
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePop);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimerLinkQueuePop);
                 if (value == End)
                 {
                     if ((End = value.previousTimeout) == null)
@@ -283,7 +283,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
                     {
                         do
                         {
-                            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePop);
+                            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimerLinkQueuePop);
                             Socket socket = null;
                             if (Head == null || Head.timeoutSeconds > currentSeconds)
                             {
@@ -327,9 +327,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
                         }
                         while (true);
                     }
-                    catch
+                    catch(Exception error)
                     {
-                        AutoCSer.Log.CatchCount.Add(AutoCSer.Log.CatchCount.Type.SocketTimeoutLink_Dispose);
+                        throw error;
                     }
                 }
                 while (true);
@@ -413,7 +413,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     //                    value.poolNext = headValue;
     //                    if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
     //                }
-    //                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+    //               Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPush);
     //            }
     //            while (true);
     //        }
@@ -425,21 +425,21 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     //        public valueType Pop()
     //        {
     //            valueType headValue;
-    //            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref popLock, AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+    //           Threading.Interlocked.CompareExchangeYield(ref popLock,Threading.ThreadYield.Type.YieldLinkPop);
     //            do
     //            {
     //                if ((headValue = head) == null)
     //                {
-    //                    AutoCSer.Threading.Interlocked.popLock = 0;
+    //                   Threading.Interlocked.popLock = 0;
     //                    return null;
     //                }
     //                if (System.Threading.Interlocked.CompareExchange(ref head, headValue.poolNext, headValue) == headValue)
     //                {
-    //                    AutoCSer.Threading.Interlocked.popLock = 0;
+    //                   Threading.Interlocked.popLock = 0;
     //                    headValue.poolNext = null;
     //                    return headValue;
     //                }
-    //                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+    //               Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPop);
     //            }
     //            while (true);
     //        }
@@ -487,7 +487,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     //                    end.poolNext = headValue;
     //                    if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
     //                }
-    //                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+    //               Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPush);
     //            }
     //            while (true);
     //        }

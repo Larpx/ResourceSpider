@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -36,7 +36,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             this.client = client;
             WaitEvent = new ManualResetEvent(false);
-            waitTimestamp = Stopwatch.GetTimestamp() + AutoCSer.Date.GetTimestampByMilliseconds((long)client.Attribute.GetClientWaitConnectedMilliseconds);
+            waitTimestamp = Stopwatch.GetTimestamp() + Date.GetTimestampByMilliseconds((long)client.Attribute.GetClientWaitConnectedMilliseconds);
             CheckSocketVersion = client.CreateCheckSocketVersion(onCheckSocketVersion ?? this.OnCheckSocketVersion);
         }
         /// <summary>
@@ -80,7 +80,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             long timestamp = waitTimestamp - Stopwatch.GetTimestamp();
             if (timestamp > 0)
             {
-                long ticks = AutoCSer.Date.GetTicksByTimestamp(timestamp);
+                long ticks = Date.GetTicksByTimestamp(timestamp);
                 if (ticks > 0)
                 {
                     WaitEvent.WaitOne(new TimeSpan(ticks));

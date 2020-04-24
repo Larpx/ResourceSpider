@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
@@ -68,7 +68,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <param name=""isOut"">是否输出代码</param>
         protected override void create(bool _isOut_)
         {
-            if (outStart(AutoCSer.CodeGenerator.CodeLanguage.", Auto.Language.ToString(), @", _isOut_))
+            if (outStart(CodeGenerator.CodeLanguage.", Auto.Language.ToString(), @", _isOut_))
             {
                 ");
                 switch (Auto.Language)
@@ -145,9 +145,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                     }
 #if DotNetStandard
                     string path = new System.IO.FileInfo(parameter.AssemblyPath).Directory.fullName();
-                    copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.deps.json");
-                    copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.dev.json");
-                    copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.json");
+                    copyDotNetCoreJson(path, "CodeGenerator.deps.json");
+                    copyDotNetCoreJson(path, "CodeGenerator.runtimeconfig.dev.json");
+                    copyDotNetCoreJson(path, "CodeGenerator.runtimeconfig.json");
 #endif
                     string fileName = parameter.ProjectPath + @"{AutoCSer}.CSharper.cs";
                     if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.ToArray()) + Coder.FileEndCode))
@@ -168,7 +168,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <param name="fileName"></param>
         private void copyDotNetCoreJson(string path, string fileName)
         {
-            System.IO.FileInfo file = new System.IO.FileInfo(AutoCSer.PubPath.ApplicationPath + fileName);
+            System.IO.FileInfo file = new System.IO.FileInfo(PubPath.ApplicationPath + fileName);
             if (file.Exists) file.CopyTo(path + fileName, true);
         }
 #endif

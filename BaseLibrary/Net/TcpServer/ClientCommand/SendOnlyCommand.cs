@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 
                 Socket = null;
                 LinkNext = null;
-                AutoCSer.Threading.RingPool<SendOnlyCommand>.Default.PushNotNull(this);
+                Threading.RingPool<SendOnlyCommand>.Default.PushNotNull(this);
                 return nextBuild;
             }
             buildInfo.isFullSend = 1;
@@ -105,7 +105,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
                 InputParameter = default(inputParameterType);
                 Socket = null;
                 LinkNext = null;
-                AutoCSer.Threading.RingPool<SendOnlyCommand<inputParameterType>>.Default.PushNotNull(this);
+                Threading.RingPool<SendOnlyCommand<inputParameterType>>.Default.PushNotNull(this);
                 return nextBuild;
             }
             buildInfo.isFullSend = 1;

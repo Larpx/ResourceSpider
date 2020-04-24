@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
@@ -104,7 +104,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
             }
             catch (Exception error)
             {
-                Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                Socket.Log.Add(Log.LogType.Error, error);
             }
             setTask();
         }
@@ -119,8 +119,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
             {
                 switch (CommandInfo.TaskType)
                 {
-                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                    case ClientTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) Threading.LinkTask.Task.Add(this); return;
+                    case ClientTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                     case ClientTaskType.TcpTask: ClientCallTask.Task.Add(this); return;
                     case ClientTaskType.TcpQueue: ClientCallQueue.Default.Add(this); return;
                 }
@@ -139,7 +139,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
             Callback = null;
             Socket = null;
             OutputParameter.Value = default(outputParameterType);
-            AutoCSer.Threading.RingPool<InputOutputCommand<inputParameterType, outputParameterType>>.Default.PushNotNull(this);
+            Threading.RingPool<InputOutputCommand<inputParameterType, outputParameterType>>.Default.PushNotNull(this);
             callback.Call(ref outputParameter);
         }
         /// <summary>
@@ -162,7 +162,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
             }
             catch (Exception error)
             {
-                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                socket.Log.Add(Log.LogType.Error, error);
             }
         }
     }

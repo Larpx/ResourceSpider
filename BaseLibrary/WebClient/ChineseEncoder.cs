@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
@@ -14,19 +14,19 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// <summary>
         /// UTF32文件BOM
         /// </summary>
-        private static readonly uint utf32Bom = AutoCSer.IO.FileBom.Get(Encoding.UTF32).Bom;
+        private static readonly uint utf32Bom = IO.FileBom.Get(Encoding.UTF32).Bom;
         /// <summary>
         /// UTF8文件BOM
         /// </summary>
-        private static readonly uint utf8Bom = AutoCSer.IO.FileBom.Get(Encoding.UTF8).Bom;
+        private static readonly uint utf8Bom = IO.FileBom.Get(Encoding.UTF8).Bom;
         /// <summary>
         /// Unicode文件BOM
         /// </summary>
-        private static readonly uint unicodeBom = AutoCSer.IO.FileBom.Get(Encoding.Unicode).Bom;
+        private static readonly uint unicodeBom = IO.FileBom.Get(Encoding.Unicode).Bom;
         /// <summary>
         /// 大端Unicode文件BOM
         /// </summary>
-        private static readonly uint bigEndianUnicodeBom = AutoCSer.IO.FileBom.Get(Encoding.BigEndianUnicode).Bom;
+        private static readonly uint bigEndianUnicodeBom = IO.FileBom.Get(Encoding.BigEndianUnicode).Bom;
         /// <summary>
         /// 当前位置
         /// </summary>
@@ -155,7 +155,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
 
             #region GB2312
             char* gb18030Chars = stackalloc char[0x40];
-            AutoCSer.Memory.Fill((ulong*)(gb18030Char = gb18030Chars), 0UL, 0x40 * sizeof(char) / sizeof(ulong));
+            Memory.Fill((ulong*)(gb18030Char = gb18030Chars), 0UL, 0x40 * sizeof(char) / sizeof(ulong));
             gb18030Char[0] = char.MaxValue;
             gb18030Char[0xc4b5 & 0x3f] = (char)0xc4b5;
             gb18030Char[0xc7ca & 0x3f] = (char)0xc7ca;
@@ -185,7 +185,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             {
                 #region UTF16
                 char* utf16Chars = stackalloc char[0x10];
-                AutoCSer.Memory.Fill((ulong*)(utf16Char = utf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
+                Memory.Fill((ulong*)(utf16Char = utf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
                 utf16Char[0] = char.MaxValue;
                 utf16Char[0x7684 & 0xf] = (char)0x7684;
                 //utf16Char[0x662f & 0xf] = (char)0x662f;
@@ -196,7 +196,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
                 utf16Char[0x3002 & 0xf] = (char)0x3002;
                 utf16Char[0x500b & 0xf] = (char)0x500b;
                 char* bigUtf16Chars = stackalloc char[0x10];
-                AutoCSer.Memory.Fill((ulong*)(bigUtf16Char = bigUtf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
+                Memory.Fill((ulong*)(bigUtf16Char = bigUtf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
                 bigUtf16Char[0] = char.MaxValue;
                 bigUtf16Char[(0x8476 >> 8) & 0xf] = (char)0x8476;
                 //bigUtf16Char[(0x2f66 >> 8) & 0xf] = (char)0x2f66;
@@ -228,17 +228,17 @@ namespace Larpx.ResourceSpider.BaseLibrary
             endValue = -1;
             if (gb2312Count > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Gb2312.Encoding;
+                value = EncodingCacheOther.Gb2312.Encoding;
                 endValue = gb2312Count;
             }
             if (gb18030Count > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Gb18030.Encoding;
+                value = EncodingCacheOther.Gb18030.Encoding;
                 endValue = gb18030Count;
             }
             if (gbkCount > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Gbk.Encoding;
+                value = EncodingCacheOther.Gbk.Encoding;
                 endValue = gbkCount;
             }
             if (utf8Count > endValue)
@@ -248,7 +248,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             }
             if (big5Count > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Big5.Encoding;
+                value = EncodingCacheOther.Big5.Encoding;
                 endValue = big5Count;
             }
             if (utf32Count > endValue)
@@ -512,7 +512,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         private void utf8()
         {
             uint* utf8Char = stackalloc uint[0x10];
-            AutoCSer.Memory.Fill((ulong*)utf8Char, 0UL, 0x10 >> 1);
+            Memory.Fill((ulong*)utf8Char, 0UL, 0x10 >> 1);
             utf8Char[0] = uint.MaxValue;
             utf8Char[(0x849ae7 >> 16) & 0xf] = 0x849ae7;
             utf8Char[(0xaf98e6 >> 16) & 0xf] = 0xaf98e6;
@@ -628,7 +628,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         private void big5()
         {
             char* big5Char = stackalloc char[0x40];
-            AutoCSer.Memory.Fill((ulong*)big5Char, 0UL, 0x40 * sizeof(char) / sizeof(ulong));
+            Memory.Fill((ulong*)big5Char, 0UL, 0x40 * sizeof(char) / sizeof(ulong));
             big5Char[0] = char.MaxValue;
             big5Char[(0xbaaa >> 8) & 0x3f] = (char)0xbaaa;
             big5Char[(0x4fac >> 8) & 0x3f] = (char)0x4fac;
@@ -714,7 +714,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         private void utf32()
         {
             uint* utf32Char = stackalloc uint[0x10];
-            AutoCSer.Memory.Fill((ulong*)utf32Char, 0UL, 0x10 >> 1);
+            Memory.Fill((ulong*)utf32Char, 0UL, 0x10 >> 1);
             utf32Char[0] = uint.MaxValue;
             utf32Char[0x7684 & 0xf] = 0x7684;
             utf32Char[0x662f & 0xf] = 0x662f;

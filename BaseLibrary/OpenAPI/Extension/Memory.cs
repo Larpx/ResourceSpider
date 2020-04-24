@@ -17,7 +17,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         
         internal static void CopyNotNull(byte[] source, void* destination, int length)
         {
-            fixed (byte* data = source) AutoCSer.Memory.CopyNotNull((void*)data, destination, length);
+            fixed (byte* data = source) Memory.CopyNotNull((void*)data, destination, length);
         }
         /// <summary>
         /// 转16进制字符串(小写字母)
@@ -28,7 +28,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         {
             if (data.length() != 0)
             {
-                string hex = AutoCSer.Extension.StringExtension.FastAllocateString(data.Length << 1);
+                string hex = Extension.StringExtension.FastAllocateString(data.Length << 1);
                 fixed (byte* dataFixed = data)
                 fixed (char* hexFixed = hex)
                 {

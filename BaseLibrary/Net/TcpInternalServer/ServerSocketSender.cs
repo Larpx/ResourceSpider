@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
@@ -251,7 +251,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Server.Log.Add(Log.LogType.Error, error);
                     buildInfo.IsError = true;
                 }
                 finally
@@ -272,7 +272,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <param name="data"></param>
         internal void GetRemoteExpressionNodeId(ref SubArray<byte> data)
         {
-            AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+            Net.TcpServer.ReturnType returnType = Net.TcpServer.ReturnType.Unknown;
             try
             {
                 RemoteExpression.ServerNodeIdChecker.Input inputParameter = default(RemoteExpression.ServerNodeIdChecker.Input);
@@ -286,11 +286,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     else (GetRemoteExpressionNodeIdServerCall.Pop() ?? new GetRemoteExpressionNodeIdServerCall()).Set(this, Server.ServerAttribute.RemoteExpressionTask, ref inputParameter.Types);
                     return;
                 }
-                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                returnType = Net.TcpServer.ReturnType.ServerDeSerializeError;
             }
             catch (Exception error)
             {
-                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                returnType = Net.TcpServer.ReturnType.ServerException;
                 AddLog(error);
             }
             Push(returnType);
@@ -301,7 +301,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <param name="data"></param>
         internal void GetRemoteExpression(ref SubArray<byte> data)
         {
-            AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+            Net.TcpServer.ReturnType returnType = Net.TcpServer.ReturnType.Unknown;
             try
             {
                 RemoteExpression.ClientNode inputParameter = default(RemoteExpression.ClientNode);
@@ -315,11 +315,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     else (GetRemoteExpressionServerCall.Pop() ?? new GetRemoteExpressionServerCall()).Set(this, Server.ServerAttribute.RemoteExpressionTask, ref inputParameter);
                     return;
                 }
-                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                returnType = Net.TcpServer.ReturnType.ServerDeSerializeError;
             }
             catch (Exception error)
             {
-                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                returnType = Net.TcpServer.ReturnType.ServerException;
                 AddLog(error);
             }
             Push(returnType);

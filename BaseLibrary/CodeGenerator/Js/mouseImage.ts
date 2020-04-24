@@ -28,5 +28,5 @@ module AutoCSer {
             (HtmlElement.$IdElement(this.Id) as HTMLImageElement).src = this.OutSrc;
         }
     }
-    new AutoCSer.Declare(MouseImage, 'MouseImage', 'mouseover', 'AttributeName');
+    new Declare(MouseImage, 'MouseImage', 'mouseover', 'AttributeName');
 }

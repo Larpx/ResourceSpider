@@ -103,7 +103,7 @@ module AutoCSer {
             return Value;
         }
         Show() {
-            AutoCSer.Skin.Refresh();
+            Skin.Refresh();
             var Div = HtmlElement.$Id(this.Id);
             if (Div.Element0()) {
                 if (Ace.IsIE6) this.Editor = new AceEditorIE6(this);
@@ -209,5 +209,5 @@ module AutoCSer {
             Pub.OnModule(['ace/ace'], Pub.ThisFunction(this, this.Show), true);
         }
     }
-    AutoCSer.Ace.CheckIE6();
+    Ace.CheckIE6();
 }

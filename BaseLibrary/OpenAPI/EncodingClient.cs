@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Text;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
 {
@@ -68,10 +68,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
             where valueType : class, IReturn
         {
             string json;
-            NameValueCollection form = AutoCSer.Threading.RingPool<NameValueCollection>.Default.Pop() ?? new NameValueCollection();
+            NameValueCollection form = Threading.RingPool<NameValueCollection>.Default.Pop() ?? new NameValueCollection();
             try
             {
-                AutoCSer.Net.WebClient.Form.Getter<formType>.Get(formValue, form);
+                Net.WebClient.Form.Getter<formType>.Get(formValue, form);
                 json = RequestForm(url, form);
             }
             finally
@@ -79,7 +79,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
                 switch (form.Count)
                 {
                     case 0:
-                    PUSH: AutoCSer.Threading.RingPool<NameValueCollection>.Default.PushNotNull(form); break;
+                    PUSH: Threading.RingPool<NameValueCollection>.Default.PushNotNull(form); break;
                     case 1:
                     case 2:
                     case 3:
@@ -113,7 +113,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
         public valueType RequestJson<valueType, formType>(string url, formType formValue)
             where valueType : class, IReturn
         {
-            string json = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.Json.Serializer.Serialize(formValue)));
+            string json = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(Json.Serializer.Serialize(formValue)));
             return parseJson<valueType>(json, url);
         }
         /// <summary>
@@ -148,16 +148,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
                 bool isError = false, isJson = false;
                 try
                 {
-                    if (AutoCSer.Json.Parser.Parse(json, ref value)) isJson = true;
+                    if (Json.Parser.Parse(json, ref value)) isJson = true;
                 }
                 catch (Exception error)
                 {
                     isError = true;
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
+                    Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
 " + json);
                 }
                 if (isJson && value.IsReturn) return value;
-                if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
+                if (!isError) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
 " + value.Message + @"
 " + json);
             }
@@ -173,7 +173,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
         /// <param name="config">XML序列化配置</param>
         /// <param name="isValue">是否验证数据</param>
         /// <returns>数据对象,失败放回null</returns>
-        public valueType RequestXml<valueType, formType>(string url, formType formValue, AutoCSer.Xml.SerializeConfig config = null, bool isValue = true)
+        public valueType RequestXml<valueType, formType>(string url, formType formValue, Xml.SerializeConfig config = null, bool isValue = true)
             where valueType : class, IReturn
         {
             string xml;
@@ -189,10 +189,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
         /// <param name="xml">输出XML字符串</param>
         /// <param name="config">XML序列化配置</param>
         /// <returns>数据对象,失败放回null</returns>
-        public valueType RequestXml<valueType, formType>(string url, formType formValue, out string xml, AutoCSer.Xml.SerializeConfig config = null)
+        public valueType RequestXml<valueType, formType>(string url, formType formValue, out string xml, Xml.SerializeConfig config = null)
             where valueType : class, IReturn
         {
-            return parseXml<valueType>(xml = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.Xml.Serializer.Serialize(formValue, config))), url, true);
+            return parseXml<valueType>(xml = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(Xml.Serializer.Serialize(formValue, config))), url, true);
         }
         /// <summary>
         /// API请求XML数据
@@ -211,16 +211,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
                 bool isError = false, isXml = false;
                 try
                 {
-                    if (AutoCSer.Xml.Parser.Parse(xml, ref value)) isXml = true;
+                    if (Xml.Parser.Parse(xml, ref value)) isXml = true;
                 }
                 catch (Exception error)
                 {
                     isError = true;
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
+                    Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
 " + xml);
                 }
                 if (isXml && (!isValue || value.IsReturn)) return value;
-                if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
+                if (!isError) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
 " + value.Message + @"
 " + xml);
             }
@@ -234,9 +234,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
         /// <param name="formValue">POST表单</param>
         /// <param name="config">XML序列化配置</param>
         /// <returns>数据对象,失败放回null</returns>
-        public string RequestXml<formType>(string url, formType formValue, AutoCSer.Xml.SerializeConfig config = null)
+        public string RequestXml<formType>(string url, formType formValue, Xml.SerializeConfig config = null)
         {
-            return request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.Xml.Serializer.Serialize(formValue, config)));
+            return request.Request(url, encoding, null, Encoding.UTF8.GetBytes(Xml.Serializer.Serialize(formValue, config)));
         }
         /// <summary>
         /// API请求
@@ -256,7 +256,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
         /// <returns></returns>
         public byte[] DownloadJson<formType>(string url, formType formValue)
         {
-            return request.Download(url, Encoding.UTF8.GetBytes(AutoCSer.Json.Serializer.Serialize(formValue)));
+            return request.Download(url, Encoding.UTF8.GetBytes(Json.Serializer.Serialize(formValue)));
         }
     }
 }

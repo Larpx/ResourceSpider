@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override MemberFilters GetMemberFilters { get { return MemberFilters; } }
         /// <summary>
         /// 是否 TCP 服务配置。一个静态服务只能存在一个 class 配置 IsServer = true，并且必须指定 Service，用于这个服务名称绑定 TCP 服务配置。
@@ -27,7 +27,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// </summary>
         public bool IsAbstract;
         /// <summary>
-        /// 默认为 true 表示检测并生成基于的 [AutoCSer.Net.TcpStaticServer.RemoteKey] 调用链代码，只有在 IsRemoteLinkType = false 时才有效
+        /// 默认为 true 表示检测并生成基于的 [Net.TcpStaticServer.RemoteKey] 调用链代码，只有在 IsRemoteLinkType = false 时才有效
         /// </summary>
         public bool IsRemoteLink = true;
         /// <summary>
@@ -43,11 +43,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <returns>TCP 调用服务器端配置信息</returns>
         public static TcpInternalServer.ServerAttribute GetConfig(string serviceName, Type type)
         {
-            TcpInternalServer.ServerAttribute attribute = new TcpInternalServer.UnionType { Value = AutoCSer.Config.Loader.GetObject(typeof(TcpInternalServer.ServerAttribute), serviceName) }.ServerAttribute;
+            TcpInternalServer.ServerAttribute attribute = new TcpInternalServer.UnionType { Value = Config.Loader.GetObject(typeof(TcpInternalServer.ServerAttribute), serviceName) }.ServerAttribute;
             if (attribute == null && type != null)
             {
-                ServerAttribute staticAttribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<ServerAttribute>(type, false);
-                AutoCSer.MemberCopy.Copyer<TcpInternalServer.ServerBaseAttribute>.Copy(attribute = new TcpInternalServer.ServerAttribute(), staticAttribute);
+                ServerAttribute staticAttribute = Metadata.TypeAttribute.GetAttribute<ServerAttribute>(type, false);
+                MemberCopy.Copyer<TcpInternalServer.ServerBaseAttribute>.Copy(attribute = new TcpInternalServer.ServerAttribute(), staticAttribute);
             }
             if (attribute == null) attribute = new TcpInternalServer.ServerAttribute();
             if (attribute.Name == null) attribute.Name = serviceName;

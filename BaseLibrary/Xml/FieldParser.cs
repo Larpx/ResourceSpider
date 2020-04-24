@@ -11,7 +11,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 字段解析（反射模式）
         /// </summary>
-        private sealed class FieldParser : AutoCSer.Reflection.CustomFieldParser<Parser, valueType>
+        private sealed class FieldParser :Reflection.CustomFieldParser<Parser, valueType>
         {
             /// <summary>
             /// 字段解析

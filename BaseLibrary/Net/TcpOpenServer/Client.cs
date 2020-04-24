@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <summary>
         /// TCP 客户端路由
         /// </summary>
-        private readonly AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute;
+        private readonly Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute;
         /// <summary>
         /// 注册当前服务的 TCP 注册服务名称
         /// </summary>
@@ -34,7 +34,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
-        internal Client(ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
+        internal Client(ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
             : base(attribute, maxTimeoutSeconds, onCustomData, log)
         {
             this.clientRoute = clientRoute;
@@ -278,7 +278,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="verifyMethod">验证委托</param>
-        public Client(clientType client, ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
+        public Client(clientType client, ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
             : base(attribute, maxTimeoutSeconds, onCustomData, log, clientRoute)
         {
             this.client = client;

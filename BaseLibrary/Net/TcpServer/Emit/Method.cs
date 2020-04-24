@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
@@ -153,12 +153,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 #if !DOTNET2 && !DOTNET4 && !UNITY3D
             if (!IsAsynchronousCallback && isClient)
             {
-                if (ReturnType == typeof(AutoCSer.Net.TcpServer.Awaiter))
+                if (ReturnType == typeof(Net.TcpServer.Awaiter))
                 {
                     ReturnType = typeof(ReturnValue);
                     IsClientAwaiter = true;
                 }
-                else if (ReturnType.IsGenericType && ReturnType.GetGenericTypeDefinition() == typeof(AutoCSer.Net.TcpServer.Emit.Awaiter<>))
+                else if (ReturnType.IsGenericType && ReturnType.GetGenericTypeDefinition() == typeof(Net.TcpServer.Emit.Awaiter<>))
                 {
                     ReturnType = typeof(ReturnValue<>).MakeGenericType(ReturnType.GetGenericArguments());
                     IsClientAwaiter = true;
@@ -193,7 +193,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
             }
             if (Attribute == null)
             {
-                Attribute = AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(serverMethodAttribute);
+                Attribute = MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(serverMethodAttribute);
                 if (!isClient && IsAsynchronousCallback && serverMethodAttribute.IsDefault) Attribute.SetServerTaskType(ServerTaskType.Synchronous);
             }
             OutputParameters = Parameters.getFindArray(value => value.ParameterType.IsByRef);
@@ -201,7 +201,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
             {
                 foreach (ParameterInfo inputParameter in Parameters)
                 {
-                    if (inputParameter.Name == AutoCSer.Net.TcpServer.Server.ServerCallQueueParameterName)
+                    if (inputParameter.Name == Net.TcpServer.Server.ServerCallQueueParameterName)
                     {
                         ServerCallQueueKeyParameter = inputParameter;
                         break;
@@ -253,12 +253,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                 Attribute = methodAttribute;
                 if (isSet)
                 {
-                    Attribute = AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(Attribute);
+                    Attribute = MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(Attribute);
                     Attribute.CommandIdentity = int.MinValue;
                 }
                 break;
             }
-            if (Attribute == null) Attribute = AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(serverMethodAttribute);
+            if (Attribute == null) Attribute = MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(serverMethodAttribute);
             OutputParameters = NullValue<ParameterInfo>.Array;
         }
         /// <summary>

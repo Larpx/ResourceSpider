@@ -12,7 +12,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(SocketAsyncEventArgs));
+        private readonly static int maxCount = Config.Pub.Default.GetYieldPoolCount(typeof(SocketAsyncEventArgs));
         /// <summary>
         /// 套接字异步事件对象池首节点
         /// </summary>
@@ -31,7 +31,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
         /// <returns></returns>
         internal static SocketAsyncEventArgs Get()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SocketAsyncEventArgsPop);
+            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SocketAsyncEventArgsPop);
             SocketAsyncEventArgs value;
             do
             {
@@ -50,7 +50,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
                     value.UserToken = null;
                     return value;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SocketAsyncEventArgsPop);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SocketAsyncEventArgsPop);
             }
             while (true);
         }
@@ -85,7 +85,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
                         newValue.UserToken = oldHead;
                         if (System.Threading.Interlocked.CompareExchange(ref head, newValue, oldHead) == oldHead) return;
                     }
-                    AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SocketAsyncEventArgsPush);
+                    Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SocketAsyncEventArgsPush);
                 }
                 while (true);
             }

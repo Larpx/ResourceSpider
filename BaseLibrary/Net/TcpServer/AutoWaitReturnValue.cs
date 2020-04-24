@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 同步等待
         /// </summary>
-        private AutoCSer.Threading.AutoWaitHandle waitHandle;
+        private Threading.AutoWaitHandle waitHandle;
 
         /// <summary>
         /// 下一个节点
@@ -90,7 +90,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(AutoWaitReturnValue));
+        private readonly static int poolMaxCount = Config.Pub.Default.GetYieldPoolCount(typeof(AutoWaitReturnValue));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -126,7 +126,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPush);
             }
             while (true);
         }
@@ -138,7 +138,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //
         public static AutoWaitReturnValue Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPop);
             AutoWaitReturnValue headValue;
             do
             {
@@ -154,7 +154,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     headValue.next = null;
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPop);
             }
             while (true);
         }
@@ -181,7 +181,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPush);
             }
             while (true);
         }
@@ -224,7 +224,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 同步等待
         /// </summary>
-        private AutoCSer.Threading.AutoWaitHandle waitHandle;
+        private Threading.AutoWaitHandle waitHandle;
         /// <summary>
         /// 下一个节点
         /// </summary>
@@ -302,7 +302,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(AutoWaitReturnValue<outputParameterType>));
+        private readonly static int poolMaxCount = Config.Pub.Default.GetYieldPoolCount(typeof(AutoWaitReturnValue<outputParameterType>));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -338,7 +338,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPush);
             }
             while (true);
         }
@@ -349,7 +349,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //
         public static AutoWaitReturnValue<outputParameterType> Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPop);
             AutoWaitReturnValue<outputParameterType> headValue;
             do
             {
@@ -365,7 +365,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     headValue.next = null;
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPop);
             }
             while (true);
         }
@@ -392,7 +392,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPush);
             }
             while (true);
         }

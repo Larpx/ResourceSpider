@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
@@ -70,7 +70,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             }
             else
             {
-                ApplicationPath = (applicationPath + AutoCSer.Extension.DirectoryExtension.Separator).toLowerNotEmpty();
+                ApplicationPath = (applicationPath + Extension.DirectoryExtension.Separator).toLowerNotEmpty();
             }
         }
     }

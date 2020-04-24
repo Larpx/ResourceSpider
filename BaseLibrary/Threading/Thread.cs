@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
@@ -148,7 +148,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             /// </summary>
             /// <param name="value"></param>
             /// <param name="type"></param>
-            
+
             public void Set(object value, CallType type)
             {
                 Value = value;
@@ -157,33 +157,33 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             /// <summary>
             /// 任务调用
             /// </summary>
-            
+
             public void Call()
             {
                 switch (Type)
                 {
                     case CallType.Action: new UnionType { Value = Value }.Action(); return;
-                    case CallType.CompileBinarySerialize: AutoCSer.BinarySerialize.Serializer.Compile(new UnionType { Value = Value }.TypeArray); return;
-                    case CallType.CompileBinaryDeSerialize: AutoCSer.BinarySerialize.DeSerializer.Compile(new UnionType { Value = Value }.TypeArray); return;
-                    case CallType.CompileJsonSerialize: AutoCSer.Json.Serializer.Compile(new UnionType { Value = Value }.TypeArray); return;
-                    case CallType.CompileJsonDeSerialize: AutoCSer.Json.Parser.Compile(new UnionType { Value = Value }.TypeArray); return;
-                    case CallType.CompileSimpleSerialize: AutoCSer.Net.SimpleSerialize.Serializer.Compile(new UnionType { Value = Value }.TypeArray); return;
-                    case CallType.CompileSimpleDeSerialize: AutoCSer.Net.SimpleSerialize.DeSerializer.Compile(new UnionType { Value = Value }.TypeArray); return;
-                    case CallType.DomainUnloadRemoveLast: new AutoCSer.DomainUnload.UnionType { Value = Value }.UnloadObject.RemoveLast(); return;
-                    case CallType.DomainUnloadRemoveLastRun: new AutoCSer.DomainUnload.UnionType { Value = Value }.UnloadObject.RemoveLastRun(); return;
-                    case CallType.FileStreamWriterDispose: new AutoCSer.IO.UnionType { Value = Value }.FileStreamWriter.Dispose(); return;
-                    case CallType.FileStreamWriteFile: new AutoCSer.IO.UnionType { Value = Value }.FileStreamWriter.WriteFile(); return;
+                    case CallType.CompileBinarySerialize: BinarySerialize.Serializer.Compile(new UnionType { Value = Value }.TypeArray); return;
+                    case CallType.CompileBinaryDeSerialize: BinarySerialize.DeSerializer.Compile(new UnionType { Value = Value }.TypeArray); return;
+                    case CallType.CompileJsonSerialize: Json.Serializer.Compile(new UnionType { Value = Value }.TypeArray); return;
+                    case CallType.CompileJsonDeSerialize: Json.Parser.Compile(new UnionType { Value = Value }.TypeArray); return;
+                    case CallType.CompileSimpleSerialize: Net.SimpleSerialize.Serializer.Compile(new UnionType { Value = Value }.TypeArray); return;
+                    case CallType.CompileSimpleDeSerialize: Net.SimpleSerialize.DeSerializer.Compile(new UnionType { Value = Value }.TypeArray); return;
+                    case CallType.DomainUnloadRemoveLast: newDomainUnload.UnionType { Value = Value }.UnloadObject.RemoveLast(); return;
+                    case CallType.DomainUnloadRemoveLastRun: newDomainUnload.UnionType { Value = Value }.UnloadObject.RemoveLastRun(); return;
+                    case CallType.FileStreamWriterDispose: newIO.UnionType { Value = Value }.FileStreamWriter.Dispose(); return;
+                    case CallType.FileStreamWriteFile: newIO.UnionType { Value = Value }.FileStreamWriter.WriteFile(); return;
                     case CallType.LinkTaskRun: new UnionType { Value = Value }.LinkTask.Run(); return;
-                    case CallType.TcpClientSocketBaseCreate: new AutoCSer.Net.TcpServer.UnionType { Value = Value }.ClientSocketBase.Create(); return;
-                    case CallType.TcpClientSocketSenderVirtualBuildOutput: new AutoCSer.Net.TcpServer.UnionType { Value = Value }.ClientSocketSenderBase.VirtualBuildOutput(); return;
-                    case CallType.TcpInternalClientSocketSenderBuildOutput: new AutoCSer.Net.TcpInternalServer.UnionType { Value = Value }.ClientSocketSender.BuildOutput(); return;
-                    case CallType.TcpInternalServerGetSocket: new AutoCSer.Net.TcpInternalServer.UnionType { Value = Value }.Server.GetSocket(); return;
-                    case CallType.TcpInternalServerSocketSenderBuildOutput: new AutoCSer.Net.TcpInternalServer.UnionType { Value = Value }.ServerSocketSender.BuildOutput(); return;
-                    case CallType.TcpOpenClientSocketSenderBuildOutput: new AutoCSer.Net.TcpOpenServer.UnionType { Value = Value }.ClientSocketSender.BuildOutput(); return;
-                    case CallType.TcpOpenServerGetSocket: new AutoCSer.Net.TcpOpenServer.UnionType { Value = Value }.Server.GetSocket(); return;
-                    case CallType.TcpOpenServerOnSocket: new AutoCSer.Net.TcpOpenServer.UnionType { Value = Value }.Server.OnSocket(); return;
-                    case CallType.TcpOpenServerSocketSenderBuildOutput: new AutoCSer.Net.TcpOpenServer.UnionType { Value = Value }.ServerSocketSender.BuildOutput(); return;
-                    case CallType.TcpServerSocketSenderVirtualBuildOutput: new AutoCSer.Net.TcpServer.UnionType { Value = Value }.ServerSocketSenderBase.VirtualBuildOutput(); return;
+                    case CallType.TcpClientSocketBaseCreate: newNet.TcpServer.UnionType { Value = Value }.ClientSocketBase.Create(); return;
+                    case CallType.TcpClientSocketSenderVirtualBuildOutput: newNet.TcpServer.UnionType { Value = Value }.ClientSocketSenderBase.VirtualBuildOutput(); return;
+                    case CallType.TcpInternalClientSocketSenderBuildOutput: newNet.TcpInternalServer.UnionType { Value = Value }.ClientSocketSender.BuildOutput(); return;
+                    case CallType.TcpInternalServerGetSocket: newNet.TcpInternalServer.UnionType { Value = Value }.Server.GetSocket(); return;
+                    case CallType.TcpInternalServerSocketSenderBuildOutput: newNet.TcpInternalServer.UnionType { Value = Value }.ServerSocketSender.BuildOutput(); return;
+                    case CallType.TcpOpenClientSocketSenderBuildOutput: newNet.TcpOpenServer.UnionType { Value = Value }.ClientSocketSender.BuildOutput(); return;
+                    case CallType.TcpOpenServerGetSocket: newNet.TcpOpenServer.UnionType { Value = Value }.Server.GetSocket(); return;
+                    case CallType.TcpOpenServerOnSocket: newNet.TcpOpenServer.UnionType { Value = Value }.Server.OnSocket(); return;
+                    case CallType.TcpOpenServerSocketSenderBuildOutput: newNet.TcpOpenServer.UnionType { Value = Value }.ServerSocketSender.BuildOutput(); return;
+                    case CallType.TcpServerSocketSenderVirtualBuildOutput: newNet.TcpServer.UnionType { Value = Value }.ServerSocketSenderBase.VirtualBuildOutput(); return;
                 }
             }
         }
@@ -213,7 +213,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             /// <summary>
             /// 等待结束
             /// </summary>
-            
+
             public void Wait()
             {
                 Monitor.Enter(waitLock);
@@ -228,7 +228,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             /// <summary>
             /// 结束等待
             /// </summary>
-            
+
             public void Set()
             {
                 Monitor.Enter(waitLock);
@@ -343,13 +343,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     {
                         do
                         {
-                            //if (domainUnload.Type == AutoCSer.DomainUnload.Type.None) task.Call();
+                            //if (domainUnload.Type ==DomainUnload.Type.None) task.Call();
                             //else
                             //{
-                            //    AutoCSer.DomainUnload.Unloader.Add(ref domainUnload);
+                            //   DomainUnload.Unloader.Add(ref domainUnload);
                             task.Call();
-                            //    domainUnload.Type = AutoCSer.DomainUnload.Type.None;
-                            //    AutoCSer.DomainUnload.Unloader.Remove(ref domainUnload);
+                            //    domainUnload.Type =DomainUnload.Type.None;
+                            //   DomainUnload.Unloader.Remove(ref domainUnload);
                             //}
                             task.Value = null;
                             //onError = null;
@@ -361,22 +361,22 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        throw error;
                         //try
                         //{
-                        //    if (onError == null) AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
+                        //    if (onError == null)Log.Pub.Log.add(Log.LogType.Error, error);
                         //    else onError(error);
                         //}
                         //catch (Exception error1)
                         //{
-                        //    AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Debug, error1);
+                        //   Log.Pub.Log.add(Log.LogType.Debug, error1);
                         //}
                     }
                     finally
                     {
                         task.Value = null;
                         //onError = null;
-                        //if (domainUnload.Type != AutoCSer.DomainUnload.Type.None) AutoCSer.DomainUnload.Unloader.Remove(ref domainUnload);
+                        //if (domainUnload.Type !=DomainUnload.Type.None)DomainUnload.Unloader.Remove(ref domainUnload);
                     }
                     if (threadPool.Push(this)) return;
                     waitHandle.Wait();
@@ -401,16 +401,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     {
                         do
                         {
-                            //if (domainUnload.Type == AutoCSer.DomainUnload.Type.None) task.Call();
-                            //else
-                            //{
-                            //    AutoCSer.DomainUnload.Unloader.Add(ref domainUnload);
                             task.Call();
-                            //    domainUnload.Type = AutoCSer.DomainUnload.Type.None;
-                            //    AutoCSer.DomainUnload.Unloader.Remove(ref domainUnload);
-                            //}
                             task.Value = null;
-                            //onError = null;
                             if (threadPool.Push(this)) return;
                             waitHandle.Wait();
                         }
@@ -419,22 +411,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-                        //try
-                        //{
-                        //    if (onError == null) AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
-                        //    else onError(error);
-                        //}
-                        //catch (Exception error1)
-                        //{
-                        //    AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Debug, error1);
-                        //}
+                        throw error;
                     }
                     finally
                     {
                         task.Value = null;
-                        //onError = null;
-                        //if (domainUnload.Type != AutoCSer.DomainUnload.Type.None) AutoCSer.DomainUnload.Unloader.Remove(ref domainUnload);
                     }
                     if (threadPool.Push(this)) return;
                     waitHandle.Wait();
@@ -448,10 +429,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// </summary>
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务委托调用类型</param>
-        
+
         internal void RunTask(object task, CallType taskType)
         {
-            //this.domainUnload.Type = AutoCSer.DomainUnload.Type.None;
+            //this.domainUnload.Type =DomainUnload.Type.None;
             //this.onError = null;
             this.task.Set(task, taskType);
             waitHandle.Set();
@@ -460,7 +441,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// 结束线程
         /// </summary>
         /// <returns></returns>
-        
+
         internal Thread StopLink()
         {
             Thread next = LinkNext;

@@ -42,7 +42,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Renren
         {
             get
             {
-                if (encodeRedirectUri == null) encodeRedirectUri = AutoCSer.Net.WebClient.UriCreator.Encode(redirect_uri);
+                if (encodeRedirectUri == null) encodeRedirectUri = Net.WebClient.UriCreator.Encode(redirect_uri);
                 return encodeRedirectUri;
             }
         }
@@ -60,6 +60,6 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Renren
         /// <summary>
         /// 默认配置
         /// </summary>
-        public static readonly Config Default = AutoCSer.Config.Loader.Get<Config>() ?? new Config();
+        public static readonly Config Default = Config.Loader.Get<Config>() ?? new Config();
     }
 }

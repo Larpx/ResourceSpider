@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
@@ -8,7 +8,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
     /// <summary>
     /// Uri 与回调函数信息
     /// </summary>
-    internal sealed class Uri : AutoCSer.Threading.Link<Uri>
+    internal sealed class Uri : Threading.Link<Uri>
     {
         /// <summary>
         /// Uri字符串
@@ -63,7 +63,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
             UriBytes.SetNull();
             LinkNext = null;
             this.onGet = null;
-            AutoCSer.Threading.RingPool<Uri>.Default.PushNotNull(this);
+            Threading.RingPool<Uri>.Default.PushNotNull(this);
             onGet(null);
         }
         /// <summary>
@@ -78,7 +78,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
             UriBytes.SetNull();
             LinkNext = null;
             this.onGet = null;
-            AutoCSer.Threading.RingPool<Uri>.Default.PushNotNull(this);
+            Threading.RingPool<Uri>.Default.PushNotNull(this);
             onGet(null);
         }
         /// <summary>
@@ -92,14 +92,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
             UriBytes.SetNull();
             LinkNext = null;
             this.onGet = null;
-            AutoCSer.Threading.RingPool<Uri>.Default.PushNotNull(this);
+            Threading.RingPool<Uri>.Default.PushNotNull(this);
             onGet(title);
         }
         /// <summary>
         /// 取消调用
         /// </summary>
         /// <param name="log"></param>
-        internal void CancelQueue(AutoCSer.Log.ILog log)
+        internal void CancelQueue(Log.ILog log)
         {
             Uri value = this;
             do

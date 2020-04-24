@@ -11,7 +11,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 属性解析（反射模式）
         /// </summary>
-        private sealed class PropertyParser : AutoCSer.Reflection.CustomPropertyParser<Parser, valueType>
+        private sealed class PropertyParser :Reflection.CustomPropertyParser<Parser, valueType>
         {
             /// <summary>
             /// 属性解析

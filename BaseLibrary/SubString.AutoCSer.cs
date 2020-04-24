@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
@@ -125,7 +125,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             {
                 fixed (char* valueFixed = String)
                 {
-                    char* start = valueFixed + Start, find = AutoCSer.Extension.StringExtension.FindNotNull(start, start + Length, value);
+                    char* start = valueFixed + Start, find = Extension.StringExtension.FindNotNull(start, start + Length, value);
                     if (find != null) return (int)(find - start);
                 }
             }
@@ -235,9 +235,9 @@ namespace Larpx.ResourceSpider.BaseLibrary
                 fixed (char* valueFixed = String)
                 {
                     char* start = valueFixed + Start, end = start + Length;
-                    start = AutoCSer.Extension.StringExtension.trimStartNotEmpty(start, end);
+                    start = Extension.StringExtension.trimStartNotEmpty(start, end);
                     if (start == null) return new SubString(string.Empty);
-                    end = AutoCSer.Extension.StringExtension.trimEndNotEmpty(start, end);
+                    end = Extension.StringExtension.trimEndNotEmpty(start, end);
                     if (end == null) return new SubString(string.Empty);
                     return new SubString((int)(start - valueFixed), (int)(end - start), String);
                 }
@@ -277,7 +277,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             {
                 fixed (char* valueFixed = String, cmpFixed = value)
                 {
-                    return AutoCSer.Memory.EqualNotNull(valueFixed + Start, cmpFixed, value.Length << 1);
+                    return Memory.EqualNotNull(valueFixed + Start, cmpFixed, value.Length << 1);
                 }
             }
             return false;

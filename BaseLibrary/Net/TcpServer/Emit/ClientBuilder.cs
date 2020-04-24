@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                         else
                         {
                             commandInfoFieldBuilder = typeBuilder.DefineField("_c" + method.Attribute.CommandIdentity.toString(), typeof(CommandInfo), FieldAttributes.Private | FieldAttributes.InitOnly | FieldAttributes.Static);
-                            CommandInfo commandInfo = new CommandInfo { Command = method.Attribute.CommandIdentity + TcpServer.Server.CommandStartIndex, TaskType = method.IsAsynchronousCallback ? method.Attribute.ClientTaskType : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = method.Attribute.IsVerifyMethod };
+                            CommandInfo commandInfo = new CommandInfo { Command = method.Attribute.CommandIdentity + TcpServer.Server.CommandStartIndex, TaskType = method.IsAsynchronousCallback ? method.Attribute.ClientTaskType : Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = method.Attribute.IsVerifyMethod };
                             Commands[method.Attribute.CommandIdentity] = commandInfo;
                             if (method.IsKeepCallback) commandInfo.IsKeepCallback = 1;
                             else
@@ -73,7 +73,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                 if (attribute.IsSimpleSerialize) commandInfo.IsSimpleSerializeInputParamter = method.ParameterType.IsSimpleSerialize;
                             }
                             if (attribute.IsSimpleSerialize && method.OutputParameterType != null) commandInfo.IsSimpleSerializeOutputParamter = method.OutputParameterType.IsSimpleSerialize && SimpleSerialize.Serializer.IsType(method.ReturnType);
-                            #region private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodIdentityCommand = AutoCSer.Net.TcpInternalServer.Emit.Client<interfaceType>.commands[method.Attribute.CommandIdentity];
+                            #region private static readonly Net.TcpServer.CommandInfo @MethodIdentityCommand = Net.TcpInternalServer.Emit.Client<interfaceType>.commands[method.Attribute.CommandIdentity];
                             staticConstructorGenerator.int32(method.Attribute.CommandIdentity);
                             staticConstructorGenerator.call(getCommandMethod);
                             staticConstructorGenerator.Emit(OpCodes.Stsfld, commandInfoFieldBuilder);
@@ -90,9 +90,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                             Label awaiterReturnLabel = default(Label);
                             if (method.IsClientAwaiter)
                             {
-                                #region AutoCSer.Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName> _awaiter_ = new AutoCSer.Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName();
+                                #region Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName> _awaiter_ = new Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName();
                                 awaiterReturnLocalBuilder = methodGenerator.DeclareLocal(method.MethodInfo.ReturnType);
-                                methodGenerator.Emit(OpCodes.Newobj, method.ReturnType == typeof(void) ? AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterConstructor : method.MethodInfo.ReturnType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null));
+                                methodGenerator.Emit(OpCodes.Newobj, method.ReturnType == typeof(void) ? Net.TcpServer.Emit.ClientMetadataBase.AwaiterConstructor : method.MethodInfo.ReturnType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null));
                                 methodGenerator.Emit(OpCodes.Stloc_S, awaiterReturnLocalBuilder);
                                 #endregion
                                 awaiterReturnLabel = methodGenerator.DefineLabel();
@@ -100,7 +100,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 #endif
                             if (method.Attribute.IsExpired)
                             {
-                                error(methodGenerator, method, parameters, awaiterReturnLocalBuilder, AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                                error(methodGenerator, method, parameters, awaiterReturnLocalBuilder, Net.TcpServer.ReturnType.VersionExpired);
                             }
                             else if (method.IsClientSendOnly)
                             {
@@ -158,12 +158,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                             {
                                 if (method.IsClientWaitConnected)
                                 {
-                                    #region if (!_CheckWaitConnected_()) return AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout;
+                                    #region if (!_CheckWaitConnected_()) return Net.TcpServer.ReturnType.WaitConnectedTimeout;
                                     Label waitConnectedLabel = methodGenerator.DefineLabel();
                                     methodGenerator.Emit(OpCodes.Ldarg_0);
                                     methodGenerator.call(Metadata.MethodClientCheckWaitConnectedMethod);
                                     methodGenerator.Emit(OpCodes.Brtrue, waitConnectedLabel);
-                                    error(methodGenerator, method, parameters, awaiterReturnLocalBuilder, AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout);
+                                    error(methodGenerator, method, parameters, awaiterReturnLocalBuilder, Net.TcpServer.ReturnType.WaitConnectedTimeout);
                                     methodGenerator.MarkLabel(waitConnectedLabel);
                                     #endregion
                                 }
@@ -187,7 +187,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         methodGenerator.BeginExceptionBlock();
                                         #endregion
                                         Label leaveTryLabel = methodGenerator.DefineLabel();
-                                        #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                                        #region Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                                         LocalBuilder senderLocalBuilder = methodGenerator.DeclareLocal(Metadata.SenderType);
                                         methodGenerator.Emit(OpCodes.Ldarg_0);
                                         methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
@@ -266,13 +266,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         methodGenerator.ldarg(parameters.Length);
                                         methodGenerator.Emit(OpCodes.Brfalse_S, endfinallyLabel);
                                         #endregion
-                                        #region _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException });
-                                        LocalBuilder returnValueLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.ReturnValue));
+                                        #region _onReturn_(new Net.TcpServer.ReturnValue { Type = Net.TcpServer.ReturnType.ClientException });
+                                        LocalBuilder returnValueLocalBuilder = methodGenerator.DeclareLocal(typeof(Net.TcpServer.ReturnValue));
                                         methodGenerator.ldarg(parameters.Length);
                                         //methodGenerator.Emit(OpCodes.Ldloca_S, returnValueLocalBuilder);
-                                        //methodGenerator.Emit(OpCodes.Initobj, typeof(AutoCSer.Net.TcpServer.ReturnValue));
+                                        //methodGenerator.Emit(OpCodes.Initobj, typeof(Net.TcpServer.ReturnValue));
                                         methodGenerator.Emit(OpCodes.Ldloca_S, returnValueLocalBuilder);
-                                        methodGenerator.int32((int)AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                                        methodGenerator.int32((int)Net.TcpServer.ReturnType.ClientException);
                                         methodGenerator.Emit(OpCodes.Stfld, ClientMetadata.ReturnValueTypeField);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, returnValueLocalBuilder);
                                         methodGenerator.call(parameters[parameters.Length - 1].ParameterType.GetMethod("Invoke", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { method.ReturnValueType }, null));
@@ -286,15 +286,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     }
                                     else
                                     {
-                                        #region AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer.@OutputParameterTypeName>> _onOutput_ = _TcpClient_.GetCallback<@MethodReturnType.FullName, TcpInternalServer.@OutputParameterTypeName>(_onReturn_);
-                                        Type outputParameterType = typeof(AutoCSer.Net.TcpServer.ReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
-                                        Type callbackType = typeof(AutoCSer.Net.Callback<>).MakeGenericType(outputParameterType);
+                                        #region Net.Callback<Net.TcpServer.ReturnValue<TcpInternalServer.@OutputParameterTypeName>> _onOutput_ = _TcpClient_.GetCallback<@MethodReturnType.FullName, TcpInternalServer.@OutputParameterTypeName>(_onReturn_);
+                                        Type outputParameterType = typeof(Net.TcpServer.ReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
+                                        Type callbackType = typeof(Net.Callback<>).MakeGenericType(outputParameterType);
                                         LocalBuilder onOuputLocalBuilder = methodGenerator.DeclareLocal(callbackType);
                                         methodGenerator.Emit(OpCodes.Ldarg_0);
                                         methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
                                         methodGenerator.ldarg(parameters.Length);
                                         //if (!method.IsClientAsynchronousCallback) methodGenerator.call(typeof(ClientCallback<>).MakeGenericType(method.ReturnType).GetMethod(ClientMetadata.ClientCallbackGetMethod.Name, BindingFlags.Public | BindingFlags.Static));
-                                        if (!method.IsClientAsynchronousCallback) methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpClientCallbackGetMethod);
+                                        if (!method.IsClientAsynchronousCallback) methodGenerator.call(Metadata.GenericType.Get(method.ReturnType).TcpClientCallbackGetMethod);
                                         //methodGenerator.call(Metadata.ClientGetCallbackMethod.MakeGenericMethod(method.ReturnType, method.OutputParameterType.Type));
                                         methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ClientGetCallbackMethod);
                                         methodGenerator.Emit(OpCodes.Stloc_S, onOuputLocalBuilder);
@@ -303,7 +303,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         methodGenerator.BeginExceptionBlock();
                                         #endregion
                                         Label leaveTryLabel = methodGenerator.DefineLabel();
-                                        #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                                        #region Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                                         LocalBuilder senderLocalBuilder = methodGenerator.DeclareLocal(Metadata.SenderType);
                                         methodGenerator.Emit(OpCodes.Ldarg_0);
                                         methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
@@ -379,7 +379,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         methodGenerator.Emit(OpCodes.Ldloc_S, onOuputLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Brfalse_S, endfinallyLabel);
                                         #endregion
-                                        #region AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer.@OutputParameterTypeName> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer.@OutputParameterTypeName> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                                        #region Net.TcpServer.ReturnValue<TcpInternalServer.@OutputParameterTypeName> _outputParameter_ = new Net.TcpServer.ReturnValue<TcpInternalServer.@OutputParameterTypeName> { Type = Net.TcpServer.ReturnType.ClientException };
                                         LocalBuilder outputParameterLocalBuilder = methodGenerator.DeclareLocal(outputParameterType);
                                         if (method.Attribute.IsInitobj || method.OutputParameterType.IsInitobj)
                                         {
@@ -387,7 +387,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                             methodGenerator.Emit(OpCodes.Initobj, outputParameterType);
                                         }
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                                        methodGenerator.int32((byte)Net.TcpServer.ReturnType.ClientException);
                                         methodGenerator.Emit(OpCodes.Stfld, outputParameterType.GetField(ClientMetadata.ReturnValueTypeField.Name, BindingFlags.Instance | BindingFlags.Public));
                                         #endregion
                                         #region _onOutput_.Call(ref _outputParameter_);
@@ -425,10 +425,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     methodGenerator.Emit(method.ParameterType == null ? OpCodes.Brfalse_S : OpCodes.Brfalse, callClientExceptionLable);
                                     #endregion
                                     LocalBuilder inputParameterLocalBuilder = getInputParameter(methodGenerator, method, parameters);
-                                    LocalBuilder returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.ReturnType));
+                                    LocalBuilder returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(Net.TcpServer.ReturnType));
                                     if (method.OutputParameterType == null)
                                     {
-                                        #region AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.GetAwaiter(@AwaiterMethodIdentityCommand, _awaiter_, ref _inputParameter_);
+                                        #region Net.TcpServer.ReturnType _returnType_ = _socket_.GetAwaiter(@AwaiterMethodIdentityCommand, _awaiter_, ref _inputParameter_);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldsfld, commandInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
@@ -443,11 +443,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     }
                                     else
                                     {
-                                        #region AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName> _outputParameter_ = default(AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>);
-                                        Type outputParameterType = AutoCSer.Metadata.GenericType.Get(method.ReturnType).AwaiterReturnValueType;
+                                        #region Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName> _outputParameter_ = default(Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>);
+                                        Type outputParameterType = Metadata.GenericType.Get(method.ReturnType).AwaiterReturnValueType;
                                         LocalBuilder outputParameterLocalBuilder = methodGenerator.DeclareLocal(outputParameterType);
                                         #endregion
-                                        #region AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.GetAwaiter(@AwaiterMethodIdentityCommand, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                                        #region Net.TcpServer.ReturnType _returnType_ = _socket_.GetAwaiter(@AwaiterMethodIdentityCommand, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldsfld, commandInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
@@ -465,22 +465,22 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                         #endregion
                                     }
-                                    #region if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                                    #region if (_returnType_ != Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                                     methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
-                                    methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                    methodGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                     methodGenerator.Emit(OpCodes.Beq_S, awaiterReturnLabel);
                                     methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
                                     methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
-                                    if (method.ReturnType == typeof(void)) methodGenerator.call(AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
-                                    else methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
+                                    if (method.ReturnType == typeof(void)) methodGenerator.call(Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
+                                    else methodGenerator.call(Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
                                     methodGenerator.Emit(OpCodes.Br_S, awaiterReturnLabel);
                                     #endregion
-                                    #region else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                                    #region else _awaiter_.Call(Net.TcpServer.ReturnType.ClientException);
                                     methodGenerator.MarkLabel(callClientExceptionLable);
                                     methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
-                                    methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ClientException);
-                                    if (method.ReturnType == typeof(void)) methodGenerator.call(AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
-                                    else methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
+                                    methodGenerator.int32((byte)Net.TcpServer.ReturnType.ClientException);
+                                    if (method.ReturnType == typeof(void)) methodGenerator.call(Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
+                                    else methodGenerator.call(Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
                                     #endregion
                                 }
 #endif
@@ -508,21 +508,21 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         returnValueLocalBuilder = null;
                                         returnValueLable = default(Label);
                                     }
-                                    #region AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer.@OutputParameterTypeName> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer.@OutputParameterTypeName>();
-                                    //Type waitType = method.OutputParameterType == null ? typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue) : typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
+                                    #region Net.TcpServer.AutoWaitReturnValue<TcpInternalServer.@OutputParameterTypeName> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer.@OutputParameterTypeName>();
+                                    //Type waitType = method.OutputParameterType == null ? typeof(Net.TcpServer.AutoWaitReturnValue) : typeof(Net.TcpServer.AutoWaitReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
                                     //LocalBuilder waitLocalBuilder = methodGenerator.DeclareLocal(waitType);
                                     //methodGenerator.call(method.OutputParameterType == null ? ClientMetadata.AutoWaitReturnValuePopMethod : waitType.GetMethod("Pop", BindingFlags.Static | BindingFlags.Public));
                                     //methodGenerator.Emit(OpCodes.Stloc_S, waitLocalBuilder);
                                     LocalBuilder waitLocalBuilder;
                                     if (method.OutputParameterType == null)
                                     {
-                                        waitLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue));
+                                        waitLocalBuilder = methodGenerator.DeclareLocal(typeof(Net.TcpServer.AutoWaitReturnValue));
                                         methodGenerator.call(ClientMetadata.AutoWaitReturnValuePopMethod);
                                         methodGenerator.Emit(OpCodes.Stloc_S, waitLocalBuilder);
                                     }
                                     else
                                     {
-                                        AutoCSer.Metadata.GenericType GenericType = AutoCSer.Metadata.GenericType.Get(method.OutputParameterType.Type);
+                                        Metadata.GenericType GenericType = Metadata.GenericType.Get(method.OutputParameterType.Type);
                                         waitLocalBuilder = methodGenerator.DeclareLocal(GenericType.TcpAutoWaitReturnValueType);
                                         methodGenerator.call(GenericType.TcpAutoWaitReturnValuePopMethod);
                                         methodGenerator.Emit(OpCodes.Stloc_S, waitLocalBuilder);
@@ -540,8 +540,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     LocalBuilder inputParameterLocalBuilder = getInputParameter(methodGenerator, method, parameters);
                                     if (method.OutputParameterType == null)
                                     {
-                                        #region AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitCall(@MethodIdentityCommand, ref _wait_, ref _inputParameter_);
-                                        LocalBuilder returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.ReturnType));
+                                        #region Net.TcpServer.ReturnType _returnType_ = _socket_.WaitCall(@MethodIdentityCommand, ref _wait_, ref _inputParameter_);
+                                        LocalBuilder returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(Net.TcpServer.ReturnType));
                                         methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldsfld, commandInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, waitLocalBuilder);
@@ -557,24 +557,24 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         if (method.ReturnValueType == null)
                                         {
                                             Label throwReturnTypeLabel = methodGenerator.DefineLabel();
-                                            #region if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                                            #region if (_returnType_ == Net.TcpServer.ReturnType.Success) return;
                                             methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
-                                            methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                            methodGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                             methodGenerator.Emit(OpCodes.Bne_Un_S, throwReturnTypeLabel);
                                             methodGenerator.Emit(OpCodes.Leave_S, returnLable);
                                             #endregion
                                             methodGenerator.MarkLabel(throwReturnTypeLabel);
-                                            #region throw new Exception(AutoCSer.Net.TcpInternalServer.Emit.Client.ReturnTypeStrings[(byte)_returnType_]);
+                                            #region throw new Exception(Net.TcpInternalServer.Emit.Client.ReturnTypeStrings[(byte)_returnType_]);
                                             methodGenerator.Emit(OpCodes.Ldsfld, ClientMetadata.ReturnTypeStringsField);
                                             methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
                                             methodGenerator.Emit(OpCodes.Ldelem_Ref);
-                                            methodGenerator.Emit(OpCodes.Newobj, AutoCSer.Extension.EmitGenerator.StringExceptionConstructor);
+                                            methodGenerator.Emit(OpCodes.Newobj, Extension.EmitGenerator.StringExceptionConstructor);
                                             methodGenerator.Emit(OpCodes.Throw);
                                             #endregion
                                         }
                                         else
                                         {
-                                            #region return new AutoCSer.Net.TcpServer.ReturnValue { Type = _returnType_ };
+                                            #region return new Net.TcpServer.ReturnValue { Type = _returnType_ };
                                             //methodGenerator.Emit(OpCodes.Ldloca_S, returnReturnValueLocalBuilder);
                                             //methodGenerator.Emit(OpCodes.Initobj, method.ReturnValueType);
                                             methodGenerator.Emit(OpCodes.Ldloca_S, returnReturnValueLocalBuilder);
@@ -600,8 +600,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                             if (parameter.ParameterType.IsByRef) methodGenerator.parameterToStructField(parameter, parameterIndex, outputParameterLocalBuilder, method.OutputParameterType.GetField(parameter.Name));
                                         }
                                         #endregion
-                                        #region AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer.@InputParameterTypeName, TcpInternalServer.@OutputParameterTypeName>(@MethodIdentityCommand, ref _wait_, ref _inputParameter_, ref _outputParameter_);
-                                        LocalBuilder returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.ReturnType));
+                                        #region Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer.@InputParameterTypeName, TcpInternalServer.@OutputParameterTypeName>(@MethodIdentityCommand, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                                        LocalBuilder returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(Net.TcpServer.ReturnType));
                                         methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldsfld, commandInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, waitLocalBuilder);
@@ -623,9 +623,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         if (method.ReturnValueType == null)
                                         {
                                             Label throwReturnTypeLabel = methodGenerator.DefineLabel();
-                                            #region if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success)
+                                            #region if (_returnType_ == Net.TcpServer.ReturnType.Success)
                                             methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
-                                            methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                            methodGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                             methodGenerator.Emit(OpCodes.Bne_Un, throwReturnTypeLabel);
                                             #endregion
                                             #region @ParameterName = _outputParameter_.@ParameterName;
@@ -655,11 +655,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                                 #endregion
                                             }
                                             methodGenerator.MarkLabel(throwReturnTypeLabel);
-                                            #region throw new Exception(AutoCSer.Net.TcpServer.Emit.Client.ReturnTypeStrings[(byte)_returnType_]);
+                                            #region throw new Exception(Net.TcpServer.Emit.Client.ReturnTypeStrings[(byte)_returnType_]);
                                             methodGenerator.Emit(OpCodes.Ldsfld, ClientMetadata.ReturnTypeStringsField);
                                             methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
                                             methodGenerator.Emit(OpCodes.Ldelem_Ref);
-                                            methodGenerator.Emit(OpCodes.Newobj, AutoCSer.Extension.EmitGenerator.StringExceptionConstructor);
+                                            methodGenerator.Emit(OpCodes.Newobj, Extension.EmitGenerator.StringExceptionConstructor);
                                             methodGenerator.Emit(OpCodes.Throw);
                                             #endregion
                                         }
@@ -676,7 +676,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                                 }
                                             }
                                             #endregion
-                                            #region return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = _returnType_, Value = _outputParameter_.Return };
+                                            #region return new Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = _returnType_, Value = _outputParameter_.Return };
                                             if (method.ReturnType != typeof(void) && (method.Attribute.IsInitobj || method.ReturnType.isInitobj()))
                                             {
                                                 methodGenerator.Emit(OpCodes.Ldloca_S, returnReturnValueLocalBuilder);
@@ -706,12 +706,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     methodGenerator.Emit(OpCodes.Ldloc_S, waitLocalBuilder);
                                     methodGenerator.Emit(OpCodes.Brfalse_S, endfinallyLabel);
                                     #endregion
-                                    #region AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer.@OutputParameterTypeName>.PushNotNull(_wait_);
+                                    #region Net.TcpServer.AutoWaitReturnValue<TcpInternalServer.@OutputParameterTypeName>.PushNotNull(_wait_);
                                     methodGenerator.Emit(OpCodes.Ldloc_S, waitLocalBuilder);
                                     if (method.OutputParameterType == null) methodGenerator.call(ClientMetadata.AutoWaitReturnValuePushNotNullMethod);
                                     else
                                     {
-                                        Type autoWaitReturnValueType = typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
+                                        Type autoWaitReturnValueType = typeof(Net.TcpServer.AutoWaitReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
                                         methodGenerator.call(autoWaitReturnValueType.GetMethod(ClientMetadata.AutoWaitReturnValuePushNotNullMethod.Name, BindingFlags.Static | BindingFlags.Public, null, new Type[] { autoWaitReturnValueType }, null));
                                     }
                                     #endregion
@@ -723,8 +723,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     methodGenerator.MarkLabel(clientExceptionLabel);
                                     if (method.ReturnValueType == null)
                                     {
-                                        #region throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
-                                        methodGenerator.throwString(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
+                                        #region throw new Exception(Net.TcpServer.ReturnType.ClientException.ToString());
+                                        methodGenerator.throwString(Net.TcpServer.ReturnType.ClientException.ToString());
                                         #endregion
                                         methodGenerator.MarkLabel(returnLable);
                                         methodGenerator.Emit(OpCodes.Ret);
@@ -747,14 +747,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                             if (parameter.IsOut) methodGenerator.outParameterDefault(parameter, parameterIndex, method.Attribute.IsInitobj);
                                         }
                                         #endregion
-                                        #region return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                                        #region return new Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = Net.TcpServer.ReturnType.ClientException };
                                         if (method.ReturnType != typeof(void) && (method.Attribute.IsInitobj || method.ReturnType.isInitobj()))
                                         {
                                             methodGenerator.Emit(OpCodes.Ldloca_S, returnReturnValueLocalBuilder);
                                             methodGenerator.Emit(OpCodes.Initobj, method.ReturnValueType);
                                         }
                                         methodGenerator.Emit(OpCodes.Ldloca_S, returnReturnValueLocalBuilder);
-                                        methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                                        methodGenerator.int32((byte)Net.TcpServer.ReturnType.ClientException);
                                         methodGenerator.Emit(OpCodes.Stfld, method.ReturnType == typeof(void) ? ClientMetadata.ReturnValueTypeField : method.ReturnValueType.GetField(ClientMetadata.ReturnValueTypeField.Name, BindingFlags.Instance | BindingFlags.Public));
                                         methodGenerator.MarkLabel(returnReturnValueLable);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, returnReturnValueLocalBuilder);
@@ -816,7 +816,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
             /// <param name="parameters"></param>
             /// <param name="awaiterReturnLocalBuilder"></param>
             /// <param name="returnType"></param>
-            private void error(ILGenerator methodGenerator, Method<attributeType, methodAttributeType, serverSocketSenderType> method, ParameterInfo[] parameters, LocalBuilder awaiterReturnLocalBuilder, AutoCSer.Net.TcpServer.ReturnType returnType)
+            private void error(ILGenerator methodGenerator, Method<attributeType, methodAttributeType, serverSocketSenderType> method, ParameterInfo[] parameters, LocalBuilder awaiterReturnLocalBuilder, Net.TcpServer.ReturnType returnType)
             {
                 if (method.IsAsynchronousCallback)
                 {
@@ -829,7 +829,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                     methodGenerator.throwString(returnType.ToString());
                     #endregion
                     methodGenerator.MarkLabel(onReturnLabel);
-                    #region _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = returnType });
+                    #region _onReturn_(new Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = returnType });
                     LocalBuilder returnValueLocalBuilder = methodGenerator.DeclareLocal(method.ReturnValueType);
                     methodGenerator.ldarg(parameters.Length);
                     if (method.ReturnType != typeof(void) && (method.Attribute.IsInitobj || method.ReturnType.isInitobj()))
@@ -855,8 +855,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                     #region _awaiter_.Call(returnType);
                     methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
                     methodGenerator.int32((byte)returnType);
-                    if (method.ReturnType == typeof(void)) methodGenerator.call(AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
-                    else methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
+                    if (method.ReturnType == typeof(void)) methodGenerator.call(Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
+                    else methodGenerator.call(Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
                     #endregion
                 }
 #endif
@@ -876,7 +876,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                         if (parameter.IsOut) methodGenerator.outParameterDefault(parameter, parameterIndex, method.Attribute.IsInitobj);
                     }
                     #endregion
-                    #region return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = returnType };
+                    #region return new Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = returnType };
                     LocalBuilder returnReturnValueLocalBuilder = methodGenerator.DeclareLocal(method.ReturnValueType);
                     if (method.ReturnType != typeof(void) && (method.Attribute.IsInitobj || method.ReturnType.isInitobj()))
                     {
@@ -909,7 +909,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                         ++parameterIndex;
                         if (parameter.ParameterType == Metadata.SenderType)
                         {
-                            #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
+                            #region Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
                             methodGenerator.ldarg(parameterIndex);
                             methodGenerator.Emit(OpCodes.Stloc_S, senderLocalBuilder);
                             #endregion
@@ -920,7 +920,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                 }
                 if (parameterIndex != int.MinValue)
                 {
-                    #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    #region Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                     methodGenerator.Emit(OpCodes.Ldarg_0);
                     methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
                     methodGenerator.call(Metadata.ClientGetSenderMethod);

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using System.Security.Cryptography;
-using AutoCSer.Extension;
-using AutoCSer.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -43,8 +43,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
             if (value == null) throw new ArgumentNullException("value is null");
             string[] values = new string[memberCount];
             int length = 4 + key.Length + getLength(value, values);
-            AutoCSer.SubBuffer.PoolBufferFull buffer = default(AutoCSer.SubBuffer.PoolBufferFull);
-            AutoCSer.SubBuffer.Pool.GetBuffer(ref buffer, length);
+            SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
+            SubBuffer.Pool.GetBuffer(ref buffer, length);
             try
             {
                 concat(values, ref buffer, length, key);
@@ -67,8 +67,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
             {
                 string[] values = new string[memberCount];
                 int length = 4 + key.Length + getLength(value, values);
-                AutoCSer.SubBuffer.PoolBufferFull buffer = default(AutoCSer.SubBuffer.PoolBufferFull);
-                AutoCSer.SubBuffer.Pool.GetBuffer(ref buffer, length);
+                SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
+                SubBuffer.Pool.GetBuffer(ref buffer, length);
                 try
                 {
                     concat(values, ref buffer, length, key);
@@ -88,13 +88,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="key"></param>
         /// <param name="buffer"></param>
         /// <returns>数据长度</returns>
-        internal unsafe static int GetData(valueType value, string key, ref AutoCSer.SubBuffer.PoolBufferFull buffer)
+        internal unsafe static int GetData(valueType value, string key, ref SubBuffer.PoolBufferFull buffer)
         {
             if (valueGetter == null) throw new ArgumentNullException();
             if (value == null) throw new ArgumentNullException("value is null");
             string[] values = new string[memberCount];
             int length = 4 + key.Length + getLength(value, values);
-            AutoCSer.SubBuffer.Pool.GetBuffer(ref buffer, length);
+            SubBuffer.Pool.GetBuffer(ref buffer, length);
             concat(values, ref buffer, length, key);
             using (MD5 md5 = new MD5CryptoServiceProvider()) setSign(value, md5.ComputeHash(buffer.Buffer, buffer.StartIndex, length).toUpperHex());
             return length - key.Length - 5;
@@ -142,14 +142,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                     {
                         if (isValue == 0) isValue = 1;
                         else *write++ = (byte)'&';
-                        fixed (char* nameFixed = name) AutoCSer.Extension.StringExtension.WriteBytesNotNull(nameFixed, name.Length, write);
+                        fixed (char* nameFixed = name) Extension.StringExtension.WriteBytesNotNull(nameFixed, name.Length, write);
                         write += name.Length;
                         *write++ = (byte)'=';
                         fixed (char* valueFixed = valueString)
                         {
                             if (utf8Map.Get(index) == 0)
                             {
-                                AutoCSer.Extension.StringExtension.WriteBytesNotNull(valueFixed, valueString.Length, write);
+                                Extension.StringExtension.WriteBytesNotNull(valueFixed, valueString.Length, write);
                                 write += valueString.Length;
                             }
                             else write += System.Text.Encoding.UTF8.GetBytes(valueFixed, valueString.Length, write, (int)(end - write));
@@ -160,7 +160,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 if (isValue != 0) *write++ = (byte)'&';
                 *(int*)write = 'k' + ('e' << 8) + ('y' << 16) + ('=' << 24);
                 write += sizeof(int);
-                fixed (char* keyFixed = key) AutoCSer.Extension.StringExtension.WriteBytesNotNull(keyFixed, key.Length, write);
+                fixed (char* keyFixed = key) Extension.StringExtension.WriteBytesNotNull(keyFixed, key.Length, write);
             }
         }
         /// <summary>
@@ -175,8 +175,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         {
             Type type = typeof(valueType);
             if (type.IsArray || type.IsEnum || type.IsPointer || type.IsInterface) return;
-            SignAttribute attribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<SignAttribute>(type, true) ?? SignAttribute.AllMember;
-            LeftArray<FieldIndex> fields = AutoCSer.Net.WebClient.Emit.Pub.GetFields<valueType, SignMemberAttribute>(attribute.Filter, attribute.IsAllMember);
+            SignAttribute attribute = Metadata.TypeAttribute.GetAttribute<SignAttribute>(type, true) ?? SignAttribute.AllMember;
+            LeftArray<FieldIndex> fields = Net.WebClient.Emit.Pub.GetFields<valueType, SignMemberAttribute>(attribute.Filter, attribute.IsAllMember);
             LeftArray<PropertyIndex> properties = Emit.Pub.GetProperties<valueType, SignMemberAttribute>(attribute.Filter, attribute.IsAllMember, true, false);
             int count = fields.Length + properties.Length - 1;
             if (count < 0) return;
@@ -313,9 +313,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                         {
                             NullableHasValueMethod = Larpx.ResourceSpider.BaseLibrary.Emit.Pub.GetNullableHasValue(type);
                             NullableValueMethod = Larpx.ResourceSpider.BaseLibrary.Emit.Pub.GetNullableValue(type);
-                            numberToStringMethod = AutoCSer.Net.WebClient.Emit.Pub.GetNumberToStringMethod(type.GetGenericArguments()[0]);
+                            numberToStringMethod = Net.WebClient.Emit.Pub.GetNumberToStringMethod(type.GetGenericArguments()[0]);
                         }
-                        else numberToStringMethod = AutoCSer.Net.WebClient.Emit.Pub.GetNumberToStringMethod(type);
+                        else numberToStringMethod = Net.WebClient.Emit.Pub.GetNumberToStringMethod(type);
                         if (numberToStringMethod != null) return false;
                     }
                     else if (type == typeof(string)) IsString = true;

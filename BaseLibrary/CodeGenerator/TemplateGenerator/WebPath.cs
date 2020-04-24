@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <summary>
         /// WEB Path 代码生成
         /// </summary>
-        internal abstract class Generator<cSharpType> : MemberGenerator<AutoCSer.WebView.PathAttribute>
+        internal abstract class Generator<cSharpType> : MemberGenerator<WebView.PathAttribute>
             where cSharpType : Generator<cSharpType>, new()
         {
             /// <summary>
@@ -31,7 +31,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 成员信息
                 /// </summary>
-                public AutoCSer.CodeGenerator.Metadata.MemberIndex Member;
+                public CodeGenerator.Metadata.MemberIndex Member;
                 /// <summary>
                 /// Path
                 /// </summary>
@@ -84,7 +84,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     idField.SetValue(pathValue, 1);
                     query = queryName + "=1";
                 }
-                foreach (AutoCSer.CodeGenerator.Metadata.MemberIndex member in AutoCSer.CodeGenerator.Metadata.MethodIndex.GetMembers<AutoCSer.WebView.PathMemberAttribute>(Type, Attribute.MemberFilters, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                foreach (CodeGenerator.Metadata.MemberIndex member in CodeGenerator.Metadata.MethodIndex.GetMembers<WebView.PathMemberAttribute>(Type, Attribute.MemberFilters, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                 {
                     if (member.MemberSystemType == typeof(string))
                     {
@@ -95,9 +95,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         }
                         else PathMembers.Add(new PathMember { Member = member, Path = url });
                     }
-                    else if (member.MemberSystemType == typeof(AutoCSer.WebView.HashUrl))
+                    else if (member.MemberSystemType == typeof(WebView.HashUrl))
                     {
-                        AutoCSer.WebView.HashUrl url = (AutoCSer.WebView.HashUrl)(member.Member as PropertyInfo).GetValue(pathValue, null);
+                        WebView.HashUrl url = (WebView.HashUrl)(member.Member as PropertyInfo).GetValue(pathValue, null);
                         if (url.Query == query) PathMembers.Add(new PathMember { Member = member, Path = url.Path, QueryName = queryName, IsHash = true, IsIdentity = true });
                         else if (url.Query.EndsWith(query, StringComparison.Ordinal))
                         {
@@ -134,18 +134,18 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <returns>是否安装成功</returns>
             public bool Run(Type exportPathType, string outputFileName)
             {
-                AutoCSer.WebView.PathAttribute exportWebPath = exportPathType.customAttribute<AutoCSer.WebView.PathAttribute>();
+                WebView.PathAttribute exportWebPath = exportPathType.customAttribute<WebView.PathAttribute>();
                 if (exportWebPath == null) Messages.Message("没有找到 path 导出信息 " + exportPathType.fullName());
                 else if (exportWebPath.Flag == 0) Messages.Message("缺少导出二进制位标识 " + exportPathType.fullName());
                 else
                 {
-                    LeftArray<KeyValue<Type, AutoCSer.WebView.PathAttribute>> types = new LeftArray<KeyValue<Type, AutoCSer.WebView.PathAttribute>>();
+                    LeftArray<KeyValue<Type, WebView.PathAttribute>> types = new LeftArray<KeyValue<Type, WebView.PathAttribute>>();
                     foreach (Type type in exportPathType.Assembly.GetTypes())
                     {
-                        AutoCSer.WebView.PathAttribute webPath = type.customAttribute<AutoCSer.WebView.PathAttribute>();
-                        if (webPath != null && (webPath.Flag & exportWebPath.Flag) == exportWebPath.Flag) types.Add(new KeyValue<Type, AutoCSer.WebView.PathAttribute>(type, webPath));
+                        WebView.PathAttribute webPath = type.customAttribute<WebView.PathAttribute>();
+                        if (webPath != null && (webPath.Flag & exportWebPath.Flag) == exportWebPath.Flag) types.Add(new KeyValue<Type, WebView.PathAttribute>(type, webPath));
                     }
-                    foreach (KeyValue<Type, AutoCSer.WebView.PathAttribute> type in types.Sort((left, right) => string.CompareOrdinal(left.Key.FullName, right.Key.FullName)))
+                    foreach (KeyValue<Type, WebView.PathAttribute> type in types.Sort((left, right) => string.CompareOrdinal(left.Key.FullName, right.Key.FullName)))
                     {
                         this.Type = type.Key;
                         Attribute = type.Value;

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Reflection;
 #if !NOJIT
 using/**/System.Reflection.Emit;
@@ -33,7 +33,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 
             generator.Emit(OpCodes.Ldarg_0);
             generator.int32(fixedSize);
-            generator.call(AutoCSer.Extension.EmitGenerator.UnmanagedStreamPrepLengthMethod);
+            generator.call(Extension.EmitGenerator.UnmanagedStreamPrepLengthMethod);
         }
         /// <summary>
         /// 添加字段
@@ -71,10 +71,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
             {
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Dup);
-                generator.Emit(OpCodes.Ldfld, AutoCSer.Extension.EmitGenerator.UnmanagedStreamBaseByteSizeField);
+                generator.Emit(OpCodes.Ldfld, Extension.EmitGenerator.UnmanagedStreamBaseByteSizeField);
                 generator.int32(fixedFillSize);
                 generator.Emit(OpCodes.Add);
-                generator.Emit(OpCodes.Stfld, AutoCSer.Extension.EmitGenerator.UnmanagedStreamBaseByteSizeField);
+                generator.Emit(OpCodes.Stfld, Extension.EmitGenerator.UnmanagedStreamBaseByteSizeField);
             }
         }
 

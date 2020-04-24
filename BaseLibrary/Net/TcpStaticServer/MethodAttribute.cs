@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <summary>
         /// 服务名称
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal virtual string GetServerName
         {
             get { return ServerName; }

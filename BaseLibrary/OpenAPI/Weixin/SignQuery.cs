@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -32,7 +32,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         {
             appid = config.appid;
             mch_id = config.mch_id;
-            nonce_str = AutoCSer.Random.Default.SecureNextULongNotZero().toHex();
+            nonce_str = Random.Default.SecureNextULongNotZero().toHex();
         }
     }
 }

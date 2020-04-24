@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// 远程表达式 代码生成
         /// </summary>
         [Generator(Name = "远程表达式", DependType = typeof(CSharper), IsAuto = true)]
-        internal partial class Generator : Generator<AutoCSer.Net.RemoteExpression.TypeAttribute>
+        internal partial class Generator : Generator<Net.RemoteExpression.TypeAttribute>
         {
             /// <summary>
             /// 远程表达式参数
@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     get
                     {
                         Type type = ParameterType.Type;
-                        return type.IsValueType && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(AutoCSer.Net.RemoteExpression.ClientNode<>);
+                        return type.IsValueType && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Net.RemoteExpression.ClientNode<>);
                     }
                 }
                 /// <summary>
@@ -67,7 +67,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        if (IsClientNodeParameter) return typeof(AutoCSer.Net.RemoteExpression.Node<>).MakeGenericType(ParameterType.Type.GetGenericArguments());
+                        if (IsClientNodeParameter) return typeof(Net.RemoteExpression.Node<>).MakeGenericType(ParameterType.Type.GetGenericArguments());
                         return ParameterType;
                     }
                 }
@@ -89,7 +89,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 远程表达式成员配置
                 /// </summary>
-                public AutoCSer.Net.RemoteExpression.MemberAttribute Attribute;
+                public Net.RemoteExpression.MemberAttribute Attribute;
                 /// <summary>
                 /// 当前类型
                 /// </summary>
@@ -109,7 +109,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        string name = StaticPropertyName + AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName;
+                        string name = StaticPropertyName + Net.RemoteExpression.Node.RemoteExpressionTypeName;
                         if (Attribute.MemberIdentity != 0) name += Attribute.MemberIdentity.toString();
                         return name;
                     }
@@ -169,13 +169,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         Type methodReturnType = MethodReturnType.Type;
                         if (MemberIsReturn)
                         {
-                            if (methodReturnType.IsGenericParameter) return typeof(AutoCSer.Net.RemoteExpression.GenericNode<>).MakeGenericType(methodReturnType).fullName();
-                            Type nodeType = methodReturnType.GetNestedType(AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName, BindingFlags.Public);
-                            if (nodeType == null) return typeof(AutoCSer.Net.RemoteExpression.Node<>).MakeGenericType(methodReturnType).fullName();
+                            if (methodReturnType.IsGenericParameter) return typeof(Net.RemoteExpression.GenericNode<>).MakeGenericType(methodReturnType).fullName();
+                            Type nodeType = methodReturnType.GetNestedType(Net.RemoteExpression.Node.RemoteExpressionTypeName, BindingFlags.Public);
+                            if (nodeType == null) return typeof(Net.RemoteExpression.Node<>).MakeGenericType(methodReturnType).fullName();
                             if (nodeType.IsGenericTypeDefinition) nodeType = nodeType.MakeGenericType(methodReturnType.GetGenericArguments());
                             return nodeType.fullName();
                         }
-                        return (methodReturnType.IsGenericParameter ? typeof(AutoCSer.Net.RemoteExpression.GenericNode) : typeof(AutoCSer.Net.RemoteExpression.Node)).fullName();
+                        return (methodReturnType.IsGenericParameter ? typeof(Net.RemoteExpression.GenericNode) : typeof(Net.RemoteExpression.Node)).fullName();
                     }
                 }
                 /// <summary>
@@ -289,19 +289,19 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     this.memberNodeTypeName = memberNodeTypeName;
                     LeftArray<Expression> members = default(LeftArray<Expression>);
                     nodeTypeNames.Clear();
-                    foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, true, false))
+                    foreach (MemberIndex member in MemberIndex.GetMembers<Net.RemoteExpression.MemberAttribute>(type, Metadata.MemberFilters.Instance, true, false))
                     {
                         if (!member.IsIgnore && member.CanGet)
                         {
-                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                            Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<Net.RemoteExpression.MemberAttribute>(false);
                             IsMember &= addMember(ref members, new Expression { Attribute = attribute,Member = member, IntputParameters = member.IsField ? NullValue<ExpressionParameter>.Array : ExpressionParameter.Get(MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), NullValue<Type>.Array)) });
                         }
                     }
-                    foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, false, true, false))
+                    foreach (MethodIndex member in MethodIndex.GetMethods<Net.RemoteExpression.MemberAttribute>(type, Metadata.MemberFilters.Instance, false, true, false))
                     {
                         if (!member.IsIgnore)
                         {
-                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                            Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<Net.RemoteExpression.MemberAttribute>(false);
                             IsMember &= addMember(ref members, new Expression { Attribute = attribute, Method = member, IntputParameters = ExpressionParameter.Get(member.Parameters) });
                         }
                     }
@@ -309,19 +309,19 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     if (memberNodeTypeName == null)
                     {
                         LeftArray<StaticExpression> staticMembers = default(LeftArray<StaticExpression>);
-                        foreach (MemberIndex member in MemberIndex.GetStaticMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Static, true, false))
+                        foreach (MemberIndex member in MemberIndex.GetStaticMembers<Net.RemoteExpression.MemberAttribute>(type, Metadata.MemberFilters.Static, true, false))
                         {
                             if (!member.IsIgnore && member.CanGet)
                             {
-                                AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                                Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<Net.RemoteExpression.MemberAttribute>(false);
                                 IsMember &= addMember(ref staticMembers, new StaticExpression { Attribute = attribute, Member = member, IntputParameters = NullValue<ExpressionParameter>.Array });
                             }
                         }
-                        foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Static, false, true, false))
+                        foreach (MethodIndex member in MethodIndex.GetMethods<Net.RemoteExpression.MemberAttribute>(type, Metadata.MemberFilters.Static, false, true, false))
                         {
                             if (!member.IsIgnore)
                             {
-                                AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                                Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<Net.RemoteExpression.MemberAttribute>(false);
                                 IsMember &= addMember(ref staticMembers, new StaticExpression { Attribute = attribute, Method = member, IntputParameters = ExpressionParameter.Get(member.Parameters) });
                             }
                         }
@@ -361,7 +361,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             internal string RemoteExpressionTypeName
             {
-                get { return AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName; }
+                get { return Net.RemoteExpression.Node.RemoteExpressionTypeName; }
             }
             /// <summary>
             /// 表达式成员集合

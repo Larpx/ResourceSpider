@@ -1,16 +1,16 @@
 /// <reference path = "./base.page.ts" />
 'use strict';
 //基本表单	<div FORM="YYY.user" id="XXX"><input name="name1" /><input name="name2" /></div>
-//AutoCSer.Form.Forms.XXX.SubmitName='name2';
-//AutoCSer.Form.Forms.XXX.OnSubmit.Add(AAA);
-//AutoCSer.Form.Forms.XXX.Start({name1:{MaxLength:32,OnVerify:/^[0-9A-Z_\.]+@[0-9A-Z_\.]+$/gi,ErrorInfo:'错误'},name2:{...}});
-//AutoCSer.Form.Forms.XXX.GetValue();
+//Form.Forms.XXX.SubmitName='name2';
+//Form.Forms.XXX.OnSubmit.Add(AAA);
+//Form.Forms.XXX.Start({name1:{MaxLength:32,OnVerify:/^[0-9A-Z_\.]+@[0-9A-Z_\.]+$/gi,ErrorInfo:'错误'},name2:{...}});
+//Form.Forms.XXX.GetValue();
 var AutoCSer;
 (function (AutoCSer) {
     var Form = (function () {
         function Form(Parameter) {
-            AutoCSer.Pub.GetParameter(this, Form.DefaultParameter, Parameter);
-            AutoCSer.Pub.GetEvents(this, Form.DefaultEvents, Parameter);
+            Pub.GetParameter(this, Form.DefaultParameter, Parameter);
+            Pub.GetEvents(this, Form.DefaultEvents, Parameter);
         }
         Form.ElementType = function (Element) {
             var Value = Form.TagNames[Element.tagName.toLowerCase()];
@@ -20,7 +20,7 @@ var AutoCSer;
             return !!(Element.name && Form.ElementType(Element));
         };
         Form.prototype.GetElements = function () {
-            return AutoCSer.HtmlElement.$Id(this.Id).Childs(Form.IsElement).GetElements();
+            return HtmlElement.$Id(this.Id).Childs(Form.IsElement).GetElements();
         };
         Form.prototype.Start = function (Elements, IsFocus) {
             if (IsFocus === void 0) { IsFocus = true; }
@@ -34,17 +34,17 @@ var AutoCSer;
                         this.Elements[Element.name] = { NullValue: Element.value.Trim(), DefaultValue: null, MaxLength: 0, OnVerify: null, ErrorInfo: null, OnFormat: null, OnChange: null };
                     Element.readOnly = false;
                 }
-                AutoCSer.HtmlElement.$AddEvent(Element, ['keydown'], AutoCSer.Pub.ThisEvent(this, this.KeyDown));
+                HtmlElement.$AddEvent(Element, ['keydown'], Pub.ThisEvent(this, this.KeyDown));
                 var Type = Form.ElementType(Element);
                 if (Type == 1 || Type == 4) {
                     var FormElement = this.Elements[Element.name];
                     if (FormElement && FormElement.MaxLength)
                         Element.maxLength = FormElement.MaxLength;
-                    AutoCSer.HtmlElement.$AddEvent(Element, ['blur'], AutoCSer.Pub.ThisEvent(this, this.Format));
-                    AutoCSer.HtmlElement.$AddEvent(Element, ['focus'], AutoCSer.Pub.ThisEvent(this, this.Focus));
+                    HtmlElement.$AddEvent(Element, ['blur'], Pub.ThisEvent(this, this.Format));
+                    HtmlElement.$AddEvent(Element, ['focus'], Pub.ThisEvent(this, this.Focus));
                 }
             }
-            AutoCSer.HtmlElement.$Name('submit', AutoCSer.HtmlElement.$IdElement(this.Id)).Cursor('pointer').AddEvent('click', AutoCSer.Pub.ThisEvent(this, this.Submit));
+            HtmlElement.$Name('submit', HtmlElement.$IdElement(this.Id)).Cursor('pointer').AddEvent('click', Pub.ThisEvent(this, this.Submit));
             this.Disabled(false);
             this.Cancel(false);
             if (IsFocus) {
@@ -81,10 +81,10 @@ var AutoCSer;
                             }
                             break;
                         case 3:
-                            AutoCSer.HtmlElement.$(Element).Set('checked', Value ? Value : false);
+                            HtmlElement.$(Element).Set('checked', Value ? Value : false);
                             break;
                         case 5:
-                            AutoCSer.HtmlElement.$(AutoCSer.HtmlElement.$Name(Element.name, AutoCSer.HtmlElement.$IdElement(this.Id)).FirstElement(function (Element) { return Element.value == Value; })).Set('checked', true);
+                            HtmlElement.$(HtmlElement.$Name(Element.name, HtmlElement.$IdElement(this.Id)).FirstElement(function (Element) { return Element.value == Value; })).Set('checked', true);
                             break;
                     }
                     if (FormElement.OnChange)
@@ -170,7 +170,7 @@ var AutoCSer;
             if (Type == 3)
                 return Element.checked;
             if (Type == 5)
-                return AutoCSer.HtmlElement.$Name(Element.name, AutoCSer.HtmlElement.$IdElement(this.Id)).FirstElement(Form.IsChecked).value;
+                return HtmlElement.$Name(Element.name, HtmlElement.$IdElement(this.Id)).FirstElement(Form.IsChecked).value;
             if (Type == 2) {
                 var Value = Element.options[Element.selectedIndex].value;
                 return Value ? Value : null;
@@ -198,7 +198,7 @@ var AutoCSer;
                         if (this.OnError.Get().length)
                             this.OnError.Function(FormElement);
                         else if (FormElement.ErrorInfo)
-                            AutoCSer.Pub.Alert(FormElement.ErrorInfo);
+                            Pub.Alert(FormElement.ErrorInfo);
                         break;
                     }
                     ReturnValue[Element.name] = Value;
@@ -211,10 +211,10 @@ var AutoCSer;
             var Cursor = (this.IsDisabled = IsDisabled) ? 'auto' : 'pointer';
             for (var Elements = this.GetElements(), Index = Elements.length; --Index >= 0;)
                 Elements[Index].disabled = this.IsDisabled;
-            AutoCSer.HtmlElement.$Name('submit', AutoCSer.HtmlElement.$IdElement(this.Id)).Disabled(this.IsDisabled).Cursor(Cursor);
+            HtmlElement.$Name('submit', HtmlElement.$IdElement(this.Id)).Disabled(this.IsDisabled).Cursor(Cursor);
         };
         Form.GetForms = function () {
-            for (var Childs = AutoCSer.HtmlElement.$('@form').GetElements(), Index = Childs.length; --Index >= 0; this.Forms[Childs[Index].id] = new Form({ Id: Childs[Index].id }))
+            for (var Childs = HtmlElement.$('@form').GetElements(), Index = Childs.length; --Index >= 0; this.Forms[Childs[Index].id] = new Form({ Id: Childs[Index].id }))
                 ;
         };
         Form.DefaultParameter = { Id: null, SubmitName: null };
@@ -224,6 +224,6 @@ var AutoCSer;
         Form.Forms = {};
         return Form;
     }());
-    AutoCSer.Form = Form;
-    AutoCSer.Pub.OnLoad(Form.GetForms, Form, true);
+    Form = Form;
+    Pub.OnLoad(Form.GetForms, Form, true);
 })(AutoCSer || (AutoCSer = {}));

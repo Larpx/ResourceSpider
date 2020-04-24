@@ -63,7 +63,7 @@ Array.prototype.IndexOf = function (Function: (any) => boolean): number {
     return -1;
 }
 Array.prototype.IndexOfValue = function (Value: any): number {
-    if (AutoCSer.Pub.IE) {
+    if (Pub.IE) {
         for (var Index = -1; ++Index !== this.length;) {
             if (this[Index] == Value) return Index;
         }
@@ -105,7 +105,7 @@ Array.prototype.FormatAjax = function (): any[]{
     }
 }
 Array.prototype.FormatView = function (): any[] {
-    return this.length > 1 ? AutoCSer.Pub.FormatAjaxs(AutoCSer.Pub.AjaxName(this[0], 0), this, 1) : [];
+    return this.length > 1 ? Pub.FormatAjaxs(Pub.AjaxName(this[0], 0), this, 1) : [];
 }
 Array.prototype.Find = function (IsValue: (Value: any) => boolean): any[] {
     for (var Values = [], Index = 0; Index !== this.length; ++Index) {
@@ -805,7 +805,7 @@ module AutoCSer {
             return this.CallAjaxPost || this.DefaultCallAjaxPost;
         }
         private static DefaultCallAjaxGet(Url: string, Send: Object = null, Callback: Function = null, IsVersion = false) {
-            AutoCSer.HttpRequest.Get(Url, Send, Callback, IsVersion);
+            HttpRequest.Get(Url, Send, Callback, IsVersion);
         }
         static CallAjaxGet: (Url: string, Send: Object, Callback: Function, IsVersion: boolean) => void;
         static GetAjaxGet(): (Url: string, Send: Object, Callback: Function, IsVersion: boolean) => void {
@@ -861,7 +861,7 @@ module AutoCSer {
             return Node ? Node.Get(Identity) : null;
         }
         static ToString(Value: IIndexPool) {
-            return 'AutoCSer.IndexPool.Get(' + Value.PoolIndex + ',' + Value.PoolIdentity + ')';
+            return 'IndexPool.Get(' + Value.PoolIndex + ',' + Value.PoolIdentity + ')';
         }
     }
     export class LoadJs {
@@ -1076,7 +1076,7 @@ module AutoCSer {
                 else Info.SendString = Info.SendString.replace(/\xA0/g, ' ');
             }
             if (Info.IsRandom) Url += (Url.indexOf('?') + 1 ? '&' : '?') + 't=' + (new Date).getTime();
-            else if (Info.IsVersion && Info.Method === 'GET') Url += (Url.indexOf('?') + 1 ? '&' : '?') + '__VERSIONNAME__=' + AutoCSer.Loader.Version;
+            else if (Info.IsVersion && Info.Method === 'GET') Url += (Url.indexOf('?') + 1 ? '&' : '?') + '__VERSIONNAME__=' + Loader.Version;
             Info.Request = Request;
             if (!Pub.IE && Info.Method === 'GET' && !Info.UserName && !Info.IsOnLoad) {
                 Info.RetryCount = 2;
@@ -1104,7 +1104,7 @@ module AutoCSer {
                 }
             }
             else if (window['XMLHttpRequest']) return new XMLHttpRequest;
-            AutoCSer.Pub.Alert('你的浏览器不支持服务器请求,请升级您的浏览器！');
+            Pub.Alert('你的浏览器不支持服务器请求,请升级您的浏览器！');
             return null;
         }
         static PostQuery(HttpRequestQuery: HttpRequestQuery) {
@@ -1122,7 +1122,7 @@ module AutoCSer {
             if (!Pub.IE && !HttpRequestQuery.IsRandom) {
                 var Query = HttpRequestQuery.ToQueryInfo();
                 Query.IsRandom = false;
-                Query.Url = '__AJAX__?__AJAXCALL__=' + Query.Url + '&__CALLBACK__=AutoCSer.Pub.AjaxCallBack';
+                Query.Url = '__AJAX__?__AJAXCALL__=' + Query.Url + '&__CALLBACK__=Pub.AjaxCallBack';
                 this.AjaxGetRequest.Request(Query);
                 return;
             }
@@ -1139,7 +1139,7 @@ module AutoCSer {
         private static ErrorPath = '__AJAX__?__AJAXCALL__=__PUBERROR__&';
         static CheckError(Value: Object, ErrorInfo = '服务器请求失败，请稍后重试'): boolean {
             if ((Value as IHttpRequestReturn).ErrorRequest) {
-                if (ErrorInfo) AutoCSer.Pub.Alert(ErrorInfo);
+                if (ErrorInfo) Pub.Alert(ErrorInfo);
                 return false;
             }
             return true;
@@ -1247,12 +1247,12 @@ module AutoCSer {
             this.FilterChildren();
             var Value = this.FilterValue().split('=');
             if (Value.length == 1) {
-                this.FilterBuilder.push('if(AutoCSer.HtmlElement.$IsAttribute(Element=Childs[Index++],"');
+                this.FilterBuilder.push('if(HtmlElement.$IsAttribute(Element=Childs[Index++],"');
                 this.FilterBuilder.push(Value[0]);
                 this.FilterBuilder.push('"))(');
             }
             else {
-                this.FilterBuilder.push('if(AutoCSer.HtmlElement.$Attribute(Element=Childs[Index++],"');
+                this.FilterBuilder.push('if(HtmlElement.$Attribute(Element=Childs[Index++],"');
                 this.FilterBuilder.push(Value[0]);
                 this.FilterBuilder.push('")=="');
                 this.FilterBuilder.push(Value[1]);
@@ -1262,7 +1262,7 @@ module AutoCSer {
         }
         FilterName() {
             this.FilterChildren();
-            this.FilterBuilder.push('if(AutoCSer.HtmlElement.$Attribute(Element=Childs[Index++],"name")=="');
+            this.FilterBuilder.push('if(HtmlElement.$Attribute(Element=Childs[Index++],"name")=="');
             this.FilterBuilder.push(this.FilterValue());
             this.FilterBuilder.push('")(');
             this.FilterNext(true);
@@ -1270,7 +1270,7 @@ module AutoCSer {
         FilterCss() {
             this.FilterChildren();
             var Value = this.FilterValue().split('=');
-            this.FilterBuilder.push('if(AutoCSer.HtmlElement.$GetStyle(Element=Childs[Index++],"');
+            this.FilterBuilder.push('if(HtmlElement.$GetStyle(Element=Childs[Index++],"');
             this.FilterBuilder.push(Value[0]);
             this.FilterBuilder.push('")=="');
             this.FilterBuilder.push(Value[1]);
@@ -2151,7 +2151,7 @@ module AutoCSer {
         private ReShowPushArrayExpand(MarkStart: HTMLElement) {
             this.CreateView();
             this.CreateLoopExpand();
-            Pub.DeleteElements.Html(this.Node.Skin.EndHtml()).Child().InsertBefore(AutoCSer.HtmlElement.$NextElement(MarkStart), HtmlElement.$ParentElement(MarkStart));
+            Pub.DeleteElements.Html(this.Node.Skin.EndHtml()).Child().InsertBefore(HtmlElement.$NextElement(MarkStart), HtmlElement.$ParentElement(MarkStart));
         }
         private ReShowRemoveArray(MarkStart: HTMLElement, MarkEnd: HTMLElement, MarkEndId: string) {
             this.ClearSearchNode(true);
@@ -3235,4 +3235,4 @@ module AutoCSer {
         }
     }
 }
-setTimeout(AutoCSer.Pub.LoadIE, 0, 'javascript');
+setTimeout(Pub.LoadIE, 0, 'javascript');

@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
                     while (++start != end);
                     if ((length | isSpace) != 0)
                     {
-                        string url = AutoCSer.Extension.StringExtension.FastAllocateString(value.Length + length);
+                        string url = Extension.StringExtension.FastAllocateString(value.Length + length);
                         fixed (char* urlFixed = url)
                         {
                             char* write = urlFixed;

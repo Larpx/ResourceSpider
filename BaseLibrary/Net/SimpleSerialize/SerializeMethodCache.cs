@@ -43,7 +43,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
         /// <summary>
         /// 未知类型序列化调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> methods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonly Threading.LockDictionary<Type, MethodInfo> methods = new Threading.LockDictionary<Type, MethodInfo>();
         /// <summary>
         /// 未知类型枚举序列化委托调用函数信息
         /// </summary>

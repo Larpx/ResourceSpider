@@ -13,7 +13,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <summary>
         /// 请求数据
         /// </summary>
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
         internal struct Input
         {
             /// <summary>
@@ -28,7 +28,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <summary>
         /// 返回数据
         /// </summary>
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
         internal struct Output
         {
             /// <summary>
@@ -38,16 +38,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
             /// <summary>
             /// 远程表达式服务端节点标识解析输出参数信息
             /// </summary>
-            internal static readonly AutoCSer.Net.TcpServer.OutputInfo OutputInfo = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = -TcpServer.Server.RemoteExpressionNodeIdCommandIndex };
+            internal static readonly Net.TcpServer.OutputInfo OutputInfo = new Net.TcpServer.OutputInfo { OutputParameterIndex = -TcpServer.Server.RemoteExpressionNodeIdCommandIndex };
             /// <summary>
             /// 远程表达式服务端节点标识解析输出参数信息
             /// </summary>
-            internal static readonly AutoCSer.Net.TcpServer.OutputInfo OutputThreadInfo = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = -TcpServer.Server.RemoteExpressionNodeIdCommandIndex, IsBuildOutputThread = true };
+            internal static readonly Net.TcpServer.OutputInfo OutputThreadInfo = new Net.TcpServer.OutputInfo { OutputParameterIndex = -TcpServer.Server.RemoteExpressionNodeIdCommandIndex, IsBuildOutputThread = true };
         }
         /// <summary>
         /// 服务端映射标识集合
         /// </summary>
-        internal readonly Dictionary<Type, int> ServerNodeIds = DictionaryCreator.CreateOnly<Type, int>();
+        internal readonly Dictionary<Type, int> ServerNodeIds = new Dictionary<Type, int>();
         /// <summary>
         /// 服务端映射标识集合访问锁
         /// </summary>
@@ -67,14 +67,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        internal abstract AutoCSer.Net.TcpServer.ReturnValue<int[]> Get(RemoteType[] types);
+        internal abstract Net.TcpServer.ReturnValue<int[]> Get(RemoteType[] types);
         /// <summary>
         /// 服务端映射标识检测
         /// </summary>
         /// <param name="node"></param>
         /// <returns>是否映射成功</returns>
         
-        internal unsafe AutoCSer.Net.TcpServer.ReturnType Check(Node node)
+        internal unsafe Net.TcpServer.ReturnType Check(Node node)
         {
             LeftArray<Type> types = default(LeftArray<Type>);
             return Check(node, ref types);
@@ -85,14 +85,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
         /// <param name="node"></param>
         /// <param name="types"></param>
         /// <returns>是否映射成功</returns>
-        internal unsafe AutoCSer.Net.TcpServer.ReturnType Check(Node node, ref LeftArray<Type> types)
+        internal unsafe Net.TcpServer.ReturnType Check(Node node, ref LeftArray<Type> types)
         {
             node.CheckServerNodeId(this, ref types);
-            if (types.Length == 0) return AutoCSer.Net.TcpServer.ReturnType.Success;
+            if (types.Length == 0) return Net.TcpServer.ReturnType.Success;
             int count = types.Length;
             LeftArray<RemoteType> remoteTypes = new LeftArray<RemoteType>(types.Length);
             types.Length = 0;
-            AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Success;
+            Net.TcpServer.ReturnType returnType = Net.TcpServer.ReturnType.Success;
             Monitor.Enter(serverNodeIdLock);
             try
             {
@@ -107,7 +107,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
                 }
                 if ((count = types.Length) != 0)
                 {
-                    AutoCSer.Net.TcpServer.ReturnValue<int[]> ids = Get(remoteTypes.ToArray());
+                    Net.TcpServer.ReturnValue<int[]> ids = Get(remoteTypes.ToArray());
                     if (ids.Type == TcpServer.ReturnType.Success)
                     {
                         fixed (int* idFixed = ids.Value)

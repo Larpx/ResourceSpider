@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// </summary>
         public bool IsSerializeReferenceMember;
         /// <summary>
-        /// 是否添加包装处理申明 AutoCSer.Metadata.BoxSerialize
+        /// 是否添加包装处理申明 Metadata.BoxSerialize
         /// </summary>
         public bool IsSerializeBox;
         /// <summary>
@@ -73,7 +73,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
             IsSimpleSerialize = false;
             foreach (MethodParameter parameter in this.Parameters)
             {
-                if (!AutoCSer.Net.SimpleSerialize.Serializer.IsType(parameter.ParameterType.Type)) return;
+                if (!Net.SimpleSerialize.Serializer.IsType(parameter.ParameterType.Type)) return;
             }
             IsSimpleSerialize = true;
         }
@@ -96,11 +96,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
                 foreach (MethodParameter parameter in parameters) hashCode ^= parameter.ParameterType.GetHashCode();
             }
             IsSimpleSerialize = false;
-            if (AutoCSer.Net.SimpleSerialize.Serializer.IsType(returnType))
+            if (Net.SimpleSerialize.Serializer.IsType(returnType))
             {
                 foreach (MethodParameter parameter in this.Parameters)
                 {
-                    if (!AutoCSer.Net.SimpleSerialize.Serializer.IsType(parameter.ParameterType.Type)) return;
+                    if (!Net.SimpleSerialize.Serializer.IsType(parameter.ParameterType.Type)) return;
                 }
                 IsSimpleSerialize = true;
             }

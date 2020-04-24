@@ -34,7 +34,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
                 public void Set(BinarySerialize.FieldSize field)
                 {
                     Field = field.Field;
-                    DeSerializeMethod = (Func<DeSerializer, object, object>)typeof(AutoCSer.Reflection.InvokeMethodRef2<,>).MakeGenericType(typeof(DeSerializer), Field.FieldType).GetMethod("getTypeObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { DeSerializer.GetDeSerializeMethod(Field.FieldType) ?? DeSerializeMethodCache.Get(Field.FieldType) });
+                    DeSerializeMethod = (Func<DeSerializer, object, object>)typeof(Reflection.InvokeMethodRef2<,>).MakeGenericType(typeof(DeSerializer), Field.FieldType).GetMethod("getTypeObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { DeSerializer.GetDeSerializeMethod(Field.FieldType) ?? DeSerializeMethodCache.Get(Field.FieldType) });
                 }
             }
             /// <summary>

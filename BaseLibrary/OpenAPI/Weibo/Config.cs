@@ -67,11 +67,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weibo
         public API GetApiByJson(string tokenOpenId)
         {
             TokenUid value = new TokenUid();
-            return AutoCSer.Json.Parser.Parse(tokenOpenId, ref value) ? GetApi(value) : null;
+            return Json.Parser.Parse(tokenOpenId, ref value) ? GetApi(value) : null;
         }
         /// <summary>
         /// 默认配置
         /// </summary>
-        public static readonly Config Default = AutoCSer.Config.Loader.Get<Config>() ?? new Config();
+        public static readonly Config Default = Config.Loader.Get<Config>() ?? new Config();
     }
 }

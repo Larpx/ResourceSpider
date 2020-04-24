@@ -1,8 +1,8 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.IO;
 using System.Reflection;
-using AutoCSer.CodeGenerator.Metadata;
+using CodeGenerator.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -20,40 +20,40 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <param name="type">视图类型</param>
         /// <param name="attribute">视图加载函数配置</param>
         /// <returns>视图加载函数</returns>
-        private static AutoCSer.CodeGenerator.Metadata.MethodIndex getLoadMethod(Type type, out AutoCSer.WebView.ViewAttribute attribute)
+        private static CodeGenerator.Metadata.MethodIndex getLoadMethod(Type type, out WebView.ViewAttribute attribute)
         {
-            AutoCSer.CodeGenerator.Metadata.MethodIndex loadMethod = null;
+            CodeGenerator.Metadata.MethodIndex loadMethod = null;
             foreach (MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (method.ReturnType == typeof(bool))
                 {
-                    foreach (AutoCSer.WebView.ViewAttribute loadWebView in method.GetCustomAttributes(typeof(AutoCSer.WebView.ViewAttribute), true))
+                    foreach (WebView.ViewAttribute loadWebView in method.GetCustomAttributes(typeof(WebView.ViewAttribute), true))
                     {
                         attribute = loadWebView;
-                        return new AutoCSer.CodeGenerator.Metadata.MethodIndex(method, AutoCSer.Metadata.MemberFilters.Instance, 0);
+                        return new CodeGenerator.Metadata.MethodIndex(method, Metadata.MemberFilters.Instance, 0);
                     }
                     if (loadMethod == null && method.Name == "loadView" && method.GetParameters().Length != 0)
                     {
-                        loadMethod = new AutoCSer.CodeGenerator.Metadata.MethodIndex(method, AutoCSer.Metadata.MemberFilters.Instance, 0);
+                        loadMethod = new CodeGenerator.Metadata.MethodIndex(method, Metadata.MemberFilters.Instance, 0);
                     }
                 }
             }
-            attribute = loadMethod == null ? null : AutoCSer.WebView.View.DefaultAttribute;
+            attribute = loadMethod == null ? null : WebView.View.DefaultAttribute;
             return loadMethod;
         }
         /// <summary>
         /// HTML 模板建树器
         /// </summary>
-        internal sealed class ViewTreeBuilder : AutoCSer.WebView.ViewTreeBuilder
+        internal sealed class ViewTreeBuilder : WebView.ViewTreeBuilder
         {
             /// <summary>
             /// @取值command
             /// </summary>
-            private readonly static string atCommand = AutoCSer.WebView.ViewTreeCommand.At.ToString();
+            private readonly static string atCommand = WebView.ViewTreeCommand.At.ToString();
             /// <summary>
             /// 建树器
             /// </summary>
-            private TreeBuilder<ViewTreeNode, AutoCSer.WebView.ViewTreeTag> tree;
+            private TreeBuilder<ViewTreeNode, WebView.ViewTreeTag> tree;
             /// <summary>
             /// 树节点
             /// </summary>
@@ -65,7 +65,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             public ViewTreeBuilder(string html)
                 : base(html, false)
             {
-                tree = new TreeBuilder<ViewTreeNode, AutoCSer.WebView.ViewTreeTag>();
+                tree = new TreeBuilder<ViewTreeNode, WebView.ViewTreeTag>();
                 create(formatHtml(html));
             }
             /// <summary>
@@ -74,7 +74,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <param name="html">HTML片段</param>
             protected override void appendHtml(SubString html)
             {
-                tree.Append(new ViewTreeNode { Tag = new AutoCSer.WebView.ViewTreeTag { Type = AutoCSer.WebView.ViewTreeTagType.Html, Content = html } }, false);
+                tree.Append(new ViewTreeNode { Tag = new WebView.ViewTreeTag { Type = WebView.ViewTreeTagType.Html, Content = html } }, false);
                 base.appendHtml(ref html);
             }
             /// <summary>
@@ -83,14 +83,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <param name="content"></param>
             protected override void appendAtNode(SubString content)
             {
-                tree.Append(new ViewTreeNode { Tag = new AutoCSer.WebView.ViewTreeTag { Type = AutoCSer.WebView.ViewTreeTagType.At, Command = atCommand, Content = content } }, false);
+                tree.Append(new ViewTreeNode { Tag = new WebView.ViewTreeTag { Type = WebView.ViewTreeTagType.At, Command = atCommand, Content = content } }, false);
             }
             /// <summary>
             /// 添加节点
             /// </summary>
             /// <param name="tagIndex"></param>
             /// <param name="tag"></param>
-            protected override void appendNode(int tagIndex, AutoCSer.WebView.ViewTreeTag tag)
+            protected override void appendNode(int tagIndex, WebView.ViewTreeTag tag)
             {
                 if (!tree.IsRound(tag, tagIndex == clientCommandIndex)) tree.Append(new ViewTreeNode { Tag = tag });
             }
@@ -116,12 +116,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <summary>
         /// HTML模板树节点
         /// </summary>
-        internal sealed class ViewTreeNode : AutoCSer.CodeGenerator.TreeTemplate<ViewTreeNode>.INode, TreeBuilder<ViewTreeNode, AutoCSer.WebView.ViewTreeTag>.INode
+        internal sealed class ViewTreeNode : CodeGenerator.TreeTemplate<ViewTreeNode>.INode, TreeBuilder<ViewTreeNode, WebView.ViewTreeTag>.INode
         {
             /// <summary>
             /// 树节点标识
             /// </summary>
-            public AutoCSer.WebView.ViewTreeTag Tag { get; internal set; }
+            public WebView.ViewTreeTag Tag { get; internal set; }
             /// <summary>
             /// 模板命令
             /// </summary>
@@ -224,14 +224,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             public TreeTemplate(Type type, string html)
                 : base(type, Messages.Add, Messages.Message)
             {
-                creators[AutoCSer.WebView.ViewTreeCommand.Note.ToString()] = creators[AutoCSer.WebView.ViewTreeCommand.Client.ToString()] = note;
-                creators[AutoCSer.WebView.ViewTreeCommand.Loop.ToString()] = creators[AutoCSer.WebView.ViewTreeCommand.For.ToString()] = loop;
-                creators[AutoCSer.WebView.ViewTreeCommand.At.ToString()] = at;
-                creators[AutoCSer.WebView.ViewTreeCommand.Value.ToString()] = push;
-                creators[AutoCSer.WebView.ViewTreeCommand.If.ToString()] = ifThen;
-                creators[AutoCSer.WebView.ViewTreeCommand.Not.ToString()] = not;
-                AutoCSer.WebView.ViewAttribute attribute;
-                AutoCSer.CodeGenerator.Metadata.MethodIndex loadMethod = getLoadMethod(type, out attribute);
+                creators[WebView.ViewTreeCommand.Note.ToString()] = creators[WebView.ViewTreeCommand.Client.ToString()] = note;
+                creators[WebView.ViewTreeCommand.Loop.ToString()] = creators[WebView.ViewTreeCommand.For.ToString()] = loop;
+                creators[WebView.ViewTreeCommand.At.ToString()] = at;
+                creators[WebView.ViewTreeCommand.Value.ToString()] = push;
+                creators[WebView.ViewTreeCommand.If.ToString()] = ifThen;
+                creators[WebView.ViewTreeCommand.Not.ToString()] = not;
+                WebView.ViewAttribute attribute;
+                CodeGenerator.Metadata.MethodIndex loadMethod = getLoadMethod(type, out attribute);
                 if (attribute != null && type.GetField(attribute.QueryName, BindingFlags.Instance | BindingFlags.NonPublic) == null)
                 {
                     viewQueryName = attribute.QueryName + ".";
@@ -421,7 +421,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         }
                         _loopIndex_ = ", loopIndex(0), @";
                     }
-                    _js_.WriteNotNull(@""]", AutoCSer.WebView.AjaxBase.FormatView);
+                    _js_.WriteNotNull(@""]", WebView.AjaxBase.FormatView);
                     }
                     else
                     {
@@ -662,8 +662,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 if (clientTypeName != null)
                 {
                     memberIndex = 1;
-                    ajaxCode.Write(AutoCSer.WebView.AjaxBase.ViewClientType);
-                    if (node.Type.ClientViewMemberName != null) ajaxCode.Write(AutoCSer.WebView.AjaxBase.ViewClientMember);
+                    ajaxCode.Write(WebView.AjaxBase.ViewClientType);
+                    if (node.Type.ClientViewMemberName != null) ajaxCode.Write(WebView.AjaxBase.ViewClientMember);
                     ajaxCode.WriteNotNull(clientTypeName);
                     ajaxCode.Write(',');
                 }
@@ -874,7 +874,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 视图加载函数配置
             /// </summary>
-            public AutoCSer.WebView.ViewAttribute LoadAttribute;
+            public WebView.ViewAttribute LoadAttribute;
             /// <summary>
             /// Session类型
             /// </summary>
@@ -899,7 +899,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// WEB视图代码生成
         /// </summary>
         [Generator(Name = "WEB 视图", DependType = typeof(WebCall.Generator), IsAuto = true)]
-        internal partial class Generator : Generator<AutoCSer.WebView.ViewAttribute>
+        internal partial class Generator : Generator<WebView.ViewAttribute>
         {
             /// <summary>
             /// WEB 视图 API代码生成
@@ -928,7 +928,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// WEB视图配置
                 /// </summary>
-                public AutoCSer.WebView.ViewAttribute Attribute;
+                public WebView.ViewAttribute Attribute;
                 /// <summary>
                 /// 视图加载函数
                 /// </summary>
@@ -1084,7 +1084,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 查询成员信息集合
             /// </summary>
-            public AutoCSer.CodeGenerator.Metadata.MemberIndex[] QueryMembers;
+            public CodeGenerator.Metadata.MemberIndex[] QueryMembers;
             /// <summary>
             /// 是否存在查询参数
             /// </summary>
@@ -1142,17 +1142,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             protected override void nextCreate()
             {
-                IsPoolType = typeof(AutoCSer.WebView.View<>).isAssignableFromGenericDefinition(Type);
+                IsPoolType = typeof(WebView.View<>).isAssignableFromGenericDefinition(Type);
                 if (IsPoolType)
                 {
-                    if (Attribute == null) Attribute = AutoCSer.WebView.View.DefaultAttribute;
+                    if (Attribute == null) Attribute = WebView.View.DefaultAttribute;
                 }
                 else
                 {
                     if (Attribute == null) return;
-                    if (!typeof(AutoCSer.WebView.View).IsAssignableFrom(Type))
+                    if (!typeof(WebView.View).IsAssignableFrom(Type))
                     {
-                        Messages.Add(Type.FullName + " 必须继承自 AutoCSer.WebView.View 或者 AutoCSer.WebView.View<" + Type.FullName + ">");
+                        Messages.Add(Type.FullName + " 必须继承自 WebView.View 或者 WebView.View<" + Type.FullName + ">");
                         return;
                     }
                 }
@@ -1162,9 +1162,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 else
                 {
                     LoadMethod = getLoadMethod(Type, out LoadAttribute);
-                    if (LoadAttribute == AutoCSer.WebView.View.DefaultAttribute) LoadAttribute = Attribute;
-                     QueryMembers = MemberIndex.GetMembers<AutoCSer.WebView.ViewQueryAttribute>(Type, AutoCSer.Metadata.MemberFilters.Instance, true, true);
-                    if (QueryMembers.Length != 0 && LoadAttribute == null) LoadAttribute = AutoCSer.WebView.View.DefaultAttribute;
+                    if (LoadAttribute == WebView.View.DefaultAttribute) LoadAttribute = Attribute;
+                     QueryMembers = MemberIndex.GetMembers<WebView.ViewQueryAttribute>(Type, Metadata.MemberFilters.Instance, true, true);
+                    if (QueryMembers.Length != 0 && LoadAttribute == null) LoadAttribute = WebView.View.DefaultAttribute;
                     if (QueryMembers.Length != 0 && LoadMethod != null)
                     {
                         foreach (MethodParameter parameter in LoadMethod.Parameters)
@@ -1345,7 +1345,7 @@ namespace " + AutoParameter.DefaultNamespace + @"
             /// <summary>
             /// 类型集合
             /// </summary>
-            private static readonly Dictionary<string, TypeKey> types = DictionaryCreator.CreateOnly<string, TypeKey>();
+            private static readonly Dictionary<string, TypeKey> types = new Dictionary<string, TypeKey>();
             /// <summary>
             /// API生成
             /// </summary>

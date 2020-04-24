@@ -1,8 +1,8 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Threading;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
@@ -14,7 +14,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <summary>
         /// 成员索引分组集合
         /// </summary>
-        private static readonly Dictionary<Type, MemberIndexGroup> cache = DictionaryCreator.CreateOnly<Type, MemberIndexGroup>();
+        private static readonly Dictionary<Type, MemberIndexGroup> cache = new Dictionary<Type, MemberIndexGroup>();
         /// <summary>
         /// 成员索引分组集合访问锁
         /// </summary>
@@ -46,7 +46,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <param name="isBaseType">指定是否搜索该成员的继承链以查找这些特性，参考System.Reflection.MemberInfo.GetCustomAttributes(bool inherit)。</param>
         /// <returns>匹配成员集合</returns>
         public static MemberIndexInfo[] Get<attributeType>(Type type, MemberFilters filter, bool isFilter, bool isAttribute, bool isBaseType)
-             where attributeType : AutoCSer.Metadata.IgnoreMemberAttribute
+             where attributeType : Metadata.IgnoreMemberAttribute
         {
             return Get(type).Find(filter, isFilter).getFindArray(value => isAttribute ? value.IsAttribute<attributeType>(isBaseType) : !value.IsIgnoreAttribute<attributeType>(isBaseType));
         }

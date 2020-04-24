@@ -17,8 +17,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         
-        [AutoCSer.Json.SerializeCustom]
-        private static void toJson(AutoCSer.Json.Serializer serializer, BulkMessage value)
+        [Json.SerializeCustom]
+        private static void toJson(Json.Serializer serializer, BulkMessage value)
         {
             serializer.CustomWriteFirstName("filter");
             serializer.TypeSerialize(ref value.filter);

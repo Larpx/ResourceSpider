@@ -1,7 +1,7 @@
 ﻿using System;
-using AutoCSer.Log;
+using Log;
 using System.Net;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer

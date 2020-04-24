@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
@@ -22,11 +22,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 自定义代码生成程序集名称
         /// </summary>
-        internal const string CustomAssemblyName = "AutoCSer.CodeGenerator.Custom";
+        internal const string CustomAssemblyName = "CodeGenerator.Custom";
         /// <summary>
         /// 自定义配置文件
         /// </summary>
-        private const string configFileName = "AutoCSer.CodeGenerator.CustomConfig";
+        private const string configFileName = "CodeGenerator.CustomConfig";
         /// <summary>
         /// 程序集
         /// </summary>
@@ -35,8 +35,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         static CustomConfig()
         {
             FileInfo jsonFile = new FileInfo(configFileName + ".json");
-            if (jsonFile.Exists) Default = AutoCSer.Json.Parser.Parse<CustomConfig>(File.ReadAllText(jsonFile.FullName));
-            else if (File.Exists(configFileName + ".xml")) Default = AutoCSer.Xml.Parser.Parse<CustomConfig>(File.ReadAllText(configFileName + ".xml"));
+            if (jsonFile.Exists) Default = Json.Parser.Parse<CustomConfig>(File.ReadAllText(jsonFile.FullName));
+            else if (File.Exists(configFileName + ".xml")) Default = Xml.Parser.Parse<CustomConfig>(File.ReadAllText(configFileName + ".xml"));
             else if (jsonFile.Directory.Name == "Release" && jsonFile.Directory.Parent.Name == "bin")
             {
 #if DotNetStandard
@@ -44,8 +44,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 #else
                 string fileName = jsonFile.Directory.Parent.Parent.Parent.fullName() + configFileName;
 #endif
-                if (File.Exists(fileName + ".json")) Default = AutoCSer.Json.Parser.Parse<CustomConfig>(File.ReadAllText(fileName + ".json"));
-                else if (File.Exists(fileName + ".xml")) Default = AutoCSer.Xml.Parser.Parse<CustomConfig>(File.ReadAllText(fileName + ".xml"));
+                if (File.Exists(fileName + ".json")) Default = Json.Parser.Parse<CustomConfig>(File.ReadAllText(fileName + ".json"));
+                else if (File.Exists(fileName + ".xml")) Default = Xml.Parser.Parse<CustomConfig>(File.ReadAllText(fileName + ".xml"));
             }
             if (Default == null) Default = new CustomConfig();
             FileInfo assemblyFile = new FileInfo(new FileInfo(ProjectParameter.CurrentAssembly.Location).Directory.fullName() + CustomAssemblyName + ".dll");

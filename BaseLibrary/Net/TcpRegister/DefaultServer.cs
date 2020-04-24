@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
@@ -74,7 +74,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                Log.Pub.Log.Add(Log.LogType.Error, error);
             }
             finally
             {

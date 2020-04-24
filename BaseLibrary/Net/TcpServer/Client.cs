@@ -1,7 +1,7 @@
 ﻿using System;
-using AutoCSer.Log;
+using Log;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Net;
 using System.Runtime.CompilerServices;
 

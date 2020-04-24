@@ -7,13 +7,13 @@ module AutoCSer {
         private static DefaultEvents = { OnReset: null };
         private OnReset: Events;
 
-        constructor(Parameter: AutoCSer.IDeclareParameter) {
+        constructor(Parameter: IDeclareParameter) {
             super(Parameter);
             Pub.GetEvents(this, ManyClickMenu.DefaultEvents, Parameter);
             HtmlElement.$(document.body).AddEvent('click', Pub.ThisEvent(this, this.Check));
             this.Reset(Parameter, Parameter.DeclareElement);
         }
-        Reset(Parameter: AutoCSer.IDeclareParameter, Element: HTMLElement) {
+        Reset(Parameter: IDeclareParameter, Element: HTMLElement) {
             if (Element != this.Element) {
                 if (this.Element) this.HideMenu();
                 this.Element = Element;
@@ -40,5 +40,5 @@ module AutoCSer {
             this.IsOver = false;
         }
     }
-    new AutoCSer.Declare(ManyClickMenu, 'ManyClickMenu', 'click', 'ParameterMany');
+    new Declare(ManyClickMenu, 'ManyClickMenu', 'click', 'ParameterMany');
 }

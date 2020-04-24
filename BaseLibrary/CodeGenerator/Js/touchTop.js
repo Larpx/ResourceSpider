@@ -12,19 +12,19 @@ var AutoCSer;
         }
         return TouchTopParameter;
     }());
-    AutoCSer.TouchTopParameter = TouchTopParameter;
+    TouchTopParameter = TouchTopParameter;
     var TouchTop = (function (_super) {
         __extends(TouchTop, _super);
         function TouchTop(Parameter) {
             if (Parameter === void 0) { Parameter = null; }
             _super.call(this);
-            AutoCSer.Pub.GetParameter(this, TouchTop.DefaultParameter, Parameter);
-            AutoCSer.Pub.GetEvents(this, TouchTop.DefaultEvents, Parameter);
-            this.CheckFunction = AutoCSer.Pub.ThisEvent(this, this.Check);
-            AutoCSer.HtmlElement.$AddEvent(document, ['touchstart'], AutoCSer.Pub.ThisEvent(this, this.Start));
-            AutoCSer.HtmlElement.$AddEvent(document, ['touchmove'], AutoCSer.Pub.ThisEvent(this, this.Move));
-            AutoCSer.HtmlElement.$AddEvent(document, ['touchend'], AutoCSer.Pub.ThisEvent(this, this.End));
-            AutoCSer.HtmlElement.$AddEvent(document, ['touchcancel'], AutoCSer.Pub.ThisEvent(this, this.Cancel));
+            Pub.GetParameter(this, TouchTop.DefaultParameter, Parameter);
+            Pub.GetEvents(this, TouchTop.DefaultEvents, Parameter);
+            this.CheckFunction = Pub.ThisEvent(this, this.Check);
+            HtmlElement.$AddEvent(document, ['touchstart'], Pub.ThisEvent(this, this.Start));
+            HtmlElement.$AddEvent(document, ['touchmove'], Pub.ThisEvent(this, this.Move));
+            HtmlElement.$AddEvent(document, ['touchend'], Pub.ThisEvent(this, this.End));
+            HtmlElement.$AddEvent(document, ['touchcancel'], Pub.ThisEvent(this, this.Cancel));
         }
         TouchTop.prototype.Start = function (Event) {
             this.Cancel();
@@ -40,7 +40,7 @@ var AutoCSer;
             }
         };
         TouchTop.prototype.Check = function () {
-            if (this.Step == 2 && (this.EndTop - this.StartTop) > this.Top && AutoCSer.HtmlElement.$GetScrollTop() == 0) {
+            if (this.Step == 2 && (this.EndTop - this.StartTop) > this.Top && HtmlElement.$GetScrollTop() == 0) {
                 this.Cancel();
                 this.OnTop.Function();
             }
@@ -65,5 +65,5 @@ var AutoCSer;
         TouchTop.Default = new TouchTop();
         return TouchTop;
     }(TouchTopParameter));
-    AutoCSer.TouchTop = TouchTop;
+    TouchTop = TouchTop;
 })(AutoCSer || (AutoCSer = {}));

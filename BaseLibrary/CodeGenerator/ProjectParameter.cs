@@ -1,11 +1,11 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Runtime.CompilerServices;
-using AutoCSer.CodeGenerator.Metadata;
+using CodeGenerator.Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
@@ -83,11 +83,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 网站生成配置
         /// </summary>
-        private AutoCSer.WebView.Config webConfig;
+        private WebView.Config webConfig;
         /// <summary>
         /// 网站生成配置
         /// </summary>
-        public AutoCSer.WebView.Config WebConfig
+        public WebView.Config WebConfig
         {
             get
             {
@@ -95,18 +95,18 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                 {
                     foreach (Type type in Types)
                     {
-                        if (!type.IsAbstract && typeof(AutoCSer.WebView.Config).IsAssignableFrom(type))
+                        if (!type.IsAbstract && typeof(WebView.Config).IsAssignableFrom(type))
                         {
-                            if (TypeAttribute.GetAttribute<AutoCSer.WebView.ConfigAttribute>(type) != null)
+                            if (TypeAttribute.GetAttribute<WebView.ConfigAttribute>(type) != null)
                             {
-                                webConfig = Activator.CreateInstance(type) as AutoCSer.WebView.Config;
+                                webConfig = Activator.CreateInstance(type) as WebView.Config;
                                 break;
                             }
                         }
                     }
-                    if (webConfig == null) webConfig = AutoCSer.WebView.Config.Null.Default;
+                    if (webConfig == null) webConfig = WebView.Config.Null.Default;
                 }
-                return webConfig == AutoCSer.WebView.Config.Null.Default ? null : webConfig;
+                return webConfig == WebView.Config.Null.Default ? null : webConfig;
             }
         }
         /// <summary>
@@ -132,7 +132,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             DefaultNamespace = defaultNamespace;
             IsProjectFile = isProjectFile;
             string assemblyFile = new FileInfo(assemblyPath).Name;
-            if (assemblyFile == "AutoCSer.CodeGenerator.exe") IsAutoCSerCodeGenerator = true;
+            if (assemblyFile == "CodeGenerator.exe") IsAutoCSerCodeGenerator = true;
             else if (assemblyFile == CustomConfig.CustomAssemblyName + ".dll") IsCustomCodeGenerator = true;
         }
         /// <summary>
@@ -207,7 +207,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                             KeyValue<Type, Type>[] depends = generators
                                 .getFind(value => value.Value.DependType != null && types.Contains(value.Value.DependType))
                                 .GetArray(value => new KeyValue<Type, Type>(value.Key, value.Value.DependType));
-                            foreach (Type type in AutoCSer.Algorithm.TopologySort.Sort(depends, types, true)) run(type.Assembly.CreateInstance(type.FullName) as IGenerator);
+                            foreach (Type type in Algorithm.TopologySort.Sort(depends, types, true)) run(type.Assembly.CreateInstance(type.FullName) as IGenerator);
                         }
                         if (CustomConfig.Default.IsAutoCSer)
                         {

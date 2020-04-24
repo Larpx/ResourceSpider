@@ -18,7 +18,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 等待锁
         /// </summary>
-        internal AutoCSer.Threading.AutoWaitHandle Wait;
+        internal Threading.AutoWaitHandle Wait;
         /// <summary>
         /// 调用处理
         /// </summary>

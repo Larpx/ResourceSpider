@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务器端同步调用任务处理
     /// </summary>
-    internal sealed class ServerCallTask : AutoCSer.Threading.LinkTaskThread<ServerCallBase>
+    internal sealed class ServerCallTask : Threading.LinkTaskThread<ServerCallBase>
     {
         /// <summary>
         /// TCP 服务器端同步调用任务处理
@@ -39,7 +39,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     value.LinkNext = headValue;
                     if (Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.YieldOnly();
+                Threading.ThreadYield.YieldOnly();
             }
             while (true);
         }
@@ -81,7 +81,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                        Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
                 while (value != null);
@@ -119,7 +119,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                        Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
             }

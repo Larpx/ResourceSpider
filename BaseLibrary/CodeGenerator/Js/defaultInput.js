@@ -5,15 +5,15 @@ var AutoCSer;
 (function (AutoCSer) {
     var DefaultInput = (function () {
         function DefaultInput(Parameter) {
-            AutoCSer.Pub.GetParameter(this, DefaultInput.DefaultParameter, Parameter);
-            this.Start(this.Event || AutoCSer.DeclareEvent.Default);
+            Pub.GetParameter(this, DefaultInput.DefaultParameter, Parameter);
+            this.Start(this.Event || DeclareEvent.Default);
         }
         DefaultInput.prototype.Start = function (Event) {
             if (!Event.IsGetOnly) {
-                var Element = AutoCSer.HtmlElement.$Id(this.Id), Input = Element.Element0();
+                var Element = HtmlElement.$Id(this.Id), Input = Element.Element0();
                 if (Input != this.Element) {
                     this.Element = Input;
-                    Element.AddEvent('blur', AutoCSer.Pub.ThisFunction(this, this.OnBlur)).Set('readOnly', false);
+                    Element.AddEvent('blur', Pub.ThisFunction(this, this.OnBlur)).Set('readOnly', false);
                     if (this.Default == null) {
                         this.Default = Input.value;
                         this.IsEmpty = true;
@@ -33,7 +33,7 @@ var AutoCSer;
             }
         };
         DefaultInput.prototype.OnBlur = function () {
-            var Element = AutoCSer.HtmlElement.$IdElement(this.Id), Value = Element.value;
+            var Element = HtmlElement.$IdElement(this.Id), Value = Element.value;
             if (this.IsTrim)
                 Value = Value.Trim();
             if (Value == '') {
@@ -46,7 +46,7 @@ var AutoCSer;
         };
         DefaultInput.prototype.GetValue = function () {
             if (!this.IsEmpty) {
-                var Element = AutoCSer.HtmlElement.$IdElement(this.Id);
+                var Element = HtmlElement.$IdElement(this.Id);
                 if (Element == this.Element) {
                     var Value = Element.value;
                     return this.IsTrim ? Value.Trim() : Value;
@@ -57,6 +57,6 @@ var AutoCSer;
         DefaultInput.DefaultParameter = { Id: null, Event: null, Default: null, IsTrim: true };
         return DefaultInput;
     }());
-    AutoCSer.DefaultInput = DefaultInput;
-    new AutoCSer.Declare(DefaultInput, 'DefaultInput', 'focus', 'Src');
+    DefaultInput = DefaultInput;
+    new Declare(DefaultInput, 'DefaultInput', 'focus', 'Src');
 })(AutoCSer || (AutoCSer = {}));

@@ -35,8 +35,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
             //CommandFlags = CommandIdentity.GetCommandFlags();
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
@@ -71,7 +71,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="queue">自定义队列</param>
         
-        public void Set(ServerSocketSender sender, serverType serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue)
+        public void Set(ServerSocketSender sender, serverType serverValue, Net.TcpServer.ServerCallQueue queue)
         {
             this.Sender = sender;
             this.serverValue = serverValue;
@@ -88,7 +88,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         //
         //public static void Call(ServerSocketSender socket, serverType serverValue, TcpServer.ServerTaskType taskType)
         //{
-        //    (AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New()).Set(socket, serverValue, taskType);
+        //    (Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New()).Set(socket, serverValue, taskType);
         //}
         /// <summary>
         /// 获取服务器端调用
@@ -97,7 +97,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         
         public static callType Pop()
         {
-            return AutoCSer.Threading.RingPool<callType>.Default.Pop();
+            return Threading.RingPool<callType>.Default.Pop();
         }
         /// <summary>
         /// 服务器端调用入池
@@ -108,7 +108,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         {
             Sender = null;
             serverValue = null;
-            AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+            Threading.RingPool<callType>.Default.PushNotNull(call);
         }
     }
     /// <summary>
@@ -142,8 +142,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
             this.inputParameter = inputParameter;
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
@@ -181,7 +181,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <param name="queue">自定义队列</param>
         /// <param name="inputParameter">输入参数</param>
         
-        public void Set(ServerSocketSender sender, serverType serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
+        public void Set(ServerSocketSender sender, serverType serverValue, Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
             this.serverValue = serverValue;
@@ -200,7 +200,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         //
         //public static void Call(ServerSocketSender socket, serverType serverValue, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
         //{
-        //    (AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New()).Set(socket, serverValue, taskType, ref inputParameter);
+        //    (Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New()).Set(socket, serverValue, taskType, ref inputParameter);
         //}
         /// <summary>
         /// 服务器端调用入池
@@ -212,7 +212,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
             Sender = null;
             serverValue = null;
             inputParameter = default(inputParameterType);
-            AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+            Threading.RingPool<callType>.Default.PushNotNull(call);
         }
     }
 }

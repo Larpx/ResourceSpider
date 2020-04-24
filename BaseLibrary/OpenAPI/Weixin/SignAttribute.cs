@@ -1,12 +1,12 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 签名计算
     /// </summary>
-    internal sealed class SignAttribute : AutoCSer.Metadata.MemberFilterAttribute.InstanceField
+    internal sealed class SignAttribute : Metadata.MemberFilterAttribute.InstanceField
     {
         /// <summary>
         /// 默认签名计算类型配置

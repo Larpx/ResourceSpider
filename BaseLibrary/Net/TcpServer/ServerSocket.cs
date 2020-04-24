@@ -13,7 +13,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 二进制反序列化配置参数
         /// </summary>
-        private readonly AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig;
+        private readonly BinarySerialize.DeSerializeConfig binaryDeSerializeConfig;
         /// <summary>
         /// TCP 服务器端同步调用队列数组
         /// </summary>
@@ -144,7 +144,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="callQueue">TCP 服务器端同步调用队列</param>
         /// <param name="callQueueLink">TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="verifyMethodCount">验证函数调用次数</param>
-        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig, KeyValue<ServerCallCanDisposableQueue, ServerCallCanDisposableQueue.LowPriorityLink>[] callQueueArray, ServerCallCanDisposableQueue callQueue, ServerCallCanDisposableQueue.LowPriorityLink callQueueLink, byte verifyMethodCount)
+        internal ServerSocket(BinarySerialize.DeSerializeConfig binaryDeSerializeConfig, KeyValue<ServerCallCanDisposableQueue, ServerCallCanDisposableQueue.LowPriorityLink>[] callQueueArray, ServerCallCanDisposableQueue callQueue, ServerCallCanDisposableQueue.LowPriorityLink callQueueLink, byte verifyMethodCount)
         {
             this.binaryDeSerializeConfig = binaryDeSerializeConfig;
             CallQueueArray = callQueueArray;

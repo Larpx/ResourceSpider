@@ -34,7 +34,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
                 public void Set(BinarySerialize.FieldSize field)
                 {
                     Field = field.Field;
-                    SerializeMethod = (Action<UnmanagedStream, object>)typeof(AutoCSer.Reflection.InvokeMethod<,>).MakeGenericType(typeof(UnmanagedStream), Field.FieldType).GetMethod("getTypeObject", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { SimpleSerialize.Serializer.GetSerializeMethod(Field.FieldType) ?? SerializeMethodCache.Get(Field.FieldType) });
+                    SerializeMethod = (Action<UnmanagedStream, object>)typeof(Reflection.InvokeMethod<,>).MakeGenericType(typeof(UnmanagedStream), Field.FieldType).GetMethod("getTypeObject", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { SimpleSerialize.Serializer.GetSerializeMethod(Field.FieldType) ?? SerializeMethodCache.Get(Field.FieldType) });
                 }
             }
             /// <summary>

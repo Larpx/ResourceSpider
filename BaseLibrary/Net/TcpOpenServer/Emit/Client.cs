@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Net.TcpServer.Emit;
+using Net.TcpServer.Emit;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -28,7 +28,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
     /// TCP 客户端
     /// </summary>
     /// <typeparam name="interfaceType">接口类型</typeparam>
-    [AutoCSer.IOS.Preserve(AllMembers = false)]
+    [IOS.Preserve(AllMembers = false)]
     public static class Client<interfaceType>
     {
         /// <summary>
@@ -53,7 +53,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// <param name="index"></param>
         /// <returns>客户端命令信息</returns>
         
-        //[AutoCSer.IOS.Preserve]
+        //[IOS.Preserve]
         public static TcpServer.CommandInfo GetCommand(int index)
         {
             return commands[index];
@@ -72,14 +72,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 客户端</returns>
-        public static interfaceType Create(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<interfaceType, AutoCSer.Net.TcpOpenServer.ClientSocketSender, bool> verifyMethod = null, Action<TcpServer.ClientSocketEventParameter> waitConnectedOnCheckSocketVersion = null, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+        public static interfaceType Create(Net.TcpOpenServer.ServerAttribute attribute = null, Func<interfaceType, Net.TcpOpenServer.ClientSocketSender, bool> verifyMethod = null, Action<TcpServer.ClientSocketEventParameter> waitConnectedOnCheckSocketVersion = null, Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, Log.ILog log = null)
         {
             if (errorString != null) throw new Exception(errorString);
             if (clientType == null) throw new InvalidCastException();
             MethodClient client = (MethodClient)Activator.CreateInstance(clientType);
             interfaceType interfaceClient = (interfaceType)(object)client;
             if (attribute == null) attribute = defaultServerAttribute;
-            client._TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<interfaceType>(interfaceClient, attribute, maxTimeoutSeconds, onCustomData, log, clientRoute, verifyMethod);
+            client._TcpClient_ = new Net.TcpOpenServer.Client<interfaceType>(interfaceClient, attribute, maxTimeoutSeconds, onCustomData, log, clientRoute, verifyMethod);
             if (defaultServerAttribute.GetClientWaitConnectedMilliseconds == 0)
             {
                 if (attribute.IsAutoClient) client._TcpClient_.TryCreateSocket();

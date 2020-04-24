@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -9,7 +9,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// <summary>
     /// TCP 客户端回调队列处理
     /// </summary>
-    internal sealed class ClientCallQueue : AutoCSer.Threading.QueueTaskThread<ClientCommand.CommandBase>
+    internal sealed class ClientCallQueue : Threading.QueueTaskThread<ClientCommand.CommandBase>
     {
         /// <summary>
         /// 添加任务
@@ -17,7 +17,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="value"></param>
         internal void Add(ClientCommand.CommandBase value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) Threading.ThreadYield.YieldOnly();
             if (head == null)
             {
                 end = value;
@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             do
             {
                 WaitHandle.Wait();
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) Threading.ThreadYield.YieldOnly();
                 ClientCommand.CommandBase value = head;
                 end = null;
                 head = null;
@@ -58,7 +58,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                        Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
                 while (value != null);

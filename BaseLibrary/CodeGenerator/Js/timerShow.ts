@@ -1,8 +1,8 @@
 ﻿/// <reference path = "./base.page.ts" />
 'use strict';
 //HTML高度更新模拟动画
-//AutoCSer.Declare.Getters.TimerShow(Id).Show();
-//AutoCSer.Declare.Getters.TimerShow(Id).Hide();
+//Declare.Getters.TimerShow(Id).Show();
+//Declare.Getters.TimerShow(Id).Hide();
 module AutoCSer {
     interface ITimerShowOption {
         Position: string;

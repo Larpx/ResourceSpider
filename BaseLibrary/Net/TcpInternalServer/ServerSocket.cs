@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
@@ -187,7 +187,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Add(Log.LogType.Debug, error);
             }
             close();
         }
@@ -237,12 +237,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                                     }
                                 }
                             }
-                            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+                            else if (Server.Log.IsAnyType(Log.LogType.Info))
                             {
 #if !DOTNET2
                             Socket socket = Socket;
 #endif
-                                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
+                                Server.Log.Add(Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
                             }
                         }
                     }
@@ -270,13 +270,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     if (doVerifyCommand()) return true;
                 }
                 else if (nextSize > 0 && isReceiveVerifyData()) return true;
-                if (!IsVerifyMethod && Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+                if (!IsVerifyMethod && Server.Log.IsAnyType(Log.LogType.Info))
                 {
                     Socket socket = Socket;
-                    Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
+                    Server.Log.Add(Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
                 }
             }
-            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + dataSize.toString() + " > " + maxVerifyDataSize.toString());
+            else if (Server.Log.IsAnyType(Log.LogType.Debug)) Server.Log.Add(Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + dataSize.toString() + " > " + maxVerifyDataSize.toString());
             return false;
         }
         /// <summary>
@@ -330,15 +330,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             try
             {
                 if (isVerifyData()) return;
-                if (!IsVerifyMethod && Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+                if (!IsVerifyMethod && Server.Log.IsAnyType(Log.LogType.Info))
                 {
                     Socket socket = Socket;
-                    Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
+                    Server.Log.Add(Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
                 }
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Add(Log.LogType.Debug, error);
             }
             close();
         }
@@ -377,10 +377,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                 socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
-            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+            else if (Server.Log.IsAnyType(Log.LogType.Info))
             {
                 Socket socket = Socket;
-                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Add(Log.LogType.Info, socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()));
             }
             return false;
         }
@@ -402,7 +402,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             {
                 if (MarkData != 0) TcpServer.CommandBuffer.Mark(ReceiveBuffer.Buffer, MarkData, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize);
                 SubBuffer.PoolBufferFull buffer = new SubBuffer.PoolBufferFull { StartIndex = dataSize };
-                AutoCSer.IO.Compression.DeflateDeCompressor.Get(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize, ref buffer);
+                IO.Compression.DeflateDeCompressor.Get(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize, ref buffer);
                 if (buffer.Buffer != null)
                 {
                     Server.DoCommand(Server.VerifyCommandIdentity, Sender, ref buffer, dataSize);
@@ -459,7 +459,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Add(Log.LogType.Debug, error);
             }
             close();
         }
@@ -825,7 +825,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Add(Log.LogType.Debug, error);
             }
             close();
         }
@@ -894,7 +894,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Add(Log.LogType.Debug, error);
             }
             close();
         }
@@ -920,7 +920,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                 SubBuffer.PoolBufferFull buffer = new SubBuffer.PoolBufferFull { StartIndex = dataSize };
                 try
                 {
-                    AutoCSer.IO.Compression.DeflateDeCompressor.Get(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, compressionDataSize, ref buffer);
+                    IO.Compression.DeflateDeCompressor.Get(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, compressionDataSize, ref buffer);
                 }
                 finally { ReceiveBigBuffer.Free(); }
                 if (buffer.Buffer == null) return false;
@@ -944,7 +944,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
             }
             if (MarkData != 0) TcpServer.CommandBuffer.Mark(ReceiveBuffer.Buffer, MarkData, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize);
             SubBuffer.PoolBufferFull buffer = new SubBuffer.PoolBufferFull { StartIndex = dataSize };
-            AutoCSer.IO.Compression.DeflateDeCompressor.Get(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize, ref buffer);
+            IO.Compression.DeflateDeCompressor.Get(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize, ref buffer);
             if (buffer.Buffer != null)
             {
                 doCommand(ref buffer);
@@ -1078,7 +1078,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Server.Log.Add(Log.LogType.Error, error);
                 }
             }
             DisposeSocket();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Reflection;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

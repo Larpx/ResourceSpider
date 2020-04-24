@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -119,7 +119,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             {
                 if (history.Contains(this))
                 {
-                    AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, @"HTML循环引用:
+                    Log.Pub.Log.WaitThrow(Log.LogType.All, @"HTML循环引用:
 " + history.JoinString(@"
 ", value => value.fileName) + @"
 " + fileName);
@@ -149,7 +149,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         if (index != 0)
                         {
                             int splitIndex = splitCode.IndexOf("*/", StringComparison.Ordinal);
-                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + jsInclude[0] + splitCode);
+                            if (splitIndex == -1) Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + jsInclude[0] + splitCode);
                             HtmlJs file;
                             if (htmlAuto.Htmls.TryGetValue(new FileInfo(IncludePath + splitCode.Substring(0, splitIndex)).FullName.toLowerNotEmpty(), out file))
                             {
@@ -161,7 +161,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                                 newCode.Add(code.Substring(startIndex + jsIncludeLength + (splitIndex += 2), splitCode.Length - splitIndex));
                                 startIndex += jsIncludeLength + splitCode.Length;
                             }
-                            else AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + jsExtension + @"
+                            else Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + jsExtension + @"
 in " + this.fileName + @"
 " + splitCode);
                         }
@@ -188,7 +188,7 @@ in " + this.fileName + @"
                         if (index != 0)
                         {
                             int splitIndex = splitCode.IndexOf("-->", StringComparison.Ordinal);
-                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + htmlInclude[0] + splitCode);
+                            if (splitIndex == -1) Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + htmlInclude[0] + splitCode);
                             SubString name = new SubString { String = code, Start = startIndex + htmlIncludeLength, Length = splitIndex }, memberName = default(SubString);
                             LeftArray<SubString> array = default(LeftArray<SubString>);
                             bool isHash = false;
@@ -260,7 +260,7 @@ in " + this.fileName + @"
                                 newCode.Add(code.Substring(startIndex + htmlIncludeLength + (splitIndex += 3), splitCode.Length - splitIndex));
                                 startIndex += htmlIncludeLength + splitCode.Length;
                             }
-                            else AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + htmlExtension + @"
+                            else Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + htmlExtension + @"
 in " + this.fileName + @"");
                         }
                         ++index;
@@ -335,7 +335,7 @@ in " + this.fileName + @"");
 ", file => file.js);
                                 if (viewJs.Length != 0)
                                 {
-                                    int index = code.IndexOf(@"setTimeout(AutoCSer.Pub.LoadIE,");
+                                    int index = code.IndexOf(@"setTimeout(Pub.LoadIE,");
                                     code = code.Insert(index < 0 ? 0 : index, viewJs + @"
 ");
                                 }
@@ -392,7 +392,7 @@ in " + this.fileName + @"");
         ///// <summary>
         ///// AJAX调用名称
         ///// </summary>
-        //private string ajaxWebCallName = AutoCSer.Net.Http.Header.AjaxCallName;
+        //private string ajaxWebCallName = Net.Http.Header.AjaxCallName;
         ///// <summary>
         ///// AJAX调用名称
         ///// </summary>
@@ -407,25 +407,25 @@ in " + this.fileName + @"");
         /// <returns>压缩后源代码</returns>
         private unsafe string compress(string code)
         {
-            code = code.Replace("    ", "\t").Replace(extends, string.Empty).Replace("__extends", "AutoCSer.Pub.Extends")
+            code = code.Replace("    ", "\t").Replace(extends, string.Empty).Replace("__extends", "Pub.Extends")
                 .Replace("__MAINDOMAIN__", htmlAuto.WebConfig.MainDomain)
                 .Replace("__POLLDOMAIN__", htmlAuto.WebConfig.PollDomain)
                 .Replace("__VIEWLOCATION__", htmlAuto.WebConfig.NoViewLocation)
                 .Replace("__STATICDOMAIN__", htmlAuto.WebConfig.StaticFileDomain)
                 .Replace("__IMAGEDOMAIN__", htmlAuto.WebConfig.ImageDomain)
-                .Replace("__AJAXRETURN__", AutoCSer.Net.TcpServer.ReturnValue.ReturnParameterName)
-                .Replace("__AJAX__", AutoCSer.Net.Http.Header.AjaxCallName)
-                .Replace("__AJAXCALL__", AutoCSer.Net.Http.Header.AjaxCallNameChar.ToString())
-                .Replace("__CALLBACK__", AutoCSer.Net.Http.Header.AjaxCallBackNameChar.ToString())
-                .Replace("__JSON__", AutoCSer.Net.Http.Header.QueryJsonNameChar.ToString())
-                .Replace("__XML__", AutoCSer.Net.Http.Header.QueryXmlNameChar.ToString())
-                .Replace("__REVIEW__", AutoCSer.Net.Http.Header.ReViewNameChar.ToString())
-                .Replace("__MOBILEREVIEW__", AutoCSer.Net.Http.Header.MobileReViewNameChar.ToString())
-                .Replace("__VIEWONLY__", AutoCSer.Net.Http.Header.ViewOnlyName)
-                .Replace("__LOADPAGECACHE__", AutoCSer.Net.Http.Header.LoadPageCacheChar.ToString())
-                .Replace("__PUBERROR__", AutoCSer.Net.Http.Header.PubErrorCallName)
-                .Replace("__VERSIONNAME__", AutoCSer.Net.Http.Header.VersionNameChar.ToString())
-                .Replace("__VIEWOVERID__", AutoCSer.Net.Http.Header.ViewOverId)
+                .Replace("__AJAXRETURN__", Net.TcpServer.ReturnValue.ReturnParameterName)
+                .Replace("__AJAX__", Net.Http.Header.AjaxCallName)
+                .Replace("__AJAXCALL__", Net.Http.Header.AjaxCallNameChar.ToString())
+                .Replace("__CALLBACK__", Net.Http.Header.AjaxCallBackNameChar.ToString())
+                .Replace("__JSON__", Net.Http.Header.QueryJsonNameChar.ToString())
+                .Replace("__XML__", Net.Http.Header.QueryXmlNameChar.ToString())
+                .Replace("__REVIEW__", Net.Http.Header.ReViewNameChar.ToString())
+                .Replace("__MOBILEREVIEW__", Net.Http.Header.MobileReViewNameChar.ToString())
+                .Replace("__VIEWONLY__", Net.Http.Header.ViewOnlyName)
+                .Replace("__LOADPAGECACHE__", Net.Http.Header.LoadPageCacheChar.ToString())
+                .Replace("__PUBERROR__", Net.Http.Header.PubErrorCallName)
+                .Replace("__VERSIONNAME__", Net.Http.Header.VersionNameChar.ToString())
+                .Replace("__VIEWOVERID__", Net.Http.Header.ViewOverId)
                 ;
             code = multiLineNodes.Replace(code, string.Empty);
             code = singleLineNodes.Replace(code, string.Empty);
@@ -1047,11 +1047,11 @@ in " + this.fileName + @"");
             code = code.Replace("__MAINDOMAIN__", htmlAuto.WebConfig.MainDomain)
                 .Replace("__STATICDOMAIN__", htmlAuto.WebConfig.StaticFileDomain)
                 .Replace("__IMAGEDOMAIN__", htmlAuto.WebConfig.ImageDomain)
-                .Replace("__JSON__", AutoCSer.Net.Http.Header.QueryJsonNameChar.ToString())
-                .Replace("__XML__", AutoCSer.Net.Http.Header.QueryXmlNameChar.ToString())
-                .Replace("__VERSIONNAME__", AutoCSer.Net.Http.Header.VersionNameChar.ToString())
+                .Replace("__JSON__", Net.Http.Header.QueryJsonNameChar.ToString())
+                .Replace("__XML__", Net.Http.Header.QueryXmlNameChar.ToString())
+                .Replace("__VERSIONNAME__", Net.Http.Header.VersionNameChar.ToString())
                 .Replace("__VERSION__", (isWriteJs ? "0" : null) + Version)
-                .Replace("__VIEWOVERID__", AutoCSer.Net.Http.Header.ViewOverId)
+                .Replace("__VIEWOVERID__", Net.Http.Header.ViewOverId)
                 ;
             if (htmlAuto.WebConfig.IsHtmlLinkVersion) code = htmlLinkVersionRegex.Replace(code, htmlLinkVersion);
             writeFile(fileName, code);
@@ -1064,7 +1064,7 @@ in " + this.fileName + @"");
         private static string htmlLinkVersion(Match match)
         {
             string value = match.Value;
-            return value[value.Length - 1] == '?' ? value + AutoCSer.Net.Http.Header.VersionNameChar.ToString() + "=" + Version + "&" : (value.Substring(0, value.Length - 1) + "?" + AutoCSer.Net.Http.Header.VersionNameChar.ToString() + "=" + Version + @"""");
+            return value[value.Length - 1] == '?' ? value + Net.Http.Header.VersionNameChar.ToString() + "=" + Version + "&" : (value.Substring(0, value.Length - 1) + "?" + Net.Http.Header.VersionNameChar.ToString() + "=" + Version + @"""");
         }
         /// <summary>
         /// 写入目标文件

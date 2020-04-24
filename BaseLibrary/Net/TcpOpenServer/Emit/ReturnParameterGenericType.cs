@@ -1,19 +1,19 @@
 ﻿using System;
-using AutoCSer.Threading;
+using Threading;
 using System.Reflection;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// 输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ReturnParameterGenericType : AutoCSer.Net.TcpServer.Emit.ReturnParameterGenericType
+    internal abstract partial class ReturnParameterGenericType : Net.TcpServer.Emit.ReturnParameterGenericType
     {
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ReturnParameterGenericType> cache = new LockLastDictionary<Type, ReturnParameterGenericType>();
+        private static readonly Threading.LockLastDictionary<Type, ReturnParameterGenericType> cache = new LockLastDictionary<Type, ReturnParameterGenericType>();
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -72,21 +72,21 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// </summary>
         internal override MethodInfo ServerSocketSenderGetCallbackMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallback)ParameterGenericType.ServerSocketSender.GetCallback<outputParameterType, returnType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallback)ParameterGenericType.ServerSocketSender.GetCallback<outputParameterType, returnType>).Method; }
         }
         /// <summary>
         /// 异步回调
         /// </summary>
         internal override MethodInfo ServerSocketSenderGetCallbackEmitMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallbackEmit)ParameterGenericType.ServerSocketSender.GetCallbackEmit<outputParameterType, returnType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallbackEmit)ParameterGenericType.ServerSocketSender.GetCallbackEmit<outputParameterType, returnType>).Method; }
         }
         /// <summary>
         /// 异步回调
         /// </summary>
         internal override MethodInfo ServerSocketSenderGetCallbackReturnMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallbackReturn)ParameterGenericType.ServerSocketSender.GetCallbackReturn<outputParameterType, returnType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallbackReturn)ParameterGenericType.ServerSocketSender.GetCallbackReturn<outputParameterType, returnType>).Method; }
         }
     }
 }

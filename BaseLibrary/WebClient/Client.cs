@@ -3,7 +3,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Text;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
@@ -94,7 +94,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
             {
                 if (ResponseHeaders != null)
                 {
-                    string contentEncoding = ResponseHeaders[AutoCSer.Net.Http.HeaderName.ContentEncoding];
+                    string contentEncoding = ResponseHeaders[Net.Http.HeaderName.ContentEncoding];
                     if (contentEncoding != null)
                     {
                         if (contentEncoding.Length == 4)
@@ -116,7 +116,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
             {
                 if (ResponseHeaders != null)
                 {
-                    string contentType = ResponseHeaders[AutoCSer.Net.Http.HeaderName.ContentType];
+                    string contentType = ResponseHeaders[Net.Http.HeaderName.ContentType];
                     if (contentType != null) return getEncoding(contentType);
                 }
                 return null;
@@ -247,7 +247,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
         {
             if (request.IsErrorOut)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, (request.IsErrorOutUri ? request.Uri.AbsoluteUri : null) + " 抓取失败", !request.IsErrorOutUri);
+                Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, (request.IsErrorOutUri ? request.Uri.AbsoluteUri : null) + " 抓取失败", !request.IsErrorOutUri);
             }
         }
         /// <summary>
@@ -293,7 +293,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
                     }
                     catch(Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, key.ToString(), true);
+                        Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, key.ToString(), true);
                     }
                 }
             }

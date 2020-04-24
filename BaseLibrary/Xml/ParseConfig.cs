@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+usingMetadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
@@ -23,7 +23,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 成员选择
         ///// </summary>
-        //public AutoCSer.Metadata.MemberFilters MemberFilter = Metadata.MemberFilters.Instance;
+        //publicMetadata.MemberFilters MemberFilter = Metadata.MemberFilters.Instance;
         /// <summary>
         /// 是否保存属性索引
         /// </summary>

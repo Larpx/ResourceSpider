@@ -4,19 +4,19 @@ var AutoCSer;
 (function (AutoCSer) {
     var CrawlTitle = (function () {
         function CrawlTitle(Parameter) {
-            AutoCSer.Pub.GetParameter(this, CrawlTitle.DefaultParameter, Parameter);
-            setTimeout(AutoCSer.Pub.ThisFunction(this, this.Request), 1);
+            Pub.GetParameter(this, CrawlTitle.DefaultParameter, Parameter);
+            setTimeout(Pub.ThisFunction(this, this.Request), 1);
         }
         CrawlTitle.prototype.Request = function () {
             var Link = this.Link.Link, Index = Link.indexOf('#');
             if ((Index + 1) && Link.charAt(Index + 1) != '!')
                 Link = Link.substring(0, Index);
-            AutoCSer.HttpRequest.Post(this.AjaxCallName, { link: Link }, AutoCSer.Pub.ThisFunction(this, this.OnLink));
+            HttpRequest.Post(this.AjaxCallName, { link: Link }, Pub.ThisFunction(this, this.OnLink));
         };
         CrawlTitle.prototype.OnLink = function (Value) {
             this.Link.IsTitle = true;
             if (Value.__AJAXRETURN__) {
-                this.Link.Title = AutoCSer.Pub.DeleteElements.Html(Value.__AJAXRETURN__).Text0();
+                this.Link.Title = Pub.DeleteElements.Html(Value.__AJAXRETURN__).Text0();
                 for (var Index = this.Link.CallBack.length; Index; this.Link.CallBack[--Index](this.Link))
                     ;
             }
@@ -36,12 +36,12 @@ var AutoCSer;
         };
         CrawlTitle.TryRequest = function (AjaxCallName) {
             if (this.Links.length)
-                setTimeout(AutoCSer.Pub.ThisFunction(this, this.Request, [AjaxCallName]), 0);
+                setTimeout(Pub.ThisFunction(this, this.Request, [AjaxCallName]), 0);
         };
         CrawlTitle.DefaultParameter = { Link: null, AjaxCallName: null };
         CrawlTitle.Titles = {};
         CrawlTitle.Links = [];
         return CrawlTitle;
     }());
-    AutoCSer.CrawlTitle = CrawlTitle;
+    CrawlTitle = CrawlTitle;
 })(AutoCSer || (AutoCSer = {}));

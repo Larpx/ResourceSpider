@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Log;
+using Log;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 using System.Net;
 using System.Diagnostics;
@@ -26,7 +26,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 二进制反序列化配置参数
         /// </summary>
-        internal readonly AutoCSer.BinarySerialize.DeSerializeConfig BinaryDeSerializeConfig;
+        internal readonly BinarySerialize.DeSerializeConfig BinaryDeSerializeConfig;
         /// <summary>
         /// 服务 IP 地址
         /// </summary>
@@ -133,7 +133,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);
             int binaryDeSerializeMaxArraySize = attribute.GetBinaryDeSerializeMaxArraySize;
-            BinaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
+            BinaryDeSerializeConfig = Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
             VerifyMethodCount = isSynchronousVerifyMethod ? Server.DefaultVerifyMethodCount : (byte)(Server.DefaultVerifyMethodCount + 1);
         }
         /// <summary>
@@ -146,8 +146,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 if (isListen != 0)
                 {
                     isListen = 0;
-                    if (Log.IsAnyType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, "停止服务 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString());
-                    AutoCSer.DomainUnload.Unloader.Remove(this, DomainUnload.Type.TcpCommandBaseDispose, false);
+                    if (Log.IsAnyType(Log.LogType.Info)) Log.Add(Log.LogType.Info, "停止服务 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString());
+                    DomainUnload.Unloader.Remove(this, DomainUnload.Type.TcpCommandBaseDispose, false);
                     StopListen();
                 }
                 if (CallQueueArray != null)
@@ -190,12 +190,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 Socket.Bind(new IPEndPoint(IpAddress, Port));
                 Socket.Listen(int.MaxValue);
                 isListen = 1;
-                if (Port == 0) Log.Add(AutoCSer.Log.LogType.Warn, GetType().FullName + "服务器端口为 0");
+                if (Port == 0) Log.Add(Log.LogType.Warn, GetType().FullName + "服务器端口为 0");
             }
             catch (Exception error)
             {
                 Dispose();
-                Log.Add(AutoCSer.Log.LogType.Error, error, GetType().FullName + "服务器端口 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString() + " TCP连接失败)");
+                Log.Add(Log.LogType.Error, error, GetType().FullName + "服务器端口 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString() + " TCP连接失败)");
             }
             return isListen != 0;
         }
@@ -213,7 +213,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 tcpRegisterClient = TcpRegister.Client.Get(tcpRegisterName, Log);
                 if (tcpRegisterClient == null)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部注册服务 " + tcpRegisterName + " 客户端获取失败");
+                    Log.Add(Log.LogType.Error, "TCP 内部注册服务 " + tcpRegisterName + " 客户端获取失败");
                     return false;
                 }
                 if (attribute.ClientRegisterHost == null) attribute.ClientRegisterHost = attribute.Host;
@@ -313,7 +313,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 }
                 if (commandData.Data == null) return false;
             }
-            if (Log.IsAllType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, ServerAttribute.ServerName + " 缺少命令处理委托 [" + index.toString() + "]");
+            if (Log.IsAllType(Log.LogType.Info)) Log.Add(Log.LogType.Info, ServerAttribute.ServerName + " 缺少命令处理委托 [" + index.toString() + "]");
             return false;
         }
         /// <summary>
@@ -361,12 +361,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             string verify = Attribute.VerifyString;
             if (verify == null)
             {
-                if (AutoCSer.Config.Pub.Default.IsDebug)
+                if (Config.Pub.Default.IsDebug)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, "警告：调试模式未启用服务验证 " + ServerAttribute.ServerName, (StackFrame)null, true);
+                    Log.Add(Log.LogType.Warn | Log.LogType.Debug, "警告：调试模式未启用服务验证 " + ServerAttribute.ServerName, (StackFrame)null, true);
                     return true;
                 }
-                Log.Add(AutoCSer.Log.LogType.Error, "服务 " + ServerAttribute.ServerName + " 验证字符串不能为空", (StackFrame)null, true);
+                Log.Add(Log.LogType.Error, "服务 " + ServerAttribute.ServerName + " 验证字符串不能为空", (StackFrame)null, true);
             }
             return false;
         }

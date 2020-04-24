@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
@@ -25,7 +25,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <param name="sender"></param>
         /// <param name="client"></param>
         /// <returns></returns>
-        public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, AutoCSer.Net.TcpOpenServer.Client client)
+        public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, Net.TcpOpenServer.Client client)
         {
             string verifyString = client.Attribute.VerifyString;
             if (verifyString == null)
@@ -44,7 +44,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <param name="userID">用户ID</param>
         /// <param name="verifyString">验证字符串</param>
         /// <returns></returns>
-        public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, AutoCSer.Net.TcpOpenServer.Client client, string userID, string verifyString)
+        public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, Net.TcpOpenServer.Client client, string userID, string verifyString)
         {
             long ticks;
             TcpServer.ServerBaseAttribute attribute = client.Attribute;
@@ -67,10 +67,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
                 }
                 if (isVerify.Type != TcpServer.ReturnType.Success || ticks <= lastTicks)
                 {
-                    socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
+                    socket.Log.Add(Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
                     return false;
                 }
-                socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                socket.Log.Add(Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
             }
             while (true);
         }

@@ -12,7 +12,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <summary>
         /// 等待事件
         /// </summary>
-        internal AutoCSer.Threading.Thread.AutoWaitHandle WaitHandle;
+        internalThreading.Thread.AutoWaitHandle WaitHandle;
         /// <summary>
         /// 线程句柄
         /// </summary>
@@ -37,7 +37,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         internal QueueTaskThread(bool isBackground = true, bool isStart = true)
         {
             WaitHandle.Set(0);
-            threadHandle = new System.Threading.Thread(run, AutoCSer.Threading.ThreadPool.TinyStackSize);
+            threadHandle = new System.Threading.Thread(run,Threading.ThreadPool.TinyStackSize);
             if (isBackground) threadHandle.IsBackground = true;
             if (isStart) threadHandle.Start();
         }

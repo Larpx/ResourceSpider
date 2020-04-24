@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
@@ -29,7 +29,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
-        [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [Method(IsVerifyMethod = true, ServerTask = Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = Net.TcpServer.ParameterFlags.SerializeBox)]
         protected static bool verify(TcpInternalServer.ServerSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
             TcpServer.ServerBase server = sender.Server;

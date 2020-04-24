@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 
@@ -80,7 +80,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.OutputKeepCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputKeepCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputKeepCommand<outputParameterType>();
+                ClientCommand.OutputKeepCommand<outputParameterType> command = Threading.RingPool<ClientCommand.OutputKeepCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputKeepCommand<outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback);
@@ -103,7 +103,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
+                ClientCommand.OutputCommand<outputParameterType> command = Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback);
@@ -119,12 +119,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="identityCommand">命令信息</param>
         /// <param name="callback">异步回调</param>
         /// <returns>保持回调</returns>
-        public ReturnValue<outputParameterType> WaitGet<outputParameterType>(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback)
+        public ReturnValue<outputParameterType> WaitGet<outputParameterType>(CommandInfo identityCommand, ref Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback)
             where outputParameterType : struct
         {
             if (IsSocket)
             {
-                ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
+                ClientCommand.OutputCommand<outputParameterType> command = Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback);
@@ -153,7 +153,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType>();
+                ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType> command = Threading.RingPool<ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
@@ -179,7 +179,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
+                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
@@ -197,13 +197,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="callback">异步回调</param>
         /// <param name="inputParameter">输入参数</param>
         /// <returns>保持回调</returns>
-        public ReturnValue<outputParameterType> WaitGet<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback, ref inputParameterType inputParameter)
+        public ReturnValue<outputParameterType> WaitGet<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback, ref inputParameterType inputParameter)
             where inputParameterType : struct
             where outputParameterType : struct
         {
             if (IsSocket)
             {
-                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
+                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
@@ -225,12 +225,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="outputParameter">输出参数</param>
         /// <returns>保持回调</returns>
         //
-        public ReturnType WaitGet<outputParameterType>(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback, ref outputParameterType outputParameter)
+        public ReturnType WaitGet<outputParameterType>(CommandInfo identityCommand, ref Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
             if (IsSocket)
             {
-                ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
+                ClientCommand.OutputCommand<outputParameterType> command = Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
@@ -254,14 +254,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="outputParameter">输出参数</param>
         /// <returns>保持回调</returns>
         //
-        public ReturnType WaitGet<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback
+        public ReturnType WaitGet<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback
             , ref inputParameterType inputParameter, ref outputParameterType outputParameter)
             where inputParameterType : struct
             where outputParameterType : struct
         {
             if (IsSocket)
             {
-                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
+                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
@@ -287,7 +287,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
+                ClientCommand.InputCommand<inputParameterType> command = Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall ?? NullCallback, ref inputParameter);
@@ -310,7 +310,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             ReturnValue returnValue;
             if (IsSocket)
             {
-                ClientCommand.InputKeepCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputKeepCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputKeepCommand<inputParameterType>();
+                ClientCommand.InputKeepCommand<inputParameterType> command = Threading.RingPool<ClientCommand.InputKeepCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputKeepCommand<inputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall ?? NullCallback, ref inputParameter);
@@ -332,7 +332,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
+                ClientCommand.CallCommand command = Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall ?? NullCallback);
@@ -352,7 +352,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             ReturnValue returnValue;
             if (IsSocket)
             {
-                ClientCommand.CallKeepCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallKeepCommand>.Default.Pop() ?? new ClientCommand.CallKeepCommand();
+                ClientCommand.CallKeepCommand command = Threading.RingPool<ClientCommand.CallKeepCommand>.Default.Pop() ?? new ClientCommand.CallKeepCommand();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall ?? NullCallback);
@@ -378,12 +378,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
+                ClientCommand.InputCommand<inputParameterType> command = Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall.CallbackHandle, ref inputParameter);
                     push(command);
-                    AutoCSer.Net.TcpServer.ReturnType value = onCall.Wait();
+                    Net.TcpServer.ReturnType value = onCall.Wait();
                     onCall = null;
                     return value;
                 }
@@ -400,7 +400,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="onCall">回调委托</param>
         /// <param name="inputParameter">输入参数</param>
         /// <returns>保持回调</returns>
-        internal ReturnType WaitCall<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> onCall, ref inputParameterType inputParameter)
+        internal ReturnType WaitCall<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref Net.TcpServer.AutoWaitReturnValue<outputParameterType> onCall, ref inputParameterType inputParameter)
             where inputParameterType : struct
             where outputParameterType : struct
         {
@@ -417,12 +417,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
+                ClientCommand.CallCommand command = Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall.CallbackHandle);
                     push(command);
-                    AutoCSer.Net.TcpServer.ReturnType value = onCall.Wait();
+                    Net.TcpServer.ReturnType value = onCall.Wait();
                     onCall = null;
                     return value;
                 }
@@ -442,7 +442,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.SendOnlyCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.SendOnlyCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.SendOnlyCommand<inputParameterType>();
+                ClientCommand.SendOnlyCommand<inputParameterType> command = Threading.RingPool<ClientCommand.SendOnlyCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.SendOnlyCommand<inputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, ref inputParameter);
@@ -459,7 +459,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.SendOnlyCommand command = AutoCSer.Threading.RingPool<ClientCommand.SendOnlyCommand>.Default.Pop() ?? new ClientCommand.SendOnlyCommand();
+                ClientCommand.SendOnlyCommand command = Threading.RingPool<ClientCommand.SendOnlyCommand>.Default.Pop() ?? new ClientCommand.SendOnlyCommand();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand);
@@ -484,7 +484,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
+                ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
@@ -508,7 +508,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
+                ClientCommand.OutputCommand<outputParameterType> command = Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
@@ -532,7 +532,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
+                ClientCommand.InputCommand<inputParameterType> command = Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall.Call, ref inputParameter);
@@ -568,7 +568,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
+                ClientCommand.CallCommand command = Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
                 if (command != null)
                 {
                     command.Set(ClientSocket, identityCommand, onCall.Call);
@@ -608,7 +608,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                             OutputWaitHandle.Set();
                             Interlocked.Increment(ref commandCount);
                         }
-                        else AutoCSer.Threading.RingPool<ClientCommand.CheckCommand>.Default.PushNotNull(command);
+                        else Threading.RingPool<ClientCommand.CheckCommand>.Default.PushNotNull(command);
                     }
                 }
                 ClientSocket.CheckTimer.Reset(ClientSocket);
@@ -625,7 +625,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             if (IsSocket)
             {
                 if (data == null) data = NullValue<byte>.Array;
-                ClientCommand.CustomDataCommand command = AutoCSer.Threading.RingPool<ClientCommand.CustomDataCommand>.Default.Pop() ?? new ClientCommand.CustomDataCommand(ClientSocket);
+                ClientCommand.CustomDataCommand command = Threading.RingPool<ClientCommand.CustomDataCommand>.Default.Pop() ?? new ClientCommand.CustomDataCommand(ClientSocket);
                 if (command != null)
                 {
                     command.Set(ClientSocket, data);
@@ -645,7 +645,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.CustomDataCommand command = AutoCSer.Threading.RingPool<ClientCommand.CustomDataCommand>.Default.Pop() ?? new ClientCommand.CustomDataCommand(ClientSocket);
+                ClientCommand.CustomDataCommand command = Threading.RingPool<ClientCommand.CustomDataCommand>.Default.Pop() ?? new ClientCommand.CustomDataCommand(ClientSocket);
                 if (command != null)
                 {
                     command.Set(ClientSocket, ref data);
@@ -665,7 +665,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.CancelKeepCommand command = AutoCSer.Threading.RingPool<ClientCommand.CancelKeepCommand>.Default.Pop() ?? new ClientCommand.CancelKeepCommand();
+                ClientCommand.CancelKeepCommand command = Threading.RingPool<ClientCommand.CancelKeepCommand>.Default.Pop() ?? new ClientCommand.CancelKeepCommand();
                 if (command != null)
                 {
                     command.Set(ClientSocket, commandIndex);
@@ -682,12 +682,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <returns>表达式服务端节点标识集合</returns>
         internal ReturnValue<int[]> GetRemoteExpressionNodeId(RemoteType[] types)
         {
-            AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output> callback = AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output>.Pop();
+            Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output> callback = Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output>.Pop();
             try
             {
                 if (IsSocket)
                 {
-                    ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output>();
+                    ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output> command = Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output>();
                     if (command != null)
                     {
                         RemoteExpression.ServerNodeIdChecker.Input inputParameter = new RemoteExpression.ServerNodeIdChecker.Input { Types = types };
@@ -699,13 +699,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                         return new ReturnValue<int[]> { Type = type, Value = outputParameter.Return };
                     }
                 }
-                else return new ReturnValue<int[]> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientDisposed };
+                else return new ReturnValue<int[]> { Type = Net.TcpServer.ReturnType.ClientDisposed };
             }
             finally
             {
-                if (callback != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output>.PushNotNull(callback);
+                if (callback != null) Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output>.PushNotNull(callback);
             }
-            return new ReturnValue<int[]> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+            return new ReturnValue<int[]> { Type = Net.TcpServer.ReturnType.ClientException };
         }
         /// <summary>
         /// 获取客户端远程表达式节点
@@ -750,12 +750,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <returns>返回值类型</returns>
         private ReturnValue<RemoteExpression.ReturnValue> getRemoteExpression(ref RemoteExpression.ClientNode node)
         {
-            AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ReturnValue.Output> callback = AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ReturnValue.Output>.Pop();
+            Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ReturnValue.Output> callback = Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ReturnValue.Output>.Pop();
             try
             {
                 if (IsSocket)
                 {
-                    ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output>();
+                    ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output> command = Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output>();
                     if (command != null)
                     {
                         command.Set(ClientSocket, RemoteExpression.ClientNode.CommandInfo, callback, ref node);
@@ -766,13 +766,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                         return new ReturnValue<RemoteExpression.ReturnValue> { Type = type, Value = outputParameter.Return };
                     }
                 }
-                else return new ReturnValue<RemoteExpression.ReturnValue> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientDisposed };
+                else return new ReturnValue<RemoteExpression.ReturnValue> { Type = Net.TcpServer.ReturnType.ClientDisposed };
             }
             finally
             {
-                if (callback != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ReturnValue.Output>.PushNotNull(callback);
+                if (callback != null) Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ReturnValue.Output>.PushNotNull(callback);
             }
-            return new ReturnValue<RemoteExpression.ReturnValue> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+            return new ReturnValue<RemoteExpression.ReturnValue> { Type = Net.TcpServer.ReturnType.ClientException };
         }
         /// <summary>
         /// 获取远程表达式数据
@@ -834,11 +834,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>>();
+                ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>> command = Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>>();
                 if (command != null)
                 {
-                    AutoCSer.Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue> awaiter = new AutoCSer.Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue>();
-                    AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue> outputParameter = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>);
+                    Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue> awaiter = new Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue>();
+                    Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue> outputParameter = default(Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>);
                     command.Set(ClientSocket, RemoteExpression.ClientNode.CommandInfo, awaiter, ref node, ref outputParameter);
                     push(command);
                     return awaiter;
@@ -956,7 +956,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                                 if ((dataLength -= (sizeof(uint) + sizeof(int) * 2)) >= minCompressSize)
                                 {
                                     SubArray<byte> oldSendData = sendData;
-                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
+                                    if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
                                     {
                                         compressionDataSize = sendData.Length;
                                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 3));
@@ -988,7 +988,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                             {
                                 if (dataLength >= minCompressSize)
                                 {
-                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
+                                    if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
                                     {
                                         compressionDataSize = sendData.Length;
                                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
@@ -1056,7 +1056,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             }
             catch (Exception error)
             {
-                clientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Error, error);
+                clientCreator.CommandClient.Log.Add(Log.LogType.Error, error);
                 buildInfo.IsError = true;
             }
             finally
@@ -1101,7 +1101,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         ///// <summary>
         ///// 等待事件
         ///// </summary>
-        //internal AutoCSer.Threading.AutoWaitHandle BuildOutputMainWaitHandle;
+        //internal Threading.AutoWaitHandle BuildOutputMainWaitHandle;
         ///// <summary>
         ///// 等待事件
         ///// </summary>
@@ -1171,7 +1171,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //            {
         //                if ((dataLength -= (sizeof(uint) + sizeof(int) * 2)) >= minCompressSize)
         //                {
-        //                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
+        //                    if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
         //                    {
         //                        compressionDataSize = sendData.Length;
         //                        sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 3));
@@ -1203,7 +1203,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //            {
         //                if (dataLength >= minCompressSize)
         //                {
-        //                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
+        //                    if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
         //                    {
         //                        compressionDataSize = sendData.Length;
         //                        sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
@@ -1255,7 +1255,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //    }
         //    catch (Exception error)
         //    {
-        //        commandClient.Log.add(AutoCSer.Log.LogType.Error, error);
+        //        commandClient.Log.add(Log.LogType.Error, error);
         //        isError = 1;
         //    }
         //    finally
@@ -1304,7 +1304,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         ///// <summary>
         ///// 等待事件
         ///// </summary>
-        //internal AutoCSer.Threading.AutoWaitHandle BuildOutputOtherWaitHandle;
+        //internal Threading.AutoWaitHandle BuildOutputOtherWaitHandle;
         ///// <summary>
         ///// 发送数据是否结束
         ///// </summary>
@@ -1376,7 +1376,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //                {
         //                    if ((dataLength -= (sizeof(uint) + sizeof(int) * 2)) >= minCompressSize)
         //                    {
-        //                        if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
+        //                        if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
         //                        {
         //                            compressionDataSize = sendData.Length;
         //                            sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 3));
@@ -1408,7 +1408,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //                {
         //                    if (dataLength >= minCompressSize)
         //                    {
-        //                        if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
+        //                        if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
         //                        {
         //                            compressionDataSize = sendData.Length;
         //                            sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
@@ -1461,7 +1461,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //    }
         //    catch (Exception error)
         //    {
-        //        commandClient.Log.add(AutoCSer.Log.LogType.Error, error);
+        //        commandClient.Log.add(Log.LogType.Error, error);
         //        isError = 1;
         //    }
         //    finally

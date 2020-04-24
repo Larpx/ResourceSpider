@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Config
         /// <summary>
         /// 配置加载程序集名称
         /// </summary>
-        private const string configNamespace = "AutoCSer.Config";
+        private const string configNamespace = "Config";
         /// <summary>
         /// 配置关键字
         /// </summary>
@@ -166,7 +166,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Config
 #if AutoCSer
             catch (Exception error)
             {
-                AutoCSer.Log.Trace.Console(error.ToString());
+                Log.Trace.Console(error.ToString());
             }
 #else
             catch { }

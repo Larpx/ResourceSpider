@@ -103,11 +103,11 @@ module AutoCSer {
             this.Show = Show || Value;
         }
         ToJson(IsIgnore: boolean, IsNameQuery: boolean, IsSortName : boolean, Parents: any[]) {
-            return AutoCSer.Pub.ToJson(this.Value, IsIgnore, IsNameQuery, IsSortName, Parents);
+            return Pub.ToJson(this.Value, IsIgnore, IsNameQuery, IsSortName, Parents);
         }
         toString() {
             return this.Value;
         }
     }
-    new AutoCSer.Declare(MouseMenu, 'MouseMenu', 'mouseover', 'ParameterId');
+    new Declare(MouseMenu, 'MouseMenu', 'mouseover', 'ParameterId');
 }

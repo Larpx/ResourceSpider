@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
@@ -123,7 +123,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                         *(int*)(state + sizeof(int) * 2) = values[0].Value;//名称索引
                         prefix = Data.Byte + sizeof(int) * 4;
                         *(ushort*)prefix = (ushort)value.Length;
-                        AutoCSer.Memory.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
+                       Memory.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
                         *(ushort*)(prefix + 256) = 0;
                     }
                     else
@@ -136,7 +136,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                         *(int*)(state + sizeof(int) * 2) = values[0].Value;//名称索引
                         prefix = Data.Byte + sizeof(int) * 4 + 256 + 4;
                         *(ushort*)prefix = (ushort)value.Length;
-                        AutoCSer.Memory.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
+                       Memory.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
                     }
                 }
             }
@@ -249,7 +249,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                             *(ushort*)(this.prefix - sizeof(ushort)) = (ushort)prefixSize;
                             fixed (byte* charFixed = values[start].Key)
                             {
-                                AutoCSer.Memory.SimpleCopyNotNull(charFixed + current + 1, this.prefix, prefixSize);
+                               Memory.SimpleCopyNotNull(charFixed + current + 1, this.prefix, prefixSize);
                                 this.prefix += (prefixSize + 3) & (int.MaxValue - 1);
                             }
                         }
@@ -299,7 +299,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                 for (int index = values.Length; index != 0; )
                 {
                     byte[] newValue = values[--index].Key;
-                    if (newValue.equal(value)) return false;
+                    if (newValue.equals(value)) return false;
                     value = newValue;
                 }
             }

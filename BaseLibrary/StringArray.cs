@@ -72,7 +72,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         
         public string Join(char join)
         {
-            return AutoCSer.Extension.ArrayExtension.JoinString(array.ToArray(), join);
+            return Extension.ArrayExtension.JoinString(array.ToArray(), join);
         }
         /// <summary>
         /// 生成字符串

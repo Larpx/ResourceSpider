@@ -38,15 +38,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         {
             if (data == null) return null;
             if (data.Length == 0) return string.Empty;
-            string hex = AutoCSer.Extension.StringExtension.FastAllocateString(data.Length << 1);
+            string hex = Extension.StringExtension.FastAllocateString(data.Length << 1);
             fixed (byte* dataFixed = data)
             fixed (char* hexFixed = hex)
             {
                 char* write = hexFixed;
                 for (byte* start = dataFixed, end = dataFixed + data.Length; start != end; ++start)
                 {
-                    *write++ = (char)AutoCSer.Extension.Number.ToHex((uint)*start >> 4);
-                    *write++ = (char)AutoCSer.Extension.Number.ToHex((uint)*start & 0xf);
+                    *write++ = (char)Extension.Number.ToHex((uint)*start >> 4);
+                    *write++ = (char)Extension.Number.ToHex((uint)*start & 0xf);
                 }
             }
             return hex;
@@ -65,8 +65,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
                 char* hexChar = hexFixed;
                 for (byte* start = dataFixed, end = dataFixed + data.Length; start != end; ++start)
                 {
-                    if (*hexChar++ != AutoCSer.Extension.Number.ToHex((uint)*start >> 4)) return false;
-                    if (*hexChar++ != AutoCSer.Extension.Number.ToHex((uint)*start & 0xf)) return false;
+                    if (*hexChar++ != Extension.Number.ToHex((uint)*start >> 4)) return false;
+                    if (*hexChar++ != Extension.Number.ToHex((uint)*start & 0xf)) return false;
                 }
             }
             return true;

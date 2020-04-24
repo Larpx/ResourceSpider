@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net
@@ -100,7 +100,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
                 }
                 catch (Exception error)
                 {
-                    (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, error, host);
+                    (log ?? Log.Pub.Log).Add(Log.LogType.Error, error, host);
                 }
             }
             return IPAddress.Any;

@@ -7,7 +7,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
     /// </summary>
     /// <typeparam name="attributeType">自定义属性类型</typeparam>
     internal abstract class MemberGenerator<attributeType> : Generator<attributeType>
-        where attributeType : AutoCSer.Metadata.MemberFilterAttribute
+        where attributeType : Metadata.MemberFilterAttribute
     {
         /// <summary>
         /// 安装完成处理

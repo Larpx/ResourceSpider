@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 客户端超时秒数
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override ushort GetClientTimeoutSeconds { get { return ClientTimeoutSeconds; } }
         /// <summary>
         /// 服务端任务类型，默认为 Timeout
@@ -24,7 +24,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 服务端任务类型
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override ServerTaskType ServerTaskType
         {
             get { return ServerTask; }
@@ -41,7 +41,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 独占 TCP 服务器端同步调用队列编号
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override byte GetServerQueueIndex { get { return ServerQueueIndex; } }
         /// <summary>
                                                                                    /// 客户端异步任务类型，默认为 Timeout
@@ -50,7 +50,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 客户端异步任务类型
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override ClientTaskType ClientTaskType { get { return ClientTask; } }
         /// <summary>
         /// 默认为 true 表示生成同步调用代理函数，同步模式使用的是 Monitor.Wait，会占用一个工作线程，并存在线程调度开销，优点是使用方便、安全。
@@ -59,7 +59,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 是否生成同步调用代理函数
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsClientSynchronous
         {
             get { return IsClientSynchronous; }
@@ -71,7 +71,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 是否生成异步调用代理函数。
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsClientAsynchronous
         {
             get { return IsClientAsynchronous; }
@@ -83,7 +83,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 保持异步回调
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsKeepCallback
         {
             get { return IsKeepCallback; }
@@ -95,7 +95,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 客户端是否仅发送数据，无需服务端应答
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsClientSendOnly { get { return IsClientSendOnly; } }
         /// <summary>
         /// 默认为 true 表示生成 await 代理，不支持 ref / out

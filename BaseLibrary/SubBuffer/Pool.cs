@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
-using AutoCSer.Threading;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+usingThreading;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
@@ -106,7 +106,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// <returns>缓冲区</returns>
         internal void Get(ref PoolBuffer buffer)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolPop);
+            while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SubBufferPoolPop);
             if (freeStart != freeCurrent)
             {
                 uint freeIndex = *--freeCurrent;
@@ -123,7 +123,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
                         {
                             System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
                             Monitor.Enter(createFreeLock);
-                            while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolSetBackFree);
+                            while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SubBufferPoolSetBackFree);
                             if (backFree == null)
                             {
                                 backFree = free;
@@ -187,7 +187,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
             if (buffer.Pool == this)
             {
             START:
-                while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolPush);
+                while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SubBufferPoolPush);
                 if (freeCurrent == freeEnd)
                 {
                     if (backFree == null)
@@ -205,7 +205,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
                             newBackFree = UnmanagedPool.Default.Get();
                         }
                         finally { Monitor.Exit(createFreeLock); }
-                        while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolSetBackFree);
+                        while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SubBufferPoolSetBackFree);
                         backFree = newBackFree;
                         if (freeCurrent != freeEnd) goto PUSH;
                     }

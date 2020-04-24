@@ -450,7 +450,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         {
             if (ByteSize == 0) return NullValue<byte>.Array;
             byte[] data = new byte[ByteSize];
-            AutoCSer.Memory.CopyNotNull(this.Data.Data, data, ByteSize);
+            Memory.CopyNotNull(this.Data.Data, data, ByteSize);
             return data;
         }
     }

@@ -5,12 +5,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// <summary>
     /// TCP 任务处理配置
     /// </summary>
-    public sealed class TaskConfig : AutoCSer.Threading.LinkTaskConfigBase
+    public sealed class TaskConfig : Threading.LinkTaskConfigBase
     {
         /// <summary>
         /// 线程数量
         /// </summary>
-        public int ThreadCount = AutoCSer.Threading.Pub.CpuCount;
+        public int ThreadCount = Threading.Pub.CpuCount;
         /// <summary>
         /// 线程切换检测毫秒数量，默认为 10 毫秒
         /// </summary>
@@ -20,7 +20,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// </summary>
         private void set()
         {
-            if (ThreadCount <= 0) ThreadCount = AutoCSer.Threading.Pub.CpuCount;
+            if (ThreadCount <= 0) ThreadCount = Threading.Pub.CpuCount;
             set(ThreadCount, NewThreadMilliseconds);
         }
 

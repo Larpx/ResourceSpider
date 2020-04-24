@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     /// <summary>
     /// 索引标识
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct IndexIdentity
     {

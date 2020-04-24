@@ -18,7 +18,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Config
         ///// <summary>
         ///// 程序工作主目录
         ///// </summary>
-        //public string WorkPath = AutoCSer.PubPath.ApplicationPath;
+        //public string WorkPath = PubPath.ApplicationPath;
 
         /// <summary>
         /// 是否 window 服务模式

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,7 +8,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
     /// <summary>
     /// 超时计数
     /// </summary>
-    internal abstract unsafe class TimeoutCount : AutoCSer.Threading.DoubleLink<TimeoutCount>, IDisposable
+    internal abstract unsafe class TimeoutCount : Threading.DoubleLink<TimeoutCount>, IDisposable
     {
         /// <summary>
         /// 计时与索引位置
@@ -174,11 +174,12 @@ namespace Larpx.ResourceSpider.BaseLibrary
                     if (count > 0)
                     {
                         if (secondIndex.Second != 0) OnTimeout(secondIndex.Second);
-                        else AutoCSer.Log.Pub.Log.Add(Log.LogType.Fatal, "非法超时秒计数 0，请检查 Decrement 调用是否有 0 传参");
+                        else 
+                            throw new Exception(  "非法超时秒计数 0，请检查 Decrement 调用是否有 0 传参");
                     }
                     return;
                 }
-                AutoCSer.Threading.ThreadYield.YieldOnly();
+                Threading.ThreadYield.YieldOnly();
             }
             while (true);
         }

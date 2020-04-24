@@ -5,25 +5,25 @@ var AutoCSer;
 (function (AutoCSer) {
     var MouseImage = (function () {
         function MouseImage(Parameter) {
-            AutoCSer.Pub.GetParameter(this, MouseImage.DefaultParameter, Parameter);
-            this.Start(this.Event || AutoCSer.DeclareEvent.Default);
+            Pub.GetParameter(this, MouseImage.DefaultParameter, Parameter);
+            this.Start(this.Event || DeclareEvent.Default);
         }
         MouseImage.prototype.Start = function (Event) {
             if (!Event.IsGetOnly) {
-                var Element = AutoCSer.HtmlElement.$IdElement(this.Id);
+                var Element = HtmlElement.$IdElement(this.Id);
                 if (Element != this.Element) {
                     this.Element = Element;
-                    AutoCSer.HtmlElement.$AddEvent(Element, ['mouseout'], AutoCSer.Pub.ThisEvent(this, this.Out));
+                    HtmlElement.$AddEvent(Element, ['mouseout'], Pub.ThisEvent(this, this.Out));
                 }
                 Element.src = this.OverSrc;
             }
         };
         MouseImage.prototype.Out = function (Event) {
-            AutoCSer.HtmlElement.$IdElement(this.Id).src = this.OutSrc;
+            HtmlElement.$IdElement(this.Id).src = this.OutSrc;
         };
         MouseImage.DefaultParameter = { Id: null, Event: null, OverSrc: null, OutSrc: null };
         return MouseImage;
     }());
-    AutoCSer.MouseImage = MouseImage;
-    new AutoCSer.Declare(MouseImage, 'MouseImage', 'mouseover', 'AttributeName');
+    MouseImage = MouseImage;
+    new Declare(MouseImage, 'MouseImage', 'mouseover', 'AttributeName');
 })(AutoCSer || (AutoCSer = {}));

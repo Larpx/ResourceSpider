@@ -43,7 +43,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 
                 Socket = null;
                 LinkNext = null;
-                AutoCSer.Threading.RingPool<CancelKeepCommand>.Default.PushNotNull(this);
+                Threading.RingPool<CancelKeepCommand>.Default.PushNotNull(this);
                 return nextBuild;
             }
             buildInfo.isFullSend = 1;

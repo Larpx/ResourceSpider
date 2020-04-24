@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 using System.Net;
 
@@ -50,7 +50,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 创建 TCP 客户端套接字等待锁
         /// </summary>
-        internal AutoCSer.Threading.WaitHandle SocketWait;
+        internal Threading.WaitHandle SocketWait;
         /// <summary>
         /// TCP 客户端套接字事件
         /// </summary>
@@ -200,7 +200,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                 }
                 finally { Monitor.Exit(OnSocketLock); }
             }
@@ -239,7 +239,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         internal void CustomData(ref SubArray<byte> data)
         {
-            if (onCustomData == null) Log.Add(AutoCSer.Log.LogType.Info, "客户端自定义数据包被丢弃");
+            if (onCustomData == null) Log.Add(Log.LogType.Info, "客户端自定义数据包被丢弃");
             else
             {
                 try
@@ -248,7 +248,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                 }
             }
         }

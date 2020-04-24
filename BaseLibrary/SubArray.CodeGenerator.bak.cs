@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using fastCSharp.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace fastCSharp
 {

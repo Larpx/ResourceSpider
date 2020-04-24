@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Extension
@@ -13,9 +13,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         /// 复制 TCP 服务配置成员位图
         /// </summary>
 #if DOTNET2
-        private static readonly MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute> copyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
+        private static readonly MemberMap<Net.TcpStaticServer.ServerAttribute> copyMemberMap = new MemberMap<Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
 #else
-        private static readonly MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute> copyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
+        private static readonly MemberMap<Net.TcpStaticServer.ServerAttribute> copyMemberMap = new MemberMap<Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
 #endif
         /// <summary>
         /// 复制 TCP 服务配置
@@ -23,18 +23,18 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         /// <param name="value">TCP 服务配置</param>
         /// <param name="copyValue">TCP 服务配置</param>
         
-        internal static void CopyFrom(this AutoCSer.Net.TcpStaticServer.ServerAttribute value, AutoCSer.Net.TcpStaticServer.ServerAttribute copyValue)
+        internal static void CopyFrom(this Net.TcpStaticServer.ServerAttribute value, Net.TcpStaticServer.ServerAttribute copyValue)
         {
-            AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Copy(value, copyValue, copyMemberMap);
+            MemberCopy.Copyer<Net.TcpStaticServer.ServerAttribute>.Copy(value, copyValue, copyMemberMap);
         }
 
         /// <summary>
         /// 复制 TCP 服务配置成员位图
         /// </summary>
 #if DOTNET2
-        private static readonly MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute> simpleCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
+        private static readonly MemberMap<Net.TcpStaticSimpleServer.ServerAttribute> simpleCopyMemberMap = new MemberMap<Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
 #else
-        private static readonly MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute> simpleCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
+        private static readonly MemberMap<Net.TcpStaticSimpleServer.ServerAttribute> simpleCopyMemberMap = new MemberMap<Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
 #endif
         /// <summary>
         /// 复制 TCP 服务配置
@@ -42,9 +42,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         /// <param name="value">TCP 服务配置</param>
         /// <param name="copyValue">TCP 服务配置</param>
         
-        internal static void CopyFrom(this AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute value, AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute copyValue)
+        internal static void CopyFrom(this Net.TcpStaticSimpleServer.ServerAttribute value, Net.TcpStaticSimpleServer.ServerAttribute copyValue)
         {
-            AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Copy(value, copyValue, simpleCopyMemberMap);
+            MemberCopy.Copyer<Net.TcpStaticSimpleServer.ServerAttribute>.Copy(value, copyValue, simpleCopyMemberMap);
         }
     }
 }

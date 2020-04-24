@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -50,8 +50,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="name"></param>
         /// <returns></returns>
         
-        [AutoCSer.Xml.UnknownName]
-        private unsafe static bool parseRefund(AutoCSer.Xml.Parser parser, ref RefundResult value, ref Pointer.Size name)
+        [Xml.UnknownName]
+        private unsafe static bool parseRefund(Xml.Parser parser, ref RefundResult value, ref Pointer.Size name)
         {
             return value.parseRefund(parser, name.Char);
         }
@@ -61,7 +61,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="parser"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        private unsafe bool parseRefund(AutoCSer.Xml.Parser parser, char* name)
+        private unsafe bool parseRefund(Xml.Parser parser, char* name)
         {
             int index, couponIndex = 0;
             switch (*name - 'c')
@@ -142,7 +142,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <returns></returns>
         private unsafe int getRefundIndex(string name, char* nameStart)
         {
-            if (AutoCSer.Extension.String_Weixin.SimpleEqual(name, nameStart))
+            if (Extension.String_Weixin.SimpleEqual(name, nameStart))
             {
                 int index = *(nameStart += name.Length) - '0';
                 do
@@ -169,7 +169,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <returns></returns>
         private unsafe int getCouponIndex(string name, char* nameStart, ref int couponIndex)
         {
-            if (AutoCSer.Extension.String_Weixin.SimpleEqual(name, nameStart))
+            if (Extension.String_Weixin.SimpleEqual(name, nameStart))
             {
                 int index = *(nameStart += name.Length) - '0';
                 do
@@ -214,7 +214,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
             if (IsReturn)
             {
                 if (appid == config.appid && mch_id == config.mch_id && Sign<RefundResult>.Check(this, config.key, sign)) return true;
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + Json.Serializer.Serialize(this));
             }
             return false;
         }

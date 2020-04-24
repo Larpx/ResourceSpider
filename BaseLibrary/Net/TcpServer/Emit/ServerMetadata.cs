@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
@@ -153,7 +153,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
             , MethodInfo serverSocketSenderAddLogMethod, MethodInfo serverCallCallMethod, MethodInfo serverCallCallQueueMethod)
             : base(serverType, senderType)
         {
-            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog), typeof(int), typeof(bool), typeof(bool) });
+            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(Log.ILog), typeof(int), typeof(bool), typeof(bool) });
             GetParameterGenericType = getParameterGenericType;
             GetOutputParameterGenericType = getOutputParameterGenericType;
 

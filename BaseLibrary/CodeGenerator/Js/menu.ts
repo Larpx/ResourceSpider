@@ -33,7 +33,7 @@ module AutoCSer {
         ShowMenu() {
             var Menu = HtmlElement.$Id(this.MenuId), Skin;
             if (this.IsMove) Menu.Style('position', 'absolute').Style('zIndex', HtmlElement.ZIndex + this.ZIndex);
-            if (this.SkinView) Skin = AutoCSer.Skin.Skins[this.MenuId];
+            if (this.SkinView) Skin = Skin.Skins[this.MenuId];
             var IsShow = this.ShowViewFunctionName == null || this.SkinView[this.ShowViewFunctionName]();
             if (Skin && this.ShowView != this.SkinView) {
                 this.ShowView = this.SkinView;

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -218,7 +218,7 @@ using AutoCSer;
         /// <summary>
         /// CSharp代码树节点缓存
         /// </summary>
-        private static Dictionary<string, TreeBuilder.Node> nodeCache = DictionaryCreator.CreateOnly<string, TreeBuilder.Node>();
+        private static Dictionary<string, TreeBuilder.Node> nodeCache = new Dictionary<string, TreeBuilder.Node>();
         /// <summary>
         /// 添加代码
         /// </summary>
@@ -308,7 +308,7 @@ using AutoCSer;
 #endif
                             if (!string.IsNullOrEmpty(code))
                             {
-                                string fileName = parameter.ProjectPath + (AutoCSerFileName = "{" + parameter.DefaultNamespace + "}.AutoCSer.cs");
+                                string fileName = parameter.ProjectPath + (AutoCSerFileName = "{" + parameter.DefaultNamespace + "}.cs");
                                 if (WriteFile(fileName, WarningCode + code + FileEndCode))
                                 {
 #if !DotNetStandard
@@ -347,7 +347,7 @@ using AutoCSer;
                     }
                 }
             }
-            //if (message.Length != 0) AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, message);
+            //if (message.Length != 0) Log.Pub.Log.waitThrow(Log.LogType.All, message);
         }
         /// <summary>
         /// 输出代码
@@ -371,7 +371,7 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                Log.Pub.Log.WaitThrow(Log.LogType.All, error, "文件创建失败 : " + fileName);
             }
             return false;
         }
@@ -385,13 +385,13 @@ using AutoCSer;
         {
             try
             {
-                AutoCSer.IO.File.MoveBak(fileName);
+                IO.File.MoveBak(fileName);
                 File.WriteAllText(fileName, content);
                 return true;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                Log.Pub.Log.WaitThrow(Log.LogType.All, error, "文件创建失败 : " + fileName);
             }
             return false;
         }
@@ -410,7 +410,7 @@ using AutoCSer;
                 {
                     if (File.ReadAllText(fileName = file.FullName) != content)
                     {
-                        string bakName = file.Directory.fullName() + AutoCSer.IO.File.BakPrefix + Date.NowTime.Set().ToString("yyyyMMdd-HHmmss") + "_" + file.Name + "." + ((uint)Random.Default.Next()).toString();
+                        string bakName = file.Directory.fullName() + IO.File.BakPrefix + Date.NowTime.Set().ToString("yyyyMMdd-HHmmss") + "_" + file.Name + "." + ((uint)Random.Default.Next()).toString();
                         if (File.Exists(bakName)) File.Delete(bakName);
                         File.Move(fileName, bakName);
                         File.WriteAllText(fileName, content);
@@ -427,7 +427,7 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                Log.Pub.Log.WaitThrow(Log.LogType.All, error, "文件创建失败 : " + fileName);
             }
             return false;
         }

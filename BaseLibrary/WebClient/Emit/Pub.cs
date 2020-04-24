@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Threading;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Emit
 {
@@ -23,7 +23,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Emit
         internal static LeftArray<FieldIndex> GetFields<valueType, memberAttribute>(MemberFilters memberFilter, bool isAllMember)
             where memberAttribute : IgnoreMemberAttribute
         {
-            FieldIndex[] fieldIndexs = AutoCSer.Metadata.MemberIndexGroup<valueType>.GetFields(memberFilter);
+            FieldIndex[] fieldIndexs = Metadata.MemberIndexGroup<valueType>.GetFields(memberFilter);
             LeftArray<FieldIndex> fields = new LeftArray<FieldIndex>(fieldIndexs.Length);
             foreach (FieldIndex field in fieldIndexs)
             {
@@ -43,7 +43,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Emit
         /// <summary>
         /// 数值转换调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> numberToStringMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonly Threading.LockDictionary<Type, MethodInfo> numberToStringMethods = new Threading.LockDictionary<Type, MethodInfo>();
         /// <summary>
         /// 获取数值转换委托调用函数信息
         /// </summary>
@@ -53,14 +53,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Emit
         {
             MethodInfo method;
             if (numberToStringMethods.TryGetValue(type, out method)) return method;
-            method = typeof(AutoCSer.Extension.Number).GetMethod("toString", BindingFlags.Static | BindingFlags.Public, null, new Type[] { type }, null);
+            method = typeof(Extension.Number).GetMethod("toString", BindingFlags.Static | BindingFlags.Public, null, new Type[] { type }, null);
             numberToStringMethods.Set(type, method);
             return method;
         }
         /// <summary>
         /// 字符串转换调用函数信息集合
         /// </summary>
-        private static readonly Dictionary<Type, MethodInfo> toStringMethods = DictionaryCreator.CreateOnly<Type, MethodInfo>();
+        private static readonly Dictionary<Type, MethodInfo> toStringMethods = new Dictionary<Type, MethodInfo>();
         /// <summary>
         /// 字符串转换调用函数信息访问锁
         /// </summary>

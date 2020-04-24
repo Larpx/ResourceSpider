@@ -7,7 +7,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
     /// TCP 客户端
     /// </summary>
     /// <typeparam name="clientType">客户端类型</typeparam>
-    public abstract class MethodClient<clientType> : AutoCSer.Net.TcpServer.MethodClient, IDisposable
+    public abstract class MethodClient<clientType> : Net.TcpServer.MethodClient, IDisposable
         where clientType : MethodClient<clientType>
     {
         /// <summary>

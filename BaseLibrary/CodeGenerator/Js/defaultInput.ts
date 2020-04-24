@@ -60,5 +60,5 @@ module AutoCSer {
             return '';
         }
     }
-    new AutoCSer.Declare(DefaultInput, 'DefaultInput', 'focus', 'Src');
+    new Declare(DefaultInput, 'DefaultInput', 'focus', 'Src');
 }

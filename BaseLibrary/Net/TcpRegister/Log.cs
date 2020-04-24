@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
     /// <summary>
     /// TCP 内部注册服务更新日志
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public sealed class Log
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
@@ -92,8 +92,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
             {
                 switch (CommandInfo.TaskType)
                 {
-                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                    case ClientTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) Threading.LinkTask.Task.Add(this); return;
+                    case ClientTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                     case ClientTaskType.TcpTask: ClientCallTask.Task.Add(this); return;
                     case ClientTaskType.TcpQueue: ClientCallQueue.Default.Add(this); return;
                 }
@@ -110,7 +110,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
             InputParameter = default(inputParameterType);
             Callback = null;
             Socket = null;
-            AutoCSer.Threading.RingPool<InputCommand<inputParameterType>>.Default.PushNotNull(this);
+            Threading.RingPool<InputCommand<inputParameterType>>.Default.PushNotNull(this);
             callback(new ReturnValue { Type = ReturnType });
         }
         /// <summary>
@@ -133,7 +133,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
             }
             catch (Exception error)
             {
-                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                socket.Log.Add(Log.LogType.Error, error);
             }
         }
     }

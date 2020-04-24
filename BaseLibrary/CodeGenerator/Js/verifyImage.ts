@@ -44,5 +44,5 @@ module AutoCSer {
             Cookie.Default.Write({ Name: 'VerifyImage' });
         }
     }
-    new AutoCSer.Declare(VerifyImage, 'VerifyImage', 'mouseover', 'AttributeName');
+    new Declare(VerifyImage, 'VerifyImage', 'mouseover', 'AttributeName');
 }

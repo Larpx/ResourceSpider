@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// 数据表格 代码生成
         /// </summary>
         [Generator(Name = "数据表格", DependType = typeof(CSharper), IsAuto = true, IsDotNet2 = false, IsMono = false)]
-        internal partial class Generator : TemplateGenerator.Generator<AutoCSer.Sql.TableAttribute>
+        internal partial class Generator : TemplateGenerator.Generator<Sql.TableAttribute>
         {
             /// <summary>
             /// 日志同步字段集合
@@ -33,7 +33,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             public string IsSqlLogProxyLoadedName
             {
-                get { return AutoCSer.Sql.LogStream.Log.IsSqlLogProxyLoadedName; }
+                get { return Sql.LogStream.Log.IsSqlLogProxyLoadedName; }
             }
             /// <summary>
             /// 远程调用链类型信息
@@ -53,18 +53,18 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             protected override void nextCreate()
             {
                 Type modelType;
-                AutoCSer.Sql.ModelAttribute modelAttribute = Type.Type.customAttribute<AutoCSer.Sql.ModelAttribute>(out modelType);
+                Sql.ModelAttribute modelAttribute = Type.Type.customAttribute<Sql.ModelAttribute>(out modelType);
                 if (modelAttribute != null)
                 {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute serverAttribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpStaticServer.ServerAttribute>(Type, false);
+                    Net.TcpStaticServer.ServerAttribute serverAttribute = Metadata.TypeAttribute.GetAttribute<Net.TcpStaticServer.ServerAttribute>(Type, false);
                     if (serverAttribute != null && serverAttribute.ServerName != null && !serverAttribute.IsRemoteLinkType && serverAttribute.IsRemoteLink && (RemoteLinkType = TcpStaticServer.Generator.GetRemoteLinkType(Type)) != null)
                     {
                         LeftArray<TcpStaticServer.Generator.RemoteMethod> remoteMethods = new LeftArray<TcpStaticServer.Generator.RemoteMethod>();
-                        foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, serverAttribute.GetMemberFilters, false, serverAttribute.IsAttribute, serverAttribute.IsBaseTypeAttribute))
+                        foreach (MethodIndex method in MethodIndex.GetMethods<Net.TcpStaticServer.MethodAttribute>(Type, serverAttribute.GetMemberFilters, false, serverAttribute.IsAttribute, serverAttribute.IsBaseTypeAttribute))
                         {
                             if (!method.Method.IsGenericMethodDefinition)
                             {
-                                AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = method.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(false);
+                                Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = method.GetSetupAttribute<Net.TcpStaticServer.RemoteMemberAttribute>(false);
                                 if (remoteAttribute != null && !remoteAttribute.IsClientRemoteMember)
                                 {
                                     MethodParameter[] parameters = method.Parameters;
@@ -78,10 +78,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         {
                             if (!member.IsIgnore)
                             {
-                                AutoCSer.Sql.MemberAttribute attribute = member.GetAttribute<AutoCSer.Sql.MemberAttribute>(false);
+                                Sql.MemberAttribute attribute = member.GetAttribute<Sql.MemberAttribute>(false);
                                 if (modelAttribute.LogServerName != null)
                                 {
-                                    AutoCSer.Sql.LogAttribute logAttribute = member.GetAttribute<AutoCSer.Sql.LogAttribute>(false);
+                                    Sql.LogAttribute logAttribute = member.GetAttribute<Sql.LogAttribute>(false);
                                     if (logAttribute != null)
                                     {
                                         SqlModel.Generator.LogMember logMember = new SqlModel.Generator.LogMember { Member = member, Attribute = logAttribute, MemberAttribute = attribute };
@@ -102,7 +102,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             }
                         }
                         RemoteMethods = remoteMethods.GetFindArray(value => value.Member != null);
-                        LogMembers = logMembers.Length != 0 && (modelAttribute.CacheType != AutoCSer.Sql.Cache.Whole.Event.Type.Unknown && modelAttribute.CacheType != AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey) ? logMembers.ToArray() : NullValue<SqlModel.Generator.LogMember>.Array;
+                        LogMembers = logMembers.Length != 0 && (modelAttribute.CacheType != Sql.Cache.Whole.Event.Type.Unknown && modelAttribute.CacheType != Sql.Cache.Whole.Event.Type.CreateMemberKey) ? logMembers.ToArray() : NullValue<SqlModel.Generator.LogMember>.Array;
                         if ((LogMembers.Length | RemoteMethods.Length) != 0)
                         {
                             //create(true);

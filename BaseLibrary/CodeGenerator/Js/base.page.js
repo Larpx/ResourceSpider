@@ -51,7 +51,7 @@ Array.prototype.IndexOf = function (Function) {
     return -1;
 };
 Array.prototype.IndexOfValue = function (Value) {
-    if (AutoCSer.Pub.IE) {
+    if (Pub.IE) {
         for (var Index = -1; ++Index !== this.length;) {
             if (this[Index] == Value)
                 return Index;
@@ -97,7 +97,7 @@ Array.prototype.FormatAjax = function () {
     }
 };
 Array.prototype.FormatView = function () {
-    return this.length > 1 ? AutoCSer.Pub.FormatAjaxs(AutoCSer.Pub.AjaxName(this[0], 0), this, 1) : [];
+    return this.length > 1 ? Pub.FormatAjaxs(Pub.AjaxName(this[0], 0), this, 1) : [];
 };
 Array.prototype.Find = function (IsValue) {
     for (var Values = [], Index = 0; Index !== this.length; ++Index) {
@@ -404,13 +404,13 @@ var AutoCSer;
                 return Values;
         };
         Pub.AppendJs = function (Src, Charset, OnLoad, OnError) {
-            if (Charset === void 0) { Charset = AutoCSer.Loader.Charset; }
+            if (Charset === void 0) { Charset = Loader.Charset; }
             if (OnLoad === void 0) { OnLoad = null; }
             if (OnError === void 0) { OnError = null; }
             if (OnLoad || OnError)
-                new LoadJs(AutoCSer.Loader.CreateJavascipt(Src, Charset), OnLoad, OnError);
+                new LoadJs(Loader.CreateJavascipt(Src, Charset), OnLoad, OnError);
             else
-                AutoCSer.Loader.AppendJavaScript(Src, Charset);
+                Loader.AppendJavaScript(Src, Charset);
         };
         Pub.ToJson = function (Value, IsIgnore, IsNameQuery, IsSortName, Parents) {
             if (IsIgnore === void 0) { IsIgnore = false; }
@@ -536,7 +536,7 @@ var AutoCSer;
         };
         Pub.OnModule = function (Paths, OnLoad, IsLoad, Version) {
             if (IsLoad === void 0) { IsLoad = true; }
-            if (Version === void 0) { Version = AutoCSer.Loader.Version; }
+            if (Version === void 0) { Version = Loader.Version; }
             for (var Index = Paths.length, Load = { IsLoad: IsLoad, OnLoad: OnLoad, Count: 0, Paths: {} }; Index;) {
                 var Path = Paths[--Index];
                 if (!this.IsModules[Path]) {
@@ -559,7 +559,7 @@ var AutoCSer;
         Pub.LoadModuleWhenNull = function (Path, Version) {
             if (this.IsModules[Path] == null) {
                 this.IsModules[Path] = false;
-                this.AppendJs(AutoCSer.Loader.JsDomain + 'Js/' + Path + '.js?__VERSIONNAME__=' + (this.ModuleVersions[Path] || Version));
+                this.AppendJs(Loader.JsDomain + 'Js/' + Path + '.js?__VERSIONNAME__=' + (this.ModuleVersions[Path] || Version));
             }
         };
         Pub.LoadView = function (View, IsReView) {
@@ -683,13 +683,13 @@ var AutoCSer;
         Pub.OnReadyState = function () {
             this.LocationHash = HtmlElement.$Hash();
             HtmlElement.$(document.body).AddEvent('focus', this.FocusEvents = new Events());
-            if (!AutoCSer.Loader.Version || AutoCSer.Loader.LoadScript) {
+            if (!Loader.Version || Loader.LoadScript) {
                 var Path = document.location.pathname, Index = Path.lastIndexOf('/'), EndIndex = Path.lastIndexOf('.');
                 if (EndIndex > Index)
                     Path = Path.substring(0, EndIndex);
                 if (Path.charCodeAt(Path.length - 1) === 47)
                     Path += 'index';
-                this.AppendJs(AutoCSer.Loader.JsDomain + Path.substring(1) + '.js?__VERSIONNAME__=' + AutoCSer.Loader.Version);
+                this.AppendJs(Loader.JsDomain + Path.substring(1) + '.js?__VERSIONNAME__=' + Loader.Version);
             }
             if (Pub.IE)
                 setTimeout(this.CheckHashFunction = this.ThisFunction(this, this.CheckHash), 100);
@@ -697,7 +697,7 @@ var AutoCSer;
                 window.onhashchange = this.ThisFunction(this, this.CheckHash);
         };
         Pub.CreateLoadViewQuery = function () {
-            return new HttpRequestQuery(document.location.pathname, this.Query, this.ThisFunction(this, this.LoadView), AutoCSer.Loader.ViewVersion != null);
+            return new HttpRequestQuery(document.location.pathname, this.Query, this.ThisFunction(this, this.LoadView), Loader.ViewVersion != null);
         };
         Pub.LoadIE = function () {
             Pub.IE = !arguments.length || navigator.appName == 'Microsoft Internet Explorer';
@@ -712,7 +712,7 @@ var AutoCSer;
             this.Query = this.CreateQuery(self.location);
             this.PageView = new PageView();
             this.ReadyFunction = this.ThisFunction(this, this.ReadyState);
-            if (AutoCSer.Loader.PageView) {
+            if (Loader.PageView) {
                 this.PageView.IsLoadView = true;
                 this.PageView.OnShowed = new Events();
                 this.PageView.OnSet = new Events();
@@ -720,7 +720,7 @@ var AutoCSer;
             }
             else
                 this.PageView.IsLoad = true;
-            if (!AutoCSer.Loader.PageView)
+            if (!Loader.PageView)
                 this.ReadyState();
         };
         Pub.GetParameter = function (Value, DefaultParameter, Parameter) {
@@ -809,7 +809,7 @@ var AutoCSer;
                 var Meta = document.createElement('meta');
                 Meta.name = 'viewport';
                 Meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;';
-                AutoCSer.Loader.DocumentHead.appendChild(Meta);
+                Loader.DocumentHead.appendChild(Meta);
             }
         };
         Pub.DefaultCallAjaxPost = function (Url, Send, Callback) {
@@ -824,7 +824,7 @@ var AutoCSer;
             if (Send === void 0) { Send = null; }
             if (Callback === void 0) { Callback = null; }
             if (IsVersion === void 0) { IsVersion = false; }
-            AutoCSer.HttpRequest.Get(Url, Send, Callback, IsVersion);
+            HttpRequest.Get(Url, Send, Callback, IsVersion);
         };
         Pub.GetAjaxGet = function () {
             return this.CallAjaxGet || this.DefaultCallAjaxGet;
@@ -845,7 +845,7 @@ var AutoCSer;
         Pub.Identity = 0;
         return Pub;
     }());
-    AutoCSer.Pub = Pub;
+    Pub = Pub;
     Pub.Alert = Pub.ThisFunction(window, alert);
     var IndexPoolNode = (function () {
         function IndexPoolNode() {
@@ -891,13 +891,13 @@ var AutoCSer;
             return Node ? Node.Get(Identity) : null;
         };
         IndexPool.ToString = function (Value) {
-            return 'AutoCSer.IndexPool.Get(' + Value.PoolIndex + ',' + Value.PoolIdentity + ')';
+            return 'IndexPool.Get(' + Value.PoolIndex + ',' + Value.PoolIdentity + ')';
         };
         IndexPool.Nodes = [];
         IndexPool.Indexs = [];
         return IndexPool;
     }());
-    AutoCSer.IndexPool = IndexPool;
+    IndexPool = IndexPool;
     var LoadJs = (function () {
         function LoadJs(Script, OnLoad, OnError) {
             if (OnLoad === void 0) { OnLoad = null; }
@@ -908,21 +908,21 @@ var AutoCSer;
             this.ErrorFunction = Pub.ThisFunction(this, this.OnErrorJs);
             (this.Script = Script).onload = this.LoadFunction;
             Script.onerror = this.ErrorFunction;
-            AutoCSer.Loader.DocumentHead.appendChild(Script);
+            Loader.DocumentHead.appendChild(Script);
         }
         LoadJs.prototype.OnLoadJs = function (Event) {
             if (this.OnLoad)
                 this.OnLoad(Event);
-            AutoCSer.Loader.DocumentHead.removeChild(this.Script);
+            Loader.DocumentHead.removeChild(this.Script);
         };
         LoadJs.prototype.OnErrorJs = function (Event) {
             if (this.OnError)
                 this.OnError(Event);
-            AutoCSer.Loader.DocumentHead.removeChild(this.Script);
+            Loader.DocumentHead.removeChild(this.Script);
         };
         return LoadJs;
     }());
-    AutoCSer.LoadJs = LoadJs;
+    LoadJs = LoadJs;
     var Events = (function () {
         function Events(OnAdd, This) {
             if (OnAdd === void 0) { OnAdd = null; }
@@ -969,7 +969,7 @@ var AutoCSer;
         };
         return Events;
     }());
-    AutoCSer.Events = Events;
+    Events = Events;
     Pub.OnQueryEvents = new Events();
     var HttpRequestQuery = (function () {
         function HttpRequestQuery(Url, Send, CallBack, IsVersion) {
@@ -1015,7 +1015,7 @@ var AutoCSer;
         HttpRequestQuery.NullCallBack = function () { };
         return HttpRequestQuery;
     }());
-    AutoCSer.HttpRequestQuery = HttpRequestQuery;
+    HttpRequestQuery = HttpRequestQuery;
     var HttpRequestQueryInfo = (function (_super) {
         __extends(HttpRequestQueryInfo, _super);
         function HttpRequestQueryInfo() {
@@ -1115,11 +1115,11 @@ var AutoCSer;
             if (Info.IsRandom)
                 Url += (Url.indexOf('?') + 1 ? '&' : '?') + 't=' + (new Date).getTime();
             else if (Info.IsVersion && Info.Method === 'GET')
-                Url += (Url.indexOf('?') + 1 ? '&' : '?') + '__VERSIONNAME__=' + AutoCSer.Loader.Version;
+                Url += (Url.indexOf('?') + 1 ? '&' : '?') + '__VERSIONNAME__=' + Loader.Version;
             Info.Request = Request;
             if (!Pub.IE && Info.Method === 'GET' && !Info.UserName && !Info.IsOnLoad) {
                 Info.RetryCount = 2;
-                Pub.AppendJs(Url, AutoCSer.Loader.Charset, null, (Pub.AjaxAppendJs = Info).GetOnError(this));
+                Pub.AppendJs(Url, Loader.Charset, null, (Pub.AjaxAppendJs = Info).GetOnError(this));
             }
             else {
                 Request.onreadystatechange = this.OnReadyStateChangeFunction;
@@ -1147,7 +1147,7 @@ var AutoCSer;
             }
             else if (window['XMLHttpRequest'])
                 return new XMLHttpRequest;
-            AutoCSer.Pub.Alert('你的浏览器不支持服务器请求,请升级您的浏览器！');
+            Pub.Alert('你的浏览器不支持服务器请求,请升级您的浏览器！');
             return null;
         };
         HttpRequest.PostQuery = function (HttpRequestQuery) {
@@ -1167,7 +1167,7 @@ var AutoCSer;
             if (!Pub.IE && !HttpRequestQuery.IsRandom) {
                 var Query = HttpRequestQuery.ToQueryInfo();
                 Query.IsRandom = false;
-                Query.Url = '__AJAX__?__AJAXCALL__=' + Query.Url + '&__CALLBACK__=AutoCSer.Pub.AjaxCallBack';
+                Query.Url = '__AJAX__?__AJAXCALL__=' + Query.Url + '&__CALLBACK__=Pub.AjaxCallBack';
                 this.AjaxGetRequest.Request(Query);
                 return;
             }
@@ -1188,7 +1188,7 @@ var AutoCSer;
             if (ErrorInfo === void 0) { ErrorInfo = '服务器请求失败，请稍后重试'; }
             if (Value.ErrorRequest) {
                 if (ErrorInfo)
-                    AutoCSer.Pub.Alert(ErrorInfo);
+                    Pub.Alert(ErrorInfo);
                 return false;
             }
             return true;
@@ -1202,7 +1202,7 @@ var AutoCSer;
         HttpRequest.ErrorPath = '__AJAX__?__AJAXCALL__=__PUBERROR__&';
         return HttpRequest;
     }());
-    AutoCSer.HttpRequest = HttpRequest;
+    HttpRequest = HttpRequest;
     var HtmlElement = (function () {
         function HtmlElement(Value, Parent) {
             if (typeof (Value) == 'string') {
@@ -1289,12 +1289,12 @@ var AutoCSer;
             this.FilterChildren();
             var Value = this.FilterValue().split('=');
             if (Value.length == 1) {
-                this.FilterBuilder.push('if(AutoCSer.HtmlElement.$IsAttribute(Element=Childs[Index++],"');
+                this.FilterBuilder.push('if(HtmlElement.$IsAttribute(Element=Childs[Index++],"');
                 this.FilterBuilder.push(Value[0]);
                 this.FilterBuilder.push('"))(');
             }
             else {
-                this.FilterBuilder.push('if(AutoCSer.HtmlElement.$Attribute(Element=Childs[Index++],"');
+                this.FilterBuilder.push('if(HtmlElement.$Attribute(Element=Childs[Index++],"');
                 this.FilterBuilder.push(Value[0]);
                 this.FilterBuilder.push('")=="');
                 this.FilterBuilder.push(Value[1]);
@@ -1304,7 +1304,7 @@ var AutoCSer;
         };
         HtmlElement.prototype.FilterName = function () {
             this.FilterChildren();
-            this.FilterBuilder.push('if(AutoCSer.HtmlElement.$Attribute(Element=Childs[Index++],"name")=="');
+            this.FilterBuilder.push('if(HtmlElement.$Attribute(Element=Childs[Index++],"name")=="');
             this.FilterBuilder.push(this.FilterValue());
             this.FilterBuilder.push('")(');
             this.FilterNext(true);
@@ -1312,7 +1312,7 @@ var AutoCSer;
         HtmlElement.prototype.FilterCss = function () {
             this.FilterChildren();
             var Value = this.FilterValue().split('=');
-            this.FilterBuilder.push('if(AutoCSer.HtmlElement.$GetStyle(Element=Childs[Index++],"');
+            this.FilterBuilder.push('if(HtmlElement.$GetStyle(Element=Childs[Index++],"');
             this.FilterBuilder.push(Value[0]);
             this.FilterBuilder.push('")=="');
             this.FilterBuilder.push(Value[1]);
@@ -1978,7 +1978,7 @@ var AutoCSer;
         HtmlElement.ZIndex = 10000;
         return HtmlElement;
     }());
-    AutoCSer.HtmlElement = HtmlElement;
+    HtmlElement = HtmlElement;
     var SkinReShowType;
     (function (SkinReShowType) {
         SkinReShowType[SkinReShowType["None"] = 0] = "None";
@@ -2331,7 +2331,7 @@ var AutoCSer;
         SkinViewNode.prototype.ReShowPushArrayExpand = function (MarkStart) {
             this.CreateView();
             this.CreateLoopExpand();
-            Pub.DeleteElements.Html(this.Node.Skin.EndHtml()).Child().InsertBefore(AutoCSer.HtmlElement.$NextElement(MarkStart), HtmlElement.$ParentElement(MarkStart));
+            Pub.DeleteElements.Html(this.Node.Skin.EndHtml()).Child().InsertBefore(HtmlElement.$NextElement(MarkStart), HtmlElement.$ParentElement(MarkStart));
         };
         SkinViewNode.prototype.ReShowRemoveArray = function (MarkStart, MarkEnd, MarkEndId) {
             this.ClearSearchNode(true);
@@ -2668,7 +2668,7 @@ var AutoCSer;
         };
         return SkinData;
     }());
-    AutoCSer.SkinData = SkinData;
+    SkinData = SkinData;
     var SkinDatas = (function () {
         function SkinDatas(Data) {
             this.Datas = [Data];
@@ -2960,7 +2960,7 @@ var AutoCSer;
         Skin.Skins = {};
         return Skin;
     }());
-    AutoCSer.Skin = Skin;
+    Skin = Skin;
     var SkinBuilder = (function () {
         function SkinBuilder(Skin, Html) {
             this.Skin = Skin;
@@ -3245,7 +3245,7 @@ var AutoCSer;
                 if (lineno == 1) {
                     var Ajax = Pub.AjaxAppendJs;
                     if (Ajax.RetryCount && document.location.origin + Ajax.Url == filename && --Ajax.RetryCount) {
-                        Pub.AppendJs(Ajax.Url, AutoCSer.Loader.Charset, null, Ajax.GetOnError(null));
+                        Pub.AppendJs(Ajax.Url, Loader.Charset, null, Ajax.GetOnError(null));
                         return;
                     }
                 }
@@ -3279,7 +3279,7 @@ var AutoCSer;
         };
         return BrowserEvent;
     }());
-    AutoCSer.BrowserEvent = BrowserEvent;
+    BrowserEvent = BrowserEvent;
     var DeclareEvent = (function (_super) {
         __extends(DeclareEvent, _super);
         function DeclareEvent(Id, IsGetOnly) {
@@ -3295,7 +3295,7 @@ var AutoCSer;
         DeclareEvent.Default = new DeclareEvent();
         return DeclareEvent;
     }(BrowserEvent));
-    AutoCSer.DeclareEvent = DeclareEvent;
+    DeclareEvent = DeclareEvent;
     var Declare = (function () {
         function Declare(Function, Name, EventName, Type) {
             this.Type = Type;
@@ -3412,7 +3412,7 @@ var AutoCSer;
         Declare.Declares = {};
         return Declare;
     }());
-    AutoCSer.Declare = Declare;
+    Declare = Declare;
     var Cookie = (function () {
         //private Name: string;
         function Cookie(Parameter) {
@@ -3458,7 +3458,7 @@ var AutoCSer;
         Cookie.Default = new Cookie({ Expires: 24 * 3600 * 1000 });
         return Cookie;
     }());
-    AutoCSer.Cookie = Cookie;
+    Cookie = Cookie;
     var ServerTime = (function () {
         function ServerTime(Time) {
             this.Time = -(new Date().getTime() - Time.Now.getTime());
@@ -3468,6 +3468,6 @@ var AutoCSer;
         };
         return ServerTime;
     }());
-    AutoCSer.ServerTime = ServerTime;
+    ServerTime = ServerTime;
 })(AutoCSer || (AutoCSer = {}));
-setTimeout(AutoCSer.Pub.LoadIE, 0, 'javascript');
+setTimeout(Pub.LoadIE, 0, 'javascript');

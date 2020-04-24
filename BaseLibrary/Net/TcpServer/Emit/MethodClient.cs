@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
     /// <summary>
     /// TCP 客户端
     /// </summary>
-    public abstract class MethodClient : AutoCSer.Net.TcpServer.MethodClient
+    public abstract class MethodClient : Net.TcpServer.MethodClient
     {
         /// <summary>
         /// 是否已经释放资源

@@ -59,7 +59,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                 {
                     if (returnValue.Type == TcpServer.ReturnType.Success)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
+                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpServerKeepCallback);
                         if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
                         else
                         {
@@ -71,7 +71,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     }
                     else
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
+                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpServerKeepCallback);
                         if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
                         else
                         {
@@ -202,7 +202,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     TcpServer.ServerOutput.Output<outputParameterType> output = sender.TryGetOutput<outputParameterType>(commandIndex, outputInfo, ref outputParameter);
                     if (output != null)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
+                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpServerKeepCallback);
                         if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
                         else
                         {
@@ -218,7 +218,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
                     TcpServer.ServerOutput.ReturnTypeOutput output = sender.TryGetOutput(TcpServer.Server.GetCommandIndex(commandIndex, returnValue.Type));
                     if (output != null)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
+                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpServerKeepCallback);
                         if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
                         else
                         {

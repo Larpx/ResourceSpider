@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.IO;
 using System.Text;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
@@ -15,11 +15,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 程序集信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Assembly, XmlDocumentAssembly> assemblyLock = new AutoCSer.Threading.LockLastDictionary<Assembly, XmlDocumentAssembly>();
+        private static readonly Threading.LockLastDictionary<Assembly, XmlDocumentAssembly> assemblyLock = new Threading.LockLastDictionary<Assembly, XmlDocumentAssembly>();
         /// <summary>
         /// XML解析配置
         /// </summary>
-        private static AutoCSer.Xml.ParseConfig xmlParserConfig = new AutoCSer.Xml.ParseConfig { BootNodeName = "doc", IsAttribute = true };
+        private static Xml.ParseConfig xmlParserConfig = new Xml.ParseConfig { BootNodeName = "doc", IsAttribute = true };
         /// <summary>
         /// 获取程序集信息
         /// </summary>
@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                     {
                         if (File.Exists(fileName = fileName.Substring(0, fileName.Length - 3) + "xml"))
                         {
-                            Xml.Node xmlNode = AutoCSer.Xml.Parser.Parse<Xml.Node>(File.ReadAllText(fileName, Encoding.UTF8), xmlParserConfig)["members"];
+                            Xml.Node xmlNode = Xml.Parser.Parse<Xml.Node>(File.ReadAllText(fileName, Encoding.UTF8), xmlParserConfig)["members"];
                             if (xmlNode.Type == Xml.NodeType.Node)
                             {
                                 fixed (char* nameFixed = "name")
@@ -57,9 +57,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                                     }
                                 }
                             }
-                            else AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, "XML文档解析失败 " + fileName);
+                            else Log.Pub.Log.Wait(Log.LogType.All, "XML文档解析失败 " + fileName);
                         }
-                        else AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, "没有找到XML文档注释 " + fileName);
+                        else Log.Pub.Log.Wait(Log.LogType.All, "没有找到XML文档注释 " + fileName);
                     }
                     assemblyLock.Set(assembly, value);
                 }

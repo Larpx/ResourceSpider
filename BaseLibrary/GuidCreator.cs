@@ -58,42 +58,90 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// <param name="data"></param>
         internal unsafe void ToString(char* data)
         {
-            *(char*)data = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte3 >> 4));
-            *(char*)(data + 1) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte3 & 15));
-            *(char*)(data + 2) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte2 >> 4));
-            *(char*)(data + 3) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte2 & 15));
-            *(char*)(data + 4) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte1 >> 4));
-            *(char*)(data + 5) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte1 & 15));
-            *(char*)(data + 6) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte0 >> 4));
-            *(char*)(data + 7) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte0 & 15));
+            *(char*)data = (char)Extension.Number.ToHex((uint)(Byte3 >> 4));
+            *(char*)(data + 1) = (char)Extension.Number.ToHex((uint)(Byte3 & 15));
+            *(char*)(data + 2) = (char)Extension.Number.ToHex((uint)(Byte2 >> 4));
+            *(char*)(data + 3) = (char)Extension.Number.ToHex((uint)(Byte2 & 15));
+            *(char*)(data + 4) = (char)Extension.Number.ToHex((uint)(Byte1 >> 4));
+            *(char*)(data + 5) = (char)Extension.Number.ToHex((uint)(Byte1 & 15));
+            *(char*)(data + 6) = (char)Extension.Number.ToHex((uint)(Byte0 >> 4));
+            *(char*)(data + 7) = (char)Extension.Number.ToHex((uint)(Byte0 & 15));
             *(char*)(data + 8) = '-';
-            *(char*)(data + 9) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte5 >> 4));
-            *(char*)(data + 10) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte5 & 15));
-            *(char*)(data + 11) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte4 >> 4));
-            *(char*)(data + 12) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte4 & 15));
+            *(char*)(data + 9) = (char)Extension.Number.ToHex((uint)(Byte5 >> 4));
+            *(char*)(data + 10) = (char)Extension.Number.ToHex((uint)(Byte5 & 15));
+            *(char*)(data + 11) = (char)Extension.Number.ToHex((uint)(Byte4 >> 4));
+            *(char*)(data + 12) = (char)Extension.Number.ToHex((uint)(Byte4 & 15));
             *(char*)(data + 13) = '-';
-            *(char*)(data + 14) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte7 >> 4));
-            *(char*)(data + 15) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte7 & 15));
-            *(char*)(data + 16) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte6 >> 4));
-            *(char*)(data + 17) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte6 & 15));
+            *(char*)(data + 14) = (char)Extension.Number.ToHex((uint)(Byte7 >> 4));
+            *(char*)(data + 15) = (char)Extension.Number.ToHex((uint)(Byte7 & 15));
+            *(char*)(data + 16) = (char)Extension.Number.ToHex((uint)(Byte6 >> 4));
+            *(char*)(data + 17) = (char)Extension.Number.ToHex((uint)(Byte6 & 15));
             *(char*)(data + 18) = '-';
-            *(char*)(data + 19) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte8 >> 4));
-            *(char*)(data + 20) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte8 & 15));
-            *(char*)(data + 21) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte9 >> 4));
-            *(char*)(data + 22) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte9 & 15));
+            *(char*)(data + 19) = (char)Extension.Number.ToHex((uint)(Byte8 >> 4));
+            *(char*)(data + 20) = (char)Extension.Number.ToHex((uint)(Byte8 & 15));
+            *(char*)(data + 21) = (char)Extension.Number.ToHex((uint)(Byte9 >> 4));
+            *(char*)(data + 22) = (char)Extension.Number.ToHex((uint)(Byte9 & 15));
             *(char*)(data + 23) = '-';
-            *(char*)(data + 24) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte10 >> 4));
-            *(char*)(data + 25) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte10 & 15));
-            *(char*)(data + 26) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte11 >> 4));
-            *(char*)(data + 27) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte11 & 15));
-            *(char*)(data + 28) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte12 >> 4));
-            *(char*)(data + 29) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte12 & 15));
-            *(char*)(data + 30) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte13 >> 4));
-            *(char*)(data + 31) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte13 & 15));
-            *(char*)(data + 32) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte14 >> 4));
-            *(char*)(data + 33) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte14 & 15));
-            *(char*)(data + 34) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte15 >> 4));
-            *(char*)(data + 35) = (char)AutoCSer.Extension.Number.ToHex((uint)(Byte15 & 15));
+            *(char*)(data + 24) = (char)Extension.Number.ToHex((uint)(Byte10 >> 4));
+            *(char*)(data + 25) = (char)Extension.Number.ToHex((uint)(Byte10 & 15));
+            *(char*)(data + 26) = (char)Extension.Number.ToHex((uint)(Byte11 >> 4));
+            *(char*)(data + 27) = (char)Extension.Number.ToHex((uint)(Byte11 & 15));
+            *(char*)(data + 28) = (char)Extension.Number.ToHex((uint)(Byte12 >> 4));
+            *(char*)(data + 29) = (char)Extension.Number.ToHex((uint)(Byte12 & 15));
+            *(char*)(data + 30) = (char)Extension.Number.ToHex((uint)(Byte13 >> 4));
+            *(char*)(data + 31) = (char)Extension.Number.ToHex((uint)(Byte13 & 15));
+            *(char*)(data + 32) = (char)Extension.Number.ToHex((uint)(Byte14 >> 4));
+            *(char*)(data + 33) = (char)Extension.Number.ToHex((uint)(Byte14 & 15));
+            *(char*)(data + 34) = (char)Extension.Number.ToHex((uint)(Byte15 >> 4));
+            *(char*)(data + 35) = (char)Extension.Number.ToHex((uint)(Byte15 & 15));
+        }
+    }
+
+    /// <summary>
+    /// Guid 联合体
+    /// </summary>
+    internal partial struct GuidCreator
+    {
+        [FieldOffset(0)]
+        internal byte Int0;
+        [FieldOffset(sizeof(int))]
+        internal byte Int1;
+        [FieldOffset(sizeof(int) * 2)]
+        internal byte Int2;
+        [FieldOffset(sizeof(int) * 3)]
+        internal byte Int3;
+
+        [FieldOffset(0)]
+        internal byte ULong0;
+        [FieldOffset(sizeof(ulong))]
+        internal byte ULong1;
+
+        /// <summary>
+        /// 获取哈希值
+        /// </summary>
+        internal int HashCode
+        {
+            get { return Int0 ^ Int1 ^ Int2 ^ Int3; }
+        }
+        /// <summary>
+        /// 判断是否相等
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+
+        internal unsafe bool Equals(Guid* other)
+        {
+            return ((ULong0 ^ *(ulong*)other) | (ULong1 ^ *(ulong*)(((byte*)other) + sizeof(ulong)))) == 0;
+        }
+        /// <summary>
+        /// 判断是否相等
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+
+        internal bool Equals(GuidCreator other)
+        {
+            return ((ULong0 ^ other.ULong0) | (ULong1 ^ other.ULong1)) == 0;
         }
     }
 }

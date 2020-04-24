@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
     /// <summary>
     /// 二维码长链接
     /// </summary>
-    [AutoCSer.Xml.Serialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
+    [Xml.Serialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
     internal sealed class QrCodeLongUrl : SignQuery
     {
         /// <summary>

@@ -30,5 +30,5 @@ module AutoCSer {
             this.OnOut.Function(Event, HtmlElement.$IdElement(this.Id));
         }
     }
-    new AutoCSer.Declare(MouseOver, 'MouseOver', 'mouseover', 'AttributeName');
+    new Declare(MouseOver, 'MouseOver', 'mouseover', 'AttributeName');
 }

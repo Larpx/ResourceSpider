@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
@@ -117,7 +117,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                         *(int*)(state + sizeof(int)) = 0;//状态位置
                         *(int*)(state + sizeof(int) * 2) = values[0].Value;//名称索引
                         prefix = Data.Byte + sizeof(int) * 4;
-                        AutoCSer.Extension.StringExtension.WriteBytesNotNull(valueFixed, value.Length, prefix);
+                       Extension.StringExtension.WriteBytesNotNull(valueFixed, value.Length, prefix);
                         *(prefix + value.Length) = *(prefix + 128) = 0;
                     }
                     else
@@ -128,7 +128,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                         *(int*)state = sizeof(int) * 3 + 128 + 1;//前缀位置
                         *(int*)(state + sizeof(int)) = 0;//状态位置
                         *(int*)(state + sizeof(int) * 2) = values[0].Value;//名称索引
-                        AutoCSer.Extension.StringExtension.WriteBytesNotNull(valueFixed, value.Length, Data.Byte + sizeof(int) * 3 + 128 + 1);
+                       Extension.StringExtension.WriteBytesNotNull(valueFixed, value.Length, Data.Byte + sizeof(int) * 3 + 128 + 1);
                     }
                 }
             }
@@ -240,7 +240,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                             *(int*)state = (int)(this.prefix - state);
                             fixed (char* charFixed = values[start].Key)
                             {
-                                AutoCSer.Extension.StringExtension.WriteBytesNotNull(charFixed + current + 1, prefixSize, this.prefix);
+                               Extension.StringExtension.WriteBytesNotNull(charFixed + current + 1, prefixSize, this.prefix);
                                 *(this.prefix += prefixSize) = 0;
                                 ++this.prefix;
                             }

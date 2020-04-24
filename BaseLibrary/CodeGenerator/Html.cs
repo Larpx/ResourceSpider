@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 网站生成配置
         /// </summary>
-        internal AutoCSer.WebView.Config WebConfig;
+        internal WebView.Config WebConfig;
         /// <summary>
         /// 代码生成入口
         /// </summary>
@@ -69,7 +69,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                 Htmls = DictionaryCreator.CreateHashString<HtmlJs>();
                 if (!HtmlJs.Create(this)) return false;
                 css();
-                File.WriteAllText(parameter.ProjectPath + AutoCSer.Net.Http.Header.VersionFileName, HtmlJs.Version, System.Text.Encoding.ASCII);
+                File.WriteAllText(parameter.ProjectPath + Net.Http.Header.VersionFileName, HtmlJs.Version, System.Text.Encoding.ASCII);
             }
             return true;
         }
@@ -222,7 +222,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         private static readonly string AutoCSerScriptPath;
         static Html()
         {
-            string path = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath).Parent.Parent.Parent
+            string path = new DirectoryInfo(PubPath.ApplicationPath).Parent.Parent.Parent
 #if !DOTNET45
                 .Parent
 #endif
@@ -230,7 +230,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             string jsPath = path + @"CodeGenerator\Js\";
             if (!Directory.Exists(jsPath))
             {
-                jsPath = AutoCSer.PubPath.ApplicationPath + @"Js\";
+                jsPath = PubPath.ApplicationPath + @"Js\";
                 if (!Directory.Exists(jsPath)) jsPath = path + @"CodeGenerator\Js\";
             }
             if (Directory.Exists(jsPath)) AutoCSerScriptPath = new DirectoryInfo(jsPath).fullName().fileNameToLower();

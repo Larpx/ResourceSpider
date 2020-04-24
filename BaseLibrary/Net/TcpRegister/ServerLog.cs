@@ -7,7 +7,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
     /// <summary>
     /// TCP 服务注册信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false, IsAnonymousFields = true)]
+    [BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false, IsAnonymousFields = true)]
     public sealed class ServerLog
     {
         /// <summary>

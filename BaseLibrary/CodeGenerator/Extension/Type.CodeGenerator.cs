@@ -32,29 +32,29 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
             {
                 if (type.IsArray)
                 {
-                    byte* buffer = AutoCSer.UnmanagedPool.Tiny.Get();
+                    byte* buffer = UnmanagedPool.Tiny.Get();
                     try
                     {
-                        using (NameStream = new CharStream((char*)buffer, AutoCSer.UnmanagedPool.TinySize >> 1))
+                        using (NameStream = new CharStream((char*)buffer, UnmanagedPool.TinySize >> 1))
                         {
                             new TypeExtension.NameBuilder { NameStream = NameStream }.Array(type, false);
                             return NameStream.ToString();
                         }
                     }
-                    finally { AutoCSer.UnmanagedPool.Tiny.Push(buffer); }
+                    finally { UnmanagedPool.Tiny.Push(buffer); }
                 }
                 if (type.IsGenericType)
                 {
-                    byte* buffer = AutoCSer.UnmanagedPool.Tiny.Get();
+                    byte* buffer = UnmanagedPool.Tiny.Get();
                     try
                     {
-                        using (NameStream = new CharStream((char*)buffer, AutoCSer.UnmanagedPool.TinySize >> 1))
+                        using (NameStream = new CharStream((char*)buffer, UnmanagedPool.TinySize >> 1))
                         {
                             new TypeExtension.NameBuilder { NameStream = NameStream }.GenericName(type);
                             return NameStream.ToString();
                         }
                     }
-                    finally { AutoCSer.UnmanagedPool.Tiny.Push(buffer); }
+                    finally { UnmanagedPool.Tiny.Push(buffer); }
                 }
                 return type.Name;
             }

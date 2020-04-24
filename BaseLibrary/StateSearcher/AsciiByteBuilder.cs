@@ -1,5 +1,5 @@
 ﻿using System;
-using fastCSharp.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
@@ -315,7 +315,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                 for (int index = values.Length; index != 0; )
                 {
                     byte[] newValue = values[--index].Key;
-                    if (newValue.equal(value)) return false;
+                    if (newValue.equals(value)) return false;
                     value = newValue;
                 }
             }

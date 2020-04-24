@@ -11,7 +11,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 成员位图
         /// </summary>
-        public AutoCSer.Metadata.MemberMap MemberMap;
+        publicMetadata.MemberMap MemberMap;
         /// <summary>
         /// XML 字符串
         /// </summary>

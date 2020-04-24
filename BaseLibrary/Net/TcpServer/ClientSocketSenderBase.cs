@@ -28,7 +28,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 等待事件
         /// </summary>
-        internal AutoCSer.Threading.AutoWaitHandle OutputWaitHandle;
+        internal Threading.AutoWaitHandle OutputWaitHandle;
         /// <summary>
         /// 套接字发送数据次数
         /// </summary>

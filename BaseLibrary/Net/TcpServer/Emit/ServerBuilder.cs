@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
@@ -96,7 +96,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 
                 ConstructorBuilder staticConstructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, null);
                 ILGenerator staticConstructorGenerator = staticConstructorBuilder.GetILGenerator();
-                #region public override void DoCommand(int index, AutoCSer.Net.TcpInternalServer.ServerSocketSender socket, ref SubArray<byte> data)
+                #region public override void DoCommand(int index, Net.TcpInternalServer.ServerSocketSender socket, ref SubArray<byte> data)
                 MethodBuilder doCommandMethodBuilder = typeBuilder.DefineMethod("DoCommand", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, typeof(void), Metadata.DoCommandParameterTypes);
                 #endregion
                 ILGenerator doCommandGenerator = doCommandMethodBuilder.GetILGenerator();
@@ -138,7 +138,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                 if (attribute.IsSimpleSerialize) outputInfo.IsSimpleSerializeOutputParamter = method.OutputParameterType.IsSimpleSerialize && SimpleSerialize.Serializer.IsType(method.ReturnType);
                             }
                             outputInfo.IsBuildOutputThread = method.IsServerBuildOutputThread;
-                            #region private static readonly AutoCSer.Net.TcpServer.OutputInfo @MethodIdentityCommand = AutoCSer.Net.TcpInternalServer.Emit.Server<interfaceType>.Outputs[@CommandIdentity];
+                            #region private static readonly Net.TcpServer.OutputInfo @MethodIdentityCommand = Net.TcpInternalServer.Emit.Server<interfaceType>.Outputs[@CommandIdentity];
                             staticConstructorGenerator.Emit(OpCodes.Ldsfld, outputsField);
                             staticConstructorGenerator.int32(method.Attribute.CommandIdentity);
                             staticConstructorGenerator.Emit(OpCodes.Ldelem_Ref);
@@ -159,10 +159,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                             {
                                 #region AsynchronousCallback
                                 Type asynchronousCallbackFieldType;
-                                if (method.ReturnType == typeof(void)) asynchronousCallbackFieldType = method.IsAsynchronousCallbackEmit ? typeof(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>) : typeof(AutoCSer.Net.TcpServer.ServerCallback);
+                                if (method.ReturnType == typeof(void)) asynchronousCallbackFieldType = method.IsAsynchronousCallbackEmit ? typeof(Func<Net.TcpServer.ReturnValue, bool>) : typeof(Net.TcpServer.ServerCallback);
                                 else
                                 {
-                                    AutoCSer.Metadata.GenericType callbackGenericType = AutoCSer.Metadata.GenericType.Get(method.ReturnType);
+                                    Metadata.GenericType callbackGenericType = Metadata.GenericType.Get(method.ReturnType);
                                     asynchronousCallbackFieldType = method.IsAsynchronousCallbackEmit ? callbackGenericType.TcpServerCallbackEmitType : callbackGenericType.TcpServerCallbackType;
                                 }
                                 asynchronousCallbackFieldBuilder = serverCallTypeBuilder.DefineField("AsynchronousCallback", asynchronousCallbackFieldType, FieldAttributes.Public);
@@ -200,11 +200,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                             }
                             else
                             {
-                                Type returnOutputType = method.OutputParameterType == null ? typeof(AutoCSer.Net.TcpServer.ReturnValue) : typeof(AutoCSer.Net.TcpServer.ReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
+                                Type returnOutputType = method.OutputParameterType == null ? typeof(Net.TcpServer.ReturnValue) : typeof(Net.TcpServer.ReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
                                 FieldInfo returnOutputValueField = method.OutputParameterType == null ? null : returnOutputType.GetField("Value", BindingFlags.Instance | BindingFlags.Public);
                                 Type returnOutputRefType = returnOutputType.MakeByRefType();
 
-                                #region private void get(ref AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName> value)
+                                #region private void get(ref Net.TcpServer.ReturnValue<@OutputParameterTypeName> value)
                                 MethodBuilder getMethodBuilder = serverCallTypeBuilder.DefineMethod("get", MethodAttributes.Private, typeof(void), new Type[] { returnOutputRefType });
                                 #endregion
                                 ILGenerator getGenerator = getMethodBuilder.GetILGenerator();
@@ -247,10 +247,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     if (method.ReturnValueType != null)
                                     {
                                         Label returnTypeErrorLabel = getGenerator.DefineLabel();
-                                        #region if(@ReturnName.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
+                                        #region if(@ReturnName.Type != Net.TcpServer.ReturnType.Success)
                                         getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
                                         getGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                        getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                        getGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                         getGenerator.Emit(OpCodes.Beq_S, returnTypeErrorLabel);
                                         #endregion
                                         #region value.Type = @ReturnName.Type;
@@ -262,9 +262,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
                                         getGenerator.MarkLabel(returnTypeErrorLabel);
                                     }
-                                    #region value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                                    #region value.Type = Net.TcpServer.ReturnType.Success;
                                     getGenerator.Emit(OpCodes.Ldarg_1);
-                                    getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                    getGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                     getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
                                     #endregion
                                     getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
@@ -275,10 +275,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     if (method.ReturnValueType == null) returnTypeErrorLabel = default(Label);
                                     else
                                     {
-                                        #region if(@ReturnName.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
+                                        #region if(@ReturnName.Type != Net.TcpServer.ReturnType.Success)
                                         getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
                                         getGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                        getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                        getGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                         getGenerator.Emit(OpCodes.Bne_Un, returnTypeErrorLabel = getGenerator.DefineLabel());
                                         #endregion
                                     }
@@ -330,9 +330,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         getGenerator.Emit(OpCodes.Stfld, method.OutputParameterType.GetField(TcpServer.ReturnValue.RetParameterName));
                                         #endregion
                                     }
-                                    #region value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                                    #region value.Type = Net.TcpServer.ReturnType.Success;
                                     getGenerator.Emit(OpCodes.Ldarg_1);
-                                    getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                    getGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                     getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
                                     #endregion
                                     getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
@@ -352,9 +352,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                 getGenerator.BeginCatchBlock(typeof(Exception));
                                 getGenerator.Emit(OpCodes.Stloc_S, exceptionErrorLocalBuilder);
                                 #endregion
-                                #region value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                #region value.Type = Net.TcpServer.ReturnType.ServerException;
                                 getGenerator.Emit(OpCodes.Ldarg_1);
-                                getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ServerException);
+                                getGenerator.int32((byte)Net.TcpServer.ReturnType.ServerException);
                                 getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
                                 #endregion
                                 #region Sender.Log(error);
@@ -374,7 +374,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                 MethodBuilder callMethodBuilder = serverCallTypeBuilder.DefineMethod("RunTask", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, typeof(void), null);
                                 #endregion
                                 ILGenerator callGenerator = callMethodBuilder.GetILGenerator();
-                                #region AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName> value = new AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName>();
+                                #region Net.TcpServer.ReturnValue<@OutputParameterTypeName> value = new Net.TcpServer.ReturnValue<@OutputParameterTypeName>();
                                 LocalBuilder valueBuilder = callGenerator.DeclareLocal(returnOutputType);
                                 if (method.OutputParameterType == null || method.Attribute.IsInitobj || method.OutputParameterType.IsInitobj)
                                 {
@@ -435,7 +435,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                         }
                         else serverCallTypeBuilder = null;
 
-                        #region private void @MethodIndexName(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ref SubArray<byte> data)
+                        #region private void @MethodIndexName(Net.TcpInternalServer.ServerSocketSender sender, ref SubArray<byte> data)
                         MethodBuilder methodBuilder = typeBuilder.DefineMethod("_m" + method.Attribute.CommandIdentity.toString(), MethodAttributes.Private, typeof(void), Metadata.MethodParameterTypes);
                         #endregion
                         ILGenerator methodGenerator = methodBuilder.GetILGenerator();
@@ -443,9 +443,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                         {
                             if (!method.IsClientSendOnly)
                             {
-                                #region sender.Push(AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                                #region sender.Push(Net.TcpServer.ReturnType.VersionExpired);
                                 methodGenerator.Emit(OpCodes.Ldarg_1);
-                                methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                                methodGenerator.int32((byte)Net.TcpServer.ReturnType.VersionExpired);
                                 methodGenerator.call(Metadata.ServerSocketSenderPushReturnTypeMethod);
                                 methodGenerator.Emit(OpCodes.Pop);
                                 #endregion
@@ -458,9 +458,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                             if (method.IsClientSendOnly) returnTypeLocalBuilder = null;
                             else
                             {
-                                #region AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
-                                returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.ReturnType));
-                                methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Unknown);
+                                #region Net.TcpServer.ReturnType returnType = Net.TcpServer.ReturnType.Unknown;
+                                returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(Net.TcpServer.ReturnType));
+                                methodGenerator.int32((byte)Net.TcpServer.ReturnType.Unknown);
                                 methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                 #endregion
                             }
@@ -560,7 +560,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                         methodGenerator.Emit(OpCodes.Ldfld, queueFieldBuilders[method.ServerCallQueue.Index]);
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
-                                        methodGenerator.Emit(OpCodes.Ldflda, method.ParameterType.GetField(AutoCSer.Net.TcpServer.Server.ServerCallQueueParameterName));
+                                        methodGenerator.Emit(OpCodes.Ldflda, method.ParameterType.GetField(Net.TcpServer.Server.ServerCallQueueParameterName));
                                         methodGenerator.call(method.ServerCallQueue.GetMethod);
                                         #endregion
                                         methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
@@ -644,7 +644,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     methodGenerator.Emit(OpCodes.Ldfld, queueFieldBuilders[method.ServerCallQueue.Index]);
                                     methodGenerator.Emit(OpCodes.Ldarg_1);
                                     methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
-                                    methodGenerator.Emit(OpCodes.Ldflda, method.ParameterType.GetField(AutoCSer.Net.TcpServer.Server.ServerCallQueueParameterName));
+                                    methodGenerator.Emit(OpCodes.Ldflda, method.ParameterType.GetField(Net.TcpServer.Server.ServerCallQueueParameterName));
                                     methodGenerator.call(method.ServerCallQueue.GetMethod);
                                     #endregion
                                     methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
@@ -717,10 +717,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                     if (method.ReturnValueType == null) returnTypeErrorLabel = default(Label);
                                     else
                                     {
-                                        #region if(@ReturnName.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
+                                        #region if(@ReturnName.Type == Net.TcpServer.ReturnType.Success)
                                         methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                        methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                        methodGenerator.int32((byte)Net.TcpServer.ReturnType.Success);
                                         methodGenerator.Emit(OpCodes.Bne_Un, returnTypeErrorLabel = methodGenerator.DefineLabel());
                                         #endregion
                                     }
@@ -796,8 +796,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                                 methodGenerator.MarkLabel(serverDeSerializeErrorLabel);
                                 if (!method.IsClientSendOnly)
                                 {
-                                    #region returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
-                                    methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError);
+                                    #region returnType = Net.TcpServer.ReturnType.ServerDeSerializeError;
+                                    methodGenerator.int32((byte)Net.TcpServer.ReturnType.ServerDeSerializeError);
                                     methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                     #endregion
                                 }
@@ -810,8 +810,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                             #endregion
                             if (!method.IsClientSendOnly)
                             {
-                                #region returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ServerException);
+                                #region returnType = Net.TcpServer.ReturnType.ServerException;
+                                methodGenerator.int32((byte)Net.TcpServer.ReturnType.ServerException);
                                 methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                 #endregion
                             }

@@ -1,8 +1,8 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.CodeGenerator.Metadata;
+using CodeGenerator.Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
@@ -18,8 +18,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <typeparam name="methodAttributeType">TCP 调用函数配置</typeparam>
         /// <typeparam name="serverSocketType">TCP 服务套接字类型</typeparam>
         internal abstract class GeneratorBase<attributeType, methodAttributeType, serverSocketType> : TemplateGenerator.Generator<attributeType>
-            where attributeType : AutoCSer.Net.TcpServer.ServerBaseAttribute
-            where methodAttributeType : AutoCSer.Net.TcpServer.MethodBaseAttribute
+            where attributeType : Net.TcpServer.ServerBaseAttribute
+            where methodAttributeType : Net.TcpServer.MethodBaseAttribute
             where serverSocketType : class
         {
             /// <summary>
@@ -34,7 +34,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// TCP 服务器端配置
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ServerBaseAttribute ServiceAttribute;
+                public Net.TcpServer.ServerBaseAttribute ServiceAttribute;
                 /// <summary>
                 /// TCP调用配置
                 /// </summary>
@@ -51,11 +51,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             attribute = (MemberIndex ?? Method).GetSetupAttribute<methodAttributeType>(true);
                             if (MemberIndex != null && !Method.IsGetMember)
                             {
-                                attribute = attribute == null ? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<methodAttributeType>.New() : AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(attribute);
+                                attribute = attribute == null ? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<methodAttributeType>.New() : MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(attribute);
                                 attribute.CommandIdentity = int.MinValue;
                             }
                             else if (attribute == null) attribute = Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<methodAttributeType>.New();
-                            //attribute = AutoCSer.ui.reflection.memberInfo.customAttribute<AutoCSer.code.cSharp.tcpMethod>(Method.Method, false, true);
+                            //attribute = ui.reflection.memberInfo.customAttribute<code.cSharp.tcpMethod>(Method.Method, false, true);
                         }
                         return attribute;
                     }
@@ -249,7 +249,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 任务类型名称
                 /// </summary>
-                private static readonly string serverTaskTypeName = typeof(AutoCSer.Net.TcpServer.ServerTaskType).fullName();
+                private static readonly string serverTaskTypeName = typeof(Net.TcpServer.ServerTaskType).fullName();
                 /// <summary>
                 /// 服务端任务类型
                 /// </summary>
@@ -257,7 +257,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.ServerTaskType taskType = Attribute.ServerTaskType;
+                        Net.TcpServer.ServerTaskType taskType = Attribute.ServerTaskType;
                         return serverTaskTypeName + "." + taskType.ToString();
                     }
                 }
@@ -270,8 +270,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     {
                         switch (Attribute.ServerTaskType)
                         {
-                            case AutoCSer.Net.TcpServer.ServerTaskType.Queue:
-                            case AutoCSer.Net.TcpServer.ServerTaskType.QueueLink: return Attribute.GetServerQueueIndex;
+                            case Net.TcpServer.ServerTaskType.Queue:
+                            case Net.TcpServer.ServerTaskType.QueueLink: return Attribute.GetServerQueueIndex;
                         }
                         return 0;
                     }
@@ -357,14 +357,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        //return IsAsynchronousCallback && Method.Method.ReturnType == typeof(AutoCSer.Net.TcpServer.KeepCallback) && !IsVerifyMethod ? 1 : 0;
+                        //return IsAsynchronousCallback && Method.Method.ReturnType == typeof(Net.TcpServer.KeepCallback) && !IsVerifyMethod ? 1 : 0;
                         return Attribute.GetIsKeepCallback && !IsVerifyMethod ? 1 : 0;
                     }
                 }
                 /// <summary>
                 /// 任务类型名称
                 /// </summary>
-                private static readonly string clientTaskTypeName = typeof(AutoCSer.Net.TcpServer.ClientTaskType).fullName();
+                private static readonly string clientTaskTypeName = typeof(Net.TcpServer.ClientTaskType).fullName();
                 /// <summary>
                 /// 客户端任务类型
                 /// </summary>
@@ -373,8 +373,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     get
                     {
                         //IsClientAsynchronous
-                        AutoCSer.Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTaskType : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous;
-                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask";
+                        Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTaskType : Net.TcpServer.ClientTaskType.Synchronous;
+                        //if (taskType == Net.TcpServer.MethodAttribute.DefaultClientTask) return "Net.TcpServer.MethodAttribute.DefaultClientTask";
                         return clientTaskTypeName + "." + taskType.ToString();
                     }
                 }
@@ -406,19 +406,19 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterTypeName = typeof(AutoCSer.Net.TcpServer.Awaiter<>).onlyName();
+                private static readonly string awaiterTypeName = typeof(Net.TcpServer.Awaiter<>).onlyName();
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBox<>).onlyName();
+                private static readonly string awaiterBoxTypeName = typeof(Net.TcpServer.AwaiterBox<>).onlyName();
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReference<>).onlyName();
+                private static readonly string awaiterReferenceTypeName = typeof(Net.TcpServer.AwaiterReference<>).onlyName();
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBoxReference<>).onlyName();
+                private static readonly string awaiterBoxReferenceTypeName = typeof(Net.TcpServer.AwaiterBoxReference<>).onlyName();
                 /// <summary>
                 /// await 类型
                 /// </summary>
@@ -434,25 +434,25 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             }
                             return Attribute.IsOutputSerializeBox ? awaiterBoxTypeName : awaiterTypeName;
                         }
-                        return typeof(AutoCSer.Net.TcpServer.Awaiter).Name;
+                        return typeof(Net.TcpServer.Awaiter).Name;
                     }
                 }
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterReturnValueTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValue<>).onlyName();
+                private static readonly string awaiterReturnValueTypeName = typeof(Net.TcpServer.AwaiterReturnValue<>).onlyName();
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterReturnValueBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<>).onlyName();
+                private static readonly string awaiterReturnValueBoxTypeName = typeof(Net.TcpServer.AwaiterReturnValueBox<>).onlyName();
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterReturnValueReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueReference<>).onlyName();
+                private static readonly string awaiterReturnValueReferenceTypeName = typeof(Net.TcpServer.AwaiterReturnValueReference<>).onlyName();
                 /// <summary>
                 /// await 类型名称
                 /// </summary>
-                private static readonly string awaiterReturnValueBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<>).onlyName();
+                private static readonly string awaiterReturnValueBoxReferenceTypeName = typeof(Net.TcpServer.AwaiterReturnValueBoxReference<>).onlyName();
                 /// <summary>
                 /// await 返回值包装类型
                 /// </summary>
@@ -499,7 +499,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         {
                             foreach (MethodParameterPair inputParameter in InputParameters)
                             {
-                                if (inputParameter.MethodParameter.ParameterName == AutoCSer.Net.TcpServer.Server.ServerCallQueueParameterName)
+                                if (inputParameter.MethodParameter.ParameterName == Net.TcpServer.Server.ServerCallQueueParameterName)
                                 {
                                     return serverCallQueueKeyParameter = inputParameter.Parameter;
                                 }
@@ -546,17 +546,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             if (type.IsGenericType)
                             {
                                 Type genericType = type.GetGenericTypeDefinition();
-                                if (genericType == typeof(AutoCSer.Net.TcpServer.ServerCallback<>))
+                                if (genericType == typeof(Net.TcpServer.ServerCallback<>))
                                 {
                                     methodReturnType = type.GetGenericArguments()[0];
                                     isAsynchronousCallback = true;
                                 }
                                 else if (genericType == typeof(Func<,>) || genericType == typeof(Action<>))
                                 {
-                                    Messages.Message(Method.MemberName + " 回调函数类型错误，请修改为 " + typeof(AutoCSer.Net.TcpServer.ServerCallback).fullName());
+                                    Messages.Message(Method.MemberName + " 回调函数类型错误，请修改为 " + typeof(Net.TcpServer.ServerCallback).fullName());
                                 }
                             }
-                            else if (type == typeof(AutoCSer.Net.TcpServer.ServerCallback)) isAsynchronousCallback = true;
+                            else if (type == typeof(Net.TcpServer.ServerCallback)) isAsynchronousCallback = true;
                             if (isAsynchronousCallback) methodParameters = MethodParameter.Get(methodParameters.getSub(0, methodParameters.Length - 1));
                         }
                         if (methodParameters.Length != 0)
@@ -614,7 +614,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     {
                         if (commandIdentityEnmuType.IsEnum && Enum.GetUnderlyingType(commandIdentityEnmuType) == typeof(int))
                         {
-                            Dictionary<string, int> commandIdentitys = DictionaryCreator.CreateOnly<string, int>();
+                            Dictionary<string, int> commandIdentitys = new Dictionary<string, int>();
                             foreach (object value in Enum.GetValues(commandIdentityEnmuType))
                             {
                                 commandIdentitys.Add(value.ToString(), ((IConvertible)value).ToInt32(null));
@@ -784,7 +784,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP 服务器端配置
             /// </summary>
-            public AutoCSer.Net.TcpServer.ServerBaseAttribute ServiceAttribute
+            public Net.TcpServer.ServerBaseAttribute ServiceAttribute
             {
                 get { return Attribute; }
             }
@@ -827,11 +827,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     if (serverCallQueueType == null && ServiceAttribute.GetServerCallQueueType != null)
                     {
-                        if (typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).IsAssignableFrom(ServiceAttribute.GetServerCallQueueType))
+                        if (typeof(Net.TcpServer.IServerCallQueueSet).IsAssignableFrom(ServiceAttribute.GetServerCallQueueType))
                         {
                             return serverCallQueueType = ServiceAttribute.GetServerCallQueueType;
                         }
-                        Messages.Add(ServiceAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).fullName());
+                        Messages.Add(ServiceAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(Net.TcpServer.IServerCallQueueSet).fullName());
                     }
                     return serverCallQueueType;
                 }
@@ -847,7 +847,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     {
                         string clientSegmentationCopyPath = Attribute.ClientSegmentationCopyPath;
                         Attribute.ClientSegmentationCopyPath = null;
-                        string json = AutoCSer.Json.Serializer.Serialize(Attribute).Replace(@"""", @"""""");
+                        string json = Json.Serializer.Serialize(Attribute).Replace(@"""", @"""""");
                         Attribute.ClientSegmentationCopyPath = clientSegmentationCopyPath;
                         return json;
                     }
@@ -878,7 +878,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             public int CommandStartIndex
             {
-                get { return AutoCSer.Net.TcpServer.Server.CommandStartIndex; }
+                get { return Net.TcpServer.Server.CommandStartIndex; }
             }
             /// <summary>
             /// 独占的 TCP 服务器端同步调用队列数量
@@ -911,14 +911,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             }
 #if NOJIT
             /// <summary>
-            /// 是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数
+            /// 是否存在 Net.TcpServer.ISetTcpServer 接口函数
             /// </summary>
             protected bool isSetTcpServer
             {
                 get
                 {
-                    return typeof(AutoCSer.Net.TcpServer.ISetTcpServer).IsAssignableFrom(Type.Type)
-                        || Type.Type.GetMethod("SetTcpServer", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(AutoCSer.Net.TcpServer.CommandBase) }, null) != null;
+                    return typeof(Net.TcpServer.ISetTcpServer).IsAssignableFrom(Type.Type)
+                        || Type.Type.GetMethod("SetTcpServer", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(Net.TcpServer.CommandBase) }, null) != null;
                 }
             }
 #endif
@@ -926,7 +926,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 命令序号记忆数据
             /// </summary>
-            protected static readonly Dictionary<HashString, int> nullRememberIdentityName = AutoCSer.DictionaryCreator.CreateHashString<int>();
+            protected static readonly Dictionary<HashString, int> nullRememberIdentityName = DictionaryCreator.CreateHashString<int>();
             /// <summary>
             /// 获取命令序号记忆数据
             /// </summary>
@@ -1060,9 +1060,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <typeparam name="methodAttributeType">TCP 调用函数配置</typeparam>
         /// <typeparam name="serverSocketSenderType">TCP 服务套接字数据发送</typeparam>
         internal abstract class Generator<attributeType, methodAttributeType, serverSocketSenderType> : GeneratorBase<attributeType, methodAttributeType, serverSocketSenderType>
-            where attributeType : AutoCSer.Net.TcpServer.ServerBaseAttribute
-            where methodAttributeType : AutoCSer.Net.TcpServer.MethodAttribute
-            where serverSocketSenderType : AutoCSer.Net.TcpServer.ServerSocketSenderBase
+            where attributeType : Net.TcpServer.ServerBaseAttribute
+            where methodAttributeType : Net.TcpServer.MethodAttribute
+            where serverSocketSenderType : Net.TcpServer.ServerSocketSenderBase
         {
             /// <summary>
             /// 方法索引信息
@@ -1112,7 +1112,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 保持异步回调类型名称
                 /// </summary>
-                private static readonly string keepCallbackType = typeof(AutoCSer.Net.TcpServer.KeepCallback).fullName();
+                private static readonly string keepCallbackType = typeof(Net.TcpServer.KeepCallback).fullName();
                 /// <summary>
                 /// 保持异步回调类型名称
                 /// </summary>
@@ -1150,7 +1150,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 //    get
                 //    {
                 //        if (Attribute.HttpName != null) return Attribute.HttpName;
-                //        if (typeof(attributeType) == typeof(AutoCSer.Net.Tcp.CommandServerAttribute)) return MemberIndex == null ? Method.Method.Name : MemberIndex.Member.Name;
+                //        if (typeof(attributeType) == typeof(Net.Tcp.CommandServerAttribute)) return MemberIndex == null ? Method.Method.Name : MemberIndex.Member.Name;
                 //        return MethodType.Type.Name + "." + (MemberIndex == null ? Method.Method.Name : MemberIndex.Member.Name);
                 //    }
                 //}
@@ -1246,11 +1246,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     Type type = Attribute.ClientRouteType;
                     if (type != null)
                     {
-                        if (typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender>).IsAssignableFrom(type))
+                        if (typeof(Net.TcpServer.ClientLoadRoute<Net.TcpInternalServer.ClientSocketSender>).IsAssignableFrom(type))
                         {
                             return type.fullName();
                         }
-                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender>).fullName());
+                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(Net.TcpServer.ClientLoadRoute<Net.TcpInternalServer.ClientSocketSender>).fullName());
                     }
                     return null;
                 }
@@ -1265,11 +1265,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     Type type = Attribute.ClientRouteType;
                     if (type != null)
                     {
-                        if (typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender>).IsAssignableFrom(type))
+                        if (typeof(Net.TcpServer.ClientLoadRoute<Net.TcpOpenServer.ClientSocketSender>).IsAssignableFrom(type))
                         {
                             return type.fullName();
                         }
-                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender>).fullName());
+                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(Net.TcpServer.ClientLoadRoute<Net.TcpOpenServer.ClientSocketSender>).fullName());
                     }
                     return null;
                 }
@@ -1317,7 +1317,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     MethodParameter parameter = method.ServerCallQueueKeyParameter;
                     if (parameter != null)
                     {
-                        if (queueTypes == null) queueTypes = DictionaryCreator.CreateOnly<Type, QueueType>();
+                        if (queueTypes == null) queueTypes = new Dictionary<Type, QueueType>();
                         QueueType queueType;
                         if (!queueTypes.TryGetValue(parameter.ParameterType, out queueType))
                         {

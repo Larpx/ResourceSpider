@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary
 {
@@ -23,7 +23,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         internal unsafe void GetSubBuffer(ref SubBuffer.PoolBufferFull buffer, int index)
         {
             SubBuffer.Pool.GetBuffer(ref buffer, ByteSize);
-            fixed (byte* dataFixed = buffer.Buffer) AutoCSer.Memory.CopyNotNull(Data.Byte + index, dataFixed + (buffer.StartIndex + index), ByteSize - index);
+            fixed (byte* dataFixed = buffer.Buffer) Memory.CopyNotNull(Data.Byte + index, dataFixed + (buffer.StartIndex + index), ByteSize - index);
         }
         /// <summary>
         /// 转换成字节数组
@@ -33,7 +33,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         internal unsafe void GetSubBuffer(ref SubBuffer.PoolBufferFull buffer)
         {
             SubBuffer.Pool.GetBuffer(ref buffer, ByteSize);
-            fixed (byte* dataFixed = buffer.Buffer) AutoCSer.Memory.CopyNotNull(Data.Byte, dataFixed + buffer.StartIndex, ByteSize);
+            fixed (byte* dataFixed = buffer.Buffer) Memory.CopyNotNull(Data.Byte, dataFixed + buffer.StartIndex, ByteSize);
         }
         /// <summary>
         /// 写数据
@@ -53,7 +53,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         
         internal void UnsafeWrite(byte[] data, int index, int length)
         {
-            fixed (byte* dataFixed = data) AutoCSer.Memory.CopyNotNull(dataFixed + index, Data.Byte + ByteSize, length);
+            fixed (byte* dataFixed = data) Memory.CopyNotNull(dataFixed + index, Data.Byte + ByteSize, length);
             ByteSize += length;
         }
         /// <summary>
@@ -74,7 +74,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         internal void WriteNotEmpty(byte* data, int length)
         {
             prepSize(length);
-            AutoCSer.Memory.CopyNotNull(data, Data.Byte + ByteSize, length);
+            Memory.CopyNotNull(data, Data.Byte + ByteSize, length);
             ByteSize += length;
         }
         /// <summary>
@@ -107,7 +107,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         {
             fixed (byte* dataFixed = data.Array)
             {
-                AutoCSer.Memory.CopyNotNull(dataFixed + data.Start, Data.Byte + ByteSize, data.Length);
+                Memory.CopyNotNull(dataFixed + data.Start, Data.Byte + ByteSize, data.Length);
                 ByteSize += data.Length;
             }
         }

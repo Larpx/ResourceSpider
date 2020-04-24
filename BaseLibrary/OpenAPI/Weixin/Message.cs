@@ -39,7 +39,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        private void toJson(AutoCSer.Json.Serializer serializer)
+        private void toJson(Json.Serializer serializer)
         {
             serializer.CustomWriteFirstName("touser");
             serializer.CallSerialize(touser);
@@ -83,8 +83,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         
-        [AutoCSer.Json.SerializeCustom]
-        private static void toJson(AutoCSer.Json.Serializer serializer, Message value)
+        [Json.SerializeCustom]
+        private static void toJson(Json.Serializer serializer, Message value)
         {
             value.toJson(serializer);
         }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {
     /// <summary>
     /// TCP 服务器端同步调用
     /// </summary>
-    [AutoCSer.IOS.Preserve(AllMembers = true)]
+    [IOS.Preserve(AllMembers = true)]
     public abstract class ServerCall : TcpServer.ServerCall
     {
         /// <summary>
@@ -33,8 +33,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
             //CommandFlags = CommandIdentity.GetCommandFlags();
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
@@ -73,7 +73,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         {
             Sender = null;
             serverValue = null;
-            AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+            Threading.RingPool<callType>.Default.PushNotNull(call);
         }
         /// <summary>
         /// 获取服务器端调用
@@ -82,7 +82,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         
         public static callType PopNew<callType>() where callType : ServerCall
         {
-            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New();
+            return Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New();
         }
         /// <summary>
         /// 空任务
@@ -106,7 +106,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
     /// TCP 服务器端同步调用
     /// </summary>
     /// <typeparam name="inputParameterType">输入参数类型</typeparam>
-    [AutoCSer.IOS.Preserve(AllMembers = true)]
+    [IOS.Preserve(AllMembers = true)]
     public abstract class ServerCall<inputParameterType> : ServerCall
     {
         /// <summary>
@@ -130,8 +130,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
             this.inputParameter = inputParameter;
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
@@ -169,7 +169,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         /// <param name="queue">自定义队列</param>
         /// <param name="inputParameter">输入参数</param>
         
-        public void CallQueue(ServerSocketSender sender, object serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
+        public void CallQueue(ServerSocketSender sender, object serverValue, Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
             this.serverValue = serverValue;
@@ -190,7 +190,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
             Sender = null;
             serverValue = null;
             inputParameter = default(inputParameterType);
-            AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+            Threading.RingPool<callType>.Default.PushNotNull(call);
         }
         /// <summary>
         /// 获取服务器端调用
@@ -199,7 +199,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         
         public static new callType PopNew<callType>() where callType : ServerCall<inputParameterType>
         {
-            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New();
+            return Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New();
         }
     }
 }

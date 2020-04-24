@@ -46,8 +46,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 远程对象扩展
             /// </summary>
-            [AutoCSer.BinarySerialize.IgnoreMember]
-            [AutoCSer.Json.IgnoreMember]
+            [BinarySerialize.IgnoreMember]
+            [Json.IgnoreMember]
             public RemoteExtension Remote
             {
                 get { return new RemoteExtension { Value = this }; }
@@ -100,21 +100,21 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     /// <param name="@ParameterName">@XmlDocument</param>
                     #endregion IF XmlDocument
                     #endregion LOOP NextParameters
-                    public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
+                    public /*IF:Attribute.IsAwait*/Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
                     {
                         /*IF:IsMethodReturn*/
-                        return /*IF:IsMethodReturn*/ /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName/*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
+                        return /*IF:IsMethodReturn*/ /*NOTE*/(Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName/*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
                     }
                     #endregion IF IsMethod
                     #region NOT IsMethod
                     /// <summary>
                     /// @XmlDocument
                     /// </summary>
-                    public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMemberName
+                    public /*IF:Attribute.IsAwait*/Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMemberName
                     {
                         get
                         {
-                            return /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName);
+                            return /*NOTE*/(Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName);
                         }
                     }
                     #endregion NOT IsMethod
@@ -155,12 +155,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             #endregion PUSH RemoteLinkType.RemoteKeyMember
             /// <returns></returns>
             #region IF Attribute.IsRemoteMethod
-            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@MemberName", IsClientRemoteMember = false/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            [Net.TcpStaticServer.RemoteMethod(MemberName = @"@MemberName", IsClientRemoteMember = false/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
             #endregion IF Attribute.IsRemoteMethod
             #region NOT Attribute.IsRemoteMethod
-            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@MemberName", IsClientRemoteMember = false/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            [Net.TcpStaticServer.RemoteMember(MemberName = @"@MemberName", IsClientRemoteMember = false/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
             #endregion NOT Attribute.IsRemoteMethod
-            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            [Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
             internal/*NOTE*/ new/*NOTE*/ static @MemberType.FullName @GetMethodName(/*PUSH:RemoteLinkType.RemoteKeyMember*/@MemberType.FullName @MemberName/*PUSH:RemoteLinkType.RemoteKeyMember*/)
             {
                 @Type.FullName value = /*PUSH:RemoteLinkType*/@GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);/*PUSH:RemoteLinkType*/
@@ -182,7 +182,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         /// <summary>
         /// 成员计数缓存类型
         /// </summary>
-        public abstract class MemberCacheCounterType : AutoCSer.Sql.Cache.Whole.MemberCacheCounter<SqlTable.TypeNameDefinition, MemberCacheCounterType> { }
+        public abstract class MemberCacheCounterType : Sql.Cache.Whole.MemberCacheCounter<SqlTable.TypeNameDefinition, MemberCacheCounterType> { }
         /// <summary>
         /// 类型全名
         /// </summary>

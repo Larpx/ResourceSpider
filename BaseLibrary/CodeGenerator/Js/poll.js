@@ -12,22 +12,22 @@ var AutoCSer;
         }
         return PollParameter;
     }());
-    AutoCSer.PollParameter = PollParameter;
+    PollParameter = PollParameter;
     var Poll = (function (_super) {
         __extends(Poll, _super);
         function Poll(Parameter) {
             if (Parameter === void 0) { Parameter = null; }
             _super.call(this);
-            AutoCSer.Pub.GetParameter(this, Poll.DefaultParameter, Parameter);
-            AutoCSer.Pub.GetEvents(this, Poll.DefaultEvents, Parameter);
+            Pub.GetParameter(this, Poll.DefaultParameter, Parameter);
+            Pub.GetEvents(this, Poll.DefaultEvents, Parameter);
             if (!this.Query)
                 this.Query = {};
             if (this.Path == null)
                 this.Path = this.IsView ? '/poll.html' : 'poll';
-            this.GetFunction = AutoCSer.Pub.ThisFunction(this, this.Get);
-            this.VerifyFunction = AutoCSer.Pub.ThisFunction(this, this.Verify);
-            this.OnVerifyFunction = AutoCSer.Pub.ThisFunction(this, this.OnVerify);
-            AutoCSer.IndexPool.Push(this);
+            this.GetFunction = Pub.ThisFunction(this, this.Get);
+            this.VerifyFunction = Pub.ThisFunction(this, this.Verify);
+            this.OnVerifyFunction = Pub.ThisFunction(this, this.OnVerify);
+            IndexPool.Push(this);
         }
         Poll.prototype.Start = function (Verify) {
             if (Verify != null)
@@ -36,7 +36,7 @@ var AutoCSer;
                 setTimeout(this.GetFunction, this.Identity = 1);
         };
         Poll.prototype.Close = function () {
-            AutoCSer.IndexPool.Pop(this);
+            IndexPool.Pop(this);
         };
         Poll.prototype.Stop = function () {
             this.Identity = 0;
@@ -44,7 +44,7 @@ var AutoCSer;
         Poll.prototype.Get = function () {
             if (this.Identity) {
                 if (this.OnMessage.Get().length) {
-                    AutoCSer.Pub.AppendJs((this.Domain == null ? '//__POLLDOMAIN__' : (this.Domain ? '//' + this.Domain : '')) + '__AJAX__?__AJAXCALL__=' + this.Path + '&__CALLBACK__=' + AutoCSer.IndexPool.ToString(this) + '.OnGet' + (this.IsView ? 'View' : '') + '&__JSON__=' + AutoCSer.Pub.ToJson({ verify: this.VerifyInfo, query: this.Query }, true, false).Escape() + (AutoCSer.Pub.IE ? '&t=' + (new Date).getTime() : ''), null, null, AutoCSer.Pub.ThisFunction(this, this.OnError, [this.Identity]));
+                    Pub.AppendJs((this.Domain == null ? '//__POLLDOMAIN__' : (this.Domain ? '//' + this.Domain : '')) + '__AJAX__?__AJAXCALL__=' + this.Path + '&__CALLBACK__=' + IndexPool.ToString(this) + '.OnGet' + (this.IsView ? 'View' : '') + '&__JSON__=' + Pub.ToJson({ verify: this.VerifyInfo, query: this.Query }, true, false).Escape() + (Pub.IE ? '&t=' + (new Date).getTime() : ''), null, null, Pub.ThisFunction(this, this.OnError, [this.Identity]));
                 }
                 else
                     setTimeout(this.GetFunction, 1000);
@@ -80,14 +80,14 @@ var AutoCSer;
         };
         Poll.prototype.OnError = function (Event, Identity) {
             if (Identity == this.Identity)
-                setTimeout(AutoCSer.Pub.ThisFunction(this, this.Check, [Identity]), 2000);
+                setTimeout(Pub.ThisFunction(this, this.Check, [Identity]), 2000);
         };
         Poll.prototype.Check = function (Identity) {
             if (Identity == this.Identity)
                 setTimeout(this.GetFunction, 8000);
         };
         Poll.prototype.Verify = function () {
-            AutoCSer.HttpRequest.Post(this.VerifyPath, null, this.OnVerifyFunction);
+            HttpRequest.Post(this.VerifyPath, null, this.OnVerifyFunction);
         };
         Poll.prototype.OnVerify = function (Value) {
             if (Value && Value.isVerify) {
@@ -103,5 +103,5 @@ var AutoCSer;
         Poll.Default = new Poll();
         return Poll;
     }(PollParameter));
-    AutoCSer.Poll = Poll;
+    Poll = Poll;
 })(AutoCSer || (AutoCSer = {}));

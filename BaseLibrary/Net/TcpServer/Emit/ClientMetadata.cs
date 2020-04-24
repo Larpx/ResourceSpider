@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
     /// <summary>
     /// TCP 客户端元数据
     /// </summary>
-    [AutoCSer.IOS.Preserve(AllMembers = false)]
+    [IOS.Preserve(AllMembers = false)]
     internal class ClientMetadataBase
     {
         /// <summary>
@@ -145,7 +145,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
     /// <summary>
     /// TCP 客户端元数据
     /// </summary>
-    [AutoCSer.IOS.Preserve(AllMembers = false)]
+    [IOS.Preserve(AllMembers = false)]
     internal abstract class ClientMetadata : ClientMetadataBase
     {
         /// <summary>
@@ -253,7 +253,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
         /// <summary>
         /// 同步等待调用添加节点函数信息
         /// </summary>
-        internal static readonly MethodInfo AutoWaitReturnValuePushNotNullMethod = ((Action<AutoWaitReturnValue>)AutoWaitReturnValue.PushNotNull).Method;// typeof(AutoWaitReturnValue).GetMethod("PushNotNull", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue) }, null);
+        internal static readonly MethodInfo AutoWaitReturnValuePushNotNullMethod = ((Action<AutoWaitReturnValue>)AutoWaitReturnValue.PushNotNull).Method;// typeof(AutoWaitReturnValue).GetMethod("PushNotNull", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(Net.TcpServer.AutoWaitReturnValue) }, null);
         /// <summary>
         /// TCP 服务客户端获取同步等待调用函数信息
         /// </summary>
@@ -265,7 +265,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
         /// <summary>
         /// 返回值类型字符串集合
         /// </summary>
-        [AutoCSer.IOS.Preserve]
+        [IOS.Preserve]
         internal static readonly string[] ReturnTypeStrings;
         /// <summary>
         /// 返回值类型字符串集合字段信息
@@ -274,7 +274,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 
         static ClientMetadata()
         {
-            ReturnTypeStrings = new string[AutoCSer.EnumAttribute<TcpServer.ReturnType>.GetMaxValue(-1) + 1];
+            ReturnTypeStrings = new string[EnumAttribute<TcpServer.ReturnType>.GetMaxValue(-1) + 1];
             foreach (TcpServer.ReturnType returnType in System.Enum.GetValues(typeof(TcpServer.ReturnType))) ReturnTypeStrings[(byte)returnType] = returnType.ToString();
         }
     }

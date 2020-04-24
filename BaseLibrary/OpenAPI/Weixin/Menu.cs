@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -45,8 +45,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// </summary>
         /// <param name="serializer"></param>
         
-        [AutoCSer.Json.SerializeCustom]
-        private void toJson(AutoCSer.Json.Serializer serializer)
+        [Json.SerializeCustom]
+        private void toJson(Json.Serializer serializer)
         {
             serializer.CustomWriteFirstName("name");
             serializer.CallSerialize(name);

@@ -9,7 +9,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         /// <summary>
         /// WEB服务器
         /// </summary>
-        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<@SessionType.FullName>
+        public partial class WebServer : Net.HttpDomainServer.ViewServer<@SessionType.FullName>
         {
             #region NOTE
             const int MaxPostDataSize = 0;
@@ -33,10 +33,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             }
             #region LOOP Methods
             #region NOT IsAjaxLoad
-            private static readonly AutoCSer.WebView.CallMethodInfo @CallMethodInfo = new AutoCSer.WebView.CallMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize, IsOnlyPost = @IsOnlyPost/*PUSH:Attribute*/ };
+            private static readonly WebView.CallMethodInfo @CallMethodInfo = new WebView.CallMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize, IsOnlyPost = @IsOnlyPost/*PUSH:Attribute*/ };
             #endregion NOT IsAjaxLoad
             #endregion LOOP Methods
-            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
+            protected override void call(int callIndex, Net.Http.SocketBase socket)
             {
                 switch (callIndex)
                 {
@@ -59,7 +59,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     #endregion LOOP Methods
                 }
             }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            protected override bool call(WebView.CallBase call, ref UnmanagedStream responseStream)
             {
                 switch (call.CallMethodIndex)
                 {
@@ -98,7 +98,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     default: return false;
                 }
             }
-            protected override bool call(AutoCSer.WebView.CallBase call)
+            protected override bool call(WebView.CallBase call)
             {
                 switch (call.CallMethodIndex)
                 {
@@ -137,7 +137,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             }
             #region LOOP ParameterTypes
             #region IF IsSerializeBox
-            [AutoCSer.Metadata.BoxSerialize]
+            [Metadata.BoxSerialize]
             #endregion IF IsSerializeBox
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             struct @ParameterTypeName
@@ -168,7 +168,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 类型全名
             /// </summary>
-            public partial class FullName : AutoCSer.WebView.Call<FullName>
+            public partial class FullName : WebView.Call<FullName>
             {
                 /// <summary>
                 /// web调用
@@ -191,7 +191,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                 /// <param name="callIndex"></param>
                 /// <param name="page"></param>
                 /// <returns></returns>
-                protected override bool callAjax(int callIndex, AutoCSer.WebView.AjaxBase page)
+                protected override bool callAjax(int callIndex, WebView.AjaxBase page)
                 {
                     return false;
                 }
@@ -205,7 +205,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 类型全名
             /// </summary>
-            public partial class FullName : AutoCSer.WebView.CallAsynchronous<FullName>
+            public partial class FullName : WebView.CallAsynchronous<FullName>
             {
                 /// <summary>
                 /// web调用
@@ -228,7 +228,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                 /// <param name="callIndex"></param>
                 /// <param name="page"></param>
                 /// <returns></returns>
-                protected override bool callAjax(int callIndex, AutoCSer.WebView.AjaxBase page)
+                protected override bool callAjax(int callIndex, WebView.AjaxBase page)
                 {
                     return false;
                 }

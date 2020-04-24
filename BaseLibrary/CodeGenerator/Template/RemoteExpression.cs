@@ -17,10 +17,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// @Type.XmlDocument 远程表达式
             /// </summary>
-            public class @RemoteExpressionTypeName : AutoCSer.Net.RemoteExpression.Node/*NOT:Type.IsStatic*/<@Type.FullName>/*NOT:Type.IsStatic*/
+            public class @RemoteExpressionTypeName : Net.RemoteExpression.Node/*NOT:Type.IsStatic*/<@Type.FullName>/*NOT:Type.IsStatic*/
             {
                 #region NOTE
-                public abstract class GenericParentMemberNodeTypeName : AutoCSer.Net.RemoteExpression.Node<Type.FullName>
+                public abstract class GenericParentMemberNodeTypeName : Net.RemoteExpression.Node<Type.FullName>
                 {
                     public class GenericMemberNodeTypeName : Pub { }
                 }
@@ -30,7 +30,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                 #region NOT Type.IsStatic
                 protected override @Type.FullName getValue()
                 {
-                    return ((AutoCSer.Net.RemoteExpression.Node<@Type.FullName>)base.Parent).GetValue();
+                    return ((Net.RemoteExpression.Node<@Type.FullName>)base.Parent).GetValue();
                 }
                 #endregion NOT Type.IsStatic
                 #region LOOP MemberGroup.Members
@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         #endregion LOOP IntputParameters
                     }
                     #region IF IntputParameters.Length
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(BinarySerialize.Serializer serializer)
                     {
                         #region LOOP IntputParameters
                         #region IF ParameterType.IsNull
@@ -68,7 +68,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         #endregion NOT ParameterType.IsNull
                         #endregion LOOP IntputParameters
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(BinarySerialize.DeSerializer deSerializer)
                     {
                         #region LOOP IntputParameters
                         #region IF ParameterType.IsNull
@@ -79,7 +79,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         #endregion NOT ParameterType.IsNull
                         #endregion LOOP IntputParameters
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(Json.Serializer serializer)
                     {
                         #region LOOP IntputParameters
                         #region IF ParameterType.IsNull
@@ -90,14 +90,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         #endregion NOT ParameterType.IsNull
                         #endregion LOOP IntputParameters
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(Json.Parser parser)
                     {
                         #region LOOP IntputParameters
                         base.deSerializeParameter(parser, ref @ParameterName);
                         #endregion LOOP IntputParameters
                     }
                     #region IF IsClientNodeParameter
-                    protected override void checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
+                    protected override void checkParameterServerNodeId(Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
                     {
                         #region LOOP IntputParameters
                         #region IF IsClientNodeParameter
@@ -142,10 +142,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         #endregion NOT IsStatic
                     }
                     #region NOT ReturnTypeIsNull
-                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    protected override Net.RemoteExpression.ReturnValue getReturn()
                     {
                         #region IF MemberIsReturn
-                        return new AutoCSer.Net.RemoteExpression.ReturnValue<@MethodReturnType.FullName> { Value = getValue() };
+                        return new Net.RemoteExpression.ReturnValue<@MethodReturnType.FullName> { Value = getValue() };
                         #endregion IF MemberIsReturn
                         #region NOT MemberIsReturn
                         getValue();
@@ -177,7 +177,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                             #endregion LOOP IntputParameters
                         }
                         #region IF IntputParameters.Length
-                        protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                        protected override void serializeParameter(BinarySerialize.Serializer serializer)
                         {
                             #region LOOP IntputParameters
                             #region IF ParameterType.IsNull
@@ -188,7 +188,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                             #endregion NOT ParameterType.IsNull
                             #endregion LOOP IntputParameters
                         }
-                        protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                        protected override void deSerializeParameter(BinarySerialize.DeSerializer deSerializer)
                         {
                             #region LOOP IntputParameters
                             #region IF ParameterType.IsNull
@@ -199,7 +199,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                             #endregion NOT ParameterType.IsNull
                             #endregion LOOP IntputParameters
                         }
-                        protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                        protected override void serializeParameter(Json.Serializer serializer)
                         {
                             #region LOOP IntputParameters
                             #region IF ParameterType.IsNull
@@ -210,14 +210,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                             #endregion NOT ParameterType.IsNull
                             #endregion LOOP IntputParameters
                         }
-                        protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                        protected override void deSerializeParameter(Json.Parser parser)
                         {
                             #region LOOP IntputParameters
                             deSerializeParameter(parser, ref @ParameterName);
                             #endregion LOOP IntputParameters
                         }
                         #region IF IsClientNodeParameter
-                        protected override void checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
+                        protected override void checkParameterServerNodeId(Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
                         {
                             #region LOOP IntputParameters
                             #region IF IsClientNodeParameter
@@ -252,10 +252,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                             #endregion IF Type.IsNull
                         }
                         #region NOT ReturnTypeIsNull
-                        protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                        protected override Net.RemoteExpression.ReturnValue getReturn()
                         {
                             #region IF MemberIsReturn
-                            return new AutoCSer.Net.RemoteExpression.ReturnValue<@MethodReturnType.FullName> { Value = getValue() };
+                            return new Net.RemoteExpression.ReturnValue<@MethodReturnType.FullName> { Value = getValue() };
                             #endregion IF MemberIsReturn
                             #region NOT MemberIsReturn
                             getValue();
@@ -365,7 +365,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         /// <summary>
         /// 远程表达式节点类型
         /// </summary>
-        public abstract class MemberRemoteExpressionTypeName : AutoCSer.Net.RemoteExpression.Node<MethodReturnType.FullName>
+        public abstract class MemberRemoteExpressionTypeName : Net.RemoteExpression.Node<MethodReturnType.FullName>
         {
             protected MemberRemoteExpressionTypeName() : base() { }
             protected MemberRemoteExpressionTypeName(int clientNodeId) : base(clientNodeId) { }
@@ -382,11 +382,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 远程表达式参数
             /// </summary>
-            public AutoCSer.Net.RemoteExpression.Node Node;
+            public Net.RemoteExpression.Node Node;
             /// <summary>
             /// 客户端检测服务端映射标识
             /// </summary>
-            public AutoCSer.Net.RemoteExpression.ServerNodeIdChecker Checker;
+            public Net.RemoteExpression.ServerNodeIdChecker Checker;
         }
     }
     #endregion NOTE

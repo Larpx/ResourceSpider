@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -50,7 +50,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <summary>
         /// 微信支付日志
         /// </summary>
-        internal AutoCSer.Log.ILog PayLog = AutoCSer.Log.Pub.Log;
+        internal Log.ILog PayLog = Log.Pub.Log;
 #pragma warning restore
         /// <summary>
         /// 获取访问令牌
@@ -89,9 +89,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                     else timestamp = token;
                 }
                 else value = token;
-                if (SHA.Sha1(AutoCSer.Extension.String_Weixin.ConcatBytes(nonce, timestamp, value)).checkLowerHexNotNull(signature)) return true;
+                if (SHA.Sha1(Extension.String_Weixin.ConcatBytes(nonce, timestamp, value)).checkLowerHexNotNull(signature)) return true;
             }
-            AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "微信服务器验证错误 signature[" + signature + @"] timestamp[" + timestamp + "] nonce[" + nonce + "] token[" + token + "]");
+            Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "微信服务器验证错误 signature[" + signature + @"] timestamp[" + timestamp + "] nonce[" + nonce + "] token[" + token + "]");
             return false;
         }
         /// <summary>
@@ -125,6 +125,6 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <summary>
         /// 默认配置
         /// </summary>
-        public static readonly Config Default = AutoCSer.Config.Loader.Get<Config>() ?? new Config();
+        public static readonly Config Default = Config.Loader.Get<Config>() ?? new Config();
     }
 }

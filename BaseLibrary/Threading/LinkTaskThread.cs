@@ -14,7 +14,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <summary>
         /// 等待事件
         /// </summary>
-        protected AutoCSer.Threading.Thread.AutoWaitHandle waitHandle;
+        protectedThreading.Thread.AutoWaitHandle waitHandle;
         /// <summary>
         /// 线程句柄
         /// </summary>
@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             //maxTaskCount = taskCount;
             this.taskTimestamp = currentTaskTimestamp = long.MaxValue - taskTimestamp;
             waitHandle.Set(0);
-            threadHandle = new System.Threading.Thread(run, AutoCSer.Threading.ThreadPool.TinyStackSize);
+            threadHandle = new System.Threading.Thread(run,Threading.ThreadPool.TinyStackSize);
             threadHandle.IsBackground = true;
             threadHandle.Start();
         }

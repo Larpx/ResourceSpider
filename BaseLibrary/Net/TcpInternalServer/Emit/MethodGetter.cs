@@ -1,7 +1,7 @@
 ﻿using System;
-using AutoCSer.Net.TcpServer.Emit;
+using Net.TcpServer.Emit;
 using System.Reflection;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {

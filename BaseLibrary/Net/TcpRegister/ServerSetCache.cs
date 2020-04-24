@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
     /// <summary>
     /// TCP 服务信息集合缓存信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     internal struct ServerSetCache
     {

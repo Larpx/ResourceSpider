@@ -28,12 +28,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
         /// <returns>解压数据</returns>
         internal byte[] Get()
         {
-            AutoCSer.SubBuffer.PoolBufferFull buffer = default(AutoCSer.SubBuffer.PoolBufferFull);
-            byte* data = AutoCSer.UnmanagedPool.Default.Get();
+            SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
+            byte* data = UnmanagedPool.Default.Get();
             try
             {
-                AutoCSer.SubBuffer.Pool.GetBuffer(ref buffer, bufferSize);
-                using (dataStream = new UnmanagedStream(data, AutoCSer.UnmanagedPool.DefaultSize))
+                SubBuffer.Pool.GetBuffer(ref buffer, bufferSize);
+                using (dataStream = new UnmanagedStream(data, UnmanagedPool.DefaultSize))
                 {
                     fixed (byte* bufferFixed = buffer.Buffer)
                     {
@@ -51,7 +51,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
             }
             finally
             {
-                AutoCSer.UnmanagedPool.Default.Push(data);
+                UnmanagedPool.Default.Push(data);
                 buffer.Free();
             }
         }

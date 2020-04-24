@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Metadata;
+usingMetadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
@@ -60,11 +60,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                     if (field.Value != null) itemName = field.Value.ItemName;
                     MemberIndex = field.Key.MemberIndex;
                     MethodInfo method = SerializeMethodCache.GetIsOutputMethod(this.field.FieldType);
-                    if (method != null) isOutputMethod = (Func<Serializer, object, bool>)typeof(AutoCSer.Reflection.InvokeMethodReturn<,,>).MakeGenericType(typeof(Serializer), this.field.FieldType, typeof(bool)).GetMethod("getTypeObjectReturnType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+                    if (method != null) isOutputMethod = (Func<Serializer, object, bool>)typeof(Reflection.InvokeMethodReturn<,,>).MakeGenericType(typeof(Serializer), this.field.FieldType, typeof(bool)).GetMethod("getTypeObjectReturnType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
                     bool isCustom = false;
                     method = SerializeMethodCache.GetMemberMethodInfo(this.field.FieldType, ref isCustom);
-                    if (isCustom) customSerializeMethod = (Action<object, Serializer>)typeof(AutoCSer.Reflection.InvokeMethodRef1<,>).MakeGenericType(this.field.FieldType, typeof(Serializer)).GetMethod("getObjectType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
-                    else serializeMethod = (Action<Serializer, object>)typeof(AutoCSer.Reflection.InvokeMethod<,>).MakeGenericType(typeof(Serializer), this.field.FieldType).GetMethod("getTypeObject", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+                    if (isCustom) customSerializeMethod = (Action<object, Serializer>)typeof(Reflection.InvokeMethodRef1<,>).MakeGenericType(this.field.FieldType, typeof(Serializer)).GetMethod("getObjectType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+                    else serializeMethod = (Action<Serializer, object>)typeof(Reflection.InvokeMethod<,>).MakeGenericType(typeof(Serializer), this.field.FieldType).GetMethod("getTypeObject", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
                 }
                 /// <summary>
                 /// 判断是否需要序列化
@@ -133,16 +133,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                 public void Set(PropertyMethod property)
                 {
                     this.PropertyInfo = property.Property.Member;
-                    if (PropertyInfo.DeclaringType.IsValueType) getMethod = (Func<object, object>)typeof(AutoCSer.Reflection.InvokeMethodRefReturn<,>).MakeGenericType(PropertyInfo.DeclaringType, PropertyInfo.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { PropertyInfo.GetGetMethod(true) });
-                    else getMethod = (Func<object, object>)typeof(AutoCSer.Reflection.InvokeMethodReturn<,>).MakeGenericType(PropertyInfo.DeclaringType, PropertyInfo.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { PropertyInfo.GetGetMethod(true) });
+                    if (PropertyInfo.DeclaringType.IsValueType) getMethod = (Func<object, object>)typeof(Reflection.InvokeMethodRefReturn<,>).MakeGenericType(PropertyInfo.DeclaringType, PropertyInfo.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { PropertyInfo.GetGetMethod(true) });
+                    else getMethod = (Func<object, object>)typeof(Reflection.InvokeMethodReturn<,>).MakeGenericType(PropertyInfo.DeclaringType, PropertyInfo.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { PropertyInfo.GetGetMethod(true) });
                     if (property.Attribute != null) itemName = property.Attribute.ItemName;
                     MemberIndex = property.Property.MemberIndex;
                     MethodInfo method = SerializeMethodCache.GetIsOutputMethod(this.PropertyInfo.PropertyType);
-                    if (method != null) isOutputMethod = (Func<Serializer, object, bool>)typeof(AutoCSer.Reflection.InvokeMethodReturn<,,>).MakeGenericType(typeof(Serializer), this.PropertyInfo.PropertyType, typeof(bool)).GetMethod("getTypeObjectReturnType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+                    if (method != null) isOutputMethod = (Func<Serializer, object, bool>)typeof(Reflection.InvokeMethodReturn<,,>).MakeGenericType(typeof(Serializer), this.PropertyInfo.PropertyType, typeof(bool)).GetMethod("getTypeObjectReturnType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
                     bool isCustom = false;
                     method = SerializeMethodCache.GetMemberMethodInfo(this.PropertyInfo.PropertyType, ref isCustom);
-                    if (isCustom) customSerializeMethod = (Action<object, Serializer>)typeof(AutoCSer.Reflection.InvokeMethodRef1<,>).MakeGenericType(PropertyInfo.PropertyType, typeof(Serializer)).GetMethod("getObjectType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
-                    else serializeMethod = (Action<Serializer, object>)typeof(AutoCSer.Reflection.InvokeMethod<,>).MakeGenericType(typeof(Serializer), PropertyInfo.PropertyType).GetMethod("getTypeObject", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+                    if (isCustom) customSerializeMethod = (Action<object, Serializer>)typeof(Reflection.InvokeMethodRef1<,>).MakeGenericType(PropertyInfo.PropertyType, typeof(Serializer)).GetMethod("getObjectType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+                    else serializeMethod = (Action<Serializer, object>)typeof(Reflection.InvokeMethod<,>).MakeGenericType(typeof(Serializer), PropertyInfo.PropertyType).GetMethod("getTypeObject", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
                 }
                 /// <summary>
                 /// 判断是否需要序列化

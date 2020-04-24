@@ -1,6 +1,6 @@
 ﻿/// <reference path = "./base.page.ts" />
 'use strict';
-//AutoCSer.OverDiv.Default.Show();
+//OverDiv.Default.Show();
 module AutoCSer {
     interface IOverDivId {
         Id: string;

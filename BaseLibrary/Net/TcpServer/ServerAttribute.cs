@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 远程表达式服务端任务类型
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override ServerTaskType GetRemoteExpressionServerTask { get { return RemoteExpressionServerTask; } }
         /// <summary>
         /// 远程表达式服务器端独占 TCP 同步调用队列编号，默认为 0
@@ -24,7 +24,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 远程表达式服务器端独占 TCP 同步调用队列编号
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override byte GetRemoteExpressionCallQueueIndex { get { return RemoteExpressionCallQueueIndex; } }
     }
 }

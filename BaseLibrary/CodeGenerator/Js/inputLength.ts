@@ -52,5 +52,5 @@ module AutoCSer {
             return Value.length <= this.Length ? Value : null;
         }
     }
-    new AutoCSer.Declare(InputLength, 'InputLength', 'focus', 'Src');
+    new Declare(InputLength, 'InputLength', 'focus', 'Src');
 }

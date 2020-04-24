@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         private const int InputParameterIndex = 0;
         private const int OutputParameterIndex = 0;
         private const ushort TimeoutSeconds = 0;
-        private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
+        private const Net.TcpServer.ServerTaskType ServerTask = Net.TcpServer.ServerTaskType.Timeout;
         private const bool IsSynchronousVerifyMethod = false;
         #endregion NOTE
 
@@ -30,15 +30,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             {
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
-                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                [System.Runtime.CompilerServices.MethodImpl(MethodImpl.AggressiveInlining)]
                 #region IF IsAsynchronousCallback
-                public static void @StaticMethodIndexName(/*IF:ClientParameterName*/AutoCSer.Net.TcpInternalSimpleServer.ServerSocket _socket_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/AutoCSer.Net.TcpServer.ServerCallback/*IF:MethodIsReturn*/</*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/>/*IF:MethodIsReturn*/ _onReturn_)
+                public static void @StaticMethodIndexName(/*IF:ClientParameterName*/Net.TcpInternalSimpleServer.ServerSocket _socket_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/Net.TcpServer.ServerCallback/*IF:MethodIsReturn*/</*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/>/*IF:MethodIsReturn*/ _onReturn_)
                 {
                     @Type.FullName/*PUSH:Method*/.@StaticMethodName(/*IF:ClientParameterName*/_socket_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterRefName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/_onReturn_);/*PUSH:Method*/
                 }
                 #endregion IF IsAsynchronousCallback
                 #region NOT IsAsynchronousCallback
-                public static /*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/ @StaticMethodIndexName(/*IF:ClientParameterName*/AutoCSer.Net.TcpInternalSimpleServer.ServerSocket _socket_/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
+                public static /*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/ @StaticMethodIndexName(/*IF:ClientParameterName*/Net.TcpInternalSimpleServer.ServerSocket _socket_/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
                 {
                     #region IF MemberIndex
                     #region NOT Method.IsGetMember
@@ -74,11 +74,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             public /*NOTE*/partial class /*NOTE*/@NoAccessTypeNameDefinition
             {
                 #region NOTE
-                public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks) { return false; }
+                public static Net.TcpServer.ReturnValue<bool> verify(Net.TcpInternalServer.ClientSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks) { return false; }
                 #endregion NOTE
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
-                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase @StaticMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:TimeoutSeconds*/, TimeoutSeconds = @TimeoutSeconds/*IF:TimeoutSeconds*//*IF:IsJsonSerialize*/, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly Net.TcpServer.CommandInfoBase @StaticMethodIdentityCommand = new Net.TcpServer.CommandInfoBase { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:TimeoutSeconds*/, TimeoutSeconds = @TimeoutSeconds/*IF:TimeoutSeconds*//*IF:IsJsonSerialize*/, CommandFlags = Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
 
                 #region NOT MemberIndex
                 #region IF Method.XmlDocument
@@ -96,7 +96,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                 #region IF Method.ReturnXmlDocument
                 /// <returns>@Method.ReturnXmlDocument</returns>
                 #endregion IF Method.ReturnXmlDocument
-                public static AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ /*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
+                public static Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ /*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
                 {
                     #region IF Attribute.IsExpired
                     #region LOOP InputParameters
@@ -106,7 +106,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     #endregion IF IsOut
                     #endregion PUSH MethodParameter
                     #endregion LOOP InputParameters
-                    return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired };
+                    return new Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = Net.TcpServer.ReturnType.VersionExpired };
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
                     #region IF InputParameterIndex
@@ -135,17 +135,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         Ret = @ParameterName
                         #endregion PUSH ReturnInputParameter
                     };
-                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Get</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
+                    Net.TcpServer.ReturnType _returnType_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Get</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
                     #region LOOP OutputParameters
                     #region IF InputMethodParameter.IsRefOrOut
                     /*PUSH:MethodParameter*/
                     @ParameterName/*PUSH:MethodParameter*/ = _outputParameter_./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*/;
                     #endregion IF InputMethodParameter.IsRefOrOut
                     #endregion LOOP OutputParameters
-                    return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_/*IF:MethodIsReturn*/, Value = _outputParameter_.Return/*IF:MethodIsReturn*/ };
+                    return new Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_/*IF:MethodIsReturn*/, Value = _outputParameter_.Return/*IF:MethodIsReturn*/ };
                     #endregion IF OutputParameterIndex
                     #region NOT OutputParameterIndex
-                    return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Call(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/) };
+                    return new Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Call(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/) };
                     #endregion NOT OutputParameterIndex
                     #endregion NOT Attribute.IsExpired
                 }
@@ -158,25 +158,25 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                 /// @Method.XmlDocument
                 /// </summary>
                 #endregion IF Method.XmlDocument
-                public static AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> @PropertyName
+                public static Net.TcpServer.ReturnValue<@MethodReturnType.FullName> @PropertyName
                 {
                     get
                     {
                         #region IF Attribute.IsExpired
-                        return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired };
+                        return new Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = Net.TcpServer.ReturnType.VersionExpired };
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
                         /*PUSH:AutoParameter*/
                         @DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName _outputParameter_ = default(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName);
-                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Get(@StaticMethodIdentityCommand, ref _outputParameter_);
-                        return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = _returnType_, Value = _outputParameter_.Return };
+                        Net.TcpServer.ReturnType _returnType_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Get(@StaticMethodIdentityCommand, ref _outputParameter_);
+                        return new Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = _returnType_, Value = _outputParameter_.Return };
                         #endregion NOT Attribute.IsExpired
                     }
                     #region PUSH SetMethod
                     set
                     {
                         #region IF Attribute.IsExpired
-                        throw new Exception(AutoCSer.Net.TcpServer.ReturnType.VersionExpired.ToString());
+                        throw new Exception(Net.TcpServer.ReturnType.VersionExpired.ToString());
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
                         /*PUSH:AutoParameter*/
@@ -187,8 +187,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                             @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
                             #endregion LOOP InputParameters
                         };
-                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Call(@StaticMethodIdentityCommand, ref _inputParameter_);
-                        if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                        Net.TcpServer.ReturnType _returnType_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleClientPart/**/.@ServerName/**/.TcpClient.Call(@StaticMethodIdentityCommand, ref _inputParameter_);
+                        if (_returnType_ == Net.TcpServer.ReturnType.Success) return;
                         throw new Exception(_returnType_.ToString());
                         #endregion NOT Attribute.IsExpired
                     }
@@ -208,7 +208,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         /// <summary>
         /// TCP调用服务端
         /// </summary>
-        public partial class @ServerName : AutoCSer.Net.TcpInternalSimpleServer.Server
+        public partial class @ServerName : Net.TcpInternalSimpleServer.Server
         {
             #region IF ServiceAttribute.IsRememberCommand
             /// <summary>
@@ -231,8 +231,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <param name="attribute">TCP调用服务器端配置信息</param>
             /// <param name="verify">TCP验证实例</param>
             /// <param name="log">日志接口</param>
-            public @ServerName(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, log, @IsSynchronousVerifyMethod)
+            public @ServerName(Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Log.ILog log = null)
+                : base(attribute ?? (attribute = Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, log, @IsSynchronousVerifyMethod)
             {
                 setCommandData(@MethodIndexs.Length);
                 #region LOOP MethodIndexs
@@ -254,9 +254,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <param name="socket">TCP 内部服务套接字数据发送</param>
             /// <param name="data">命令数据</param>
             /// <returns>是否成功</returns>
-            public override bool DoCommand(int index, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+            public override bool DoCommand(int index, Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
             {
-                AutoCSer.Net.TcpServer.ReturnType returnType;
+                Net.TcpServer.ReturnType returnType;
                 switch (index - @CommandStartIndex)
                 {
                     #region LOOP MethodIndexs
@@ -264,14 +264,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     case @MethodIndex:
                         #region IF Attribute.IsExpired
                         #region IF OutputParameterIndex
-                        return socket.SendOutput(AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                        return socket.SendOutput(Net.TcpServer.ReturnType.VersionExpired);
                         #endregion IF OutputParameterIndex
                         #region NOT OutputParameterIndex
-                        return socket.Send(AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                        return socket.Send(Net.TcpServer.ReturnType.VersionExpired);
                         #endregion NOT OutputParameterIndex
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
-                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        returnType = Net.TcpServer.ReturnType.Unknown;
                         try
                         {
                             #region IF InputParameterIndex
@@ -282,10 +282,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                                 #region IF IsAsynchronousCallback
                                 #region IF MethodIsReturn
                                 @OutputParameterTypeName outputParameter = new @OutputParameterTypeName();
-                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(AutoCSer.Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/socket.GetCallback<@OutputParameterTypeName/*NOT:IsVerifyMethod*/, @MethodReturnType.FullName/*NOT:IsVerifyMethod*/>(@StaticMethodIdentityCommand, ref outputParameter));
+                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/socket.GetCallback<@OutputParameterTypeName/*NOT:IsVerifyMethod*/, @MethodReturnType.FullName/*NOT:IsVerifyMethod*/>(@StaticMethodIdentityCommand, ref outputParameter));
                                 #endregion IF MethodIsReturn
                                 #region NOT MethodIsReturn
-                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(AutoCSer.Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/socket.GetCallback());
+                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/socket.GetCallback());
                                 #endregion NOT MethodIsReturn
                                 return true;
                                 #endregion IF IsAsynchronousCallback
@@ -328,12 +328,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                                 #endregion NOT IsAsynchronousCallback
                             }
                             #region IF InputParameterIndex
-                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            returnType = Net.TcpServer.ReturnType.ServerDeSerializeError;
                             #endregion IF InputParameterIndex
                         }
                         catch (Exception error)
                         {
-                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            returnType = Net.TcpServer.ReturnType.ServerException;
                             socket.Log(error);
                         }
                         #region IF OutputParameterIndex
@@ -350,23 +350,23 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             }
             #region LOOP MethodIndexs
             #region NOT IsNullMethod
-            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo @StaticMethodIdentityCommand = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+            private static readonly Net.TcpSimpleServer.OutputInfo @StaticMethodIdentityCommand = new Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
             #endregion NOT IsNullMethod
             #endregion LOOP MethodIndexs
 
             #region NAME Parameter
             #region LOOP ParameterTypes
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false/*NOT:IsSerializeReferenceMember*/, IsReferenceMember = false/*NOT:IsSerializeReferenceMember*/)]
+            [BinarySerialize.Serialize(IsMemberMap = false/*NOT:IsSerializeReferenceMember*/, IsReferenceMember = false/*NOT:IsSerializeReferenceMember*/)]
             #region IF IsSerializeBox
-            [AutoCSer.Metadata.BoxSerialize]
+            [Metadata.BoxSerialize]
             #endregion IF IsSerializeBox
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct @ParameterTypeName
             #region IF MethodReturnType.Type
 #if NOJIT
-                     : AutoCSer.Net.IReturnParameter
+                     : Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<@MethodReturnType.FullName>
+                     : Net.IReturnParameter<@MethodReturnType.FullName>
 #endif
             #endregion IF MethodReturnType.Type
             {
@@ -374,7 +374,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                 public @ParameterType.FullName @ParameterName;
                 #endregion LOOP Parameters
                 #region IF MethodReturnType.Type
-                [AutoCSer.Json.IgnoreMember]
+                [Json.IgnoreMember]
                 public @MethodReturnType.FullName Ret;
                 
                 public @MethodReturnType.FullName Return
@@ -383,7 +383,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     set { Ret = value; }
                 }
 #if NOJIT
-                [AutoCSer.Metadata.Ignore]
+                [Metadata.Ignore]
                 public object ReturnObject
                 {
                     get { return Ret; }
@@ -399,7 +399,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             #endregion LOOP ParameterTypes
             #endregion NAME Parameter
             #region NOTE
-            public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
+            public struct OutputParameterTypeName : Net.IReturnParameter
 #if !NOJIT
                 <MethodReturnType.FullName>
 #endif
@@ -446,11 +446,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                 /// <summary>
                 /// TCP 内部服务配置
                 /// </summary>
-                public AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute ServerAttribute;
+                public Net.TcpInternalSimpleServer.ServerAttribute ServerAttribute;
                 /// <summary>
                 /// 日志接口
                 /// </summary>
-                public AutoCSer.Log.ILog Log;
+                public Log.ILog Log;
                 /// <summary>
                 /// 验证委托
                 /// </summary>
@@ -459,29 +459,29 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 默认客户端TCP调用
             /// </summary>
-            public static readonly AutoCSer.Net.TcpStaticSimpleServer.Client TcpClient;
+            public static readonly Net.TcpStaticSimpleServer.Client TcpClient;
             #region PUSH TimeVerifyMethod
             private/*NOTE*/ new/*NOTE*/ static bool verify()
             {
-                return AutoCSer.Net.TcpInternalSimpleServer.TimeVerifyClient.Verify(@TimeVerifySimpleClientType/**/.verify, TcpClient);
+                return Net.TcpInternalSimpleServer.TimeVerifyClient.Verify(@TimeVerifySimpleClientType/**/.verify, TcpClient);
             }
             #endregion PUSH TimeVerifyMethod
             static @ServerName()
             {
-                ClientConfig config = (ClientConfig)AutoCSer.Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
+                ClientConfig config = (ClientConfig)Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
                 if (config.ServerAttribute == null)
                 {
                     #region IF IsSegmentation
-                    config.ServerAttribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, false);
+                    config.ServerAttribute = Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, false);
                     #endregion IF IsSegmentation
                     #region NOT IsSegmentation
-                    config.ServerAttribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/);
+                    config.ServerAttribute = Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/);
                     #endregion NOT IsSegmentation
                 }
                 #region NOT IsSegmentation
-                if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 @ServerName 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
+                if (config.ServerAttribute.IsServer) Log.Pub.Log.Add(Log.LogType.Warn | Log.LogType.Debug, null, "请确认 @ServerName 服务器端是否本地调用", Log.CacheType.None);
                 #endregion NOT IsSegmentation
-                TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient = new Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
                 #region IF Attribute.IsCompileSerialize
                 TcpClient.ClientCompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
                     , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
@@ -510,11 +510,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 调用参数代码
             /// </summary>
-            public class SimpleParameterPart : AutoCSer.CodeGenerator.Template.TcpStaticSimpleServer { }
+            public class SimpleParameterPart : CodeGenerator.Template.TcpStaticSimpleServer { }
             /// <summary>
             /// 客服端代码
             /// </summary>
-            public class SimpleClientPart : AutoCSer.CodeGenerator.Template.TcpStaticSimpleServer { }
+            public class SimpleClientPart : CodeGenerator.Template.TcpStaticSimpleServer { }
         }
         /// <summary>
         /// 类型全名
@@ -549,7 +549,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 验证委托
             /// </summary>
-            public static AutoCSer.Net.TcpInternalSimpleServer.TimeVerifyClient.Verifier verify = null;
+            public static Net.TcpInternalSimpleServer.TimeVerifyClient.Verifier verify = null;
         }
     }
     #endregion NOTE

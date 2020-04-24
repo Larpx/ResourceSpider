@@ -1,5 +1,5 @@
 ﻿using System;
-using fastCSharp.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace fastCSharp
 {

@@ -17,7 +17,7 @@ var AutoCSer;
             this.Editor = Editor;
         }
         AceSessionIE6.prototype.getLength = function () {
-            var Code = AutoCSer.HtmlElement.$Id(this.Editor.Id).Value0();
+            var Code = HtmlElement.$Id(this.Editor.Id).Value0();
             return Code ? 0 : Code.length;
         };
         AceSessionIE6.prototype.getScreenLength = function () {
@@ -32,7 +32,7 @@ var AutoCSer;
     var AceEditorIE6 = (function () {
         function AceEditorIE6(Ace) {
             this.Ace = Ace;
-            var Div = AutoCSer.HtmlElement.$Id(Ace.Id);
+            var Div = HtmlElement.$Id(Ace.Id);
             if (Ace.Code == null)
                 Ace.Code = Div.Text0();
             Div.Html('<textarea id="' + (this.Id = 'AceIe6_' + Ace.Id) + '" style="width:' + Div.Width0() + 'px;height:' + Div.Height0() + 'px"></textarea>');
@@ -42,18 +42,18 @@ var AutoCSer;
             return this.Session;
         };
         AceEditorIE6.prototype.setValue = function (Code) {
-            AutoCSer.HtmlElement.$SetValueById(this.Id, Code);
+            HtmlElement.$SetValueById(this.Id, Code);
         };
         AceEditorIE6.prototype.getValue = function () {
-            return AutoCSer.HtmlElement.$GetValueById(this.Id);
+            return HtmlElement.$GetValueById(this.Id);
         };
         AceEditorIE6.prototype.setTheme = function (Theme) { };
         AceEditorIE6.prototype.setReadOnly = function (IsReadOnly) {
-            AutoCSer.HtmlElement.$Id(this.Id).Set('readOnly', IsReadOnly);
+            HtmlElement.$Id(this.Id).Set('readOnly', IsReadOnly);
         };
         AceEditorIE6.prototype.moveCursorTo = function (Row, Col) { };
         AceEditorIE6.prototype.focus = function () {
-            AutoCSer.HtmlElement.$Id(this.Id).Focus0();
+            HtmlElement.$Id(this.Id).Focus0();
         };
         AceEditorIE6.prototype.resize = function () { };
         AceEditorIE6.prototype.on = function (Name, Function) { };
@@ -63,19 +63,19 @@ var AutoCSer;
         __extends(Ace, _super);
         function Ace(Parameter) {
             _super.call(this);
-            AutoCSer.Pub.GetParameter(this, Ace.DefaultParameter, Parameter);
-            (this.OnChange = new AutoCSer.Events).Add(AutoCSer.Pub.ThisFunction(this, this.Resize));
+            Pub.GetParameter(this, Ace.DefaultParameter, Parameter);
+            (this.OnChange = new Events).Add(Pub.ThisFunction(this, this.Resize));
         }
         Ace.prototype.Check = function () {
-            if (AutoCSer.HtmlElement.$Id(this.Id).Attribute0('ace') == 'ace')
+            if (HtmlElement.$Id(this.Id).Attribute0('ace') == 'ace')
                 return this;
             var Value = new Ace(this.Parameter);
             Value.Show();
             return Value;
         };
         Ace.prototype.Show = function () {
-            AutoCSer.Skin.Refresh();
-            var Div = AutoCSer.HtmlElement.$Id(this.Id);
+            Skin.Refresh();
+            var Div = HtmlElement.$Id(this.Id);
             if (Div.Element0()) {
                 if (Ace.IsIE6)
                     this.Editor = new AceEditorIE6(this);
@@ -124,14 +124,14 @@ var AutoCSer;
             if (!Ace.IsIE6) {
                 var Length = this.Editor.getSession().getScreenLength();
                 if (this.MaxHeight) {
-                    var MaxLength = Math.floor(((this.MaxHeight < 0 ? (AutoCSer.HtmlElement.$Height() + this.MaxHeight) : this.MaxHeight) - 2) / this.Editor.renderer.lineHeight) - (this.IsWrap ? 0 : 1);
+                    var MaxLength = Math.floor(((this.MaxHeight < 0 ? (HtmlElement.$Height() + this.MaxHeight) : this.MaxHeight) - 2) / this.Editor.renderer.lineHeight) - (this.IsWrap ? 0 : 1);
                     if (Length > MaxLength)
                         Length = MaxLength;
                 }
                 if (Length < this.MinLength)
                     Length = this.MinLength;
                 if (Length != this.LastLength) {
-                    AutoCSer.HtmlElement.$Id(this.Id).Style('height', (((this.LastLength = Length) + (this.IsWrap ? 0 : 1)) * this.Editor.renderer.lineHeight + 2) + 'px');
+                    HtmlElement.$Id(this.Id).Style('height', (((this.LastLength = Length) + (this.IsWrap ? 0 : 1)) * this.Editor.renderer.lineHeight + 2) + 'px');
                     this.Editor.resize();
                 }
             }
@@ -141,23 +141,23 @@ var AutoCSer;
             this.Show();
         };
         Ace.Load = function () {
-            if (AutoCSer.Pub.PageView.OnSet)
-                AutoCSer.Pub.PageView.OnSet.Add(AutoCSer.Pub.ThisFunction(this, this.Show));
+            if (Pub.PageView.OnSet)
+                Pub.PageView.OnSet.Add(Pub.ThisFunction(this, this.Show));
         };
         Ace.Show = function () {
             if (this.IsIE6 || window['ace']) {
-                for (var Elements = AutoCSer.HtmlElement.$Name('ace').GetElements(), Index = 0; Index - Elements.length; ++Index) {
-                    if (!AutoCSer.Pub.GetHtmlEditor(Elements[Index])) {
+                for (var Elements = HtmlElement.$Name('ace').GetElements(), Index = 0; Index - Elements.length; ++Index) {
+                    if (!Pub.GetHtmlEditor(Elements[Index])) {
                         var Div = Elements[Index];
                         if (Div.offsetHeight) {
-                            var Mode = AutoCSer.HtmlElement.$Attribute(Div, 'mode');
+                            var Mode = HtmlElement.$Attribute(Div, 'mode');
                             if (!Div.id && Mode) {
-                                var ParameterString = AutoCSer.HtmlElement.$Attribute(Div, 'ace'), Parameter = ParameterString && ParameterString != 'ace' ? eval('(' + ParameterString + ')') : new AceParameter(), Codes = [];
+                                var ParameterString = HtmlElement.$Attribute(Div, 'ace'), Parameter = ParameterString && ParameterString != 'ace' ? eval('(' + ParameterString + ')') : new AceParameter(), Codes = [];
                                 Parameter.Id = Div.id = 'AutoCSerAce' + (++this.Identity);
                                 for (var CodeNodes = Div.childNodes, CodeIndex = 0; CodeIndex !== CodeNodes.length; ++CodeIndex) {
                                     var Node = CodeNodes[CodeIndex];
                                     if (Node.tagName)
-                                        Codes.push(AutoCSer.HtmlElement.$GetText(Node));
+                                        Codes.push(HtmlElement.$GetText(Node));
                                 }
                                 Parameter.Code = Codes.join('\n').replace(/\xA0/g, ' ');
                                 Parameter.Mode = Mode;
@@ -175,29 +175,29 @@ var AutoCSer;
             if (Function) {
                 if (this.IsIE6) {
                     if (IsLoad)
-                        AutoCSer.Pub.OnLoad(Function, null, true);
+                        Pub.OnLoad(Function, null, true);
                     else
                         Function();
                 }
                 else
-                    AutoCSer.Pub.OnModule(['ace/ace'], Function, IsLoad);
+                    Pub.OnModule(['ace/ace'], Function, IsLoad);
             }
         };
         Ace.CheckIE6 = function () {
-            if (AutoCSer.Pub.IE) {
+            if (Pub.IE) {
                 var Version = navigator.appVersion.match(/MSIE\s+(\d+)/);
                 if (Version && Version.length == 2 && parseInt('0' + Version[1], 10) < 7) {
-                    AutoCSer.Pub.OnLoad(this.LoadIE6, this, this.IsIE6 = true);
+                    Pub.OnLoad(this.LoadIE6, this, this.IsIE6 = true);
                     return;
                 }
             }
-            AutoCSer.Pub.OnLoad(this.Load, this, true);
-            AutoCSer.Pub.OnModule(['ace/ace'], AutoCSer.Pub.ThisFunction(this, this.Show), true);
+            Pub.OnLoad(this.Load, this, true);
+            Pub.OnModule(['ace/ace'], Pub.ThisFunction(this, this.Show), true);
         };
         Ace.DefaultParameter = { Id: null, MinLength: null, MaxHeight: 0, FontSize: 12, Code: '', Mode: 'csharp', Theme: 'eclipse', IsWrap: true, IsReadOnly: false };
         Ace.Identity = 0;
         return Ace;
     }(AceParameter));
-    AutoCSer.Ace = Ace;
-    AutoCSer.Ace.CheckIE6();
+    Ace = Ace;
+    Ace.CheckIE6();
 })(AutoCSer || (AutoCSer = {}));

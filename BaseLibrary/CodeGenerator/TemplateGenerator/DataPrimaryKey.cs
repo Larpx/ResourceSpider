@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.Extension;
-using AutoCSer.CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using CodeGenerator.Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
@@ -13,7 +13,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// 数据关键字 代码生成
         /// </summary>
         [Generator(Name = "数据关键字")]
-        internal partial class Generator : MemberGenerator<AutoCSer.Data.PrimaryKeyAttribute>
+        internal partial class Generator : MemberGenerator<Data.PrimaryKeyAttribute>
         {
             /// <summary>
             /// 关键字成员集合
@@ -38,11 +38,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             protected override void nextCreate()
             {
-                LeftArray<KeyValue<MemberIndex, AutoCSer.Data.MemberAttribute>> members = new LeftArray<KeyValue<MemberIndex, AutoCSer.Data.MemberAttribute>>(PrimaryKeys.Length);
+                LeftArray<KeyValue<MemberIndex, Data.MemberAttribute>> members = new LeftArray<KeyValue<MemberIndex, Data.MemberAttribute>>(PrimaryKeys.Length);
                 foreach (MemberIndex member in PrimaryKeys)
                 {
-                    AutoCSer.Data.MemberAttribute attribute = member.GetSetupAttribute<AutoCSer.Data.MemberAttribute>(false);
-                    members.Add(new KeyValue<MemberIndex, AutoCSer.Data.MemberAttribute>(member, attribute));
+                    Data.MemberAttribute attribute = member.GetSetupAttribute<Data.MemberAttribute>(false);
+                    members.Add(new KeyValue<MemberIndex, Data.MemberAttribute>(member, attribute));
                 }
                 PrimaryKeys = members.GetSort(value => value.Value.PrimaryKeyIndex)
                     .getArray(value => value.Key);
@@ -58,7 +58,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 if (primaryKeys.Length > 1 && !Coder.CheckCodeType(typeof(Generator), type))
                 {
                     Type = type;
-                    Attribute = type.customAttribute<AutoCSer.Data.PrimaryKeyAttribute>() ?? AutoCSer.Data.PrimaryKeyAttribute.Default;
+                    Attribute = type.customAttribute<Data.PrimaryKeyAttribute>() ?? Data.PrimaryKeyAttribute.Default;
                     PrimaryKeys = primaryKeys;
                     nextCreate();
                 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.IO;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator

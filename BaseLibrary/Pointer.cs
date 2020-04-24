@@ -187,4 +187,30 @@ namespace Larpx.ResourceSpider.BaseLibrary
             return Data == other.Data;
         }
     }
+
+    /// <summary>
+    /// 指针(因为指针无法静态初始化)
+    /// </summary>
+    public unsafe partial struct Pointer
+    {
+        /// <summary>
+        /// 带长度的指针
+        /// </summary>
+        public partial struct Size
+        {
+            /// <summary>
+            /// 自定义数据长度
+            /// </summary>
+            internal int CustomSize;
+            /// <summary>
+            /// 字节长度
+            /// </summary>
+            /// <returns></returns>
+
+            public int GetSize()
+            {
+                return ByteSize;
+            }
+        }
+    }
 }

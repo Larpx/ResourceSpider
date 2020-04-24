@@ -16,14 +16,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             /// <summary>
             /// 函数委托
             /// </summary>
-            private readonly AutoCSer.Reflection.ActionRef1<valueType, Parser> method;
+            private readonlyReflection.ActionRef1<valueType, Parser> method;
             /// <summary>
             /// 值类型自定义反序列化
             /// </summary>
             /// <param name="methodInfo">自定义函数</param>
             internal CustomParser(MethodInfo methodInfo)
             {
-                method = (AutoCSer.Reflection.ActionRef1<valueType, Parser>)typeof(AutoCSer.Reflection.InvokeMethodRef1<,>).MakeGenericType(typeof(valueType), typeof(Parser)).GetMethod("get", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { methodInfo });
+                method = (Reflection.ActionRef1<valueType, Parser>)typeof(Reflection.InvokeMethodRef1<,>).MakeGenericType(typeof(valueType), typeof(Parser)).GetMethod("get", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { methodInfo });
             }
             /// <summary>
             /// 反序列化

@@ -6,19 +6,19 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValue<returnType>
 #if NOJIT
-        : AutoCSer.Net.IReturnParameter
+        : Net.IReturnParameter
 #else
-        : AutoCSer.Net.IReturnParameter<returnType>
+        : Net.IReturnParameter<returnType>
 #endif
     {
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Json.IgnoreMember]
+        [Json.IgnoreMember]
         public returnType Ret;
         /// <summary>
         /// 返回值
@@ -33,7 +33,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         public object ReturnObject
         {
             get { return Ret; }
@@ -45,20 +45,20 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
-    [AutoCSer.Metadata.BoxSerialize]
+    [BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [Metadata.BoxSerialize]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValueBox<returnType>
 #if NOJIT
-        : AutoCSer.Net.IReturnParameter
+        : Net.IReturnParameter
 #else
-        : AutoCSer.Net.IReturnParameter<returnType>
+        : Net.IReturnParameter<returnType>
 #endif
     {
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Json.IgnoreMember]
+        [Json.IgnoreMember]
         public returnType Ret;
         /// <summary>
         /// 返回值
@@ -73,7 +73,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         public object ReturnObject
         {
             get { return Ret; }
@@ -85,19 +85,19 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+    [BinarySerialize.Serialize(IsMemberMap = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValueReference<returnType>
 #if NOJIT
-        : AutoCSer.Net.IReturnParameter
+        : Net.IReturnParameter
 #else
-        : AutoCSer.Net.IReturnParameter<returnType>
+        : Net.IReturnParameter<returnType>
 #endif
     {
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Json.IgnoreMember]
+        [Json.IgnoreMember]
         public returnType Ret;
         /// <summary>
         /// 返回值
@@ -112,7 +112,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         public object ReturnObject
         {
             get { return Ret; }
@@ -124,20 +124,20 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
-    [AutoCSer.Metadata.BoxSerialize]
+    [BinarySerialize.Serialize(IsMemberMap = false)]
+    [Metadata.BoxSerialize]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValueBoxReference<returnType>
 #if NOJIT
-        : AutoCSer.Net.IReturnParameter
+        : Net.IReturnParameter
 #else
-        : AutoCSer.Net.IReturnParameter<returnType>
+        : Net.IReturnParameter<returnType>
 #endif
     {
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Json.IgnoreMember]
+        [Json.IgnoreMember]
         public returnType Ret;
         /// <summary>
         /// 返回值
@@ -152,7 +152,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         public object ReturnObject
         {
             get { return Ret; }

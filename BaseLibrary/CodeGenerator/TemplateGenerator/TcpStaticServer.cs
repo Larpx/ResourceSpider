@@ -1,8 +1,8 @@
 ﻿using System;
-using AutoCSer.Metadata;
-using AutoCSer.CodeGenerator.Metadata;
+using Metadata;
+using CodeGenerator.Metadata;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Reflection;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
@@ -20,7 +20,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 #else
         [Generator(Name = "TCP 静态服务", DependType = typeof(SqlTable.Generator), IsAuto = true)]
 #endif
-        internal sealed partial class Generator : Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute, AutoCSer.Net.TcpStaticServer.MethodAttribute, AutoCSer.Net.TcpInternalServer.ServerSocketSender>
+        internal sealed partial class Generator : Generator<Net.TcpStaticServer.ServerAttribute, Net.TcpStaticServer.MethodAttribute, Net.TcpInternalServer.ServerSocketSender>
         {
             /// <summary>
             /// 服务器端位置
@@ -66,7 +66,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// TCP调用服务配置
                 /// </summary>
-                public AutoCSer.Net.TcpStaticServer.ServerAttribute Attribute = new AutoCSer.Net.TcpStaticServer.ServerAttribute();
+                public Net.TcpStaticServer.ServerAttribute Attribute = new Net.TcpStaticServer.ServerAttribute();
                 /// <summary>
                 /// 类型集合
                 /// </summary>
@@ -92,7 +92,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public bool IsTimeVerify
                 {
-                    get { return typeof(AutoCSer.Net.TcpStaticServer.TimeVerify<>).isAssignableFromGenericDefinition(AttributeType); }
+                    get { return typeof(Net.TcpStaticServer.TimeVerify<>).isAssignableFromGenericDefinition(AttributeType); }
                 }
             }
             /// <summary>
@@ -107,7 +107,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// TCP调用配置
                 /// </summary>
-                public AutoCSer.Net.TcpStaticServer.ServerAttribute Attribute;
+                public Net.TcpStaticServer.ServerAttribute Attribute;
                 /// <summary>
                 /// 方法集合
                 /// </summary>
@@ -173,7 +173,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 远程成员配置
                 /// </summary>
-                public AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute Attribute;
+                public Net.TcpStaticServer.RemoteMemberAttribute Attribute;
                 /// <summary>
                 /// 是否生成函数
                 /// </summary>
@@ -336,7 +336,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 远程成员缓存配置
                 /// </summary>
-                public AutoCSer.Net.TcpStaticServer.RemoteLinkAttribute Attribute;
+                public Net.TcpStaticServer.RemoteLinkAttribute Attribute;
                 /// <summary>
                 /// 远程成员信息
                 /// </summary>
@@ -459,8 +459,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         string prefix = string.Empty;
                         switch (Attribute.NameType)
                         {
-                            case AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.Type.Concat: prefix = string.Concat(Members.getArray(value => value.Member.MemberName)); break;
-                            case AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.Type.Join: prefix = Members.joinString('_', value => value.Member.MemberName) + "_"; break;
+                            case Net.TcpStaticServer.RemoteMemberAttribute.Type.Concat: prefix = string.Concat(Members.getArray(value => value.Member.MemberName)); break;
+                            case Net.TcpStaticServer.RemoteMemberAttribute.Type.Join: prefix = Members.joinString('_', value => value.Member.MemberName) + "_"; break;
                         }
                         return prefix + (Attribute.MemberName ?? (Member == null ? Method.MethodName : Member.MemberName));
                     }
@@ -492,7 +492,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <param name="member"></param>
                 internal void Push(MemberIndex member)
                 {
-                    members.Add(new RemoteLinkMember { Member = member, Attribute = member.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteLinkAttribute>(false), Index = members.Length });
+                    members.Add(new RemoteLinkMember { Member = member, Attribute = member.GetSetupAttribute<Net.TcpStaticServer.RemoteLinkAttribute>(false), Index = members.Length });
                     cache cache = getCache(member.MemberSystemType);
                     if (cache.Members.Length != 0)
                     {
@@ -537,7 +537,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 成员集合缓存
                 /// </summary>
-                private static readonly Dictionary<Type, cache> memberCache = DictionaryCreator.CreateOnly<Type, cache>();
+                private static readonly Dictionary<Type, cache> memberCache = new Dictionary<Type, cache>();
                 /// <summary>
                 /// 获取成员集合
                 /// </summary>
@@ -549,26 +549,26 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     if (!memberCache.TryGetValue(type, out members))
                     {
                         LeftArray<RemoteLink> remoteMembers = new LeftArray<RemoteLink>();
-                        foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, true, false))
+                        foreach (MemberIndex member in MemberIndex.GetMembers<Net.TcpStaticServer.RemoteMemberAttribute>(type, Metadata.MemberFilters.Instance, true, false))
                         {
                             if (member.CanGet)
                             {
-                                AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(false);
+                                Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<Net.TcpStaticServer.RemoteMemberAttribute>(false);
                                 if (remoteAttribute != null)
                                 {
                                     remoteMembers.Add(new RemoteLink { Member = member, PropertyParameters = member.IsField ? NullValue<MethodParameter>.Array : MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), NullValue<Type>.Array), Attribute = remoteAttribute });
                                 }
                             }
                         }
-                        foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, false, true, false))
+                        foreach (MethodIndex member in MethodIndex.GetMethods<Net.TcpStaticServer.RemoteMemberAttribute>(type, Metadata.MemberFilters.Instance, false, true, false))
                         {
                             if (!member.Method.IsGenericMethodDefinition)
                             {
-                                AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(false);
+                                Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<Net.TcpStaticServer.RemoteMemberAttribute>(false);
                                 if (remoteAttribute != null) remoteMembers.Add(new RemoteLink { Method = member, Attribute = remoteAttribute });
                             }
                         }
-                        memberCache.Add(type, members = new cache { Members = remoteMembers.ToArray(), Caches = MemberIndex.GetMembers<AutoCSer.Net.TcpStaticServer.RemoteLinkAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, true, false) });
+                        memberCache.Add(type, members = new cache { Members = remoteMembers.ToArray(), Caches = MemberIndex.GetMembers<Net.TcpStaticServer.RemoteLinkAttribute>(type, Metadata.MemberFilters.Instance, true, false) });
                     }
                     return members;
                 }
@@ -636,9 +636,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <returns></returns>
             internal static RemoteLinkType GetRemoteLinkType(Type type)
             {
-                foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.TcpStaticServer.RemoteKeyAttribute>(type, MemberFilters.PublicInstance, true, false))
+                foreach (MemberIndex member in MemberIndex.GetMembers<Net.TcpStaticServer.RemoteKeyAttribute>(type, MemberFilters.PublicInstance, true, false))
                 {
-                    foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.RemoteKeyAttribute>(type, MemberFilters.Static, false, true, false))
+                    foreach (MethodIndex method in MethodIndex.GetMethods<Net.TcpStaticServer.RemoteKeyAttribute>(type, MemberFilters.Static, false, true, false))
                     {
                         if (!method.Method.IsGenericMethodDefinition && type.IsAssignableFrom(method.Method.ReturnType))
                         {
@@ -682,12 +682,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         else if (Attribute.IsRemoteLink) remoteLinkType = GetRemoteLinkType(Type);
                     }
                     LeftArray<RemoteMethod> remoteMethods = new LeftArray<RemoteMethod>();
-                    foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                    foreach (MethodIndex method in MethodIndex.GetMethods<Net.TcpStaticServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                     {
                         next(new TcpMethod { Method = method, MethodType = Type });
                         if (remoteLinkType != null && !method.Method.IsGenericMethodDefinition)
                         {
-                            AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = method.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(false);
+                            Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = method.GetSetupAttribute<Net.TcpStaticServer.RemoteMemberAttribute>(false);
                             if (remoteAttribute != null && remoteAttribute.IsClientRemoteMember)
                             {
                                 MethodParameter[] parameters = method.Parameters;
@@ -700,29 +700,29 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         remoteLinkType.RemoteMethods = remoteMethods.ToArray();
 
                         LeftArray<RemoteMember> remoteMembers = new LeftArray<RemoteMember>();
-                        foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.NonPublicInstanceProperty, true, false))
+                        foreach (MemberIndex member in MemberIndex.GetMembers<Net.TcpStaticServer.RemoteMemberAttribute>(Type, Metadata.MemberFilters.NonPublicInstanceProperty, true, false))
                         {
                             if (member.CanGet)
                             {
-                                AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(false);
+                                Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<Net.TcpStaticServer.RemoteMemberAttribute>(false);
                                 if (remoteAttribute != null)
                                 {
                                     if (member.IsField || ((PropertyInfo)member.Member).GetIndexParameters().Length == 0) remoteMembers.Add(new RemoteMember { Member = member, Attribute = remoteAttribute });
                                 }
                             }
                         }
-                        foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.NonPublicInstance, false, true, false))
+                        foreach (MethodIndex member in MethodIndex.GetMethods<Net.TcpStaticServer.RemoteMemberAttribute>(Type, Metadata.MemberFilters.NonPublicInstance, false, true, false))
                         {
                             if (!member.Method.IsGenericMethodDefinition)
                             {
-                                AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(false);
+                                Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<Net.TcpStaticServer.RemoteMemberAttribute>(false);
                                 if (remoteAttribute != null) remoteMembers.Add(new RemoteMember { Method = member, Attribute = remoteAttribute });
                             }
                         }
                         remoteLinkType.RemoteMembers = remoteMembers.ToArray();
 
                         RemoteLinkBuilder cacheBuilder = new RemoteLinkBuilder();
-                        foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.TcpStaticServer.RemoteLinkAttribute>(Type, AutoCSer.Metadata.MemberFilters.NonPublicInstance, true, false))
+                        foreach (MemberIndex member in MemberIndex.GetMembers<Net.TcpStaticServer.RemoteLinkAttribute>(Type, Metadata.MemberFilters.NonPublicInstance, true, false))
                         {
                             cacheBuilder.Push(member);
                         }
@@ -732,7 +732,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     }
                     if (!Type.Type.IsGenericType)
                     {
-                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<Net.TcpStaticServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                         {
                             if (member.IsField)
                             {
@@ -777,7 +777,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <param name="methodIndex"></param>
             private void next(TcpMethod methodIndex)
             {
-                AutoCSer.Net.TcpStaticServer.MethodAttribute attribute = methodIndex.Attribute;
+                Net.TcpStaticServer.MethodAttribute attribute = methodIndex.Attribute;
                 Server server = defaultServer;
                 ServerType serverType = defaultType;
                 string serviceName = attribute.GetServerName;
@@ -833,7 +833,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         else Coder.Add(code.Code);
                     }
                 }
-                if (clientCodes.Count != 0) clientCodes = DictionaryCreator.CreateOnly<Type, ClientCode>();
+                if (clientCodes.Count != 0) clientCodes = new Dictionary<Type, ClientCode>();
 
                 StringArray clientCallCode = new StringArray();
                 LeftArray<TcpMethod> methods = new LeftArray<TcpMethod>();
@@ -894,7 +894,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                                     else if (method.IsVerifyMethod)
                                     {
                                         IsVerifyMethod = true;
-                                        IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == AutoCSer.Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
+                                        IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
                                         if (method.MethodType == server.AttributeType && server.IsTimeVerify) TimeVerifyMethod = method;
                                         //method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                                     }
@@ -978,7 +978,7 @@ namespace " + AutoParameter.DefaultNamespace + "." + ClientPart + @"
             /// <summary>
             /// 其它组件产生的客户端代码
             /// </summary>
-            private static Dictionary<Type, ClientCode> clientCodes = DictionaryCreator.CreateOnly<Type, ClientCode>();
+            private static Dictionary<Type, ClientCode> clientCodes = new Dictionary<Type, ClientCode>();
             /// <summary>
             /// 其它组件产生的客户端代码
             /// </summary>
@@ -991,7 +991,7 @@ namespace " + AutoParameter.DefaultNamespace + "." + ClientPart + @"
                 /// <summary>
                 /// TCP 静态服务配置
                 /// </summary>
-                public AutoCSer.Net.TcpStaticServer.ServerAttribute Attribute;
+                public Net.TcpStaticServer.ServerAttribute Attribute;
                 /// <summary>
                 /// 客户端代码
                 /// </summary>

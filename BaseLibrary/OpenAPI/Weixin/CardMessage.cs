@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -22,12 +22,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// </summary>
         /// <param name="serializer"></param>
         
-        [AutoCSer.Json.SerializeCustom]
-        private unsafe void toJson(AutoCSer.Json.Serializer serializer)
+        [Json.SerializeCustom]
+        private unsafe void toJson(Json.Serializer serializer)
         {
             if (card_ext.signature == null)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "卡券扩展 签名为空");
+                Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "卡券扩展 签名为空");
                 serializer.CharStream.WriteJsonObject();
             }
             else
@@ -35,7 +35,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 serializer.CustomWriteFirstName("card_id");
                 serializer.CallSerialize(card_id);
                 serializer.CustomWriteNextName("card_ext");
-                serializer.CallSerialize(AutoCSer.Json.Serializer.Serialize(card_ext));
+                serializer.CallSerialize(Json.Serializer.Serialize(card_ext));
                 serializer.CustomObjectEnd();
             }
         }

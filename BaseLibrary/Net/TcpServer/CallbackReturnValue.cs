@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 #if !NOJIT
 using System.Reflection;
 using/**/System.Reflection.Emit;

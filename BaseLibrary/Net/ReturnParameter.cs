@@ -19,8 +19,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     ///// <typeparam name="valueType">返回参数类型</typeparam>
     //public class ReturnParameter<valueType> : IReturnParameter
     //{
-    //    [AutoCSer.Json.SerializeMember(IsIgnoreCurrent = true)]
-    //    [AutoCSer.Json.ParseMember(IsIgnoreCurrent = true)]
+    //    [Json.SerializeMember(IsIgnoreCurrent = true)]
+    //    [Json.ParseMember(IsIgnoreCurrent = true)]
     //    internal valueType Ret;
     //    /// <summary>
     //    /// 返回值
@@ -33,7 +33,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     //    /// <summary>
     //    /// 返回值
     //    /// </summary>
-    //    [AutoCSer.Metadata.Ignore]
+    //    [Metadata.Ignore]
     //    public object ReturnObject
     //    {
     //        get { return Ret; }
@@ -58,8 +58,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net
     ///// <typeparam name="valueType">返回参数类型</typeparam>
     //public class ReturnParameter<valueType> : IReturnParameter<valueType>
     //{
-    //    [AutoCSer.Json.SerializeMember(IsIgnoreCurrent = true)]
-    //    [AutoCSer.Json.ParseMember(IsIgnoreCurrent = true)]
+    //    [Json.SerializeMember(IsIgnoreCurrent = true)]
+    //    [Json.ParseMember(IsIgnoreCurrent = true)]
     //    internal valueType Ret;
     //    /// <summary>
     //    /// 返回值

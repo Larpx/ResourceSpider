@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// 数据模型 代码生成
         /// </summary>
         [Generator(Name = "数据模型", DependType = typeof(CSharper), IsAuto = true, IsDotNet2 = false, IsMono = false)]
-        internal partial class Generator : Generator<AutoCSer.Sql.ModelAttribute>
+        internal partial class Generator : Generator<Sql.ModelAttribute>
         {
             /// <summary>
             /// SQL表格计算列日志字段代理名称
@@ -46,11 +46,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 日志同步成员信息
                 /// </summary>
-                public AutoCSer.Sql.LogAttribute Attribute;
+                public Sql.LogAttribute Attribute;
                 /// <summary>
                 /// 数据库成员信息
                 /// </summary>
-                public AutoCSer.Sql.MemberAttribute MemberAttribute;
+                public Sql.MemberAttribute MemberAttribute;
                 /// <summary>
                 /// 成员位图名称
                 /// </summary>
@@ -98,7 +98,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public bool IsProxy
                 {
-                    get { return (Member.MemberFilters & AutoCSer.Metadata.MemberFilters.PublicInstanceField) != AutoCSer.Metadata.MemberFilters.PublicInstanceField; }
+                    get { return (Member.MemberFilters & Metadata.MemberFilters.PublicInstanceField) != Metadata.MemberFilters.PublicInstanceField; }
                 }
             }
             /// <summary>
@@ -114,7 +114,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 计数成员信息
                 /// </summary>
-                public AutoCSer.Sql.CountAttribute Attribute;
+                public Sql.CountAttribute Attribute;
                 /// <summary>
                 /// 计数总计 TCP 调用属性名称
                 /// </summary>
@@ -150,7 +150,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 数据库成员信息
                 /// </summary>
-                public AutoCSer.Sql.MemberAttribute MemberAttribute;
+                public Sql.MemberAttribute MemberAttribute;
             }
             /// <summary>
                          /// WEB Path 类型
@@ -165,7 +165,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// WEB Path 配置
                 /// </summary>
-                public AutoCSer.WebView.PathAttribute Attribute;
+                public WebView.PathAttribute Attribute;
                 /// <summary>
                 /// WEB Path 关联成员集合
                 /// </summary>
@@ -248,7 +248,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             public string IsSqlLogProxyLoadedName
             {
-                get { return AutoCSer.Sql.LogStream.Log.IsSqlLogProxyLoadedName; }
+                get { return Sql.LogStream.Log.IsSqlLogProxyLoadedName; }
             }
             /// <summary>
             /// 日志流计数完成类型集合
@@ -259,10 +259,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     if (LogMembers != null)
                     {
-                        HashSet<AutoCSer.Sql.LogStream.LoadedType> types = new HashSet<AutoCSer.Sql.LogStream.LoadedType>();
+                        HashSet<Sql.LogStream.LoadedType> types = new HashSet<Sql.LogStream.LoadedType>();
                         foreach (LogMember member in LogMembers)
                         {
-                            if (member.Attribute.CountType != null) types.Add(new AutoCSer.Sql.LogStream.LoadedType(member.Attribute.CountType, member.Attribute.CountTypeNumber));
+                            if (member.Attribute.CountType != null) types.Add(new Sql.LogStream.LoadedType(member.Attribute.CountType, member.Attribute.CountTypeNumber));
                         }
                         if (types.Count != 0) return types.getArray(value => new LogCountType { SqlStreamCountType = value.Type, CountTypeNumber = value.TableNumber });
                     }
@@ -379,32 +379,32 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 默认缓存类型
             /// </summary>
-            public AutoCSer.Sql.Cache.Whole.Event.Type CacheType
+            public Sql.Cache.Whole.Event.Type CacheType
             {
                 get
                 {
                     switch (Attribute.CacheType)
                     {
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityTree:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityTree:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityArrayWhere:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityArrayWhereExpression:
+                        case Sql.Cache.Whole.Event.Type.IdentityArray:
+                        case Sql.Cache.Whole.Event.Type.IdentityTree:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityArray:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityTree:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityArrayWhere:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityArrayWhereExpression:
                             if (Identity != null) return Attribute.CacheType;
                             break;
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKey:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKey:
+                        case Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
+                        case Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
                             if (PrimaryKeys.Length != 0) return Attribute.CacheType;
                             break;
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.Custom:
+                        case Sql.Cache.Whole.Event.Type.CreateMemberKey:
+                        case Sql.Cache.Whole.Event.Type.Custom:
                             if (Identity != null || PrimaryKeys.Length != 0) return Attribute.CacheType;
                             break;
                     }
-                    return AutoCSer.Sql.Cache.Whole.Event.Type.Unknown;
+                    return Sql.Cache.Whole.Event.Type.Unknown;
                 }
             }
             /// <summary>
@@ -416,10 +416,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     switch (CacheType)
                     {
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityTree:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKey:
+                        case Sql.Cache.Whole.Event.Type.IdentityArray:
+                        case Sql.Cache.Whole.Event.Type.IdentityTree:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKey:
                             return true;
                     }
                     return IsCreateEventCache;
@@ -434,11 +434,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     switch (CacheType)
                     {
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityTree:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityArray:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityTree:
+                        case Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
+                        case Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
+                        case Sql.Cache.Whole.Event.Type.CreateMemberKey:
                             return true;
                     }
                     return false;
@@ -453,16 +453,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     switch (CacheType)
                     {
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityTree:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKey:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityTree:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.Custom:
+                        case Sql.Cache.Whole.Event.Type.IdentityArray:
+                        case Sql.Cache.Whole.Event.Type.IdentityTree:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKey:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityArray:
+                        case Sql.Cache.Whole.Event.Type.CreateIdentityTree:
+                        case Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
+                        case Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
+                        case Sql.Cache.Whole.Event.Type.CreateMemberKey:
+                        case Sql.Cache.Whole.Event.Type.Custom:
                             return true;
                     }
                     return false;
@@ -477,10 +477,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     switch (CacheType)
                     {
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.IdentityTree:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
-                        case AutoCSer.Sql.Cache.Whole.Event.Type.PrimaryKey:
+                        case Sql.Cache.Whole.Event.Type.IdentityArray:
+                        case Sql.Cache.Whole.Event.Type.IdentityTree:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
+                        case Sql.Cache.Whole.Event.Type.PrimaryKey:
                             return true;
                     }
                     return false;
@@ -559,36 +559,36 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 计数缓存类型
             /// </summary>
-            public AutoCSer.Sql.Cache.Counter.Type CounterCacheType
+            public Sql.Cache.Counter.Type CounterCacheType
             {
                 get
                 {
                     switch (Attribute.CounterCacheType)
                     {
-                        case AutoCSer.Sql.Cache.Counter.Type.IdentityCounter:
-                        case AutoCSer.Sql.Cache.Counter.Type.CreateIdentityCounterQueue:
-                        case AutoCSer.Sql.Cache.Counter.Type.CreateIdentityCounterQueueList:
+                        case Sql.Cache.Counter.Type.IdentityCounter:
+                        case Sql.Cache.Counter.Type.CreateIdentityCounterQueue:
+                        case Sql.Cache.Counter.Type.CreateIdentityCounterQueueList:
                             if (Identity != null) return Attribute.CounterCacheType;
                             break;
-                        case AutoCSer.Sql.Cache.Counter.Type.CreateIdentityCounterMemberQueue:
+                        case Sql.Cache.Counter.Type.CreateIdentityCounterMemberQueue:
                             if (Identity != null && !IsIdentity64)
                             {
                                 switch (CacheType)
                                 {
-                                    case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityArray:
-                                    case AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityTree:
+                                    case Sql.Cache.Whole.Event.Type.CreateIdentityArray:
+                                    case Sql.Cache.Whole.Event.Type.CreateIdentityTree:
                                         return Attribute.CounterCacheType;
                                 }
                             }
                             break;
-                        case AutoCSer.Sql.Cache.Counter.Type.PrimaryKeyCounter:
-                        case AutoCSer.Sql.Cache.Counter.Type.CreatePrimaryKeyCounterQueue:
-                        case AutoCSer.Sql.Cache.Counter.Type.CreatePrimaryKeyCounterQueueList:
-                        case AutoCSer.Sql.Cache.Counter.Type.CreatePrimaryKeyCounterQueueDictionary:
+                        case Sql.Cache.Counter.Type.PrimaryKeyCounter:
+                        case Sql.Cache.Counter.Type.CreatePrimaryKeyCounterQueue:
+                        case Sql.Cache.Counter.Type.CreatePrimaryKeyCounterQueueList:
+                        case Sql.Cache.Counter.Type.CreatePrimaryKeyCounterQueueDictionary:
                             if (PrimaryKeys.Length != 0) return Attribute.CounterCacheType;
                             break;
                     }
-                    return AutoCSer.Sql.Cache.Counter.Type.Unknown;
+                    return Sql.Cache.Counter.Type.Unknown;
                 }
             }
             /// <summary>
@@ -596,7 +596,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             public bool IsMemberCache
             {
-                get { return Attribute.IsMemberCache || CounterMembers.Length != 0 || CounterCacheType == AutoCSer.Sql.Cache.Counter.Type.CreateIdentityCounterMemberQueue; }
+                get { return Attribute.IsMemberCache || CounterMembers.Length != 0 || CounterCacheType == Sql.Cache.Counter.Type.CreateIdentityCounterMemberQueue; }
             }
             /// <summary>
             /// 成员绑定类型约束基类
@@ -605,7 +605,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             {
                 get
                 {
-                    if (CounterCacheType == AutoCSer.Sql.Cache.Counter.Type.CreateIdentityCounterMemberQueue) return null;
+                    if (CounterCacheType == Sql.Cache.Counter.Type.CreateIdentityCounterMemberQueue) return null;
                     return "class";
                 }
             }
@@ -750,11 +750,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     if (!member.IsIgnore)
                     {
-                        AutoCSer.Sql.MemberAttribute attribute = member.GetAttribute<AutoCSer.Sql.MemberAttribute>(false);
+                        Sql.MemberAttribute attribute = member.GetAttribute<Sql.MemberAttribute>(false);
                         bool isMember = attribute == null || attribute.IsSetup;
                         if (Attribute.LogServerName != null)
                         {
-                            AutoCSer.Sql.LogAttribute logAttribute = member.GetAttribute<AutoCSer.Sql.LogAttribute>(false);
+                            Sql.LogAttribute logAttribute = member.GetAttribute<Sql.LogAttribute>(false);
                             if (logAttribute != null)
                             {
                                 LogMember logMember = new LogMember { Member = member, Attribute = logAttribute, MemberAttribute = attribute };
@@ -785,14 +785,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             }
                             if (Identity == null)
                             {
-                                if (isIdentityCase == 0 && member.MemberName == AutoCSer.Sql.Field.IdentityName)
+                                if (isIdentityCase == 0 && member.MemberName == Sql.Field.IdentityName)
                                 {
                                     identity = member;
                                     isIdentityCase = 1;
                                 }
-                                else if (identity == null && member.MemberName.Length == AutoCSer.Sql.Field.IdentityName.Length && member.MemberName.ToLower() == AutoCSer.Sql.Field.IdentityName) identity = member;
+                                else if (identity == null && member.MemberName.Length == Sql.Field.IdentityName.Length && member.MemberName.ToLower() == Sql.Field.IdentityName) identity = member;
                             }
-                            AutoCSer.Sql.CountAttribute countAttribute = member.GetAttribute<AutoCSer.Sql.CountAttribute>(false);
+                            Sql.CountAttribute countAttribute = member.GetAttribute<Sql.CountAttribute>(false);
                             if (countAttribute != null) counterMembers.Add(new CountMember { Member = member, Attribute = countAttribute });
                             if (member.MemberSystemType == typeof(string) && (attribute == null || (attribute.MaxStringLength == 0 && !attribute.IsIgnoreMaxStringLength))) strings.Add(member.MemberName);
                         }
@@ -805,7 +805,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                     LogMembers = logMembers.ToArray();
                     if (!Attribute.IsDefaultSerialize && Attribute.IsLogMemberMap)
                     {
-                        AutoCSer.BinarySerialize.SerializeAttribute dataSerialize = Type.Type.customAttribute<AutoCSer.BinarySerialize.SerializeAttribute>();
+                        BinarySerialize.SerializeAttribute dataSerialize = Type.Type.customAttribute<BinarySerialize.SerializeAttribute>();
                         if (dataSerialize != null && !dataSerialize.IsMemberMap) Messages.Message("数据库日志流处理类型 " + Type.FullName + " 序列化不支持成员位图");
                     }
                     foreach (LogMember member in LogMembers)
@@ -820,10 +820,10 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 ListArray<WebPathType> types;
                 if (webPathTypes == null)
                 {
-                    webPathTypes = DictionaryCreator.CreateOnly<Type, ListArray<WebPathType>>();
+                    webPathTypes = new Dictionary<Type, ListArray<WebPathType>>();
                     foreach (Type nextType in AutoParameter.Types)
                     {
-                        AutoCSer.WebView.PathAttribute webPath = nextType.customAttribute<AutoCSer.WebView.PathAttribute>();
+                        WebView.PathAttribute webPath = nextType.customAttribute<WebView.PathAttribute>();
                         if (webPath != null && webPath.Type != null && webPath.MemberName != null)
                         {
                             FieldInfo[] fields = nextType.GetFields(BindingFlags.Instance | BindingFlags.Public);

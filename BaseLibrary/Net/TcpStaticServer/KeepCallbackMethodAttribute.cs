@@ -14,7 +14,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <summary>
         /// 是否生成同步调用代理函数
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsClientSynchronous
         {
             get { return IsClientSynchronous; }
@@ -26,7 +26,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <summary>
         /// 是否生成异步调用代理函数。
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsClientAsynchronous
         {
             get { return IsClientAsynchronous; }
@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <summary>
         /// 保持异步回调
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsKeepCallback
         {
             get { return IsKeepCallback; }

@@ -44,8 +44,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// </summary>
         /// <param name="serializer"></param>
         
-        [AutoCSer.Json.SerializeCustom]
-        private void toJson(AutoCSer.Json.Serializer serializer)
+        [Json.SerializeCustom]
+        private void toJson(Json.Serializer serializer)
         {
             serializer.CustomWriteFirstName("name");
             serializer.CallSerialize(name);

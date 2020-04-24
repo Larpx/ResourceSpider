@@ -36,7 +36,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             {
                 if (senderTimeVerifyTicks == 0)
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
+                    while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
                     senderTimeVerifyTicks = ++lastVerifyTicks;
                     System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
                 }
@@ -53,7 +53,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (ticks > lastVerifyTicks)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
+                while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
                 if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
                 System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
             }

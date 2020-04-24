@@ -1,14 +1,14 @@
 ﻿using System;
-using AutoCSer.Threading;
+using Threading;
 using System.Reflection;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// 输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ParameterGenericType : AutoCSer.Net.TcpServer.Emit.ParameterGenericType
+    internal abstract partial class ParameterGenericType : Net.TcpServer.Emit.ParameterGenericType
     {
         /// <summary>
         /// TCP 开放服务客户端
@@ -26,7 +26,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ParameterGenericType> cache = new LockLastDictionary<Type, ParameterGenericType>();
+        private static readonly Threading.LockLastDictionary<Type, ParameterGenericType> cache = new LockLastDictionary<Type, ParameterGenericType>();
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -74,49 +74,49 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// </summary>
         internal override MethodInfo ClientSocketSenderWaitGetMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderWaitGet)ClientSocketSender.WaitGet<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderWaitGet)ClientSocketSender.WaitGet<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientSocketSenderWaitCallMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderWaitCall)ClientSocketSender.WaitCall<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderWaitCall)ClientSocketSender.WaitCall<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientSocketSenderCallOnlyMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderCallOnly)ClientSocketSender.CallOnly<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderCallOnly)ClientSocketSender.CallOnly<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientSocketSenderGetMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGet)ClientSocketSender.Get<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGet)ClientSocketSender.Get<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientSocketSenderGetKeepMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetKeep)ClientSocketSender.GetKeep<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetKeep)ClientSocketSender.GetKeep<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientSocketSenderCallMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderCall)ClientSocketSender.Call<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderCall)ClientSocketSender.Call<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientSocketSenderCallKeepMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderCallKeep)ClientSocketSender.CallKeep<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderCallKeep)ClientSocketSender.CallKeep<parameterType>).Method; }
         }
 #if !DOTNET2 && !DOTNET4 && !UNITY3D
         /// <summary>
@@ -124,14 +124,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// </summary>
         internal override MethodInfo ClientSocketSenderGetAwaiterMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetAwaiter)ClientSocketSender.GetAwaiter<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetAwaiter)ClientSocketSender.GetAwaiter<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientSocketSenderGetAwaiterOutputMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetAwaiterOutput)ClientSocketSender.GetAwaiter<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetAwaiterOutput)ClientSocketSender.GetAwaiter<parameterType>).Method; }
         }
 #endif
 
@@ -140,14 +140,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// </summary>
         internal override MethodInfo ServerSocketSenderPushMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ServerSocketSenderPush)ServerSocketSender.Push<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ServerSocketSenderPush)ServerSocketSender.Push<parameterType>).Method; }
         }
         /// <summary>
         /// 发送数据
         /// </summary>
         internal override MethodInfo ServerSocketSenderPushCommandMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ServerSocketSenderPushCommand)ServerSocketSender.Push<parameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ServerSocketSenderPushCommand)ServerSocketSender.Push<parameterType>).Method; }
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
@@ -577,7 +577,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
         }
         static Serializer()
         {
-            serializeMethods = DictionaryCreator.CreateOnly<Type, MethodInfo>();
+            serializeMethods = new Dictionary<Type, MethodInfo>();
             foreach (MethodInfo method in typeof(Serializer).GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
             {
                 if (method.IsDefined(typeof(SerializeMethod), false)) serializeMethods.Add(method.GetParameters()[1].ParameterType, method);

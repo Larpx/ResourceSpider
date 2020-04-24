@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
@@ -136,7 +136,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                     charEnd = charStart;
                     if (charCount != 0)
                     {//特殊字符二分查找表[charCount*char]
-                        AutoCSer.Memory.CopyNotNull((byte*)start, charStart, charCount << 1);
+                       Memory.CopyNotNull((byte*)start, charStart, charCount << 1);
                         charEnd += charCount << 1;
                     }
                     prefix = charStart + charCount * sizeof(ushort);//前缀集合
@@ -157,7 +157,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                     *(int*)(state + sizeof(int)) = 0;//状态位置
                     *(int*)(state + sizeof(int) * 2) = names[0].Value;//名称索引
                     prefix = Data.Byte + sizeof(int) * 4;
-                    AutoCSer.Extension.StringExtension.SimpleCopyNotNull(names[0].Key, prefix);
+                   Extension.StringExtension.SimpleCopyNotNull(names[0].Key, prefix);
                     *(char*)(prefix + (names[0].Key.Length << 1)) = (char)0;
                     *(int*)(Data.Byte + sizeof(int) * 4 + 128 * sizeof(ushort)) = 0;
                 }
@@ -169,7 +169,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                     *(int*)state = sizeof(int) * 3 + 128 * sizeof(ushort) + 2 * sizeof(ushort);//前缀位置
                     *(int*)(state + sizeof(int)) = 0;//状态位置
                     *(int*)(state + sizeof(int) * 2) = names[0].Value;//名称索引
-                    AutoCSer.Extension.StringExtension.SimpleCopyNotNull(names[0].Key, state + *(int*)state);
+                   Extension.StringExtension.SimpleCopyNotNull(names[0].Key, state + *(int*)state);
                 }
             }
         }
@@ -293,7 +293,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
                             *(int*)state = (int)(this.prefix - state);
                             fixed (char* charFixed = names[start].Key)
                             {
-                                AutoCSer.Memory.SimpleCopyNotNull((byte*)(charFixed + current + 1), this.prefix, prefixSize <<= 1);
+                               Memory.SimpleCopyNotNull((byte*)(charFixed + current + 1), this.prefix, prefixSize <<= 1);
                                 *(char*)(this.prefix += prefixSize) = (char)0;
                                 this.prefix += sizeof(char);
                             }

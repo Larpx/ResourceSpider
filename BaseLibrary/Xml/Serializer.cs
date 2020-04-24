@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
-using AutoCSer.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Metadata;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -10,7 +10,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
     /// <summary>
     /// XML序列化
     /// </summary>
-    public unsafe sealed partial class Serializer : AutoCSer.Threading.Link<Serializer>, IDisposable
+    public unsafe sealed partial class Serializer : Threading.Link<Serializer>, IDisposable
     {
         /// <summary>
         /// 反序列化配置名称
@@ -101,17 +101,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         private string serialize<valueType>(valueType value, SerializeConfig config)
         {
             Config = config ?? DefaultConfig;
-            byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
+            byte* buffer = UnmanagedPool.Default.Get();
             try
             {
-                CharStream.Reset((byte*)buffer, AutoCSer.UnmanagedPool.DefaultSize);
+                CharStream.Reset((byte*)buffer, UnmanagedPool.DefaultSize);
                 using (CharStream)
                 {
                     serialize(value);
                     return CharStream.ToString();
                 }
             }
-            finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }
+            finally { UnmanagedPool.Default.Push(buffer); }
         }
         /// <summary>
         /// 对象转换XML字符串
@@ -173,7 +173,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <param name="memberMap">序列化成员位图</param>
         /// <returns>序列化成员位图</returns>
         
-        public AutoCSer.Metadata.MemberMap SetCustomMemberMap(AutoCSer.Metadata.MemberMap memberMap)
+        public Metadata.MemberMap SetCustomMemberMap(Metadata.MemberMap memberMap)
         {
             return Config.SetCustomMemberMap(memberMap);
         }
@@ -236,7 +236,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         {
             char* data = CharStream.GetPrepSizeCurrent(length + (2 + 2));
             *data = '<';
-            AutoCSer.Extension.StringExtension.SimpleCopyNotNull64(start, ++data, length);
+            Extension.StringExtension.SimpleCopyNotNull64(start, ++data, length);
             *(data + length) = '>';
             CharStream.ByteSize += (length + 2) * sizeof(char);
         }
@@ -249,7 +249,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         {
             char* data = CharStream.GetPrepSizeCurrent(length + (3 + 2));
             *(int*)data = '<' + ('/' << 16);
-            AutoCSer.Extension.StringExtension.SimpleCopyNotNull64(start, data + 2, length);
+            Extension.StringExtension.SimpleCopyNotNull64(start, data + 2, length);
             *(data + (length + 2)) = '>';
             CharStream.ByteSize += (length + 3) * sizeof(char);
         }
@@ -393,7 +393,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                         *(long*)write = '<' + ('!' << 16) + ((long)'[' << 32) + ((long)'C' << 48);
                         *(long*)(write + sizeof(long)) = 'D' + ('A' << 16) + ((long)'T' << 32) + ((long)'A' << 48);
                         *(char*)(write + sizeof(long) * 2) = '[';
-                        AutoCSer.Memory.CopyNotNull(start, write + (sizeof(long) * 2 + sizeof(char)), length << 1);
+                        Memory.CopyNotNull(start, write + (sizeof(long) * 2 + sizeof(char)), length << 1);
                         *(long*)(write + (sizeof(long) * 2 + sizeof(char)) + (length << 1)) = ']' + (']' << 16) + ((long)'>' << 32);
                         CharStream.ByteSize += (length + 12) * sizeof(char);
                     }
@@ -748,7 +748,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             bits['<'] &= (Parser.EncodeSpaceBit | Parser.EncodeBit) ^ 255;
             bits['>'] &= (Parser.EncodeSpaceBit | Parser.EncodeBit) ^ 255;
 
-            serializeMethods = AutoCSer.DictionaryCreator.CreateOnly<Type, MethodInfo>();
+            serializeMethods = new Dictionary<Type, MethodInfo>();
             foreach (MethodInfo method in typeof(Serializer).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (method.IsDefined(typeof(SerializeMethod), false))

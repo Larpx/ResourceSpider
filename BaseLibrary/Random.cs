@@ -70,7 +70,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             secureSeeds = (uint*)Unmanaged.GetStatic(64 * sizeof(uint) + 5 * 11 * sizeof(uint), false);
             seeds = secureSeeds + 64;
             current64 = 5 * 11 - 2;
-            ulong tick = (ulong)AutoCSer.Date.StartTime.Ticks ^ (ulong)System.Diagnostics.Stopwatch.GetTimestamp() ^ (ulong)Environment.TickCount ^ ((ulong)Pub.Identity32 << 8) ^ ((ulong)Date.NowTimerInterval << 24);
+            ulong tick = (ulong)Date.StartTime.Ticks ^ (ulong)System.Diagnostics.Stopwatch.GetTimestamp() ^ (ulong)Environment.TickCount ^ ((ulong)Pub.Identity32 << 8) ^ ((ulong)Date.NowTimerInterval << 24);
             int isSeedArray = 0;
             FieldInfo seedField = typeof(Random).GetField("SeedArray", BindingFlags.Instance | BindingFlags.NonPublic);
             if (seedField != null)
@@ -164,7 +164,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             int count = Interlocked.Decrement(ref bitCount);
             while (count < 0)
             {
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextBit);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNextBit);
                 count = Interlocked.Decrement(ref bitCount);
             }
             if (count == 0)
@@ -183,14 +183,14 @@ namespace Larpx.ResourceSpider.BaseLibrary
         public byte NextByte()
         {
         START:
-            while (System.Threading.Interlocked.CompareExchange(ref byteLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextByte);
+            while (System.Threading.Interlocked.CompareExchange(ref byteLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNextByte);
             if (byteCount == 0)
             {
                 byteCount = -1;
                 System.Threading.Interlocked.Exchange(ref byteLock, 0);
                 byte value = (byte)(bytes = NextULong());
                 bytes >>= 8;
-                while (System.Threading.Interlocked.CompareExchange(ref byteLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextByte);
+                while (System.Threading.Interlocked.CompareExchange(ref byteLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNextByte);
                 byteCount = 7;
                 System.Threading.Interlocked.Exchange(ref byteLock, 0);
                 return value;
@@ -206,7 +206,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             else
             {
                 System.Threading.Interlocked.Exchange(ref byteLock, 0);
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextByte);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNextByte);
                 goto START;
             }
         }
@@ -217,13 +217,13 @@ namespace Larpx.ResourceSpider.BaseLibrary
         public ushort NextUShort()
         {
         START:
-            while (System.Threading.Interlocked.CompareExchange(ref ushortLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextUShort);
+            while (System.Threading.Interlocked.CompareExchange(ref ushortLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNextUShort);
             if (ushortCount == 0)
             {
                 System.Threading.Interlocked.Exchange(ref ushortLock, 0);
                 ushort value = (ushort)(ushorts = NextULong());
                 ushorts >>= 16;
-                while (System.Threading.Interlocked.CompareExchange(ref ushortLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextUShort);
+                while (System.Threading.Interlocked.CompareExchange(ref ushortLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNextUShort);
                 ushortCount = 3;
                 System.Threading.Interlocked.Exchange(ref ushortLock, 0);
                 return value;
@@ -239,7 +239,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             else
             {
                 System.Threading.Interlocked.Exchange(ref ushortLock, 0);
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextUShort);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNextUShort);
                 goto START;
             }
         }
@@ -250,7 +250,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         
         private int nextIndex64()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref currentLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNext64);
+            while (System.Threading.Interlocked.CompareExchange(ref currentLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.RandomNext64);
             int index = current64;
             if ((current64 -= 2) < 0) current64 = (5 * 11 - 4) - current64;
             System.Threading.Interlocked.Exchange(ref currentLock, 0);

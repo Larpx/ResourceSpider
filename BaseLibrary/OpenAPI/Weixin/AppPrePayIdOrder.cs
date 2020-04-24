@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -20,7 +20,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
             partnerid = config.partnerid;
             prepayid = prePayId;
             this.noncestr = noncestr;
-            timestamp = (((Date.NowTime.Set().Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerSecond).toString();
+            timestamp = (((Date.NowTime.Set().Ticks) - Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerSecond).toString();
             Sign<AppPrePayIdOrder>.Set(this, config.key);
         }
         /// <summary>

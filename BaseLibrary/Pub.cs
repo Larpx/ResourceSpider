@@ -36,9 +36,9 @@ namespace Larpx.ResourceSpider.BaseLibrary
         
         private static void clearCache(int count)
         {
-            AutoCSer.Metadata.MemberIndexGroup.ClearCache();
-            AutoCSer.Metadata.AttributeMethod.ClearCache();
-            AutoCSer.Metadata.TypeAttribute.ClearCache();
+            Metadata.MemberIndexGroup.ClearCache();
+            Metadata.AttributeMethod.ClearCache();
+            Metadata.TypeAttribute.ClearCache();
             if (ClearCaches != null) ClearCaches(count);
         }
         /// <summary>
@@ -81,5 +81,31 @@ namespace Larpx.ResourceSpider.BaseLibrary
         /// 空委托
         /// </summary>
         internal static readonly Action EmptyAction = emptyAction;
+    }
+
+    /// <summary>
+    /// 常用公共定义
+    /// </summary>
+    public static partial class Pub
+    {
+        /// <summary>
+        /// 爬虫标识
+        /// </summary>
+        public const string HttpSpiderUserAgent = " ";
+        /// <summary>
+        /// 最小时间值
+        /// </summary>
+        public static readonly DateTime MinTime = new DateTime(1900, 1, 1);
+        /// <summary>
+        /// 默认自增标识
+        /// </summary>
+        private static long identity = Date.StartTime.Ticks;
+        /// <summary>
+        /// 默认自增标识
+        /// </summary>
+        public static long Identity
+        {
+            get { return Interlocked.Increment(ref identity); }
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
-using AutoCSer.Metadata;
+using CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// TCP 服务代码生成
         /// </summary>
         [Generator(Name = "TCP 开放应答服务", DependType = typeof(CSharper), IsAuto = true)]
-        internal sealed partial class Generator : Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute, AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute, AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>
+        internal sealed partial class Generator : Generator<Net.TcpOpenSimpleServer.ServerAttribute, Net.TcpOpenSimpleServer.MethodAttribute, Net.TcpOpenSimpleServer.ServerSocket>
         {
             /// <summary>
             /// 服务类名称
@@ -49,7 +49,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             public bool IsTimeVerify
             {
-                get { return typeof(AutoCSer.Net.TcpOpenSimpleServer.TimeVerifyServer).IsAssignableFrom(Type); }
+                get { return typeof(Net.TcpOpenSimpleServer.TimeVerifyServer).IsAssignableFrom(Type); }
             }
             /// <summary>
             /// 是否生成客户端代码
@@ -60,7 +60,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             public bool IsServerCode;
             /// <summary>
-            /// 是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数
+            /// 是否存在 Net.TcpServer.ISetTcpServer 接口函数
             /// </summary>
             public bool IsSetTcpServer
             {
@@ -69,9 +69,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 #if NOJIT
                     return isSetTcpServer
 #else
-                    return typeof(AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server>).IsAssignableFrom(Type.Type)
+                    return typeof(Net.TcpSimpleServer.ISetTcpServer<Net.TcpOpenSimpleServer.Server>).IsAssignableFrom(Type.Type)
 #endif
-                        || Type.Type.GetMethod("SetTcpServer", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(AutoCSer.Net.TcpOpenSimpleServer.Server) }, null) != null;
+                        || Type.Type.GetMethod("SetTcpServer", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(Net.TcpOpenSimpleServer.Server) }, null) != null;
                 }
             }
             /// <summary>
@@ -81,7 +81,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             {
                 if (Type.Type.IsClass && !Type.Type.IsAbstract)
                 {
-                    LeftArray<TcpMethod> methodArray = new LeftArray<TcpMethod>(Metadata.MethodIndex.GetMethods<AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
+                    LeftArray<TcpMethod> methodArray = new LeftArray<TcpMethod>(Metadata.MethodIndex.GetMethods<Net.TcpOpenSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
                         .getFind(value => !value.Method.IsGenericMethod)
                         .getArray(value => new TcpMethod
                         {
@@ -89,7 +89,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             MethodType = Type,
                             ServiceAttribute = Attribute
                         }));
-                    foreach (MemberIndexInfo member in MemberIndexGroup.Get<AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                    foreach (MemberIndexInfo member in MemberIndexGroup.Get<Net.TcpOpenSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                     {
                         if (member.IsField)
                         {
@@ -141,7 +141,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             else if (method.IsVerifyMethod)
                             {
                                 IsVerifyMethod = true;
-                                IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == AutoCSer.Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
+                                IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
                             }
                             parameterBuilder.Add(method);
                         }

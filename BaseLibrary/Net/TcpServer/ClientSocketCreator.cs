@@ -2,7 +2,7 @@
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -100,12 +100,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (ipAddress == null)
             {
-                CommandClient.Log.Add(AutoCSer.Log.LogType.Error, Host + " IP 解析失败");
+                CommandClient.Log.Add(Log.LogType.Error, Host + " IP 解析失败");
                 return false;
             }
             if (port == 0)
             {
-                CommandClient.Log.Add(AutoCSer.Log.LogType.Error, CommandClient.Attribute.ServerName + " 端口号不能为 0");
+                CommandClient.Log.Add(Log.LogType.Error, CommandClient.Attribute.ServerName + " 端口号不能为 0");
                 return false;
             }
             return true;
@@ -146,7 +146,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                     CommandClient.CallOnSocket(this, socket, ClientSocketEventParameter.EventType.SetSocket);
                     return true;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpCommandClientSetSocket);
+                Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpCommandClientSetSocket);
             }
             while (true);
         }

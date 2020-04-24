@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(byte value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -68,7 +68,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(byte? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((byte)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((byte)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -79,7 +79,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(sbyte value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -90,7 +90,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(sbyte? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((sbyte)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((sbyte)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -101,7 +101,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(short value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -112,7 +112,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(short? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((short)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((short)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -123,7 +123,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(ushort value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -134,7 +134,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(ushort? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((ushort)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((ushort)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -145,7 +145,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(int value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -156,7 +156,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(int? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((int)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((int)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -167,7 +167,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(uint value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -178,7 +178,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(uint? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((uint)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((uint)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -189,7 +189,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(long value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -200,7 +200,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(long? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((long)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((long)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -211,7 +211,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(ulong value)
         {
-            AutoCSer.Extension.Number.ToString(value, CharStream);
+            Extension.Number.ToString(value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -222,7 +222,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(ulong? value)
         {
-            if (value.HasValue) AutoCSer.Extension.Number.ToString((ulong)value, CharStream);
+            if (value.HasValue) Extension.Number.ToString((ulong)value, CharStream);
         }
         /// <summary>
         /// 数字转换
@@ -361,7 +361,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         
         public void CallSerialize(DateTime value)
         {
-            CharStream.PrepLength(AutoCSer.Date.MillisecondStringSize);
+            CharStream.PrepLength(Date.MillisecondStringSize);
             Date.ToMillisecondString(value, CharStream);
         }
         /// <summary>

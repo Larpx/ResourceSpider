@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.WebView;
+using WebView;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
 {
@@ -8,7 +8,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         #region PART CLASS
         #region NOT IsServer
         /*NOTE*/
-        public abstract partial class /*NOTE*/@TypeNameDefinition/*NOTE*/ : AutoCSer.WebView.View<TypeNameDefinition>/*, *//*NOTE*/
+        public abstract partial class /*NOTE*/@TypeNameDefinition/*NOTE*/ : WebView.View<TypeNameDefinition>/*, *//*NOTE*/
         {
             #region NOTE
             public const int HtmlCount = 0;
@@ -19,7 +19,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             private static readonly object @HtmlLock = new object();
             #endregion NOT IsPoolType
             #region IF IsAwaitMethod
-            protected override /*AT:Async*/ void pageAsync(AutoCSer.WebView.Response _html_)
+            protected override /*AT:Async*/ void pageAsync(WebView.Response _html_)
             {
                 try
                 {
@@ -44,7 +44,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             }
             #endregion IF IsAwaitMethod
             #region NOT IsAwaitMethod
-            protected override bool page(ref AutoCSer.WebView.Response _html_)
+            protected override bool page(ref WebView.Response _html_)
             {
                 byte[][] htmls;
                 #region NOT IsPoolType
@@ -91,7 +91,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             internal struct WebViewQuery
             {
                 #region IF LoadMethod.Parameters.Length
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [Json.ParseMember(IsDefault = true)]
                 #endregion IF LoadMethod.Parameters.Length
                 #region LOOP LoadMethod.Parameters
                 #region IF XmlDocument
@@ -175,7 +175,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         /// <summary>
         /// WEB服务器
         /// </summary>
-        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<@SessionType.FullName>
+        public partial class WebServer : Net.HttpDomainServer.ViewServer<@SessionType.FullName>
         {
             #region NOTE
             static readonly FullName[] Views = null;
@@ -234,7 +234,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     return names;
                 }
             }
-            protected override void request(int viewIndex, AutoCSer.Net.Http.SocketBase socket)
+            protected override void request(int viewIndex, Net.Http.SocketBase socket)
             {
                 switch (viewIndex)
                 {
@@ -252,7 +252,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         #endregion NOT IsSetPage
                         #endregion IF IsPoolType
                         #region NOT IsPoolType
-                        loadPage(socket, /*NOTE*/(AutoCSer.WebView.View)(object)/*NOTE*/new @WebViewMethodType.FullName()/*IF:IsSetPage*//*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod/*IF:IsSetPage*/);
+                        loadPage(socket, /*NOTE*/(WebView.View)(object)/*NOTE*/new @WebViewMethodType.FullName()/*IF:IsSetPage*//*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod/*IF:IsSetPage*/);
                         #endregion NOT IsPoolType
                         return;
                     #endregion IF Attribute.IsPage
@@ -270,7 +270,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// 网站生成配置
             /// </summary>
             /// <returns>网站生成配置</returns>
-            protected override AutoCSer.WebView.Config getWebConfig() { return WebConfig; }
+            protected override WebView.Config getWebConfig() { return WebConfig; }
             static WebServer()
             {
                 CompileQueryParse(new System.Type[] { /*LOOP:Views*//*IF:LoadMethod*//*IF:Attribute.IsCompileJsonParser*/typeof(@Type.FullName/**/.WebViewQuery), /*IF:Attribute.IsCompileJsonParser*//*IF:LoadMethod*//*LOOP:Views*/null }, new System.Type[] { /*LOOP:CallMethods*/typeof(@ParameterTypeName), /*LOOP:CallMethods*/null });
@@ -300,7 +300,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 类型全名
             /// </summary>
-            public partial class FullName : AutoCSer.WebView.View<FullName>
+            public partial class FullName : WebView.View<FullName>
             {
                 /// <summary>
                 /// 
@@ -318,7 +318,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 类型全名
             /// </summary>
-            public partial class FullName : AutoCSer.WebView.Config
+            public partial class FullName : WebView.Config
             {
             }
         }

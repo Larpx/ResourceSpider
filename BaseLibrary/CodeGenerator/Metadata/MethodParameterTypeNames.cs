@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// </summary>
         public bool IsSerializeReferenceMember;
         /// <summary>
-        /// 是否添加包装处理申明 AutoCSer.Metadata.BoxSerialize
+        /// 是否添加包装处理申明 Metadata.BoxSerialize
         /// </summary>
         public bool IsSerializeBox;
         /// <summary>

@@ -13,8 +13,8 @@ var AutoCSer;
         __extends(ManyClickMenu, _super);
         function ManyClickMenu(Parameter) {
             _super.call(this, Parameter);
-            AutoCSer.Pub.GetEvents(this, ManyClickMenu.DefaultEvents, Parameter);
-            AutoCSer.HtmlElement.$(document.body).AddEvent('click', AutoCSer.Pub.ThisEvent(this, this.Check));
+            Pub.GetEvents(this, ManyClickMenu.DefaultEvents, Parameter);
+            HtmlElement.$(document.body).AddEvent('click', Pub.ThisEvent(this, this.Check));
             this.Reset(Parameter, Parameter.DeclareElement);
         }
         ManyClickMenu.prototype.Reset = function (Parameter, Element) {
@@ -38,7 +38,7 @@ var AutoCSer;
                 this.OnStart.Function(this);
                 this.ShowMenu();
                 if (this.IsMove)
-                    this['To' + (this.Type || 'Bottom')](Event, AutoCSer.HtmlElement.$(this.Element));
+                    this['To' + (this.Type || 'Bottom')](Event, HtmlElement.$(this.Element));
                 this.OnShowed.Function();
                 this.IsOver = true;
             }
@@ -49,7 +49,7 @@ var AutoCSer;
         };
         ManyClickMenu.DefaultEvents = { OnReset: null };
         return ManyClickMenu;
-    }(AutoCSer.Menu));
-    AutoCSer.ManyClickMenu = ManyClickMenu;
-    new AutoCSer.Declare(ManyClickMenu, 'ManyClickMenu', 'click', 'ParameterMany');
+    }(Menu));
+    ManyClickMenu = ManyClickMenu;
+    new Declare(ManyClickMenu, 'ManyClickMenu', 'click', 'ParameterMany');
 })(AutoCSer || (AutoCSer = {}));

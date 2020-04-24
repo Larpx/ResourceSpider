@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.Metadata;
+usingMetadata;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -115,7 +115,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 枚举解析调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> enumMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonlyThreading.LockDictionary<Type, MethodInfo> enumMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 枚举值解析函数信息
         ///// </summary>
@@ -190,7 +190,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             MethodInfo method;
             if (enumMethods.TryGetValue(type, out method)) return method;
             Type enumType = System.Enum.GetUnderlyingType(type);
-            if (AutoCSer.Metadata.TypeAttribute.GetAttribute<FlagsAttribute>(type) == null)
+            if (Metadata.TypeAttribute.GetAttribute<FlagsAttribute>(type) == null)
             {
                 if (enumType == typeof(uint)) method = GenericType.Get(type).XmlParseEnumUIntMethod;// enumUIntMethod.MakeGenericMethod(type);
                 else if (enumType == typeof(byte)) method = GenericType.Get(type).XmlParseEnumByteMethod;// enumByteMethod.MakeGenericMethod(type);
@@ -218,7 +218,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 值类型解析调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> valueTypeMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonlyThreading.LockDictionary<Type, MethodInfo> valueTypeMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 集合构造解析函数信息
         ///// </summary>
@@ -244,7 +244,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 引用类型解析调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> typeMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonlyThreading.LockDictionary<Type, MethodInfo> typeMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 引用类型对象解析函数信息
         ///// </summary>
@@ -307,7 +307,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 数组解析调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> arrayMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonlyThreading.LockDictionary<Type, MethodInfo> arrayMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 数组解析函数信息
         ///// </summary>
@@ -327,7 +327,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 可空枚举类型解析调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> nullableEnumParseMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonlyThreading.LockDictionary<Type, MethodInfo> nullableEnumParseMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 可空枚举类型解析函数信息
         ///// </summary>
@@ -348,7 +348,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 可空类型解析调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> nullableParseMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonlyThreading.LockDictionary<Type, MethodInfo> nullableParseMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 可空类型解析函数信息
         ///// </summary>
@@ -369,7 +369,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 键值对解析调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> keyValuePairMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonlyThreading.LockDictionary<Type, MethodInfo> keyValuePairMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 值类型对象解析函数信息
         ///// </summary>
@@ -389,7 +389,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 获取枚举构造调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> enumerableConstructorMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonlyThreading.LockDictionary<Type, MethodInfo> enumerableConstructorMethods = newThreading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 集合构造解析函数信息
         ///// </summary>
@@ -480,7 +480,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 自定义解析调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> customMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonlyThreading.LockDictionary<Type, MethodInfo> customMethods = newThreading.LockDictionary<Type, MethodInfo>();
         /// <summary>
         /// 自定义解析委托调用函数信息
         /// </summary>
@@ -492,7 +492,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             if (customMethods.TryGetValue(type, out method)) return method;
             if (type.IsValueType)
             {
-                foreach (AutoCSer.Metadata.AttributeMethod methodInfo in AutoCSer.Metadata.AttributeMethod.Get(type))
+                foreach (Metadata.AttributeMethod methodInfo inMetadata.AttributeMethod.Get(type))
                 {
                     if (methodInfo.Method.ReturnType == typeof(void))
                     {
@@ -508,7 +508,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             else
             {
                 Type refType = type.MakeByRefType();
-                foreach (AutoCSer.Metadata.AttributeMethod methodInfo in AutoCSer.Metadata.AttributeMethod.GetStatic(type))
+                foreach (Metadata.AttributeMethod methodInfo inMetadata.AttributeMethod.GetStatic(type))
                 {
                     if (methodInfo.Method.ReturnType == typeof(void))
                     {
@@ -531,7 +531,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 泛型定义类型成员名称查找数据
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, Pointer> genericDefinitionMemberSearchers = new AutoCSer.Threading.LockDictionary<Type, Pointer>();
+        private static readonlyThreading.LockDictionary<Type, Pointer> genericDefinitionMemberSearchers = newThreading.LockDictionary<Type, Pointer>();
         /// <summary>
         /// 泛型定义类型成员名称查找数据创建锁
         /// </summary>
@@ -554,7 +554,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             }
             try
             {
-                genericDefinitionMemberSearchers.Set(type, data = AutoCSer.StateSearcher.CharBuilder.Create(names, true).Pointer);
+                genericDefinitionMemberSearchers.Set(type, data =StateSearcher.CharBuilder.Create(names, true).Pointer);
             }
             finally { Monitor.Exit(genericDefinitionMemberSearcherCreateLock); }
             return data;

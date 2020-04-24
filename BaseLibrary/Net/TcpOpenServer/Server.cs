@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Net.Sockets;
 using System.Threading;
 using System.Runtime.CompilerServices;
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <summary>
         /// 套接字等待事件
         /// </summary>
-        private AutoCSer.Threading.Thread.AutoWaitHandle socketHandle;
+        private Threading.Thread.AutoWaitHandle socketHandle;
         /// <summary>
         /// 套接字链表头部
         /// </summary>
@@ -32,8 +32,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
         
-        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
-            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpOpenServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
+        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, serverCallQueue, onCustomData, log, Threading.Thread.CallType.TcpOpenServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
         }
         /// <summary>
@@ -45,7 +45,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
             //ThreadPriority priority = Thread.CurrentThread.Priority;
             ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
             socketHandle.Set(0);
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, AutoCSer.Threading.Thread.CallType.TcpOpenServerOnSocket);
+            Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpOpenServerOnSocket);
             //Thread.CurrentThread.Priority = ThreadPriority.Highest;
             if (verify == null) getSocket();
             else getSocketVerify();
@@ -97,14 +97,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
                                 goto NEXT;
                             }
                         }
-                        AutoCSer.Threading.ThreadYield.YieldOnly();
+                        Threading.ThreadYield.YieldOnly();
                     }
                     while (true);
                 }
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }
@@ -156,7 +156,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
                                     goto NEXT;
                                 }
                             }
-                            AutoCSer.Threading.ThreadYield.YieldOnly();
+                            Threading.ThreadYield.YieldOnly();
                         }
                         while (true);
                     }
@@ -166,7 +166,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }
@@ -190,7 +190,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
                     }
                     catch (Exception error)
                     {
-                        Log.Add(AutoCSer.Log.LogType.Debug, error);
+                        Log.Add(Log.LogType.Debug, error);
                     }
                     if (serverSocket != null)
                     {

@@ -10,11 +10,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
         /// AJAX函数调用
         /// </summary>
         #region NOTE
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         #endregion NOTE
-        [AutoCSer.WebView.Call]
-        [AutoCSer.WebView.ClearMember(IsIgnoreCurrent = true)]
-        public sealed class AjaxLoader : AutoCSer.WebView.AjaxLoader<AjaxLoader>
+        [WebView.Call]
+        [WebView.ClearMember(IsIgnoreCurrent = true)]
+        public sealed class AjaxLoader : WebView.AjaxLoader<AjaxLoader>
         {
             #region NOTE
             //static pub.FullName[] Methods = null;
@@ -42,15 +42,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             }
             #endregion NOTE
             #region NOTE
-            [AutoCSer.Metadata.Ignore]
+            [Metadata.Ignore]
             #endregion NOTE
-            [AutoCSer.WebView.CallMethod(FullName = "/Ajax")]
-            [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            [WebView.CallMethod(FullName = "/Ajax")]
+            [System.Runtime.CompilerServices.MethodImpl(MethodImpl.AggressiveInlining)]
             public void Load()
             {
                 load();
             }
-            protected override void loadView(AutoCSer.WebView.AjaxMethodInfo ajaxInfo)
+            protected override void loadView(WebView.AjaxMethodInfo ajaxInfo)
             {
                 switch (ajaxInfo.MethodIndex)
                 {
@@ -63,7 +63,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                         loadView(@PageName, ajaxInfo);
                         #endregion IF IsPoolType
                         #region NOT IsPoolType
-                        loadView(/*NOTE*/(AutoCSer.WebView.View)(object)/*NOTE*/new @WebViewMethodType.FullName(), ajaxInfo/*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod);
+                        loadView(/*NOTE*/(WebView.View)(object)/*NOTE*/new @WebViewMethodType.FullName(), ajaxInfo/*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod);
                         #endregion NOT IsPoolType
                         #endregion IF IsSetPage
                         #region NOT IsSetPage
@@ -74,7 +74,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     default: return;
                 }
             }
-            protected override void loadAjax(AutoCSer.WebView.AjaxMethodInfo ajaxInfo)
+            protected override void loadAjax(WebView.AjaxMethodInfo ajaxInfo)
             {
                 switch (ajaxInfo.MethodIndex)
                 {
@@ -87,7 +87,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                     default: return;
                 }
             }
-            protected override bool callAjax(int callIndex, AutoCSer.WebView.AjaxBase page)
+            protected override bool callAjax(int callIndex, WebView.AjaxBase page)
             {
                 switch (callIndex)
                 {
@@ -106,16 +106,16 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
                                 #region IF IsAsynchronousCallback
                                 #region IF MethodIsReturn
                                 @AsyncIndexName returnCallbak = new @AsyncIndexName { Ajax = ajax, Parameter = outputParameter };
-                                ajax./*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:MethodParameters*//*AT:ParameterRef*/inputParameter.@ParameterName, /*LOOP:MethodParameters*//*NOTE*/(Action<AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName>>)/*NOTE*/returnCallbak.Callback);
+                                ajax./*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:MethodParameters*//*AT:ParameterRef*/inputParameter.@ParameterName, /*LOOP:MethodParameters*//*NOTE*/(Action<Net.TcpServer.ReturnValue<@MethodReturnType.FullName>>)/*NOTE*/returnCallbak.Callback);
                                 #endregion IF MethodIsReturn
                                 #region NOT MethodIsReturn
                                 #region IF IsPoolType
                                 AjaxCallbackPool<@WebAjaxMethodType.FullName/*IF:OutputParameterIndex*/, @OutputParameterTypeName/*IF:OutputParameterIndex*/> callbackPool = new AjaxCallbackPool<@WebAjaxMethodType.FullName/*IF:OutputParameterIndex*/, @OutputParameterTypeName/*IF:OutputParameterIndex*/> { Ajax = ajax/*IF:OutputParameterIndex*/, Parameter = outputParameter/*IF:OutputParameterIndex*/ };
-                                ajax./*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:MethodParameters*//*AT:ParameterRef*/inputParameter.@ParameterName, /*LOOP:MethodParameters*//*NOTE*/(Action<AutoCSer.Net.TcpServer.ReturnValue>)/*NOTE*/callbackPool.Callback);
+                                ajax./*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:MethodParameters*//*AT:ParameterRef*/inputParameter.@ParameterName, /*LOOP:MethodParameters*//*NOTE*/(Action<Net.TcpServer.ReturnValue>)/*NOTE*/callbackPool.Callback);
                                 #endregion IF IsPoolType
                                 #region NOT IsPoolType
-                                AjaxCallback/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ callback = new AjaxCallback/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ { Ajax = /*NOTE*/(AutoCSer.WebView.Ajax)(object)/*NOTE*/ajax/*IF:OutputParameterIndex*/, Parameter = outputParameter/*IF:OutputParameterIndex*/ };
-                                ajax./*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:MethodParameters*//*AT:ParameterRef*/inputParameter.@ParameterName, /*LOOP:MethodParameters*//*NOTE*/(Action<AutoCSer.Net.TcpServer.ReturnValue>)/*NOTE*/callback.Callback);
+                                AjaxCallback/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ callback = new AjaxCallback/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ { Ajax = /*NOTE*/(WebView.Ajax)(object)/*NOTE*/ajax/*IF:OutputParameterIndex*/, Parameter = outputParameter/*IF:OutputParameterIndex*/ };
+                                ajax./*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:MethodParameters*//*AT:ParameterRef*/inputParameter.@ParameterName, /*LOOP:MethodParameters*//*NOTE*/(Action<Net.TcpServer.ReturnValue>)/*NOTE*/callback.Callback);
                                 #endregion NOT IsPoolType
                                 #endregion NOT MethodIsReturn
                                 #endregion IF IsAsynchronousCallback
@@ -146,7 +146,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             #region IF MethodIsReturn
             sealed class @AsyncIndexName : @AjaxCallbackPool</*IF:IsPoolType*/@WebAjaxMethodType.FullName, /*IF:IsPoolType*/@OutputParameterTypeName>
             {
-                public void Callback(AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> value)
+                public void Callback(Net.TcpServer.ReturnValue<@MethodReturnType.FullName> value)
                 {
                     @WebAjaxMethodType.FullName ajax = System.Threading.Interlocked.Exchange(ref Ajax, null);
                     if (ajax != null)
@@ -161,7 +161,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             #endregion LOOP Methods
             #region LOOP ParameterTypes
             #region IF IsSerializeBox
-            [AutoCSer.Metadata.BoxSerialize]
+            [Metadata.BoxSerialize]
             #endregion IF IsSerializeBox
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             struct @ParameterTypeName
@@ -177,18 +177,18 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             static AjaxLoader()
             {
                 string[] names = new string[@MethodCount];
-                AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[@MethodCount];
+                WebView.AjaxMethodInfo[] infos = new WebView.AjaxMethodInfo[@MethodCount];
                 #region LOOP Methods
                 names[@MethodIndex] = "@CallName";
-                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*IF:IsOnlyPost*/, IsPost = true/*IF:IsOnlyPost*//*IF:IsReferer*/, IsReferer = true/*IF:IsReferer*//*PUSH:Attribute*//*IF:IsAsynchronousCallback*/, IsAsynchronous = true/*IF:IsAsynchronousCallback*/ };
+                infos[@MethodIndex] = new WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*IF:IsOnlyPost*/, IsPost = true/*IF:IsOnlyPost*//*IF:IsReferer*/, IsReferer = true/*IF:IsReferer*//*PUSH:Attribute*//*IF:IsAsynchronousCallback*/, IsAsynchronous = true/*IF:IsAsynchronousCallback*/ };
                 #endregion LOOP Methods
                 #region LOOP ViewMethods
                 names[@MethodIndex] = "@CallName";
-                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*PUSH:Attribute*/, IsViewPage = true };
+                infos[@MethodIndex] = new WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*PUSH:Attribute*/, IsViewPage = true };
                 #endregion LOOP ViewMethods
                 #region NOT IsPubError
-                names[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = AutoCSer.WebView.AjaxBase.PubErrorCallName/*IF:AutoParameter.WebConfig.IgnoreCase*/.ToLower()/*IF:AutoParameter.WebConfig.IgnoreCase*/;
-                infos[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodCount - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
+                names[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = WebView.AjaxBase.PubErrorCallName/*IF:AutoParameter.WebConfig.IgnoreCase*/.ToLower()/*IF:AutoParameter.WebConfig.IgnoreCase*/;
+                infos[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = new WebView.AjaxMethodInfo { MethodIndex = @MethodCount - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 #endregion NOT IsPubError
                 setMethods(names, infos);
                 CompileJsonSerialize(new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:DeSerializeMethods*/null }, new System.Type[] { /*LOOP:SerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SerializeMethods*/null });
@@ -210,7 +210,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
             /// <summary>
             /// 类型全名
             /// </summary>
-            public partial class FullName : AutoCSer.WebView.Ajax<FullName>
+            public partial class FullName : WebView.Ajax<FullName>
             {
                 /// <summary>
                 /// web调用

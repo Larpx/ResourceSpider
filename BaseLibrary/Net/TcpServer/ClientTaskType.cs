@@ -17,11 +17,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// </summary>
         ThreadPool,
         /// <summary>
-        /// 公用任务池，默认最大并行数量为 AutoCSer.Threading.Pub.CpuCount * 32，定时检测任务超时调度线程（默认为 10 毫秒）
+        /// 公用任务池，默认最大并行数量为 Threading.Pub.CpuCount * 32，定时检测任务超时调度线程（默认为 10 毫秒）
         /// </summary>
         Timeout,
         /// <summary>
-        /// TCP 任务池，适用于 CPU 计算类型任务，默认最大并行数量为 AutoCSer.Threading.Pub.CpuCount，定时检测任务超时调度线程（默认为 10 毫秒）
+        /// TCP 任务池，适用于 CPU 计算类型任务，默认最大并行数量为 Threading.Pub.CpuCount，定时检测任务超时调度线程（默认为 10 毫秒）
         /// </summary>
         TcpTask,
         /// <summary>

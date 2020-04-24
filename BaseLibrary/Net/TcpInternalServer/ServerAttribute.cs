@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override MemberFilters GetMemberFilters { get { return MemberFilters; } }
         /// <summary>
         /// 用于在配置文件中标识当前程序是否服务端，当在标识为服务端的环境中使用客户端调用时会输出警告日志，提示用户判断是否混淆了客户端与服务端。
@@ -28,17 +28,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <summary>
         /// 客户端 API 是否仅程序集可见
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsInternalClient { get { return IsInternalClient; } }
         /// <summary>
         /// 命令映射枚举类型
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         public Type CommandIdentityEnmuType;
         /// <summary>
         /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
         /// </summary>
-        [AutoCSer.Metadata.Ignore]
+        [Metadata.Ignore]
         internal override bool GetIsRememberCommand
         {
             get { return IsRememberCommand && CommandIdentityEnmuType == null; }
@@ -52,7 +52,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <returns>TCP 调用服务器端配置信息</returns>
         public static ServerAttribute GetConfig(string serviceName, Type type = null)
         {
-            return GetConfig(serviceName, type, new UnionType { Value = AutoCSer.Config.Loader.GetObject(typeof(ServerAttribute), serviceName) }.ServerAttribute);
+            return GetConfig(serviceName, type, new UnionType { Value = Config.Loader.GetObject(typeof(ServerAttribute), serviceName) }.ServerAttribute);
         }
     }
 }

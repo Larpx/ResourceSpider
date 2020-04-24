@@ -1,6 +1,6 @@
 ﻿/// <reference path = "./base.page.ts" />
 'use strict';
-//键盘事件	<input inputkeycode="{Keys:{13:AutoCSer.Pub.Alert}}" id="XXX" />
+//键盘事件	<input inputkeycode="{Keys:{13:Pub.Alert}}" id="XXX" />
 module AutoCSer {
     export class InputKeyCode implements IDeclare {
         private static DefaultParameter = { Id: null, Event: null, Keys: null };
@@ -32,5 +32,5 @@ module AutoCSer {
             this.OnAnyKey.Function(Event);
         }
     }
-    new AutoCSer.Declare(InputKeyCode, 'InputKeyCode', 'focus', 'Src');
+    new Declare(InputKeyCode, 'InputKeyCode', 'focus', 'Src');
 }

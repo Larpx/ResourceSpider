@@ -51,4 +51,30 @@ namespace Larpx.ResourceSpider.BaseLibrary
             Value = value;
         }
     }
+
+    /// <summary>
+    /// 键值对
+    /// </summary>
+    public partial struct KeyValue<keyType, valueType>
+    {
+        /// <summary>
+        /// 键值对
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public KeyValue(ref keyType key, valueType value)
+        {
+            Key = key;
+            Value = value;
+        }
+        /// <summary>
+        /// 清空数据
+        /// </summary>
+
+        public void Null()
+        {
+            Key = default(keyType);
+            Value = default(valueType);
+        }
+    }
 }

@@ -72,7 +72,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             public valueType Pop()
             {
                 valueType headValue;
-                while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkPop);
                 do
                 {
                     if ((headValue = head) == null)
@@ -306,7 +306,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal valueType GetClear()
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePop);
                 valueType value = Head.LinkNext;
                 end = Head;
                 Head.LinkNext = null;
@@ -321,7 +321,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal valueType GetClear(out valueType end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePop);
                 end = this.end;
                 valueType value = Head.LinkNext;
                 this.end = Head;
@@ -336,7 +336,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal void GetToEndClear(ref valueType end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePop);
                 if (Head != this.end)
                 {
                     end.LinkNext = Head.LinkNext;
@@ -353,7 +353,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal void Push(valueType value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePush);
                 end.LinkNext = value;
                 end = value;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
@@ -365,7 +365,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal bool IsPushHead(valueType value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePush);
                 valueType end = this.end;
                 this.end.LinkNext = value;
                 valueType head = Head;
@@ -380,7 +380,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal bool TryPushHead(valueType value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePush);
                 if (Head == end)
                 {
                     Head.LinkNext = value;
@@ -399,7 +399,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal void PushHead(ref valueType head, valueType end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePush);
                 if (this.Head == this.end)
                 {
                     this.end = end;
@@ -423,7 +423,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal bool IsPushHead(ref valueType head, valueType end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldQueuePush);
                 if (this.Head == this.end)
                 {
                     this.end = end;

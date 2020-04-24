@@ -23,7 +23,7 @@ module AutoCSer {
             Pub.GetParameter(this, TouchTop.DefaultParameter, Parameter);
             Pub.GetEvents(this, TouchTop.DefaultEvents, Parameter);
 
-            this.CheckFunction = AutoCSer.Pub.ThisEvent(this, this.Check);
+            this.CheckFunction = Pub.ThisEvent(this, this.Check);
             HtmlElement.$AddEvent(document as Object as HTMLElement, ['touchstart'], Pub.ThisEvent(this, this.Start));
             HtmlElement.$AddEvent(document as Object as HTMLElement, ['touchmove'], Pub.ThisEvent(this, this.Move));
             HtmlElement.$AddEvent(document as Object as HTMLElement, ['touchend'], Pub.ThisEvent(this, this.End));

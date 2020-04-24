@@ -1,15 +1,15 @@
 /// <reference path = "./base.page.ts" />
 'use strict';
 //HTML高度更新模拟动画
-//AutoCSer.Declare.Getters.TimerShow(Id).Show();
-//AutoCSer.Declare.Getters.TimerShow(Id).Hide();
+//Declare.Getters.TimerShow(Id).Show();
+//Declare.Getters.TimerShow(Id).Hide();
 var AutoCSer;
 (function (AutoCSer) {
     var TimerShow = (function () {
         function TimerShow(Parameter) {
-            AutoCSer.Pub.GetParameter(this, TimerShow.DefaultParameter, Parameter);
-            this.NextShowFunction = AutoCSer.Pub.ThisFunction(this, this.NextShow);
-            this.NextHideFunction = AutoCSer.Pub.ThisFunction(this, this.NextHide);
+            Pub.GetParameter(this, TimerShow.DefaultParameter, Parameter);
+            this.NextShowFunction = Pub.ThisFunction(this, this.NextShow);
+            this.NextHideFunction = Pub.ThisFunction(this, this.NextHide);
         }
         TimerShow.prototype.End = function () {
             if (this.Interval) {
@@ -24,7 +24,7 @@ var AutoCSer;
             this.End();
             this.IsShow = true;
             this.OnShowed = OnShowed;
-            this.Element = AutoCSer.HtmlElement.$Id(this.Id);
+            this.Element = HtmlElement.$Id(this.Id);
             this.Option = {
                 Position: this.Element.Style0('position'),
                 Overflow: this.Element.Style0('overflow'),
@@ -49,7 +49,7 @@ var AutoCSer;
             this.End();
             this.IsShow = false;
             this.OnShowed = OnShowed;
-            this.Element = AutoCSer.HtmlElement.$Id(this.Id).Display('block');
+            this.Element = HtmlElement.$Id(this.Id).Display('block');
             this.Option = {
                 Position: null,
                 Overflow: this.Element.Style0('overflow'),
@@ -76,9 +76,9 @@ var AutoCSer;
             var Value = TimerShow.TimerShows[Id];
             if (Value)
                 return Value;
-            var Element = AutoCSer.HtmlElement.$IdElement(Id);
+            var Element = HtmlElement.$IdElement(Id);
             if (Element) {
-                var Parameter = AutoCSer.HtmlElement.$Attribute(Element, 'timeshow');
+                var Parameter = HtmlElement.$Attribute(Element, 'timeshow');
                 (Parameter = Parameter ? eval('(' + Parameter + ')') : {}).Id = Id;
                 TimerShow.TimerShows[Id] = Value = new TimerShow(Parameter);
                 return Value;
@@ -86,5 +86,5 @@ var AutoCSer;
         };
         return TimerShow;
     }());
-    AutoCSer.TimerShow = TimerShow;
+    TimerShow = TimerShow;
 })(AutoCSer || (AutoCSer = {}));

@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.Extension;
-using AutoCSer.CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using CodeGenerator.Metadata;
 using System.Collections.Generic;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
@@ -13,12 +13,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <summary>
         /// 默认空WEB调用配置
         /// </summary>
-        internal static readonly AutoCSer.WebView.CallMethodAttribute Null = new AutoCSer.WebView.CallMethodAttribute();
+        internal static readonly WebView.CallMethodAttribute Null = new WebView.CallMethodAttribute();
         /// <summary>
         /// web调用代码生成
         /// </summary>
         [Generator(Name = "WEB 调用", DependType = typeof(Html), IsAuto = true)]
-        internal sealed partial class Generator : WebView.Generator<AutoCSer.WebView.CallAttribute>
+        internal sealed partial class Generator : WebView.Generator<WebView.CallAttribute>
         {
             /// <summary>
             /// WEB 调用函数集合
@@ -47,7 +47,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 类型WEB调用配置
                 /// </summary>
-                public AutoCSer.WebView.CallAttribute TypeAttribute;
+                public WebView.CallAttribute TypeAttribute;
                 /// <summary>
                 /// 类型调用名称
                 /// </summary>
@@ -55,17 +55,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// WEB调用配置
                 /// </summary>
-                private AutoCSer.WebView.CallMethodAttribute attribute;
+                private WebView.CallMethodAttribute attribute;
                 /// <summary>
                 /// WEB调用配置
                 /// </summary>
-                public AutoCSer.WebView.CallMethodAttribute Attribute
+                public WebView.CallMethodAttribute Attribute
                 {
                     get
                     {
                         if (attribute == null)
                         {
-                            attribute = (MemberIndex ?? Method).GetSetupAttribute<AutoCSer.WebView.CallMethodAttribute>(false);
+                            attribute = (MemberIndex ?? Method).GetSetupAttribute<WebView.CallMethodAttribute>(false);
                             if (attribute == null) attribute = Null;
                         }
                         return attribute;
@@ -235,18 +235,18 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             protected override void nextCreate()
             {
-                bool isAsynchronous = typeof(AutoCSer.WebView.CallAsynchronous<>).isAssignableFromGenericDefinition(Type), isPoolType = isAsynchronous || typeof(AutoCSer.WebView.Call<>).isAssignableFromGenericDefinition(Type);
+                bool isAsynchronous = typeof(WebView.CallAsynchronous<>).isAssignableFromGenericDefinition(Type), isPoolType = isAsynchronous || typeof(WebView.Call<>).isAssignableFromGenericDefinition(Type);
                 if (isPoolType)
                 {
-                    if (Attribute == null) Attribute = AutoCSer.WebView.Call.DefaultAttribute;
+                    if (Attribute == null) Attribute = WebView.Call.DefaultAttribute;
                 }
                 else
                 {
                     if (Attribute == null) return;
-                    isAsynchronous = typeof(AutoCSer.WebView.CallAsynchronous).IsAssignableFrom(Type);
-                    if (!isAsynchronous && !typeof(AutoCSer.WebView.Call).IsAssignableFrom(Type))
+                    isAsynchronous = typeof(WebView.CallAsynchronous).IsAssignableFrom(Type);
+                    if (!isAsynchronous && !typeof(WebView.Call).IsAssignableFrom(Type))
                     {
-                        Messages.Add(Type.FullName + " 必须继承自 AutoCSer.WebView.Call / AutoCSer.WebView.Call<" + Type.FullName + "> /  AutoCSer.WebView.CallAsynchronous / AutoCSer.WebView.CallAsynchronous<" + Type.FullName + ">");
+                        Messages.Add(Type.FullName + " 必须继承自 WebView.Call / WebView.Call<" + Type.FullName + "> /  WebView.CallAsynchronous / WebView.CallAsynchronous<" + Type.FullName + ">");
                         return;
                     }
                 }
@@ -259,9 +259,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 
                 bool isAjaxLoadType = false;
                 Type baseType = Type.Type.BaseType;
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(AutoCSer.WebView.AjaxLoader<>)) isAjaxLoadType = true;
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(WebView.AjaxLoader<>)) isAjaxLoadType = true;
 
-                methods.Add(Metadata.MethodIndex.GetMethods<AutoCSer.WebView.CallMethodAttribute>(Type, AutoCSer.Metadata.MemberFilters.PublicInstance, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
+                methods.Add(Metadata.MethodIndex.GetMethods<WebView.CallMethodAttribute>(Type, Metadata.MemberFilters.PublicInstance, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
                     .getArray(value => new CallMethod
                     {
                         Method = value,

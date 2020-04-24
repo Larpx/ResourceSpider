@@ -207,7 +207,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
             {
                 if (nextString != null) length += nextString.Length;
             }
-            string value = AutoCSer.Extension.StringExtension.FastAllocateString(length + array.Length - 1);
+            string value = Extension.StringExtension.FastAllocateString(length + array.Length - 1);
             fixed (char* valueFixed = value)
             {
                 char* write = valueFixed;
@@ -235,7 +235,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         {
             int length = array.length();
             if (length == 0) return NullValue<valueType>.Array;
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(length = ((length + 63) >> 6) << 3);
+            UnmanagedPool pool = UnmanagedPool.GetDefaultPool(length = ((length + 63) >> 6) << 3);
             Pointer.Size buffer = pool.GetSize64(length);
             try
             {
@@ -367,7 +367,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         {
             int length = array.length();
             if (length == 0) return NullValue<arrayType>.Array;
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(length = ((length + 63) >> 6) << 3);
+            UnmanagedPool pool = UnmanagedPool.GetDefaultPool(length = ((length + 63) >> 6) << 3);
             Pointer.Size buffer = pool.GetSize64(length);
             try
             {

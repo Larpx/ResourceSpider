@@ -22,7 +22,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
                 LinkNext = null;
                 stream.ByteSize += sizeof(uint);
                 ++buildInfo.Count;
-                AutoCSer.Threading.RingPool<ReturnTypeOutput>.Default.PushNotNull(this);
+                Threading.RingPool<ReturnTypeOutput>.Default.PushNotNull(this);
                 return nextBuild;
             }
             buildInfo.isFullSend = 1;
@@ -36,7 +36,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
         {
             OutputLink next = LinkNext;
             LinkNext = null;
-            AutoCSer.Threading.RingPool<ReturnTypeOutput>.Default.PushNotNull(this);
+            Threading.RingPool<ReturnTypeOutput>.Default.PushNotNull(this);
             return next;
         }
     }

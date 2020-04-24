@@ -1,7 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Reflection;
-using AutoCSer.CodeGenerator.Metadata;
+using CodeGenerator.Metadata;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <summary>
         /// 代码段
         /// </summary>
-        protected Dictionary<string, string> _partCodes_ = DictionaryCreator.CreateOnly<string, string>();
+        protected Dictionary<string, string> _partCodes_ = new Dictionary<string, string>();
         /// <summary>
         /// 生成代码
         /// </summary>
@@ -72,7 +72,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <summary>
         /// 代码生成语言
         /// </summary>
-        private AutoCSer.CodeGenerator.CodeLanguage _language_;
+        private CodeGenerator.CodeLanguage _language_;
         /// <summary>
         /// 类定义生成
         /// </summary>
@@ -216,8 +216,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         
         internal KeyValue<Type, attributeType>[] GetTypeAttributes()
         {
-            return AutoParameter.Types.getArray(type => new KeyValue<Type, attributeType>(type, AutoCSer.Metadata.TypeAttribute.GetAttribute<attributeType>(type, IsBaseType)))
-                    .getFindArray(attribute => (attribute.Value != null || !IsAttribute) && !attribute.Key.IsDefined(typeof(AutoCSer.Metadata.IgnoreAttribute), IsBaseType));
+            return AutoParameter.Types.getArray(type => new KeyValue<Type, attributeType>(type, Metadata.TypeAttribute.GetAttribute<attributeType>(type, IsBaseType)))
+                    .getFindArray(attribute => (attribute.Value != null || !IsAttribute) && !attribute.Key.IsDefined(typeof(Metadata.IgnoreAttribute), IsBaseType));
         }
         /// <summary>
         /// 安装下一个类型

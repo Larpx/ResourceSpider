@@ -1,8 +1,8 @@
 ﻿using System;
-using AutoCSer.Net.TcpServer.Emit;
+using Net.TcpServer.Emit;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {

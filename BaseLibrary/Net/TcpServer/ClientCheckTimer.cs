@@ -7,7 +7,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
     /// <summary>
     /// 客户端心跳检测定时
     /// </summary>
-    internal sealed class ClientCheckTimer : AutoCSer.Threading.TimerLink<ClientCheckTimer>
+    internal sealed class ClientCheckTimer : Threading.TimerLink<ClientCheckTimer>
     {
         /// <summary>
         /// 链表首节点
@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         internal void Push(ClientSocketBase value)
         {
             value.CheckTimeoutSeconds = currentSeconds + seconds;
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePush);
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimerLinkQueuePush);
             if (End == null)
             {
                 End = Head = value;
@@ -58,7 +58,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="value"></param>
         internal void Free(ClientSocketBase value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePop);
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimerLinkQueuePop);
             if (value == Head)
             {
                 if ((Head = value.CheckNext) == null)
@@ -94,7 +94,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         private ClientSocketBase pop(long currentSecond)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePop);
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimerLinkQueuePop);
             if (Head == null || Head.CheckTimeoutSeconds > currentSecond)
             {
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
@@ -124,7 +124,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             if (value.CheckTimeoutSeconds != newSeconds)
             {
                 value.CheckTimeoutSeconds = newSeconds;
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePush);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TimerLinkQueuePush);
                 if (value != End)
                 {
                     if (value.CheckNext == null)

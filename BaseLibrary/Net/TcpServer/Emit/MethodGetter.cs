@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Collections.Generic;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
@@ -172,7 +172,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 
                             if (method.ServerCallQueueKeyParameter != null)
                             {
-                                if (queueTypes == null) queueTypes = DictionaryCreator.CreateOnly<Type, ServerCallQueue>();
+                                if (queueTypes == null) queueTypes = new Dictionary<Type, ServerCallQueue>();
                                 Type parameterType = method.ServerCallQueueKeyParameter.ParameterType;
                                 ServerCallQueue queueType;
                                 if (!queueTypes.TryGetValue(parameterType, out queueType))
@@ -185,11 +185,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
                     }
                     Queues = queueTypes == null ? NullValue<ServerCallQueue>.Array : queueTypes.Values.getArray();
                     string serviceName = serverAttribute.ServerName ?? type.fullName();
-                    DefaultServerAttribute = (attributeType)AutoCSer.Config.Loader.GetObject(typeof(attributeType), serviceName) ?? AutoCSer.MemberCopy.Copyer<attributeType>.MemberwiseClone(serverAttribute);
+                    DefaultServerAttribute = (attributeType)Config.Loader.GetObject(typeof(attributeType), serviceName) ?? MemberCopy.Copyer<attributeType>.MemberwiseClone(serverAttribute);
                     if (DefaultServerAttribute.Name == null) DefaultServerAttribute.Name = serviceName;
-                    if (DefaultServerAttribute.GetServerCallQueueType != null && !typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).IsAssignableFrom(DefaultServerAttribute.GetServerCallQueueType))
+                    if (DefaultServerAttribute.GetServerCallQueueType != null && !typeof(Net.TcpServer.IServerCallQueueSet).IsAssignableFrom(DefaultServerAttribute.GetServerCallQueueType))
                     {
-                        ErrorString = DefaultServerAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).fullName();
+                        ErrorString = DefaultServerAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(Net.TcpServer.IServerCallQueueSet).fullName();
                         return false;
                     }
                     return true;

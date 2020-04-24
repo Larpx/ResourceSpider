@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary
@@ -200,7 +200,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
             }
             else
             {
-                AutoCSer.Extension.ArrayExtension.MoveNotNull(Array, Start + index, Start + index + 1, Length - index);
+                Extension.ArrayExtension.MoveNotNull(Array, Start + index, Start + index + 1, Length - index);
                 Array[Start + index] = value;
                 ++Length;
             }
@@ -253,7 +253,7 @@ namespace Larpx.ResourceSpider.BaseLibrary
         public void RemoveAt(int index)
         {
             if ((uint)index >= (uint)Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] >= Length[" + Length.toString() + "]");
-            AutoCSer.Extension.ArrayExtension.MoveNotNull(Array, Start + index + 1, Start + index, --Length - index);
+            Extension.ArrayExtension.MoveNotNull(Array, Start + index + 1, Start + index, --Length - index);
             Array[Start + Length] = default(valueType);
         }
         /// <summary>

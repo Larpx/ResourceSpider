@@ -1,19 +1,19 @@
 ﻿using System;
-using AutoCSer.Threading;
+using Threading;
 using System.Reflection;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// 输入+输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ParameterGenericType2 : AutoCSer.Net.TcpServer.Emit.ParameterGenericType2
+    internal abstract partial class ParameterGenericType2 : Net.TcpServer.Emit.ParameterGenericType2
     {
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, ParameterGenericType2> cache = new LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, ParameterGenericType2>();
+        private static readonly Threading.LockEquatableLastDictionary<Metadata.GenericType2.TypeKey, ParameterGenericType2> cache = new LockEquatableLastDictionary<Metadata.GenericType2.TypeKey, ParameterGenericType2>();
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         public static ParameterGenericType2 Get(Type type1, Type type2)
         {
             ParameterGenericType2 value;
-            AutoCSer.Metadata.GenericType2.TypeKey typeKey = new AutoCSer.Metadata.GenericType2.TypeKey { Type1 = type1, Type2 = type2 };
+            Metadata.GenericType2.TypeKey typeKey = new Metadata.GenericType2.TypeKey { Type1 = type1, Type2 = type2 };
             if (!cache.TryGetValue(ref typeKey, out value))
             {
                 value = new UnionType { Value = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.ParameterGenericType2;
@@ -63,21 +63,21 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// </summary>
         internal override MethodInfo ClientSocketSenderWaitGetMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderWaitGet)ParameterGenericType.ClientSocketSender.WaitGet<inputParameterType, outputParameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderWaitGet)ParameterGenericType.ClientSocketSender.WaitGet<inputParameterType, outputParameterType>).Method; }
         }
         /// <summary>
         /// TCP调用并返回参数值
         /// </summary>
         internal override MethodInfo ClientSocketSenderGetMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGet)ParameterGenericType.ClientSocketSender.Get<inputParameterType, outputParameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGet)ParameterGenericType.ClientSocketSender.Get<inputParameterType, outputParameterType>).Method; }
         }
         /// <summary>
         /// TCP调用并返回参数值
         /// </summary>
         internal override MethodInfo ClientSocketSenderGetKeepMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGetKeep)ParameterGenericType.ClientSocketSender.GetKeep<inputParameterType, outputParameterType>).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGetKeep)ParameterGenericType.ClientSocketSender.GetKeep<inputParameterType, outputParameterType>).Method; }
         }
 
 #if !DOTNET2 && !DOTNET4 && !UNITY3D
@@ -86,7 +86,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// </summary>
         internal override MethodInfo ClientSocketSenderGetAwaiterMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGetAwaiter)ParameterGenericType.ClientSocketSender.GetAwaiter).Method; }
+            get { return ((Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGetAwaiter)ParameterGenericType.ClientSocketSender.GetAwaiter).Method; }
         }
 #endif
     }

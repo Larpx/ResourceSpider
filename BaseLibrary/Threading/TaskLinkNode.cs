@@ -1,4 +1,4 @@
-﻿using AutoCSer.Extension;
+﻿using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -39,7 +39,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+               Log.Pub.Log.Add(Log.LogType.Error, error);
             }
         }
     }

@@ -1,19 +1,19 @@
 ﻿using System;
-using AutoCSer.Threading;
+using Threading;
 using System.Reflection;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {
     /// <summary>
     /// 输入+输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ParameterGenericType2 : AutoCSer.Net.TcpServer.Emit.ParameterGenericType2
+    internal abstract partial class ParameterGenericType2 : Net.TcpServer.Emit.ParameterGenericType2
     {
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, ParameterGenericType2> cache = new LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, ParameterGenericType2>();
+        private static readonly Threading.LockEquatableLastDictionary<Metadata.GenericType2.TypeKey, ParameterGenericType2> cache = new LockEquatableLastDictionary<Metadata.GenericType2.TypeKey, ParameterGenericType2>();
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         public static ParameterGenericType2 Get(Type type1, Type type2)
         {
             ParameterGenericType2 value;
-            AutoCSer.Metadata.GenericType2.TypeKey typeKey = new AutoCSer.Metadata.GenericType2.TypeKey { Type1 = type1, Type2 = type2 };
+            Metadata.GenericType2.TypeKey typeKey = new Metadata.GenericType2.TypeKey { Type1 = type1, Type2 = type2 };
             if (!cache.TryGetValue(ref typeKey, out value))
             {
                 value = new UnionType { Value = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.ParameterGenericType2;
@@ -66,7 +66,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
         /// <param name="inputParameter"></param>
         /// <param name="outputParameter"></param>
         /// <returns></returns>
-        internal delegate ReturnType ClientSocketSenderWaitGet(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback
+        internal delegate ReturnType ClientSocketSenderWaitGet(CommandInfo identityCommand, ref Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback
         , ref inputParameterType inputParameter, ref outputParameterType outputParameter);
         /// <summary>
         /// 获取异步回调

@@ -1,22 +1,22 @@
 /// <reference path = "./base.page.ts" />
 'use strict';
-//键盘事件	<input inputkeycode="{Keys:{13:AutoCSer.Pub.Alert}}" id="XXX" />
+//键盘事件	<input inputkeycode="{Keys:{13:Pub.Alert}}" id="XXX" />
 var AutoCSer;
 (function (AutoCSer) {
     var InputKeyCode = (function () {
         function InputKeyCode(Parameter) {
-            AutoCSer.Pub.GetParameter(this, InputKeyCode.DefaultParameter, Parameter);
-            AutoCSer.Pub.GetEvents(this, InputKeyCode.DefaultEvents, Parameter);
+            Pub.GetParameter(this, InputKeyCode.DefaultParameter, Parameter);
+            Pub.GetEvents(this, InputKeyCode.DefaultEvents, Parameter);
             if (!this.Keys)
                 this.Keys = {};
-            this.Start(this.Event || AutoCSer.DeclareEvent.Default);
+            this.Start(this.Event || DeclareEvent.Default);
         }
         InputKeyCode.prototype.Start = function (Event) {
             if (!Event.IsGetOnly) {
-                var Element = AutoCSer.HtmlElement.$IdElement(this.Id);
+                var Element = HtmlElement.$IdElement(this.Id);
                 if (Element != this.Element) {
                     this.Element = Element;
-                    AutoCSer.HtmlElement.$AddEvent(Element, ['keyup', 'keypress'], AutoCSer.Pub.ThisEvent(this, this.OnKey));
+                    HtmlElement.$AddEvent(Element, ['keyup', 'keypress'], Pub.ThisEvent(this, this.OnKey));
                 }
             }
         };
@@ -30,6 +30,6 @@ var AutoCSer;
         InputKeyCode.DefaultEvents = { OnAnyKey: null };
         return InputKeyCode;
     }());
-    AutoCSer.InputKeyCode = InputKeyCode;
-    new AutoCSer.Declare(InputKeyCode, 'InputKeyCode', 'focus', 'Src');
+    InputKeyCode = InputKeyCode;
+    new Declare(InputKeyCode, 'InputKeyCode', 'focus', 'Src');
 })(AutoCSer || (AutoCSer = {}));

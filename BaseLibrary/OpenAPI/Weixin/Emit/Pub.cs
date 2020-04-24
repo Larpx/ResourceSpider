@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin.Emit
 {
@@ -22,7 +22,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin.Emit
         internal static LeftArray<PropertyIndex> GetProperties<valueType, memberAttribute>(MemberFilters memberFilter, bool isAllMember, bool isGet, bool isSet)
             where memberAttribute : IgnoreMemberAttribute
         {
-            PropertyIndex[] propertyIndexs = AutoCSer.Metadata.MemberIndexGroup<valueType>.GetProperties(memberFilter);
+            PropertyIndex[] propertyIndexs = Metadata.MemberIndexGroup<valueType>.GetProperties(memberFilter);
             LeftArray<PropertyIndex> properties = new LeftArray<PropertyIndex>(propertyIndexs.Length);
             foreach (PropertyIndex property in propertyIndexs)
             {

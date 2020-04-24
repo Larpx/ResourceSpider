@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
@@ -23,13 +23,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         {
             try
             {
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.Info, string.Join(@""", @""", args));
-                //args = new string[] { @"AutoCSer.TestCase.SqlTableCacheServer", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\ ", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\bin\Release\AutoCSer.TestCase.SqlTableCacheServer.dll ", @"AutoCSer.TestCase.SqlTableCacheServer" };
-                //                AutoCSer.Log.Pub.Log.Wait(AutoCSer.Log.LogType.All, "args.Length[" + args.Length.ToString() + @"]
-                //args = new string[] { @"AutoCSer.CodeGenerator.DotNet4.5", @"C:\AutoCSer\AutoCSer\CodeGenerator\ ", @"C:\AutoCSer\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe ", @"AutoCSer.CodeGenerator" };
+                Log.Pub.Log.Wait(Log.LogType.Info, string.Join(@""", @""", args));
+                //args = new string[] { @"TestCase.SqlTableCacheServer", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\ ", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\bin\Release\TestCase.SqlTableCacheServer.dll ", @"TestCase.SqlTableCacheServer" };
+                //                Log.Pub.Log.Wait(Log.LogType.All, "args.Length[" + args.Length.ToString() + @"]
+                //args = new string[] { @"CodeGenerator.DotNet4.5", @"C:\AutoCSer\AutoCSer\CodeGenerator\ ", @"C:\AutoCSer\Packet\DotNet4.5\CodeGenerator.exe ", @"CodeGenerator" };
                 if (args.Length >= 4)
                 {
-                    AutoCSer.CodeGenerator.ProjectParameter parameter = new AutoCSer.CodeGenerator.ProjectParameter(args[0].TrimEnd(' '), args[1].TrimEnd(' '), args[2].TrimEnd(' '), args[3].TrimEnd(' '), args.Length > 4);
+                    CodeGenerator.ProjectParameter parameter = new CodeGenerator.ProjectParameter(args[0].TrimEnd(' '), args[1].TrimEnd(' '), args[2].TrimEnd(' '), args[3].TrimEnd(' '), args.Length > 4);
                     bool isAssemblyPath = false;
                     Exception exception = parameter.LoadAssembly(ref isAssemblyPath);
                     if (isAssemblyPath)
@@ -38,11 +38,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         else
                         {
 #if !DotNetStandard
-                            FileInfo file = new FileInfo(AutoCSer.PubPath.ApplicationPath + "AutoCSer.CodeGenerator." + platform + ".exe");
+                            FileInfo file = new FileInfo(PubPath.ApplicationPath + "CodeGenerator." + platform + ".exe");
                             if (file.Exists)
                             {
-                                string fileName = AutoCSer.IO.File.BakPrefix + ((ulong)DateTime.Now.Ticks).toHex() + ((uint)AutoCSer.Random.Default.Next()).toHex() + "." + platform;
-                                File.WriteAllText(fileName, AutoCSer.Json.Serializer.Serialize(args));
+                                string fileName = IO.File.BakPrefix + ((ulong)DateTime.Now.Ticks).toHex() + ((uint)Random.Default.Next()).toHex() + "." + platform;
+                                File.WriteAllText(fileName, Json.Serializer.Serialize(args));
                                 Process process = Process.Start(file.FullName, fileName);
                                 process.WaitForExit();
                                 File.Delete(fileName);
@@ -76,7 +76,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             try
             {
                 Console.WriteLine(args.joinString(" "));
-                AutoCSer.CodeGenerator.ProjectParameter parameter = new AutoCSer.CodeGenerator.ProjectParameter(args[0].TrimEnd(' '), args[1].TrimEnd(' '), args[2].TrimEnd(' '), args[3].TrimEnd(' '), args.Length > 4); bool isAssemblyPath = false;
+                CodeGenerator.ProjectParameter parameter = new CodeGenerator.ProjectParameter(args[0].TrimEnd(' '), args[1].TrimEnd(' '), args[2].TrimEnd(' '), args[3].TrimEnd(' '), args.Length > 4); bool isAssemblyPath = false;
                 Exception exception = parameter.LoadAssembly(ref isAssemblyPath);
                 if (exception == null) parameter.Start();
                 else Messages.Add(exception);

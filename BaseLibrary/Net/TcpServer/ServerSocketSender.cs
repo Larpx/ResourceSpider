@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
@@ -15,7 +15,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 创建输出线程调用类型
         /// </summary>
-        internal readonly AutoCSer.Threading.Thread.CallType BuildOutputThreadCallType;
+        internal readonly Threading.Thread.CallType BuildOutputThreadCallType;
         /// <summary>
         /// TCP 服务器端异步保持调用集合
         /// </summary>
@@ -37,7 +37,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="socket">TCP 服务套接字</param>
         /// <param name="isBuildOutputThread"></param>
         /// <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
-        internal ServerSocketSender(ServerSocket socket, bool isBuildOutputThread, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType)
+        internal ServerSocketSender(ServerSocket socket, bool isBuildOutputThread, Threading.Thread.CallType buildOutputThreadCallType)
             : base(socket, isBuildOutputThread)
         {
             BuildOutputThreadCallType = buildOutputThreadCallType;
@@ -84,7 +84,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// </summary>
         /// <param name="socket">TCP 服务套接字</param>
         /// <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
-        internal ServerSocketSender(ServerSocket<serverType, socketType, socketSenderType> socket, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType)
+        internal ServerSocketSender(ServerSocket<serverType, socketType, socketSenderType> socket, Threading.Thread.CallType buildOutputThreadCallType)
             : base(socket, socket.Server.ServerAttribute.IsBuildOutputThread, buildOutputThreadCallType)
         {
             Server = socket.Server;
@@ -152,7 +152,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 if ((dataLength -= ServerOutput.OutputLink.StreamStartIndex) >= Server.MinCompressSize)
                 {
                     SubArray<byte> oldSendData = sendData;
-                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int)), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, sizeof(uint) + sizeof(int) * 2))
+                    if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int)), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, sizeof(uint) + sizeof(int) * 2))
                     {
                         compressionDataSize = sendData.Length;
                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
@@ -182,7 +182,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             {
                 if (dataLength >= Server.MinCompressSize)
                 {
-                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, sizeof(int)))
+                    if (IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, sizeof(int)))
                     {
                         compressionDataSize = sendData.Length;
                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
@@ -234,7 +234,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //
         public void AddLog(Exception error)
         {
-            Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+            Server.Log.Add(Log.LogType.Error, error);
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         internal ServerOutput.ReturnTypeOutput TryGetOutput(uint commandIndex)
         {
-            ServerOutput.ReturnTypeOutput output = AutoCSer.Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop();
+            ServerOutput.ReturnTypeOutput output = Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop();
             if (output == null)
             {
                 try
@@ -254,7 +254,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                    Server.Log.Add(Log.LogType.Debug, error);
                     return null;
                 }
             }
@@ -291,7 +291,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ServerOutput.ReturnTypeOutput output = AutoCSer.Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop() ?? new ServerOutput.ReturnTypeOutput();
+                ServerOutput.ReturnTypeOutput output = Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop() ?? new ServerOutput.ReturnTypeOutput();
                 output.CommandIndex = commandIndex;
                 push(output);
                 return true;
@@ -309,7 +309,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ServerOutput.ReturnTypeOutput output = AutoCSer.Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop() ?? new ServerOutput.ReturnTypeOutput();
+                ServerOutput.ReturnTypeOutput output = Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop() ?? new ServerOutput.ReturnTypeOutput();
                 output.CommandIndex = commandIndex;
                 push(output, isBuildOutputThread);
                 return true;
@@ -361,9 +361,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ServerOutput.ReturnTypeOutput output = AutoCSer.Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop() ?? new ServerOutput.ReturnTypeOutput();
+                ServerOutput.ReturnTypeOutput output = Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop() ?? new ServerOutput.ReturnTypeOutput();
                 output.CommandIndex = TcpServer.Server.GetCommandIndex(commandIndex, returnType);
-                if (Outputs.IsPushHead(output) && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) new AutoCSer.Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
+                if (Outputs.IsPushHead(output) && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) new Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
                 return true;
             }
             return false;
@@ -380,7 +380,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         internal ServerOutput.Output<outputParameterType> TryGetOutput<outputParameterType>(uint commandIndex, TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
-            ServerOutput.Output<outputParameterType> output = AutoCSer.Threading.RingPool<ServerOutput.Output<outputParameterType>>.Default.Pop();
+            ServerOutput.Output<outputParameterType> output = Threading.RingPool<ServerOutput.Output<outputParameterType>>.Default.Pop();
             if (output == null)
             {
                 try
@@ -389,7 +389,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                    Server.Log.Add(Log.LogType.Debug, error);
                     return null;
                 }
             }
@@ -408,7 +408,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         internal ServerOutput.Output<outputParameterType> GetOutput<outputParameterType>(uint commandIndex, TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
-            ServerOutput.Output<outputParameterType> output = AutoCSer.Threading.RingPool<ServerOutput.Output<outputParameterType>>.Default.Pop() ?? new ServerOutput.Output<outputParameterType>();
+            ServerOutput.Output<outputParameterType> output = Threading.RingPool<ServerOutput.Output<outputParameterType>>.Default.Pop() ?? new ServerOutput.Output<outputParameterType>();
             output.Set(commandIndex, outputInfo, ref outputParameter);
             return output;
         }
@@ -511,8 +511,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
             {
-                if (IsBuildOutputThread) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, BuildOutputThreadCallType);
-                else new AutoCSer.Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
+                if (IsBuildOutputThread) Threading.ThreadPool.TinyBackground.FastStart(this, BuildOutputThreadCallType);
+                else new Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
             }
         }
         /// <summary>
@@ -524,8 +524,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
             {
-                if (isBuildOutputThread & IsBuildOutputThread) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, BuildOutputThreadCallType);
-                else new AutoCSer.Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
+                if (isBuildOutputThread & IsBuildOutputThread) Threading.ThreadPool.TinyBackground.FastStart(this, BuildOutputThreadCallType);
+                else new Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
             }
         }
 
@@ -539,7 +539,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ServerOutput.CustomDataOutput output = AutoCSer.Threading.RingPool<ServerOutput.CustomDataOutput>.Default.Pop() ?? new ServerOutput.CustomDataOutput();
+                ServerOutput.CustomDataOutput output = Threading.RingPool<ServerOutput.CustomDataOutput>.Default.Pop() ?? new ServerOutput.CustomDataOutput();
                 if (data == null) output.Data.Set(0, 0);
                 else output.Data.Set(data, 0, data.Length);
                 push(output);
@@ -557,7 +557,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (IsSocket)
             {
-                ServerOutput.CustomDataOutput output = AutoCSer.Threading.RingPool<ServerOutput.CustomDataOutput>.Default.Pop() ?? new ServerOutput.CustomDataOutput();
+                ServerOutput.CustomDataOutput output = Threading.RingPool<ServerOutput.CustomDataOutput>.Default.Pop() ?? new ServerOutput.CustomDataOutput();
                 output.Data = data;
                 push(output);
                 return true;

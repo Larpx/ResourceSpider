@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Threading
@@ -96,8 +96,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// </summary>
         private RingPool()
         {
-            count = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
-            if (count <= 0) count = AutoCSer.Config.Pub.DefaultPoolCount;
+            count =Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
+            if (count <= 0) count =Config.Pub.DefaultPoolCount;
             else
             {
                 count = (int)((uint)count).UpToPower2();
@@ -121,7 +121,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                 if (System.Threading.Interlocked.CompareExchange(ref writeIndex, nextIndex, index) == index)
                 {
                     ring[(int)((uint)index & countLess) + RingPool.PadCount].Value = value;
-                    //if (nextIndex == writeEndIndex) AutoCSer.Threading.Interlocked.writeEndLock = 0;
+                    //if (nextIndex == writeEndIndex)Threading.Interlocked.writeEndLock = 0;
                     if (nextIndex == writeEndIndex) System.Threading.Interlocked.Exchange(ref writeEndLock, 0);
                     while (writedIndex != index) ThreadYield.YieldOnly();
                     writedIndex = nextIndex;
@@ -138,7 +138,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     writeEndIndex = newWriteEndIndex;
                     goto START;
                 }
-                //AutoCSer.Threading.Interlocked.writeEndLock = 0;
+                //Threading.Interlocked.writeEndLock = 0;
                 System.Threading.Interlocked.Exchange(ref writeEndLock, 0);
             }
         }
@@ -157,7 +157,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                 if (System.Threading.Interlocked.CompareExchange(ref readIndex, nextIndex, index) == index)
                 {
                     valueType value = ring[(int)((uint)index & countLess) + RingPool.PadCount].Pop();
-                    //if (nextIndex == readEndIndex) AutoCSer.Threading.Interlocked.readEndLock = 0;
+                    //if (nextIndex == readEndIndex)Threading.Interlocked.readEndLock = 0;
                     if (nextIndex == readEndIndex) System.Threading.Interlocked.Exchange(ref readEndLock, 0);
                     if (readedIndex != index) ThreadYield.YieldOnly();
                     readedIndex = nextIndex;
@@ -181,7 +181,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     goto START;
                 }
                 System.Threading.Interlocked.Exchange(ref readEndLock, 0);
-                //AutoCSer.Threading.Interlocked.readEndLock = 0;
+                //Threading.Interlocked.readEndLock = 0;
             }
             else if (tryCount != 0)
             {
@@ -207,9 +207,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         internal static readonly RingPool<valueType> Default = new RingPool<valueType>();
         static RingPool()
         {
-            if (typeof(IDisposable).IsAssignableFrom(typeof(valueType))) AutoCSer.Log.Pub.Log.Add(Log.LogType.Fatal, "环池不支持资源对象类型 " + typeof(valueType).fullName());
+            if (typeof(IDisposable).IsAssignableFrom(typeof(valueType)))Log.Pub.Log.Add(Log.LogType.Fatal, "环池不支持资源对象类型 " + typeof(valueType).fullName());
             Default = new RingPool<valueType>();
-            AutoCSer.Pub.ClearCaches += Default.clearCache;
+           Pub.ClearCaches += Default.clearCache;
         }
     }
 }

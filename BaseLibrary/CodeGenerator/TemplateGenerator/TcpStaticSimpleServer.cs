@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
-using AutoCSer.Metadata;
+using CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// TCP 静态服务代码生成
         /// </summary>
         [Generator(Name = "TCP 静态应答服务", DependType = typeof(CSharper), IsAuto = true)]
-        internal sealed partial class Generator : Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute, AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>
+        internal sealed partial class Generator : Generator<Net.TcpStaticSimpleServer.ServerAttribute, Net.TcpStaticSimpleServer.MethodAttribute, Net.TcpInternalSimpleServer.ServerSocket>
         {
             /// <summary>
             /// 服务器端位置
@@ -44,7 +44,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// TCP调用服务配置
                 /// </summary>
-                public AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute Attribute = new AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute();
+                public Net.TcpStaticSimpleServer.ServerAttribute Attribute = new Net.TcpStaticSimpleServer.ServerAttribute();
                 /// <summary>
                 /// 类型集合
                 /// </summary>
@@ -62,7 +62,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public bool IsTimeVerify
                 {
-                    get { return typeof(AutoCSer.Net.TcpStaticSimpleServer.TimeVerify<>).isAssignableFromGenericDefinition(AttributeType); }
+                    get { return typeof(Net.TcpStaticSimpleServer.TimeVerify<>).isAssignableFromGenericDefinition(AttributeType); }
                 }
             }
             /// <summary>
@@ -77,7 +77,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// TCP调用配置
                 /// </summary>
-                public AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute Attribute;
+                public Net.TcpStaticSimpleServer.ServerAttribute Attribute;
                 /// <summary>
                 /// 方法集合
                 /// </summary>
@@ -148,13 +148,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                             defaultServer.Attribute.CopyFrom(Attribute);
                         }
                     }
-                    foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                    foreach (MethodIndex method in MethodIndex.GetMethods<Net.TcpStaticSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                     {
                         next(new TcpMethod { Method = method, MethodType = Type });
                     }
                     if (!Type.Type.IsGenericType)
                     {
-                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<Net.TcpStaticSimpleServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                         {
                             if (member.IsField)
                             {
@@ -199,7 +199,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// <param name="methodIndex"></param>
             private void next(TcpMethod methodIndex)
             {
-                AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute attribute = methodIndex.Attribute;
+                Net.TcpStaticSimpleServer.MethodAttribute attribute = methodIndex.Attribute;
                 Server server = defaultServer;
                 ServerType serverType = defaultType;
                 string serviceName = attribute.GetServerName;
@@ -276,7 +276,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                                 else if (method.IsVerifyMethod)
                                 {
                                     IsVerifyMethod = true;
-                                    IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == AutoCSer.Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
+                                    IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
                                     if (method.MethodType == server.AttributeType && server.IsTimeVerify) TimeVerifyMethod = method;
                                 }
                                 parameterBuilder.Add(method);

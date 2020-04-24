@@ -953,7 +953,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                         if (valueSize == 0) value = new string(valueStart, 0, length);
                         else
                         {
-                            fixed (char* valueFixed = value = AutoCSer.Extension.StringExtension.FastAllocateString(length - valueSize))
+                            fixed (char* valueFixed = value =Extension.StringExtension.FastAllocateString(length - valueSize))
                             {
                                 decodeString(valueFixed, valueFixed + value.Length);
                             }
@@ -1020,7 +1020,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                         }
                         else
                         {
-                            string decodeValue = AutoCSer.Extension.StringExtension.FastAllocateString(length - valueSize);
+                            string decodeValue =Extension.StringExtension.FastAllocateString(length - valueSize);
                             fixed (char* valueFixed = decodeValue) decodeString(valueFixed, valueFixed + decodeValue.Length);
                             value.Set(decodeValue, 0, decodeValue.Length);
                         }

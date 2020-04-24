@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Reflection;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -66,7 +66,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 #if DOTNET2
                 if (Type == typeof(Action)) return "System.Action";
                 string name = FullName;
-                if (name.StartsWith("AutoCSer.Func<", StringComparison.Ordinal) || name.StartsWith("AutoCSer.Action<", StringComparison.Ordinal))
+                if (name.StartsWith("Func<", StringComparison.Ordinal) || name.StartsWith("Action<", StringComparison.Ordinal))
                 {
                     return "System" + name.Substring(8);
                 }
@@ -179,7 +179,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// </summary>
         public bool IsHashUrl
         {
-            get { return Type == typeof(AutoCSer.WebView.HashUrl); }
+            get { return Type == typeof(WebView.HashUrl); }
         }
         ///// <summary>
         ///// 是否流
@@ -412,7 +412,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <summary>
         /// 客户端视图绑定类型
         /// </summary>
-        private AutoCSer.WebView.ClientTypeAttribute clientViewType;
+        private WebView.ClientTypeAttribute clientViewType;
         /// <summary>
         /// 客户端视图绑定类型
         /// </summary>
@@ -422,7 +422,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
             {
                 if (clientViewType == null)
                 {
-                    clientViewType = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.WebView.ClientTypeAttribute>(Type, true) ?? AutoCSer.WebView.ClientTypeAttribute.Null;
+                    clientViewType = Metadata.TypeAttribute.GetAttribute<WebView.ClientTypeAttribute>(Type, true) ?? WebView.ClientTypeAttribute.Null;
                 }
                 return clientViewType.GetClientName(Type);
             }
@@ -436,7 +436,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
             {
                 if (clientViewType == null)
                 {
-                    clientViewType = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.WebView.ClientTypeAttribute>(Type, true) ?? AutoCSer.WebView.ClientTypeAttribute.Null;
+                    clientViewType = Metadata.TypeAttribute.GetAttribute<WebView.ClientTypeAttribute>(Type, true) ?? WebView.ClientTypeAttribute.Null;
                 }
                 return clientViewType.MemberName;
             }
@@ -444,7 +444,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <summary>
         /// TypeScript 类型集合
         /// </summary>
-        private static readonly Dictionary<Type, string> scriptTypes = DictionaryCreator.CreateOnly<Type, string>();
+        private static readonly Dictionary<Type, string> scriptTypes = new Dictionary<Type, string>();
         /// <summary>
         /// TypeScript 类型
         /// </summary>
@@ -466,7 +466,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <summary>
         /// 成员类型隐式转换集合
         /// </summary>
-        private static Dictionary<Type, ExtensionType> types = DictionaryCreator.CreateOnly<Type, ExtensionType>();
+        private static Dictionary<Type, ExtensionType> types = new Dictionary<Type, ExtensionType>();
         /// <summary>
         /// 隐式转换集合转换锁
         /// </summary>
@@ -481,7 +481,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
             Monitor.Enter(typeLock);
             try
             {
-                if (types.Count != 0) types = DictionaryCreator.CreateOnly<Type, ExtensionType>();
+                if (types.Count != 0) types = new Dictionary<Type, ExtensionType>();
             }
             finally { Monitor.Exit(typeLock); }
         }
@@ -489,7 +489,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         {
             Pub.ClearCaches += clearCache;
 
-            scriptTypes = DictionaryCreator.CreateOnly<Type, string>();
+            scriptTypes = new Dictionary<Type, string>();
             scriptTypes.Add(typeof(bool), "boolean");
             scriptTypes.Add(typeof(byte), "number");
             scriptTypes.Add(typeof(sbyte), "number");

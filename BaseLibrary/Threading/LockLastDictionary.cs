@@ -19,7 +19,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <summary>
         /// 字典
         /// </summary>
-        private Dictionary<keyType, valueType> dictionary = DictionaryCreator.CreateOnly<keyType, valueType>();
+        private Dictionary<keyType, valueType> dictionary = new Dictionary<keyType, valueType>();
         /// <summary>
         /// 最后一次访问数据锁
         /// </summary>
@@ -41,8 +41,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             Monitor.Enter(dictionaryLock);
             try
             {
-                if (dictionary.Count != 0) dictionary = DictionaryCreator.CreateOnly<keyType, valueType>();
-                while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
+                if (dictionary.Count != 0) dictionary = new Dictionary<keyType, valueType>();
+                while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.LockLastDictionarySet);
                 lastKey = default(keyType);
                 lastValue = default(valueType);
                 System.Threading.Interlocked.Exchange(ref lastLock, 0);
@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <returns>是否存在数据</returns>
         internal bool TryGetValue(keyType key, out valueType value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionaryGet);
+            while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.LockLastDictionaryGet);
             if (lastKey == key)
             {
                 value = lastValue;
@@ -68,7 +68,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             Monitor.Enter(dictionaryLock);
             if (dictionary.TryGetValue(key, out value))
             {
-                while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
+                while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.LockLastDictionarySet);
                 lastKey = key;
                 lastValue = value;
                 System.Threading.Interlocked.Exchange(ref lastLock, 0);
@@ -85,7 +85,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         
         public void Set(keyType key, valueType value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
+            while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.LockLastDictionarySet);
             lastKey = key;
             lastValue = value;
             System.Threading.Interlocked.Exchange(ref lastLock, 0);

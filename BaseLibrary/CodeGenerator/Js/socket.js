@@ -39,7 +39,7 @@ var AutoCSer;
             if (Value.length < 65536) {
                 this.UShort(Value.length);
                 if (Value.length)
-                    this.PushString(Value, AutoCSer.Pub.ThisFunction(this, this.UShort));
+                    this.PushString(Value, Pub.ThisFunction(this, this.UShort));
             }
         };
         SocketBuffer.prototype.String = function (Value) {
@@ -50,7 +50,7 @@ var AutoCSer;
             else {
                 this.UShort((Value.length & 65535) | (1 << 15));
                 this.UShort(Value.length >> 15);
-                this.PushString(Value, AutoCSer.Pub.ThisFunction(this, Value.length < 65536 ? this.UShort : this.UInt));
+                this.PushString(Value, Pub.ThisFunction(this, Value.length < 65536 ? this.UShort : this.UInt));
             }
         };
         SocketBuffer.prototype.PushString = function (Value, PushLength) {
@@ -87,8 +87,8 @@ var AutoCSer;
     }());
     var Socket = (function () {
         function Socket(Parameter) {
-            AutoCSer.Pub.GetParameter(this, Socket.DefaultParameter, Parameter);
-            AutoCSer.Pub.GetEvents(this, Socket.DefaultEvents, Parameter);
+            Pub.GetParameter(this, Socket.DefaultParameter, Parameter);
+            Pub.GetEvents(this, Socket.DefaultEvents, Parameter);
             if (this.Url.indexOf('://') == -1) {
                 if (this.Url.substring(0, 2) == '//')
                     this.Url = 'ws' + location.protocol.substring(4) + this.Url;
@@ -100,7 +100,7 @@ var AutoCSer;
             if (this.PingData) {
                 (this.PingBuffer = new SocketBuffer()).Data = this.PingData;
                 this.PingTime = (new Date).AddMilliseconds(this.PingTimeout);
-                setTimeout(AutoCSer.Pub.ThisFunction(this, this.Ping), this.PingTimeout);
+                setTimeout(Pub.ThisFunction(this, this.Ping), this.PingTimeout);
             }
             if (this.AutoTimeout)
                 this.Create();
@@ -111,10 +111,10 @@ var AutoCSer;
                 this.IsOpen = 1;
                 this.WebSocket = new WebSocket(this.Url);
                 this.WebSocket.binaryType = this.DataType;
-                this.WebSocket.onopen = AutoCSer.Pub.ThisFunction(this, this.Open, [this.Identity]);
-                this.WebSocket.onclose = AutoCSer.Pub.ThisFunction(this, this.Close, [this.Identity]);
-                this.WebSocket.onerror = AutoCSer.Pub.ThisFunction(this, this.Error, [this.Identity]);
-                this.WebSocket.onmessage = AutoCSer.Pub.ThisFunction(this, this.Message, [this.Identity]);
+                this.WebSocket.onopen = Pub.ThisFunction(this, this.Open, [this.Identity]);
+                this.WebSocket.onclose = Pub.ThisFunction(this, this.Close, [this.Identity]);
+                this.WebSocket.onerror = Pub.ThisFunction(this, this.Error, [this.Identity]);
+                this.WebSocket.onmessage = Pub.ThisFunction(this, this.Message, [this.Identity]);
             }
         };
         Socket.prototype.CheckIdentity = function (Values) {
@@ -130,16 +130,16 @@ var AutoCSer;
                 this.WebSocket.close();
             this.WebSocket = null;
             if (this.AutoTimeout)
-                setTimeout(AutoCSer.Pub.ThisFunction(this, this.Create), this.AutoTimeout);
+                setTimeout(Pub.ThisFunction(this, this.Create), this.AutoTimeout);
         };
         Socket.prototype.Ping = function () {
             var Timeout = this.PingTime.getTime() - (new Date).getTime();
             if (Timeout <= 0) {
-                setTimeout(AutoCSer.Pub.ThisFunction(this, this.Ping), this.PingTimeout);
+                setTimeout(Pub.ThisFunction(this, this.Ping), this.PingTimeout);
                 this.Send(this.PingBuffer, true);
             }
             else
-                setTimeout(AutoCSer.Pub.ThisFunction(this, this.Ping), Timeout + 1);
+                setTimeout(Pub.ThisFunction(this, this.Ping), Timeout + 1);
         };
         Socket.prototype.Open = function () {
             if (this.CheckIdentity(arguments)) {
@@ -147,7 +147,7 @@ var AutoCSer;
                 this.PingTime = (new Date).AddMilliseconds(this.PingTimeout);
                 this.OnOpen.Function(this);
                 ++this.IsQueue;
-                setTimeout(AutoCSer.Pub.ThisFunction(this, this.SendQueue), 500);
+                setTimeout(Pub.ThisFunction(this, this.SendQueue), 500);
             }
         };
         Socket.prototype.Close = function () {
@@ -210,5 +210,5 @@ var AutoCSer;
         Socket.DefaultEvents = { OnOpen: null, OnClose: null, OnError: null, OnData: null, OnString: null };
         return Socket;
     }());
-    AutoCSer.Socket = Socket;
+    Socket = Socket;
 })(AutoCSer || (AutoCSer = {}));

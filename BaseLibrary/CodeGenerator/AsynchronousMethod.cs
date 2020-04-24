@@ -1,7 +1,7 @@
 ﻿using System;
-using AutoCSer.Metadata;
-using AutoCSer.Extension;
-using AutoCSer.CodeGenerator.Metadata;
+using Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using CodeGenerator.Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
@@ -17,7 +17,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// <summary>
         /// 属性或者字段信息
         /// </summary>
-        public AutoCSer.Metadata.MemberIndexInfo MemberIndex;
+        public Metadata.MemberIndexInfo MemberIndex;
         /// <summary>
         /// 成员名称
         /// </summary>
@@ -134,11 +134,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
                         else if (type.GetGenericTypeDefinition() == typeof(Action<>)) parameterType = type.GetGenericArguments()[0];
                         if (parameterType != null)
                         {
-                            if (parameterType == typeof(AutoCSer.Net.TcpServer.ReturnValue))
+                            if (parameterType == typeof(Net.TcpServer.ReturnValue))
                             {
                                 isAsynchronousCallback = true;
                             }
-                            else if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(AutoCSer.Net.TcpServer.ReturnValue<>))
+                            else if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(Net.TcpServer.ReturnValue<>))
                             {
                                 methodReturnType = parameterType.GetGenericArguments()[0];
                                 isAsynchronousCallback = true;
@@ -168,7 +168,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         /// </summary>
         public string ReturnName
         {
-            get { return AutoCSer.Net.TcpServer.ReturnValue.ReturnParameterName; }
+            get { return Net.TcpServer.ReturnValue.ReturnParameterName; }
         }
         /// <summary>
         /// 属性或者字段名称

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {

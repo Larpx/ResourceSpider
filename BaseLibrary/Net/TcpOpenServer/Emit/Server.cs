@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Net.TcpServer.Emit;
+using Net.TcpServer.Emit;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
@@ -15,9 +15,9 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenServer.Server), typeof(ServerAttribute), typeof(ServerSocketSender), typeof(ServerCall)
             , ParameterGenericType.Get, ReturnParameterGenericType.Get
             , ((Func<bool>)ParameterGenericType.ServerSocketSender.Push).Method
-            , ((Func<AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.Push).Method
-            , ((Func<uint, AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.Push).Method
-            , ((Func<uint, AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.PushNoThread).Method
+            , ((Func<Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.Push).Method
+            , ((Func<uint, Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.Push).Method
+            , ((Func<uint, Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.PushNoThread).Method
             , ((Func<TcpServer.OutputInfo, TcpServer.ServerCallback>)ParameterGenericType.ServerSocketSender.GetCallback).Method
             , ((Func<TcpServer.OutputInfo, Func<TcpServer.ReturnValue, bool>>)ParameterGenericType.ServerSocketSender.GetCallbackEmit).Method
             , ((Action<Exception>)ParameterGenericType.ServerSocketSender.AddLog).Method
@@ -29,7 +29,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
     /// TCP 服务
     /// </summary>
     /// <typeparam name="interfaceType">接口类型</typeparam>
-    [AutoCSer.IOS.Preserve(AllMembers = false)]
+    [IOS.Preserve(AllMembers = false)]
     public static class Server<interfaceType>
     {
         /// <summary>
@@ -59,7 +59,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// <summary>
         /// 服务端输出信息集合
         /// </summary>
-        [AutoCSer.IOS.Preserve]
+        [IOS.Preserve]
         internal static readonly TcpServer.OutputInfo[] Outputs;
         /// <summary>
         /// 创建 TCP 服务端对象
@@ -71,14 +71,14 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 服务</returns>
-        public static TcpOpenServer.Server Create(interfaceType value, TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+        public static TcpOpenServer.Server Create(interfaceType value, TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Net.TcpServer.IServerCallQueueSet serverCallQueue = null, Action<SubArray<byte>> onCustomData = null, Log.ILog log = null)
         {
             if (serverConstructorInfo == null) throw new InvalidOperationException();
             if (errorString != null) throw new Exception(errorString);
             if (value == null) throw new ArgumentNullException();
             if (serverCallQueue == null && serverCallQueueConstructorInfo != null)
             {
-                serverCallQueue = (AutoCSer.Net.TcpServer.IServerCallQueueSet)serverCallQueueConstructorInfo.Invoke(NullValue<object>.Array);
+                serverCallQueue = (Net.TcpServer.IServerCallQueueSet)serverCallQueueConstructorInfo.Invoke(NullValue<object>.Array);
             }
             TcpOpenServer.Server server = (TcpOpenServer.Server)serverConstructorInfo.Invoke(new object[] { attribute = attribute ?? defaultServerAttribute, verify, value, serverCallQueue, onCustomData, log });
             server.setCommandData(methods.Length);
@@ -111,7 +111,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
                     serverCallQueueConstructorInfo = defaultServerAttribute.ServerCallQueueType.GetConstructor(NullValue<Type>.Array);
                 }
 
-                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog) };
+                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(Log.ILog) };
                 Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ServerBuilder serverBuilder = new Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ServerBuilder { Metadata = Server.Metadata };
                 serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), typeof(ServerCall<>), constructorParameterTypes, methods, builder.Queues);
                 Outputs = serverBuilder.Outputs;

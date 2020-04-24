@@ -37,7 +37,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
                 ++buildInfo.Count;
                 LinkNext = null;
                 Data.Array = null;
-                AutoCSer.Threading.RingPool<CustomDataOutput>.Default.PushNotNull(this);
+                Threading.RingPool<CustomDataOutput>.Default.PushNotNull(this);
                 return nextBuild;
             }
             buildInfo.isFullSend = 1;
@@ -52,7 +52,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
             OutputLink next = LinkNext;
             Data.Array = null;
             LinkNext = null;
-            AutoCSer.Threading.RingPool<CustomDataOutput>.Default.PushNotNull(this);
+            Threading.RingPool<CustomDataOutput>.Default.PushNotNull(this);
             return next;
         }
     }

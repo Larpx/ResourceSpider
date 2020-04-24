@@ -85,7 +85,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// <summary>
         /// 线程数量
         /// </summary>
-        public int ThreadCount = AutoCSer.Threading.Pub.CpuCount << 5;
+        public int ThreadCount =Threading.Pub.CpuCount << 5;
         /// <summary>
         /// 线程切换检测毫秒数量，默认为 10 毫秒
         /// </summary>
@@ -95,7 +95,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
         /// </summary>
         private void set()
         {
-            if (ThreadCount <= 0) ThreadCount = AutoCSer.Threading.Pub.CpuCount << 5;
+            if (ThreadCount <= 0) ThreadCount =Threading.Pub.CpuCount << 5;
             set(ThreadCount, NewThreadMilliseconds);
         }
 

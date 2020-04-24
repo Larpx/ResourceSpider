@@ -40,6 +40,6 @@ var AutoCSer;
         };
         return Loader;
     }());
-    AutoCSer.Loader = Loader;
+    Loader = Loader;
     Loader.Load();
 })(AutoCSer || (AutoCSer = {}));

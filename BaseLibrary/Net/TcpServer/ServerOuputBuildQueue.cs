@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Net.TcpServer.ServerOutput;
+using Net.TcpServer.ServerOutput;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -76,7 +76,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         internal int Push(ServerOutput.OutputLink output)
         {
-            AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
+            Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
             int IsOutput = this.IsOutput;
             end.LinkNext = output;
             this.IsOutput = 1;
@@ -117,7 +117,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (head.LinkNext == null)
             {
-                AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
+                Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
                 if (head.LinkNext == null)
                 {
                     IsOutput = 0;
@@ -135,7 +135,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         internal int TryOutput()
         {
-            AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
+            Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
             int IsOutput = this.IsOutput;
             this.IsOutput = 1;
             pushLock = 0;

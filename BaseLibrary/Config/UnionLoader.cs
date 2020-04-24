@@ -16,7 +16,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Config
         
         internal static UnionType GetUnion(Type type, string name = "")
         {
-            return new UnionType { Value = AutoCSer.Config.Loader.GetObject(type, name) };
+            return new UnionType { Value = Config.Loader.GetObject(type, name) };
         }
     }
 }

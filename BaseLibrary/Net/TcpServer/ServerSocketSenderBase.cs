@@ -197,8 +197,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(serverCall.ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(serverCall); return true;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(serverCall.ThreadPoolCall)) Threading.LinkTask.Task.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.Timeout: Threading.LinkTask.Task.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(serverCall); return true;

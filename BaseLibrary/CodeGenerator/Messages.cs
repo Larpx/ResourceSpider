@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -64,11 +64,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             if (messages.Count != 0)
             {
 #if DOTNET2
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, messages.getArray().joinString(@"
+                Log.Pub.Log.Wait(Log.LogType.All, messages.getArray().joinString(@"
 - - - - - - - -
 "));
 #else
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, messages.joinString(@"
+                Log.Pub.Log.Wait(Log.LogType.All, messages.joinString(@"
 - - - - - - - -
 "));
 #endif
@@ -78,11 +78,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             if (errors.Count != 0)
             {
 #if DOTNET2
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, errors.getArray().joinString(@"
+                Log.Pub.Log.Wait(Log.LogType.All, errors.getArray().joinString(@"
 - - - - - - - -
 "));
 #else
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, errors.joinString(@"
+                Log.Pub.Log.Wait(Log.LogType.All, errors.joinString(@"
 - - - - - - - -
 "));
 #endif
@@ -91,7 +91,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
             }
             if (exceptions.Length != 0)
             {
-                foreach (Exception error in exceptions) AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, error);
+                foreach (Exception error in exceptions) Log.Pub.Log.Wait(Log.LogType.All, error);
                 exceptions.Length = 0;
                 isError = true;
             }
@@ -132,8 +132,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
         {
             if (output() || IsMessage)
             {
-                AutoCSer.Log.Pub.Log.Flush();
-                string fileName = (AutoCSer.Log.Pub.Log as AutoCSer.Log.File).UnsafeMoveBak();
+                Log.Pub.Log.Flush();
+                string fileName = (Log.Pub.Log as Log.File).UnsafeMoveBak();
                 if (fileName != null)
                 {
 #if DotNetStandard

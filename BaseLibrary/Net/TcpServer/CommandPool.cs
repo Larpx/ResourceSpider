@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
-using AutoCSer.Log;
+using Log;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -125,7 +125,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <summary>
         /// 超时计数
         /// </summary>
-        internal sealed class TimeoutCount : AutoCSer.TimeoutCount
+        internal sealed class TimeoutCount : TimeoutCount
         {
             /// <summary>
             /// 客户端命令池
@@ -321,7 +321,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 arrays[arrayCount++] = array;
                 while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
                 {
-                    if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                     else System.Threading.Thread.Sleep(0);
                 }
                 arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = commandCount;
@@ -334,7 +334,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 for (int index = commandCount, endIndex = commandCount << 1; index != endIndex; ++index) array[index].Next = index + 1;
                 while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
                 {
-                    if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                     else System.Threading.Thread.Sleep(0);
                 }
                 Array.CopyTo(array, 0);
@@ -361,7 +361,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             {
                 while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
                 {
-                    if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                     else System.Threading.Thread.Sleep(0);
                 }
                 switch (Array[index].Get(commandCount, out command, ref timeoutSeconds))
@@ -384,7 +384,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             int commandIndex = index & arraySizeAnd;
             while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
             {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                 else System.Threading.Thread.Sleep(0);
             }
             switch (getArray[commandIndex].Get(commandCount, out command, ref timeoutSeconds))
@@ -412,7 +412,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             int arrayIndex = index >> bitSize, commandIndex = index & arraySizeAnd;
             while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
             {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                 else System.Threading.Thread.Sleep(0);
             }
             uint timeoutSeconds = arrays[arrayIndex][commandIndex].Cancel(commandCount);
@@ -431,7 +431,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             int arrayIndex = index >> bitSize, commandIndex = index & arraySizeAnd;
             while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
             {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                 else System.Threading.Thread.Sleep(0);
             }
             if (arrays[arrayIndex][commandIndex].CancelKeep(command, commandCount))
@@ -454,7 +454,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             bool isNext = false;
             while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
             {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                 else System.Threading.Thread.Sleep(0);
             }
             try
@@ -513,7 +513,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             ClientCommand.CommandBase head = null, end = null;
             while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
             {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                if (isTimeout == 0) Threading.ThreadYield.YieldOnly();
                 else System.Threading.Thread.Sleep(0);
             }
             try

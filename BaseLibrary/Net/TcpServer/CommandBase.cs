@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 using System.Net.Sockets;
 
@@ -61,7 +61,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             Attribute = attribute;
             MinCompressSize = attribute.GetMinCompressSize;
-             Log = log ?? AutoCSer.Log.Pub.Log;
+             Log = log ?? Log.Pub.Log;
             SendBufferMaxSize = sendBufferMaxSize;
             if (MinCompressSize <= 0) MinCompressSize = int.MaxValue;
         }
@@ -79,7 +79,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         public void AddLog(Exception error)
         {
-            Log.Add(AutoCSer.Log.LogType.Error, error);
+            Log.Add(Log.LogType.Error, error);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             {
                 socket.Shutdown(SocketShutdown.Both);
             }
-            catch { AutoCSer.Log.CatchCount.Add(type); }
+            catch { Log.CatchCount.Add(type); }
             finally { socket.Dispose(); }
         }
         /// <summary>
@@ -124,7 +124,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             {
                 socket.Shutdown(SocketShutdown.Both);
             }
-            catch { AutoCSer.Log.CatchCount.Add(CatchCount.Type.TcpServerSocket_Dispose); }
+            catch { Log.CatchCount.Add(CatchCount.Type.TcpServerSocket_Dispose); }
             finally { socket.Dispose(); }
 #else
             socket.Dispose();
@@ -230,12 +230,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         /// <param name="jsonSerializeTypes"></param>
         internal protected static void CompileSerialize(Type[] simpleDeSerializeTypes, Type[] simpleSerializeTypes, Type[] deSerializeTypes, Type[] serializeTypes, Type[] jsonDeSerializeTypes, Type[] jsonSerializeTypes)
         {
-            if (simpleDeSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileSimpleDeSerialize);
-            if (simpleSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileSimpleSerialize);
-            if (deSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileBinaryDeSerialize);
-            if (serializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileBinarySerialize);
-            if (jsonDeSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileJsonDeSerialize);
-            if (jsonSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileJsonSerialize);
+            if (simpleDeSerializeTypes.Length > 1) Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, Threading.Thread.CallType.CompileSimpleDeSerialize);
+            if (simpleSerializeTypes.Length > 1) Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, Threading.Thread.CallType.CompileSimpleSerialize);
+            if (deSerializeTypes.Length > 1) Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, Threading.Thread.CallType.CompileBinaryDeSerialize);
+            if (serializeTypes.Length > 1) Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, Threading.Thread.CallType.CompileBinarySerialize);
+            if (jsonDeSerializeTypes.Length > 1) Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, Threading.Thread.CallType.CompileJsonDeSerialize);
+            if (jsonSerializeTypes.Length > 1) Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, Threading.Thread.CallType.CompileJsonSerialize);
         }
         /// <summary>
         /// 序列化预编译

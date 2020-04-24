@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
@@ -77,7 +77,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         internal void DisposeSocket()
         {
             System.Net.Sockets.Socket socket = this.socket.Socket;
-            if (socket != null) AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(socket);
+            if (socket != null) Net.TcpServer.CommandBase.ShutdownClient(socket);
         }
     }
 }

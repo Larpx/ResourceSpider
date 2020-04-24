@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
-using AutoCSer.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using Metadata;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
@@ -251,7 +251,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         /// <summary>
         /// 类型成员方法缓存
         /// </summary>
-        private static Dictionary<Type, MethodIndex[]> methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();
+        private static Dictionary<Type, MethodIndex[]> methodCache = new Dictionary<Type, MethodIndex[]>();
         /// <summary>
         /// 字符串比较大小
         /// </summary>
@@ -312,7 +312,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
             if (!methodCache.TryGetValue(type, out methods))
             {
                 int index = 0;
-                methodCache[type] = methods = AutoCSer.Extension.ArrayExtension.concat(
+                methodCache[type] = methods = Extension.ArrayExtension.concat(
                     type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.PublicStatic, index++)),
                     type.GetMethods(BindingFlags.Public | BindingFlags.Instance).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.PublicInstance, index++)),
                     type.GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.NonPublicStatic, index++)),
@@ -378,7 +378,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
         
         private static void clearCache(int count)
         {
-            if (methodCache.Count != 0) methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();
+            if (methodCache.Count != 0) methodCache = new Dictionary<Type, MethodIndex[]>();
         }
 
         static MethodIndex()

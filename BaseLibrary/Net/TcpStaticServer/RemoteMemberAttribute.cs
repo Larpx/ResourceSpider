@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
     /// <summary>
     /// 远程调用链目标成员配置
     /// </summary>
-    public partial class RemoteMemberAttribute : AutoCSer.Metadata.IgnoreMemberAttribute
+    public partial class RemoteMemberAttribute : Metadata.IgnoreMemberAttribute
     {
         /// <summary>
         /// 名称类型

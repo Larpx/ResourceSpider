@@ -49,5 +49,5 @@ module AutoCSer {
             }
         }
     }
-    new AutoCSer.Declare(MouseMove, 'MouseMove', 'mousedown', 'AttributeName');
+    new Declare(MouseMove, 'MouseMove', 'mousedown', 'AttributeName');
 }

@@ -1,9 +1,9 @@
 ﻿using System;
-using AutoCSer.Log;
-using AutoCSer.Extension;
+using Log;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Net;
-using AutoCSer.Net.TcpServer;
+using Net.TcpServer;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -17,7 +17,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <summary>
         /// TCP 客户端路由
         /// </summary>
-        private readonly AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute;
+        private readonly Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute;
         /// <summary>
         /// TCP 内部注册服务客户端
         /// </summary>
@@ -40,13 +40,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
-        internal Client(ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
+        internal Client(ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
             : base(attribute, maxTimeoutSeconds, onCustomData, log)
         {
             this.clientRoute = clientRoute;
             if (attribute.TcpRegisterName != null)
             {
-                tcpRegisterClient = AutoCSer.Net.TcpRegister.Client.Get(attribute.TcpRegisterName, Log);
+                tcpRegisterClient = Net.TcpRegister.Client.Get(attribute.TcpRegisterName, Log);
                 tcpRegisterClient.Register(this);
             }
         }
@@ -315,7 +315,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="verifyMethod">验证委托</param>
-        public Client(clientType client, ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
+        public Client(clientType client, ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
             : base(attribute, maxTimeoutSeconds, onCustomData, log, clientRoute)
         {
             this.client = client;

@@ -23,7 +23,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         internal int Push(ClientCommand.Command command)
         {
             //command.LinkNext = null;
-            AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
+            Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
             int isReadWait = this.isReadWait;
             end.LinkNext = command;
             end = command;
@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (Head.LinkNext == null)
             {
-                AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
+                Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
                 if (Head.LinkNext == null)
                 {
                     isReadWait = 1;

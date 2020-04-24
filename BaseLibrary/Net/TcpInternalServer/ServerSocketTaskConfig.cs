@@ -5,12 +5,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
     /// <summary>
     /// TCP 内部服务端套接字任务处理配置
     /// </summary>
-    public sealed class ServerSocketTaskConfig : AutoCSer.Threading.LinkTaskConfigBase
+    public sealed class ServerSocketTaskConfig : Threading.LinkTaskConfigBase
     {
         /// <summary>
         /// 线程数量
         /// </summary>
-        public int ThreadCount = Math.Max(AutoCSer.Threading.Pub.CpuCount >> 1, 1);
+        public int ThreadCount = Math.Max(Threading.Pub.CpuCount >> 1, 1);
         /// <summary>
         /// 线程切换检测毫秒数量，默认为 10 毫秒
         /// </summary>

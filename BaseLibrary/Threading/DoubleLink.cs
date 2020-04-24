@@ -54,7 +54,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal void PushNotNull(valueType value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePush);
+                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkDoublePush);
                 if (End == null)
                 {
                     End = value;
@@ -75,7 +75,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             
             internal void PopNotNull(valueType value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
+                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkDoublePop);
                 if (value == End)
                 {
                     if ((End = value.DoubleLinkPrevious) != null) End.DoubleLinkNext = value.DoubleLinkPrevious = null;
@@ -93,7 +93,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             //
             //internal void Clear()
             //{
-            //    while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
+            //    while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0)Threading.ThreadYield.Yield(Threading.ThreadYield.Type.YieldLinkDoublePop);
             //    End = null;
             //    System.Threading.Interlocked.Exchange(ref linkLock, 0);
             //}

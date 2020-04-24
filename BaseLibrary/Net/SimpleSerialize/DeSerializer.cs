@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Metadata;
+using Metadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
@@ -502,7 +502,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
                     int lengthSize = (length <= byte.MaxValue ? 1 : (length <= ushort.MaxValue ? sizeof(ushort) : sizeof(int)));
                     if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                     {
-                        value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
+                        value = Extension.StringExtension.FastAllocateString(length);
                         fixed (char* valueFixed = value) Read = BinarySerialize.DeSerializer.DeSerialize(Read, End, valueFixed, length, lengthSize);
                         return;
                     }
@@ -1112,7 +1112,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
                     int lengthSize = (length <= byte.MaxValue ? 1 : (length <= ushort.MaxValue ? sizeof(ushort) : sizeof(int)));
                     if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - start))
                     {
-                        value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
+                        value = Extension.StringExtension.FastAllocateString(length);
                         fixed (char* valueFixed = value) return BinarySerialize.DeSerializer.DeSerialize(start, end, valueFixed, length, lengthSize);
                     }
                 }
@@ -1149,7 +1149,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
         }
         static DeSerializer()
         {
-            deSerializeMethods = DictionaryCreator.CreateOnly<Type, MethodInfo>();
+            deSerializeMethods = new Dictionary<Type, MethodInfo>();
 #if NOJIT
             foreach (MethodInfo method in typeof(DeSerializer).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic))
 #else

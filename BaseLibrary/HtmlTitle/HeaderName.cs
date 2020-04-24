@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
@@ -20,7 +20,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         /// <summary>
         /// 压缩编码名称
         /// </summary>
-        public static readonly byte[] ContentEncodingBytes = AutoCSer.Net.Http.HeaderName.ContentEncoding.getBytes();
+        public static readonly byte[] ContentEncodingBytes = Net.Http.HeaderName.ContentEncoding.getBytes();
         /// <summary>
         /// 内容长度名称
         /// </summary>
@@ -32,7 +32,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         /// <summary>
         /// 内容类型名称
         /// </summary>
-        public static readonly byte[] ContentTypeBytes = AutoCSer.Net.Http.HeaderName.ContentType.getBytes();
+        public static readonly byte[] ContentTypeBytes = Net.Http.HeaderName.ContentType.getBytes();
         /// <summary>
         /// 传输编码
         /// </summary>

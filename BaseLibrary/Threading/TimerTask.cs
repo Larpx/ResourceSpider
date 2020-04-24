@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Threading
@@ -119,7 +119,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                       Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
                 while (true);
@@ -136,7 +136,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Threading
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+               Log.Pub.Log.Add(Log.LogType.Error, error);
             }
         }
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
@@ -18,7 +18,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         /// <summary>
         /// 最小缓存区字节长度
         /// </summary>
-        internal const AutoCSer.SubBuffer.Size MinBufferSize = SubBuffer.Size.Kilobyte;
+        internal const SubBuffer.Size MinBufferSize = SubBuffer.Size.Kilobyte;
 
         /// <summary>
         /// 客户端集合
@@ -27,11 +27,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         /// <summary>
         /// 日志处理
         /// </summary>
-        internal readonly AutoCSer.Log.ILog Log;
+        internal readonly Log.ILog Log;
         /// <summary>
         /// 数据缓存区池
         /// </summary>
-        internal readonly AutoCSer.SubBuffer.Pool BufferPool;
+        internal readonly SubBuffer.Pool BufferPool;
         /// <summary>
         /// HTTP 头部接收超时
         /// </summary>
@@ -77,15 +77,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         /// <param name="maxSearchSize">最大搜索字节数</param>
         /// <param name="isValidateCertificate">是否验证安全证书</param>
         /// <param name="log">日志处理</param>
-        public HttpTask(int maxClientCount = 1, int timeoutSeconds = 15, AutoCSer.SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte4, int maxSearchSize = 0, bool isValidateCertificate = false, AutoCSer.Log.ILog log = null)
+        public HttpTask(int maxClientCount = 1, int timeoutSeconds = 15, SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte4, int maxSearchSize = 0, bool isValidateCertificate = false, Log.ILog log = null)
         {
             if (bufferSize < MinBufferSize) bufferSize = MinBufferSize;
             else if (bufferSize > SubBuffer.Size.Kilobyte32) bufferSize = SubBuffer.Size.Kilobyte32;
             BufferSize = (int)bufferSize;
             MaxSearchSize = Math.Min(BufferSize - sizeof(int), maxSearchSize);
             IsValidateCertificate = isValidateCertificate;
-            this.Log = log ?? AutoCSer.Log.Pub.Log;
-            BufferPool = AutoCSer.SubBuffer.Pool.GetPool(bufferSize);
+            this.Log = log ?? Log.Pub.Log;
+            BufferPool = SubBuffer.Pool.GetPool(bufferSize);
             uris = new Uri.Queue(new Uri());
             socketTimeout = SocketTimeoutLink.TimerLink.Get(Math.Max(timeoutSeconds, 15));
             clients = new HttpClient[maxClientCount <= 0 ? 1 : maxClientCount];
@@ -99,7 +99,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
             {
                 int clientIndex = 0;
                 Uri uri = null;
-                while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+                while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.HtmlTitleHttpClient);
                 if (isDisposed == 0)
                 {
                     isDisposed = 1;
@@ -137,7 +137,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
             {
                 if (isDisposed == 0 && uri.length() >= MinUriSize)
                 {
-                    Uri uriInfo = AutoCSer.Threading.RingPool<Uri>.Default.Pop() ?? new Uri();
+                    Uri uriInfo = Threading.RingPool<Uri>.Default.Pop() ?? new Uri();
                     if (uriInfo != null)
                     {
                         uriInfo.Set(uri, onGet, encoding);
@@ -161,7 +161,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
             {
                 if (isDisposed == 0 && uri.Length >= MinUriSize)
                 {
-                    Uri uriInfo = AutoCSer.Threading.RingPool<Uri>.Default.Pop() ?? new Uri();
+                    Uri uriInfo = Threading.RingPool<Uri>.Default.Pop() ?? new Uri();
                     if (uriInfo != null)
                     {
                         uriInfo.Set(ref uri, onGet, encoding);
@@ -179,7 +179,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         private void get(Uri uri, ref bool isOnGet)
         {
             HttpClient client = null;
-            while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+            while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.HtmlTitleHttpClient);
             if (isDisposed == 0)
             {
                 if (clientIndex == 0)
@@ -199,11 +199,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
                     }
                     catch (Exception error)
                     {
-                        Log.Add(AutoCSer.Log.LogType.Error, error);
+                        Log.Add(Log.LogType.Error, error);
                     }
                     if (client == null)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+                        while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.HtmlTitleHttpClient);
                         if (isDisposed == 0)
                         {
                             uris.Push(uri);
@@ -240,7 +240,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
         internal int Push(HttpClient client)
         {
             START:
-            while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+            while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.HtmlTitleHttpClient);
             if (!uris.IsEmpty)
             {
                 Uri uri = uris.UnsafePopOnly();
@@ -251,7 +251,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                 }
                 try
                 {
@@ -259,7 +259,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(Log.LogType.Error, error);
                 }
                 goto START;
             }

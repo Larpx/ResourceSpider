@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Threading;
 using System.Net.Sockets;
-using AutoCSer.Log;
+using Log;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
@@ -20,7 +20,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         ///// <summary>
         ///// 命令索引池
         ///// </summary>
-        //internal AutoCSer.Threading.IndexValuePool<CommandPoolIndex> CommandPool;
+        //internal Threading.IndexValuePool<CommandPoolIndex> CommandPool;
         /// <summary>
         /// 命令索引池
         /// </summary>
@@ -50,7 +50,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
 
             CreateVersion = createVersion;
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
+            Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
         }
         /// <summary>
         /// TCP 服务客户端套接字
@@ -62,7 +62,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             isSleep = true;
 
             CreateVersion = socket.CreateVersion + 1;
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
+            Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
         }
         /// <summary>
         /// 释放命令索引池
@@ -261,7 +261,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         //            command.CommandIndex = (uint)index;
         //            return true;
         //        }
-        //        Log.add(AutoCSer.Log.LogType.Error, "活动会话数量过多");
+        //        Log.add(Log.LogType.Error, "活动会话数量过多");
         //    }
         //    return false;
         //}
@@ -325,7 +325,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             }
             catch (Exception error)
             {
-                Log.Add(AutoCSer.Log.LogType.Error, error);
+                Log.Add(Log.LogType.Error, error);
             }
             DisposeSocket();
         }
@@ -513,7 +513,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             }
             if (ReceiveMarkData != 0) CommandBuffer.Mark(ReceiveBuffer.Buffer, ReceiveMarkData, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize);
             SubBuffer.PoolBufferFull buffer = new SubBuffer.PoolBufferFull { StartIndex = dataSize };
-            AutoCSer.IO.Compression.DeflateDeCompressor.Get(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize, ref buffer);
+            IO.Compression.DeflateDeCompressor.Get(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, compressionDataSize, ref buffer);
             if (buffer.Buffer != null)
             {
                 OnReceive(ref buffer);
@@ -539,7 +539,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
                 SubBuffer.PoolBufferFull buffer = new SubBuffer.PoolBufferFull { StartIndex = dataSize };
                 try
                 {
-                    AutoCSer.IO.Compression.DeflateDeCompressor.Get(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, compressionDataSize, ref buffer);
+                    IO.Compression.DeflateDeCompressor.Get(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, compressionDataSize, ref buffer);
                 }
                 finally { ReceiveBigBuffer.Free(); }
                 if (buffer.Buffer == null) return false;

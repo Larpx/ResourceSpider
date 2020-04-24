@@ -1,6 +1,6 @@
 ﻿using System;
-using AutoCSer.Extension;
-using AutoCSer.CodeGenerator.Metadata;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
+using CodeGenerator.Metadata;
 using System.Collections.Generic;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
@@ -13,13 +13,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
         /// <summary>
         /// 默认空AJAX调用配置
         /// </summary>
-        internal static readonly AutoCSer.WebView.AjaxMethodAttribute Null = new AutoCSer.WebView.AjaxMethodAttribute();
+        internal static readonly WebView.AjaxMethodAttribute Null = new WebView.AjaxMethodAttribute();
         
         /// <summary>
         /// AJAX调用代码生成
         /// </summary>
         [Generator(Name = "AJAX 调用", DependType = typeof(WebView.Generator), IsAuto = true)]
-        internal partial class Generator : WebView.Generator<AutoCSer.WebView.AjaxAttribute>
+        internal partial class Generator : WebView.Generator<WebView.AjaxAttribute>
         {
             /// <summary>
             /// AJAX API代码生成
@@ -51,7 +51,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 类型AJAX调用配置
                 /// </summary>
-                public AutoCSer.WebView.AjaxAttribute TypeAttribute;
+                public WebView.AjaxAttribute TypeAttribute;
                 /// <summary>
                 /// 类型调用名称
                 /// </summary>
@@ -59,17 +59,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// AJAX调用配置
                 /// </summary>
-                private AutoCSer.WebView.AjaxMethodAttribute attribute;
+                private WebView.AjaxMethodAttribute attribute;
                 /// <summary>
                 /// AJAX调用配置
                 /// </summary>
-                public AutoCSer.WebView.AjaxMethodAttribute Attribute
+                public WebView.AjaxMethodAttribute Attribute
                 {
                     get
                     {
                         if (attribute == null)
                         {
-                            attribute = (MemberIndex ?? Method).GetSetupAttribute<AutoCSer.WebView.AjaxMethodAttribute>(false);
+                            attribute = (MemberIndex ?? Method).GetSetupAttribute<WebView.AjaxMethodAttribute>(false);
                             if (attribute == null) attribute = Null;
                         }
                         return attribute;
@@ -95,7 +95,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public string AjaxCallbackPool
                 {
-                    get { return IsPoolType ? typeof(AutoCSer.WebView.CallBase.AjaxCallback).Name + "Pool" : typeof(AutoCSer.WebView.CallBase.AjaxCallback).Name; }
+                    get { return IsPoolType ? typeof(WebView.CallBase.AjaxCallback).Name + "Pool" : typeof(WebView.CallBase.AjaxCallback).Name; }
                 }
                 /// <summary>
                 /// 调用名称
@@ -233,7 +233,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// WEB视图配置
                 /// </summary>
-                public AutoCSer.WebView.ViewAttribute Attribute;
+                public WebView.ViewAttribute Attribute;
                 /// <summary>
                 /// 方法索引
                 /// </summary>
@@ -263,7 +263,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        return typeof(AutoCSer.WebView.View<>).isAssignableFromGenericDefinition(WebViewMethodType);
+                        return typeof(WebView.View<>).isAssignableFromGenericDefinition(WebViewMethodType);
                     }
                 }
                 /// <summary>
@@ -350,17 +350,17 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             /// </summary>
             protected override void nextCreate()
             {
-                bool isPoolType = typeof(AutoCSer.WebView.Ajax<>).isAssignableFromGenericDefinition(Type);
+                bool isPoolType = typeof(WebView.Ajax<>).isAssignableFromGenericDefinition(Type);
                 if (isPoolType)
                 {
-                    if (Attribute == null) Attribute = AutoCSer.WebView.Ajax.DefaultAttribute;
+                    if (Attribute == null) Attribute = WebView.Ajax.DefaultAttribute;
                 }
                 else
                 {
                     if (Attribute == null) return;
-                    if (!typeof(AutoCSer.WebView.Ajax).IsAssignableFrom(Type))
+                    if (!typeof(WebView.Ajax).IsAssignableFrom(Type))
                     {
-                        Messages.Add(Type.FullName + " 必须继承自 AutoCSer.WebView.Ajax 或者 AutoCSer.WebView.Ajax<" + Type.FullName + ">");
+                        Messages.Add(Type.FullName + " 必须继承自 WebView.Ajax 或者 WebView.Ajax<" + Type.FullName + ">");
                         return;
                     }
                 }
@@ -373,7 +373,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                 if (typeCallName.StartsWith("Ajax.", StringComparison.Ordinal)) typeCallName = typeCallName.Substring("Ajax.".Length);
 
                 int methodIndex = methods.Length;
-                AjaxMethod[] methodIndexs = Metadata.MethodIndex.GetMethods<AutoCSer.WebView.AjaxMethodAttribute>(Type, AutoCSer.Metadata.MemberFilters.PublicInstance, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
+                AjaxMethod[] methodIndexs = Metadata.MethodIndex.GetMethods<WebView.AjaxMethodAttribute>(Type, Metadata.MemberFilters.PublicInstance, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
                     .getArray(value => new AjaxMethod
                     {
                         Method = value,
@@ -397,13 +397,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
             {
                 int methodIndex = methods.Length;
                 ViewMethods = new WebView.Generator { AutoParameter = AutoParameter }.GetTypeAttributes()
-                    .getFind(value => typeof(AutoCSer.WebView.View<>).isAssignableFromGenericDefinition(value.Key) ? (value.Value == null || value.Value.IsAjax) : (value.Value != null && value.Value.IsAjax))
+                    .getFind(value => typeof(WebView.View<>).isAssignableFromGenericDefinition(value.Key) ? (value.Value == null || value.Value.IsAjax) : (value.Value != null && value.Value.IsAjax))
                     .GetArray(value => new ViewMethod
                     {
                         MethodIndex = methodIndex++,
                         WebViewMethodType = value.Key,
-                        Attribute = value.Value ?? AutoCSer.WebView.View.DefaultAttribute,
-                        CallName = new WebView.Generator.ViewType { Type = value.Key, Attribute = value.Value ?? AutoCSer.WebView.View.DefaultAttribute, DefaultNamespace = AutoParameter.DefaultNamespace + ".", IgnoreCase = AutoParameter.WebConfig.IgnoreCase }.CallName,
+                        Attribute = value.Value ?? WebView.View.DefaultAttribute,
+                        CallName = new WebView.Generator.ViewType { Type = value.Key, Attribute = value.Value ?? WebView.View.DefaultAttribute, DefaultNamespace = AutoParameter.DefaultNamespace + ".", IgnoreCase = AutoParameter.WebConfig.IgnoreCase }.CallName,
                         IsAwaitMethod = WebView.Generator.AjaxAwaitMethodTypes.Contains(value.Key)
                     });
                 if (methodIndex != 0)
@@ -418,7 +418,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
                         ParameterBuilder parameterBuilder = new ParameterBuilder();
                         foreach (AjaxMethod method in Methods)
                         {
-                            if (!IsPubError) IsPubError = method.CallName == AutoCSer.WebView.AjaxBase.PubErrorCallName;
+                            if (!IsPubError) IsPubError = method.CallName == WebView.AjaxBase.PubErrorCallName;
                             parameterBuilder.Add(method);
                         }
                         ParameterTypes = parameterBuilder.Get();

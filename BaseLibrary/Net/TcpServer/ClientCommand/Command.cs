@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
     /// <summary>
     /// TCP 客户端命令
     /// </summary>
-    internal abstract class CommandBase : AutoCSer.Threading.Link<CommandBase>, AutoCSer.Threading.ILinkTask
+    internal abstract class CommandBase : Threading.Link<CommandBase>, Threading.ILinkTask
     {
         /// <summary>
         /// 输出流起始位置
@@ -33,7 +33,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        long AutoCSer.Threading.ILinkTask.LinkTaskTimestamp
+        long Threading.ILinkTask.LinkTaskTimestamp
         {
             get { return TaskTimestamp; }
             set { TaskTimestamp = value; }
@@ -45,7 +45,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
         /// <summary>
         /// 下一个任务节点
         /// </summary>
-        AutoCSer.Threading.ILinkTask AutoCSer.Threading.ILinkTask.NextLinkTask
+        Threading.ILinkTask Threading.ILinkTask.NextLinkTask
         {
             get { return NextTask; }
             set { NextTask = new UnionType { Value = value  }.ClientCommandBase; }
@@ -55,7 +55,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="next"></param>
         
-        public void RunTask(ref AutoCSer.Threading.ILinkTask next)
+        public void RunTask(ref Threading.ILinkTask next)
         {
             next = NextTask;
             NextTask = null;

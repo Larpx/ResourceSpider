@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.X64
 {
@@ -13,8 +13,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.X64
             {
                 if (args.Length == 1)
                 {
-                    args = AutoCSer.Json.Parser.Parse<string[]>(File.ReadAllText(args[0]));
-                    if (args.Length >= 4) AutoCSer.CodeGenerator.Program.X64(args);
+                    args = Json.Parser.Parse<string[]>(File.ReadAllText(args[0]));
+                    if (args.Length >= 4) CodeGenerator.Program.X64(args);
                 }
             }
             catch (Exception error)

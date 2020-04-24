@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
@@ -24,8 +24,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
             //CommandFlags = CommandIdentity.GetCommandFlags();
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <param name="sender">套接字</param>
         /// <param name="queue">自定义队列</param>
         
-        public void Set(TcpInternalServer.ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallQueue queue)
+        public void Set(TcpInternalServer.ServerSocketSender sender, Net.TcpServer.ServerCallQueue queue)
         {
             this.Sender = sender;
             CommandIndex = sender.ServerSocket.CommandIndex;
@@ -71,7 +71,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         
         public static callType Pop()
         {
-            return AutoCSer.Threading.RingPool<callType>.Default.Pop();
+            return Threading.RingPool<callType>.Default.Pop();
         }
         /// <summary>
         /// 服务器端调用入池
@@ -81,7 +81,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         protected void push(callType call)
         {
             Sender = null;
-            AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+            Threading.RingPool<callType>.Default.PushNotNull(call);
         }
     }
     /// <summary>
@@ -111,8 +111,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
             this.inputParameter = inputParameter;
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
@@ -147,7 +147,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         /// <param name="queue">自定义队列</param>
         /// <param name="inputParameter">输入参数</param>
         
-        public void Set(TcpInternalServer.ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
+        public void Set(TcpInternalServer.ServerSocketSender sender, Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
             CommandIndex = sender.ServerSocket.CommandIndex;
@@ -164,7 +164,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
         {
             Sender = null;
             inputParameter = default(inputParameterType);
-            AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+            Threading.RingPool<callType>.Default.PushNotNull(call);
         }
     }
 }

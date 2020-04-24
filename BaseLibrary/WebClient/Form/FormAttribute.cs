@@ -5,7 +5,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Form
     /// <summary>
     /// web表单类型配置
     /// </summary>
-    public sealed class FormAttribute : AutoCSer.Metadata.MemberFilterAttribute.InstanceField
+    public sealed class FormAttribute : Metadata.MemberFilterAttribute.InstanceField
     {
         /// <summary>
         /// 默认web表单类型配置

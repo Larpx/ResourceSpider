@@ -41,7 +41,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         
         internal bool SetCommandIndex(int commandIndex)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallbackSetCommandIndex);
+            while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpServerKeepCallbackSetCommandIndex);
             if (isDisposed == 0)
             {
                 this.commandIndex = commandIndex;
@@ -65,7 +65,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
         {
             if (isDisposed == 0)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallbackCancel);
+                while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpServerKeepCallbackCancel);
                 if (isDisposed == 0)
                 {
                     isDisposed = 1;
@@ -83,7 +83,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
             //command.CancelKeep(Interlocked.Exchange(ref this.identity, int.MinValue))
             if (isDisposed == 0)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallbackDispose);
+                while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) Threading.ThreadYield.Yield(Threading.ThreadYield.Type.TcpServerKeepCallbackDispose);
                 if (isDisposed == 0)
                 {
                     isDisposed = 1;

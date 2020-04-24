@@ -26,7 +26,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         /// <returns>字符串</returns>
         internal unsafe static string BytesToStringNotEmpty(byte* data, int length)
         {
-            string value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
+            string value = Extension.StringExtension.FastAllocateString(length);
             fixed (char* valueFixed = value)
             {
                 char* start = valueFixed;

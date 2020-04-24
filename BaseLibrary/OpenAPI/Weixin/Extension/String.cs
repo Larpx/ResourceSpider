@@ -38,7 +38,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Extension
         
         internal unsafe static bool SimpleEqual(string source, void* destination)
         {
-            fixed (char* sourceFixed = source) return AutoCSer.Memory.SimpleEqualNotNull((byte*)sourceFixed, (byte*)destination, source.Length << 1);
+            fixed (char* sourceFixed = source) return Memory.SimpleEqualNotNull((byte*)sourceFixed, (byte*)destination, source.Length << 1);
         }
     }
 }

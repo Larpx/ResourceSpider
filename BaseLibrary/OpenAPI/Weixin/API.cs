@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
@@ -20,11 +20,11 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <summary>
         /// 访问令牌获取
         /// </summary>
-        private readonly Func<AutoCSer.Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> getter;
+        private readonly Func<Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> getter;
         /// <summary>
         /// 重置访问令牌
         /// </summary>
-        private readonly Func<string, AutoCSer.Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> reset;
+        private readonly Func<string, Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> reset;
         /// <summary>
         /// 访问令牌更新锁
         /// </summary>
@@ -52,8 +52,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <param name="getter">访问令牌获取</param>
         /// <param name="reset">重置令牌委托</param>
         /// <param name="config">应用配置</param>
-        public API(Func<AutoCSer.Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> getter
-            , Func<string, AutoCSer.Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> reset, Config config = null)
+        public API(Func<Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> getter
+            , Func<string, Net.TcpServer.ReturnValue<KeyValue<string, DateTime>>> reset, Config config = null)
         {
             if (getter == null) throw new ArgumentNullException("getter is null");
             if (reset == null) throw new ArgumentNullException("reset is null");
@@ -69,7 +69,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         private Token checkToken(ref DateTime timeout)
         {
             Token value;
-            while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+            while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) Threading.ThreadYield.Yield();
             if (this.timeout > Date.NowTime.Now)
             {
                 value = token;
@@ -96,7 +96,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 if (value == null)
                 {
                     value = new Token();
-                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) Threading.ThreadYield.Yield();
                     value.access_token = tokenTime.Key;
                     this.timeout = tokenTime.Value;
                     this.token = value;
@@ -104,7 +104,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 }
                 else
                 {
-                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) Threading.ThreadYield.Yield();
                     value.access_token = tokenTime.Key;
                     this.timeout = tokenTime.Value;
                     System.Threading.Interlocked.Exchange(ref tokenLock, 0);
@@ -127,7 +127,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 if ((value = checkToken(ref timeout)) != null) return value;
                 if ((value = config.GetToken()) != null && value.IsReturn && (timeout = Date.NowTime.Now.AddSeconds(value.expires_in - 60)) > Date.NowTime.Now)
                 {
-                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) Threading.ThreadYield.Yield();
                     token = value;
                     this.timeout = timeout;
                     System.Threading.Interlocked.Exchange(ref tokenLock, 0);
@@ -135,7 +135,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 }
             }
             finally { Monitor.Exit(getTokenLock); }
-            if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "访问令牌获取失败 " + value.Message);
+            if (value != null) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "访问令牌获取失败 " + value.Message);
             return null;
         }
         /// <summary>
@@ -167,7 +167,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <returns></returns>
         private string checkToken(string token, ref DateTime timeout)
         {
-            while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+            while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) Threading.ThreadYield.Yield();
             if (this.timeout > Date.NowTime.Now)
             {
                 if (token != this.token.access_token)
@@ -247,7 +247,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -291,7 +291,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -339,7 +339,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -390,7 +390,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                 {
                     if ((token = resetToken(token)) != null && (data = Config.Client.Download(urlPrefix + token)) != null && checkMediaData(data) == null) return data;
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -415,7 +415,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                     {
                         if ((*start & 0x80) != 0) return null;
                     }
-                    return AutoCSer.Json.Parser.Parse<Return>(Memory_WebClient.BytesToStringNotEmpty(dataFixed, data.Length));
+                    return Json.Parser.Parse<Return>(Memory_WebClient.BytesToStringNotEmpty(dataFixed, data.Length));
                 }
             }
             return null;
@@ -1254,7 +1254,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         {
             if (data.length() != 0)
             {
-                KeyValue<byte[], byte[]>[] form = type == MediaType.video ? new KeyValue<byte[], byte[]>[] { new KeyValue<byte[], byte[]>(videoDescriptionData, System.Text.Encoding.UTF8.GetBytes(AutoCSer.Json.Serializer.Serialize(video))) } : null;
+                KeyValue<byte[], byte[]>[] form = type == MediaType.video ? new KeyValue<byte[], byte[]>[] { new KeyValue<byte[], byte[]>(videoDescriptionData, System.Text.Encoding.UTF8.GetBytes(Json.Serializer.Serialize(video))) } : null;
                 return requestFile<MediaUrl>("https://api.weixin.qq.com/cgi-bin/material/add_material?type=" + type.ToString() + "&access_token=", data, "media", null, null, form);
             }
             return null;
@@ -1948,7 +1948,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
         /// <summary>
         /// XML序列化配置
         /// </summary>
-        private static readonly AutoCSer.Xml.SerializeConfig xmlSerializeConfig = new AutoCSer.Xml.SerializeConfig { CheckLoopDepth = AutoCSer.Xml.SerializeConfig.DefaultCheckLoopDepth, Header = null, IsOutputEmptyString = false };
+        private static readonly Xml.SerializeConfig xmlSerializeConfig = new Xml.SerializeConfig { CheckLoopDepth = Xml.SerializeConfig.DefaultCheckLoopDepth, Header = null, IsOutputEmptyString = false };
         /// <summary>
         /// 获取交易会话标识
         /// </summary>
@@ -2138,7 +2138,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
             BillQuery query = new BillQuery { bill_type = type, bill_date = date.ToString("yyyyMMdd"), device_info = device_info };
             query.SetConfig(config);
             string text = Config.Client.RequestXml<BillQuery>("https://api.mch.weixin.qq.com/pay/downloadbill", query, xmlSerializeConfig);
-            ReturnCode returnCode = AutoCSer.Xml.Parser.Parse<ReturnCode>(text);
+            ReturnCode returnCode = Xml.Parser.Parse<ReturnCode>(text);
             if (returnCode == null)
             {
                 LeftArray<SubString> rows = text.split('\n');
@@ -2157,13 +2157,13 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
                         }
                         catch (Exception error)
                         {
-                            AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, text);
+                            Log.Pub.Log.Add(Log.LogType.Error, error, text);
                         }
                         return null;
                     }
                 }
             }
-            AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, text);
+            Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, text);
             return null;
         }
         /// <summary>

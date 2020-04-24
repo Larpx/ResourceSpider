@@ -1,7 +1,7 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Reflection;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 using System.Runtime.CompilerServices;
 #if !NOJIT
 using/**/System.Reflection.Emit;
@@ -214,7 +214,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
                 bool isBox = false;
                 if (type.IsValueType && fields.Length + properties.Length == 1)
                 {
-                    BoxSerializeAttribute boxSerialize = AutoCSer.Metadata.TypeAttribute.GetAttribute<BoxSerializeAttribute>(type);
+                    BoxSerializeAttribute boxSerialize = Metadata.TypeAttribute.GetAttribute<BoxSerializeAttribute>(type);
                     if (boxSerialize != null && boxSerialize.IsXml) isBox = true;
                 }
 #if NOJIT

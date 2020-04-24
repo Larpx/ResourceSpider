@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+using Metadata;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -63,7 +63,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 未知类型转换调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> typeMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonly Threading.LockDictionary<Type, MethodInfo> typeMethods = new Threading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 字典转换函数信息
         ///// </summary>
@@ -100,7 +100,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 枚举转换调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> enumMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonly Threading.LockDictionary<Type, MethodInfo> enumMethods = new Threading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 字典转换函数信息
         ///// </summary>
@@ -162,7 +162,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 是否输出可空对象函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> isOutputNullableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonly Threading.LockDictionary<Type, MethodInfo> isOutputNullableMethods = new Threading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 是否输出可空对象函数信息
         ///// </summary>
@@ -192,7 +192,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 数组转换调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> arrayMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonly Threading.LockDictionary<Type, MethodInfo> arrayMethods = new Threading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 字典转换函数信息
         ///// </summary>
@@ -218,7 +218,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         ///// <summary>
         ///// 可空类型转换调用函数信息集合
         ///// </summary>
-        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> nullableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        //private static readonly Threading.LockDictionary<Type, MethodInfo> nullableMethods = new Threading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 可空类型转换函数信息
         ///// </summary>
@@ -238,7 +238,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 枚举集合转换调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> enumerableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonly Threading.LockDictionary<Type, MethodInfo> enumerableMethods = new Threading.LockDictionary<Type, MethodInfo>();
         ///// <summary>
         ///// 字典转换函数信息
         ///// </summary>
@@ -329,7 +329,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
         /// <summary>
         /// 自定义转换调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> customMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonly Threading.LockDictionary<Type, MethodInfo> customMethods = new Threading.LockDictionary<Type, MethodInfo>();
         /// <summary>
         /// 自定义枚举转换委托调用函数信息
         /// </summary>
@@ -341,7 +341,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             if (customMethods.TryGetValue(type, out method)) return method;
             if (type.IsValueType)
             {
-                foreach (AutoCSer.Metadata.AttributeMethod methodInfo in AutoCSer.Metadata.AttributeMethod.Get(type))
+                foreach (Metadata.AttributeMethod methodInfo in Metadata.AttributeMethod.Get(type))
                 {
                     if (methodInfo.Method.ReturnType == typeof(void))
                     {
@@ -356,7 +356,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Xml
             }
             else
             {
-                foreach (AutoCSer.Metadata.AttributeMethod methodInfo in AutoCSer.Metadata.AttributeMethod.GetStatic(type))
+                foreach (Metadata.AttributeMethod methodInfo in Metadata.AttributeMethod.GetStatic(type))
                 {
                     if (methodInfo.Method.ReturnType == typeof(void))
                     {

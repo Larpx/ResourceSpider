@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
@@ -71,7 +71,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
             server.Name = Server.Name;
             if (server.IsSingle ^ Server.IsSingle)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Warn, "TCP 服务 " + server.Name + " 单实例定义冲突 " + server.IsSingle.ToString());
+                Log.Pub.Log.Add(Log.LogType.Warn, "TCP 服务 " + server.Name + " 单实例定义冲突 " + server.IsSingle.ToString());
             }
             if (server.HostPortEquals(Server))
             {
@@ -129,7 +129,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
         /// <param name="onLog"></param>
         /// <returns></returns>
         
-        internal bool OnLog(AutoCSer.Net.TcpServer.ServerCallback<ServerLog> onLog)
+        internal bool OnLog(Net.TcpServer.ServerCallback<ServerLog> onLog)
         {
             foreach (ServerLog log in Servers)
             {

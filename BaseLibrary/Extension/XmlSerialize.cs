@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Xml;
+using Xml;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AutoCSer.Extension;
+using Larpx.ResourceSpider.BaseLibrary.Extension;
 
 namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
 {
@@ -43,15 +43,15 @@ namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
                     OpenId openId = new OpenId();
                     try
                     {
-                        if (AutoCSer.Json.Parser.Parse(formatJson(json), ref openId)) isJson = true;
+                        if (Json.Parser.Parse(formatJson(json), ref openId)) isJson = true;
                     }
                     catch (Exception error)
                     {
                         isError = true;
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, json);
+                        Log.Pub.Log.Add(Log.LogType.Error, error, json);
                     }
                     if (isJson && openId.openid != null) return openId;
-                    if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, json);
+                    if (!isError) Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, json);
                 }
             }
             return default(OpenId);

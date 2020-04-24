@@ -1,7 +1,7 @@
 ﻿/// <reference path = "./overDiv.ts" />
 /*Include:Js\overDiv*/
 //界面居中弹出层	<div body="true" floatcenter="{}" id="XXX" style="display:none"></div>
-//AutoCSer.FloatCenter.FloatCenters.XXX.Show();
+//FloatCenter.FloatCenters.XXX.Show();
 module AutoCSer {
     export class FloatCenter {
         private static DefaultParameter = { Id: null, IsFixed: false, IsEsc: true, Timeout: 200, SkinView: null, ZIndex: 0, AutoClass: null };

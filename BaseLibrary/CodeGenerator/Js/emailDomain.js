@@ -46,5 +46,5 @@ var AutoCSer;
         };
         return EmailDomain;
     }());
-    AutoCSer.EmailDomain = EmailDomain;
+    EmailDomain = EmailDomain;
 })(AutoCSer || (AutoCSer = {}));

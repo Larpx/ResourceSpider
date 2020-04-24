@@ -20,12 +20,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
         internal ClientSocketSender(ClientSocket socket)
             : base(socket)
         {
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, AutoCSer.Threading.Thread.CallType.TcpOpenClientSocketSenderBuildOutput);
+            Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpOpenClientSocketSenderBuildOutput);
             //BuildOutputMainWaitHandle.Set(0);
             //BuildOutputOtherWaitHandle.Set(0);
             //SendLock = new object();
-            //AutoCSer.Threading.ThreadPool.TinyBackground.FastStart((Action)BuildOutputMain, Threading.Thread.CallType.Action);
-            //AutoCSer.Threading.ThreadPool.TinyBackground.FastStart((Action)BuildOutputOther, Threading.Thread.CallType.Action);
+            //Threading.ThreadPool.TinyBackground.FastStart((Action)BuildOutputMain, Threading.Thread.CallType.Action);
+            //Threading.ThreadPool.TinyBackground.FastStart((Action)BuildOutputOther, Threading.Thread.CallType.Action);
         }
     }
 }

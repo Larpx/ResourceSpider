@@ -42,5 +42,5 @@ module AutoCSer {
         //    this.SetCss();
         //}
     }
-    new AutoCSer.Declare(FileClicker, 'FileClicker', 'mouseover', 'ParameterId');
+    new Declare(FileClicker, 'FileClicker', 'mouseover', 'ParameterId');
 }

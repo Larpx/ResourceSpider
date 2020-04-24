@@ -7,7 +7,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
     /// TCP 服务端套接字输出信息
     /// </summary>
     /// <typeparam name="outputLinkType">TCP 服务端套接字输出信息类型</typeparam>
-    internal abstract class OutputLink<outputLinkType> : AutoCSer.Threading.Link<outputLinkType>
+    internal abstract class OutputLink<outputLinkType> : Threading.Link<outputLinkType>
         where outputLinkType : OutputLink<outputLinkType>
     {
         /// <summary>

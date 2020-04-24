@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Metadata;
+usingMetadata;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
