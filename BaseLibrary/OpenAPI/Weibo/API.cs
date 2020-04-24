@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Weibo
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weibo
 {
     /// <summary>
     /// API调用http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI

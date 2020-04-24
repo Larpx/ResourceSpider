@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务客户端创建器
@@ -58,7 +58,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void DisposeSocket()
         {
             if (CreateSocket != null) CreateSocket.DisposeSocket();
@@ -67,7 +67,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务客户端套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ClientSocketBase WaitSocket()
         {
             return Socket ?? waitSocket();
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 尝试创建第一个套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void TryCreateSocket()
         {
             if (Interlocked.CompareExchange(ref CreateVersion, 1, 0) == 0) createSocket(IpAddress, Port, 1);
@@ -153,7 +153,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 设置 TCP 客户端套接字事件
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnSetSocket()
         {
             if (Socket != null) CommandClient.CallOnSetSocketOnly(this, Socket);
@@ -177,7 +177,7 @@ namespace AutoCSer.Net.TcpServer
         /// 移除 TCP 服务客户端套接字
         /// </summary>
         /// <param name="socket"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void OnDisposeSocket(TcpServer.ClientSocketBase socket)
         {
             if (Interlocked.CompareExchange(ref Socket, null, socket) == socket) CommandClient.CallOnSocket(this, socket, ClientSocketEventParameter.EventType.SocketDisposed);

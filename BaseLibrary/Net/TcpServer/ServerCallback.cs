@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务器端异步调用

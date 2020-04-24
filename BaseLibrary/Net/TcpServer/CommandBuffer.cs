@@ -4,7 +4,7 @@ using System.Net;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 组件基类

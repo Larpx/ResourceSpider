@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 交易会话标识

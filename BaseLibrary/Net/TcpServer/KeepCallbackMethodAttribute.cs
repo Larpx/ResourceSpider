@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 保持异步回调 TCP 调用函数配置

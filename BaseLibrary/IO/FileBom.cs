@@ -2,7 +2,7 @@
 using System.Text;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.IO
+namespace Larpx.ResourceSpider.BaseLibrary.IO
 {
     /// <summary>
     /// 文件编码BOM
@@ -72,7 +72,7 @@ namespace AutoCSer.IO
         /// </summary>
         /// <param name="encoding">文件编码</param>
         /// <param name="bom">文件编码 BOM</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Get(Encoding encoding, ref FileBom bom)
         {
             boms.Get(encoding, ref bom);
@@ -82,7 +82,7 @@ namespace AutoCSer.IO
         /// </summary>
         /// <param name="encoding">文件编码</param>
         /// <returns>文件编码 BOM</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static FileBom Get(Encoding encoding)
         {
             FileBom bom = default(FileBom);

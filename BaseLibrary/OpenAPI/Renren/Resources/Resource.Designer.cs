@@ -11,7 +11,7 @@
 
 [assembly: global::Android.Runtime.ResourceDesignerAttribute("AutoCSer.Resource", IsApplication=false)]
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
 	
 	

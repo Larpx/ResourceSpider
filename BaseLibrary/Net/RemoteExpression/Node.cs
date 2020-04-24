@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.RemoteExpression
+namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
 {
     /// <summary>
     /// 远程表达式节点
@@ -45,7 +45,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
         {
             serializer.Stream.Write(checker.ServerNodeIds[GetType()]);
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void serializeParent(AutoCSer.BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
         {
             if (Parent == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
@@ -69,7 +69,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="parameterType"></typeparam>
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void serializeParameter<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, parameterType parameter)
         {
             if (parameter == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
@@ -81,7 +81,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="parameterType"></typeparam>
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void serializeParameterStruct<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, ref parameterType parameter)
         {
             AutoCSer.BinarySerialize.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
@@ -95,7 +95,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
         {
             deSerializeParameter(deSerializer);
@@ -124,7 +124,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="parameterType"></typeparam>
         /// <param name="deSerializer"></param>
         /// <param name="parameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void deSerializeParameter<parameterType>(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
         {
             if (deSerializer.CheckNullValue() != 0) AutoCSer.BinarySerialize.TypeDeSerializer<parameterType>.DeSerialize(deSerializer, ref parameter);
@@ -135,7 +135,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="parameterType"></typeparam>
         /// <param name="deSerializer"></param>
         /// <param name="parameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void deSerializeParameterStruct<parameterType>(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
         {
             AutoCSer.BinarySerialize.TypeDeSerializer<parameterType>.StructDeSerialize(deSerializer, ref parameter);
@@ -150,7 +150,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Serialize(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
         {
             serializeStart(serializer, checker);
@@ -162,7 +162,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void serializeStart(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
         {
             serializer.CharStream.Write('[');
@@ -173,7 +173,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void serializeParent(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
         {
             if (Parent != null)
@@ -189,7 +189,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="parameterType"></typeparam>
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void serializeParameter<parameterType>(AutoCSer.Json.Serializer serializer, parameterType parameter)
         {
             if (parameter == null) serializer.CharStream.WriteJsonNull();
@@ -201,7 +201,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="parameterType"></typeparam>
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void serializeParameterStruct<parameterType>(AutoCSer.Json.Serializer serializer, ref parameterType parameter)
         {
             AutoCSer.Json.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
@@ -215,7 +215,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端反序列化
         /// </summary>
         /// <param name="parser"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void deSerialize(AutoCSer.Json.Parser parser)
         {
             deSerializeParameter(parser);
@@ -286,7 +286,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="clientNodeId">客户端映射标识</param>
         /// <returns>返回值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ReturnValue Get(int clientNodeId)
         {
             ReturnValue value = getReturn();
@@ -321,7 +321,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="returnType"></typeparam>
         /// <param name="clientNode"></param>
         /// <param name="node"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void setParameter<returnType>(ref ClientNode<returnType> clientNode, Node<returnType> node)
         {
             clientNode.Node = node;
@@ -340,7 +340,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="checker"></param>
         /// <param name="checkTypes"></param>
         /// <param name="clientNode"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void checkServerNodeId<returnType>(ServerNodeIdChecker checker, ref LeftArray<Type> checkTypes, ref ClientNode<returnType> clientNode)
         {
             clientNode.Node.CheckServerNodeId(clientNode.Checker = checker, ref checkTypes);
@@ -357,7 +357,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// 远程表达式泛型节点类型转换
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Cast(Node value)
         {
             Parent = value;
@@ -368,7 +368,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="createReturnValue">新建一个返回值的委托</param>
         /// <returns>表达式节点映射编号</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected static int registerClient(Func<ReturnValue> createReturnValue)
         {
             return ReturnValue.RegisterClient(createReturnValue);
@@ -434,7 +434,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Node createNew<valueType>()
             where valueType : Node
         {
@@ -493,7 +493,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端获取数据
         /// </summary>
         /// <returns>返回值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public returnType GetValue()
         {
             return getValue();

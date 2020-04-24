@@ -4,7 +4,7 @@ using System.Reflection;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Net.WebClient
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
 {
     /// <summary>
     /// URI相关操作

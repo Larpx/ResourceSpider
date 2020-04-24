@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Net.SimpleSerialize
+namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
     /// <summary>
     /// 简单反序列化

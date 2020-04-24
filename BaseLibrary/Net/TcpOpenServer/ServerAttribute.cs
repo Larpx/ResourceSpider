@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// TCP 服务配置
@@ -22,7 +22,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="maxArraySize"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static AutoCSer.BinarySerialize.DeSerializeConfig GetBinaryDeSerializeConfig(int maxArraySize)
         {
             if (maxArraySize == AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize) return AutoCSer.BinarySerialize.DeSerializer.DefaultConfig;

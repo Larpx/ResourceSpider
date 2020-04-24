@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 成员方法
@@ -327,7 +327,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <param name="filter">选择类型</param>
         /// <param name="isFilter">是否完全匹配选择类型</param>
         /// <returns>匹配的成员方法集合</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static LeftArray<MethodIndex> GetMethods(Type type, MemberFilters filter, bool isFilter)
         {
             return getMethods(type).getFind(value => isFilter ? (value.MemberFilters & filter) == filter : ((value.MemberFilters & filter) != 0));
@@ -364,7 +364,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <param name="isAttribute">是否匹配自定义属性类型</param>
         /// <param name="isBaseType">指定是否搜索该成员的继承链以查找这些特性，参考System.Reflection.MemberInfo.GetCustomAttributes(bool inherit)。</param>
         /// <returns>匹配成员方法集合</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static MethodIndex[] GetMethods<attributeType>(Type type, MemberFilters filter, bool isFilter, bool isAttribute, bool isBaseType)
             where attributeType : IgnoreMemberAttribute
         {
@@ -375,7 +375,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void clearCache(int count)
         {
             if (methodCache.Count != 0) methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();

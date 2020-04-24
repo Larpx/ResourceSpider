@@ -7,7 +7,7 @@ using AutoCSer.Net.TcpServer;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpInternalServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
     /// <summary>
     /// TCP 内部服务客户端
@@ -53,7 +53,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// TCP 服务客户端套接字数据发送
         /// </summary>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //
         public ClientSocketSender Sender
         {
             get
@@ -71,7 +71,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// TCP 服务客户端套接字数据发送
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ClientSocketSender GetSender()
         {
             return Sender;
@@ -135,7 +135,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 尝试创建第一个套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void TryCreateSocket()
         {
             if (clientRoute == null) clientCreator.TryCreateSocket();
@@ -165,7 +165,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
         /// <returns>客户端等待连接</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ClientWaitConnected CreateWaitConnected(Action<ClientSocketEventParameter> onCheckSocketVersion = null)
         {
             TryCreateSocket();
@@ -176,7 +176,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SendCustomData(byte[] data)
         {
             if (data.Length > maxCustomDataSize) throw new ArgumentOutOfRangeException("data.Length" + data.Length.toString() + " > maxCustomDataSize[" + maxCustomDataSize.toString() + "]");
@@ -188,7 +188,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SendCustomData(ref SubArray<byte> data)
         {
             if (data.Length > maxCustomDataSize) throw new ArgumentOutOfRangeException("data.Length" + data.Length.toString() + " > maxCustomDataSize[" + maxCustomDataSize.toString() + "]");
@@ -200,7 +200,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SendCustomData(SubArray<byte> data)
         {
             if (data.Length > maxCustomDataSize) throw new ArgumentOutOfRangeException("data.Length" + data.Length.toString() + " > maxCustomDataSize[" + maxCustomDataSize.toString() + "]");
@@ -213,7 +213,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="node">远程表达式节点</param>
         /// <param name="clientNode">客户端远程表达式节点</param>
         /// <returns>返回值类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.ReturnType GetRemoteExpressionClientNode(RemoteExpression.Node node, out RemoteExpression.ClientNode clientNode)
         {
             return Sender.GetRemoteExpressionClientNode(node, out clientNode);
@@ -223,7 +223,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="node">远程表达式节点</param>
         /// <returns>客户端远程表达式节点</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public RemoteExpression.ClientNode GetRemoteExpressionClientNode(RemoteExpression.Node node)
         {
             return Sender.GetRemoteExpressionClientNode(node);
@@ -234,7 +234,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <typeparam name="returnType">返回值类型</typeparam>
         /// <param name="node">远程表达式参数节点</param>
         /// <returns>客户端远程表达式参数节点</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public RemoteExpression.ClientNode<returnType> GetRemoteExpressionClientNodeParameter<returnType>(RemoteExpression.Node<returnType> node)
         {
             return Sender.GetRemoteExpressionClientNodeParameter(node);
@@ -244,7 +244,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="node">远程表达式节点</param>
         /// <returns>返回值类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.ReturnType CallRemoteExpression(RemoteExpression.Node node)
         {
             return Sender.CallRemoteExpression(node);
@@ -254,7 +254,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="node">远程表达式节点</param>
         /// <returns>返回值类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.ReturnValue<returnType> GetRemoteExpression<returnType>(RemoteExpression.Node<returnType> node)
         {
             return Sender.GetRemoteExpression(node);
@@ -264,7 +264,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="node">远程表达式节点</param>
         /// <returns>返回值类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.ReturnValue<RemoteExpression.ReturnValue> GetRemoteExpression(RemoteExpression.ClientNode node)
         {
             return Sender.GetRemoteExpression(node);
@@ -274,7 +274,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="node">远程表达式节点</param>
         /// <returns>返回值类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.AwaiterBox<RemoteExpression.ReturnValue> GetRemoteExpressionAwaiter(RemoteExpression.Node node)
         {
             return Sender.GetRemoteExpressionAwaiter(node);
@@ -284,7 +284,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="node">远程表达式节点</param>
         /// <returns>返回值类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.AwaiterBox<RemoteExpression.ReturnValue> GetRemoteExpressionAwaiter(RemoteExpression.ClientNode node)
         {
             return Sender.GetRemoteExpressionAwaiter(node);

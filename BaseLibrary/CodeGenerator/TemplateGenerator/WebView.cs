@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// WEB 视图配置
@@ -106,7 +106,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             /// <param name="html">HTML片段</param>
             /// <returns>索引号</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public int GetHtmlIndex(ref SubString html)
             {
                 //if (!htmls.ContainsKey(html)) log.Default.Add("->" + html + "<-", false, false);
@@ -177,7 +177,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 设置子节点集合
             /// </summary>
             /// <param name="childs">子节点集合</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void SetChilds(ViewTreeNode[] childs)
             {
                 if (Tag != null) Tag.IsRound = true;

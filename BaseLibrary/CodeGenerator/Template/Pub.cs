@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.CodeGenerator.Template
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
 {
     /// <summary>
     /// CSharp模板公用模糊类型

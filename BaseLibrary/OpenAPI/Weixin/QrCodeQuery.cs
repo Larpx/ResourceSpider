@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 生成带参数的二维码
@@ -21,7 +21,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         [AutoCSer.Json.SerializeCustom]
         private void toJson(AutoCSer.Json.Serializer serializer)
         {

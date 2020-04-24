@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 客户端路由

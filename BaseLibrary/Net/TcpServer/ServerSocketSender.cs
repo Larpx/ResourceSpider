@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务套接字数据发送
@@ -47,7 +47,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="commandIndex"></param>
         /// <param name="keepCallback"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void AddKeepCallback(uint commandIndex, ServerCallbackBase keepCallback)
         {
             if (KeepCallbacks == null) KeepCallbacks = DictionaryCreator.CreateInt<ServerCallbackBase>();
@@ -93,7 +93,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放接收数据缓冲区
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void freeBuffer()
         {
             Buffer.Free();
@@ -230,8 +230,8 @@ namespace AutoCSer.Net.TcpServer
         /// 错误日志处理
         /// </summary>
         /// <param name="error"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public void AddLog(Exception error)
         {
             Server.Log.Add(AutoCSer.Log.LogType.Error, error);
@@ -242,7 +242,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="commandIndex">会话索引</param>
         /// <returns>输出信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ServerOutput.ReturnTypeOutput TryGetOutput(uint commandIndex)
         {
             ServerOutput.ReturnTypeOutput output = AutoCSer.Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop();
@@ -267,7 +267,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="commandIndex">会话索引</param>
         /// <param name="isBuildOutputThread">尝试启动创建输出线程</param>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool TryPush(uint commandIndex, bool isBuildOutputThread)
         {
             if (IsSocket)
@@ -286,7 +286,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="commandIndex">会话索引</param>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool Push(uint commandIndex)
         {
             if (IsSocket)
@@ -304,7 +304,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="commandIndex">会话索引</param>
         /// <param name="isBuildOutputThread">尝试启动创建输出线程</param>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool Push(uint commandIndex, bool isBuildOutputThread)
         {
             if (IsSocket)
@@ -321,8 +321,8 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="value">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public bool Push(ReturnType value)
         {
             return Push(TcpServer.Server.GetCommandIndex(ServerSocket.CommandIndex, value));
@@ -331,8 +331,8 @@ namespace AutoCSer.Net.TcpServer
         /// 发送数据
         /// </summary>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public bool Push()
         {
             return Push(TcpServer.Server.GetCommandIndex(ServerSocket.CommandIndex, ReturnType.Success));
@@ -343,8 +343,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="commandIndex">会话标识</param>
         /// <param name="returnType">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public bool Push(uint commandIndex, ReturnType returnType)
         {
             return Push(TcpServer.Server.GetCommandIndex(commandIndex, returnType));
@@ -355,8 +355,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="commandIndex">会话标识</param>
         /// <param name="returnType">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public bool PushNoThread(uint commandIndex, ReturnType returnType)
         {
             if (IsSocket)
@@ -376,7 +376,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>输出信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ServerOutput.Output<outputParameterType> TryGetOutput<outputParameterType>(uint commandIndex, TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
@@ -404,7 +404,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>输出信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ServerOutput.Output<outputParameterType> GetOutput<outputParameterType>(uint commandIndex, TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
@@ -446,7 +446,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //
         public bool Push<outputParameterType>(uint commandIndex, TcpServer.OutputInfo outputInfo, ref ReturnValue<outputParameterType> outputParameter)
             where outputParameterType : struct
         {
@@ -468,8 +468,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public bool Push<outputParameterType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
@@ -484,7 +484,7 @@ namespace AutoCSer.Net.TcpServer
         /// 添加输出信息
         /// </summary>
         /// <param name="output">当前输出信息</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void push(ServerOutput.OutputLink output)
         {
             //Outputs.Push(output);
@@ -496,7 +496,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="output">当前输出信息</param>
         /// <param name="isBuildOutputThread">尝试启动创建输出线程</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void push(ServerOutput.OutputLink output, bool isBuildOutputThread)
         {
             //Outputs.Push(output);
@@ -506,7 +506,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 尝试启动创建输出线程
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void TryBuildOutput()
         {
             if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
@@ -519,7 +519,7 @@ namespace AutoCSer.Net.TcpServer
         /// 尝试启动创建输出线程
         /// </summary>
         /// <param name="isBuildOutputThread">尝试启动创建输出线程</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void TryBuildOutput(bool isBuildOutputThread)
         {
             if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
@@ -534,7 +534,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool CustomData(byte[] data)
         {
             if (IsSocket)
@@ -552,7 +552,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool CustomData(ref SubArray<byte> data)
         {
             if (IsSocket)
@@ -568,7 +568,7 @@ namespace AutoCSer.Net.TcpServer
         /// 删除 TCP 服务器端异步保持调用
         /// </summary>
         /// <param name="commandIndex"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CancelKeepCallback(int commandIndex)
         {
             ServerCallbackBase keepCallback;

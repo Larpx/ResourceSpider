@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 唯一静态哈希
@@ -41,7 +41,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">待匹配值</param>
         /// <returns>是否存在某值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Contains(valueType value)
         {
             int index = value.GetHashCode();

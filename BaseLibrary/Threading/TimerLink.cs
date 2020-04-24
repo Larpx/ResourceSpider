@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 定时链表
@@ -52,7 +52,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 释放定时器
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void free()
         {
             if (--count == 0)
@@ -75,7 +75,7 @@ namespace AutoCSer.Threading
         /// 释放套接字超时
         /// </summary>
         /// <param name="timeout"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Free(ref timerType timeout)
         {
             if (timeout != null)

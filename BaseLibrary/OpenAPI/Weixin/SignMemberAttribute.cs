@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 签名计算成员配置

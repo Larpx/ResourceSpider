@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// 发送数据状态

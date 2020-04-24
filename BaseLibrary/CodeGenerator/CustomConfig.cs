@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using AutoCSer.Extension;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 自定义配置

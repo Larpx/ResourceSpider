@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 字段解析
@@ -21,7 +21,7 @@ namespace AutoCSer.Reflection
         {
             bool isCustom = false;
             MethodInfo method = getMethod(field.FieldType, ref isCustom);
-            if (isCustom) customMethod = (Func<object, parserType, object>)typeof(AutoCSer.Reflection.InvokeMethodRef1<,>).MakeGenericType(field.FieldType, typeof(parserType)).GetMethod("getObjectTypeReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+            if (isCustom) customMethod = (Func<object, parserType, object>)typeof(Reflection.InvokeMethodRef1<,>).MakeGenericType(field.FieldType, typeof(parserType)).GetMethod("getObjectTypeReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
             else createMethod(method);
         }
         /// <summary>

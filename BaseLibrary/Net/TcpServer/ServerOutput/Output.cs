@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ServerOutput
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
 {
     /// <summary>
     /// TCP 服务端套接字输出信息
@@ -54,7 +54,7 @@ namespace AutoCSer.Net.TcpServer.ServerOutput
         /// <param name="commandIndex"></param>
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(uint commandIndex, OutputInfo outputInfo, ref outputParameterType outputParameter)
         {
             this.CommandIndex = commandIndex & (Server.CommandIndexAnd | (uint)setCommandFlags);

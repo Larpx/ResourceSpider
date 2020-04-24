@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务套接字数据发送
@@ -72,7 +72,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 套接字是否有效
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public bool IsSocket
         {
             get
@@ -103,7 +103,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="methodIndex"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SetCommand(int methodIndex)
         {
             return ServerSocket.SetCommand(methodIndex);
@@ -113,7 +113,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SetBaseCommand(int command)
         {
             return ServerSocket.SetBaseCommand(command);
@@ -121,7 +121,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 调用关闭事件
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void callOnClose()
         {
             ServerCallTask.Task.Add(new ServerSocketSenderCloseTask { Sender = this });
@@ -130,7 +130,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 调用关闭事件
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CallOnCloseTask()
         {
             if (OnCloseTask != null) OnCloseTask();
@@ -143,7 +143,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放缓冲区
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void freeCopyBuffer()
         {
             CopyBuffer.Free();
@@ -152,7 +152,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放序列化器
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void freeSerializer()
         {
             if (OutputSerializer != null)
@@ -171,7 +171,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal virtual bool SetMarkData(ulong value)
         {
             ServerSocket.MarkData = value;
@@ -180,8 +180,8 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 通过函数验证处理
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void SetVerifyMethod()
         {
             ServerSocket.IsVerifyMethod = true;
@@ -220,7 +220,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="taskType">任务类型</param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <returns>是否添加成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool AddTask(Action task, TcpServer.ServerTaskType taskType, byte callQueueIndex = 0)
         {
             return task != null && addTask(new CustomServerCall { Sender = this, Task = task }, taskType, callQueueIndex);
@@ -232,7 +232,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="taskType">任务类型</param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <returns>是否添加成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool AddWaitTask(Action task, TcpServer.ServerTaskType taskType, byte callQueueIndex = 0)
         {
             if (task != null)
@@ -253,7 +253,7 @@ namespace AutoCSer.Net.TcpServer
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="outputInfo"></param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Serialize<valueType>(OutputInfo outputInfo, ref valueType value)
             where valueType : struct
         {
@@ -274,7 +274,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void JsonSerialize<valueType>(ref valueType value)
             where valueType : struct
         {
@@ -293,8 +293,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="value">目标对象</param>
         /// <param name="isSimpleSerialize"></param>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public unsafe bool DeSerialize<valueType>(ref SubArray<byte> data, ref valueType value, bool isSimpleSerialize = false)
             where valueType : struct
         {

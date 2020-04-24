@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.WebClient
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
 {
 #pragma warning disable
     /// <summary>

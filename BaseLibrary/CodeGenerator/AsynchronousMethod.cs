@@ -3,7 +3,7 @@ using AutoCSer.Metadata;
 using AutoCSer.Extension;
 using AutoCSer.CodeGenerator.Metadata;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 异步信息

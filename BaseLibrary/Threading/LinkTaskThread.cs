@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 链表任务线程

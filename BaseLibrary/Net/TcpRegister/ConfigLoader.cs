@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// 配置加载
@@ -17,7 +17,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="type">配置类型</param>
         /// <param name="name">配置名称</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static UnionType GetUnion(Type type, string name = "")
         {
             return new UnionType { Value = AutoCSer.Config.Loader.GetObject(type, name) };

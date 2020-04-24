@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 一次性等待锁
@@ -34,7 +34,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 等待结束
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Wait()
         {
             Monitor.Enter(waitLock);
@@ -49,7 +49,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 结束等待
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set()
         {
             Monitor.Enter(waitLock);
@@ -60,7 +60,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 如果初始化则等待结束
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void TryWait()
         {
             if (waitLock != null) Wait();

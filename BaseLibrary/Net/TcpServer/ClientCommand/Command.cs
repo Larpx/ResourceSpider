@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// TCP 客户端命令
@@ -54,7 +54,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// 执行任务
         /// </summary>
         /// <param name="next"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void RunTask(ref AutoCSer.Threading.ILinkTask next)
         {
             next = NextTask;
@@ -73,7 +73,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// 接收数据回调处理任务
         /// </summary>
         /// <param name="next"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void OnReceiveTask(ref CommandBase next)
         {
             next = NextTask;
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="next"></param>
         /// <param name="currentTaskTimestamp"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void OnReceiveTask(ref CommandBase next, ref long currentTaskTimestamp)
         {
             next = NextTask;
@@ -103,7 +103,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 超时处理
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Timeout()
         {
             SubArray<byte> data = new SubArray<byte> { Start = (int)(byte)ReturnType.Timeout };
@@ -115,7 +115,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static ReturnType GetReturnType(ref SubArray<byte> data)
         {
             if (data.Array == null)

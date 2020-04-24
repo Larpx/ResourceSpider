@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 退款查询结果
@@ -49,7 +49,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="value"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         [AutoCSer.Xml.UnknownName]
         private unsafe static bool parseRefund(AutoCSer.Xml.Parser parser, ref RefundResult value, ref Pointer.Size name)
         {

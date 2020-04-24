@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 基本转换类型
@@ -21,7 +21,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">逻辑值</param>
         [SerializeMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallSerialize(bool value)
         {
             if (value)
@@ -42,8 +42,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">逻辑值</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(bool? value)
         {
             if (value.HasValue) CallSerialize((bool)value);
@@ -53,8 +53,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(byte value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -64,8 +64,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(byte? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((byte)value, CharStream);
@@ -75,8 +75,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(sbyte value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -86,8 +86,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(sbyte? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((sbyte)value, CharStream);
@@ -97,8 +97,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(short value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -108,8 +108,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(short? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((short)value, CharStream);
@@ -119,8 +119,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(ushort value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -130,8 +130,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(ushort? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((ushort)value, CharStream);
@@ -141,8 +141,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(int value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -152,8 +152,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(int? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((int)value, CharStream);
@@ -163,8 +163,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(uint value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -174,8 +174,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(uint? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((uint)value, CharStream);
@@ -185,8 +185,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(long value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -196,8 +196,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(long? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((long)value, CharStream);
@@ -207,8 +207,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(ulong value)
         {
             AutoCSer.Extension.Number.ToString(value, CharStream);
@@ -218,8 +218,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(ulong? value)
         {
             if (value.HasValue) AutoCSer.Extension.Number.ToString((ulong)value, CharStream);
@@ -229,8 +229,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(float value)
         {
             CharStream.WriteJsonInfinity(value);
@@ -240,8 +240,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(float? value)
         {
             if (value.HasValue) CharStream.WriteJsonInfinity(value.Value);
@@ -251,8 +251,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(double value)
         {
             CharStream.WriteJsonInfinity(value);
@@ -262,8 +262,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(double? value)
         {
             if (value.HasValue) CharStream.WriteJsonInfinity(value.Value);
@@ -273,8 +273,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(decimal value)
         {
             CharStream.SimpleWriteNotNull(value.ToString());
@@ -284,8 +284,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数字</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(decimal? value)
         {
             if (value.HasValue) CallSerialize(value.Value);
@@ -295,7 +295,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">字符</param>
         [SerializeMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallSerialize(char value)
         {
             if (((bits[(byte)value] & Parser.EncodeSpaceBit) | (value & 0xff00)) == 0)
@@ -347,8 +347,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">字符</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(char? value)
         {
             if (value.HasValue) CallSerialize((char)value);
@@ -358,7 +358,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">时间</param>
         [SerializeMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallSerialize(DateTime value)
         {
             CharStream.PrepLength(AutoCSer.Date.MillisecondStringSize);
@@ -369,8 +369,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">时间</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(DateTime? value)
         {
             if (value.HasValue) CallSerialize((DateTime)value);
@@ -380,8 +380,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">Guid</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(Guid value)
         {
             new GuidCreator { Value = value }.ToString(CharStream.GetPrepSizeCurrent(36));
@@ -392,8 +392,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">Guid</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(Guid? value)
         {
             if (value.HasValue) CallSerialize((Guid)value);
@@ -403,8 +403,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">字符串</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(string value)
         {
             if (value != null)
@@ -421,8 +421,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">字符串</param>
         [SerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallSerialize(SubString value)
         {
             if (value.Length == 0)
@@ -439,7 +439,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">字符串</param>
         [SerializeMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallSerialize(object value)
         {
             if (value != null && value.GetType() == typeof(Node)) CallSerialize((Node)value);
@@ -449,7 +449,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">XML节点</param>
         [SerializeMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallSerialize(Node value)
         {
             switch (value.Type)
@@ -488,7 +488,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="type">基本类型</param>
         /// <returns>转换函数</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static MethodInfo GetSerializeMethod(Type type)
         {
             MethodInfo method;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 客户端命令
@@ -68,7 +68,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="command">命令信息</param>
         /// <param name="onCall">回调委托</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command, Action<ReturnValue> onCall, ref inputParameterType inputParameter)
         {
             if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();

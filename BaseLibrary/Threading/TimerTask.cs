@@ -3,7 +3,7 @@ using System.Threading;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 定时任务
@@ -66,7 +66,7 @@ namespace AutoCSer.Threading
         /// <param name="run">任务执行委托</param>
         /// <param name="runTime">执行时间</param>
         /// <param name="threadType">定时任务线程模式</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Add(Action run, DateTime runTime, TimerTaskThreadType threadType = TimerTaskThreadType.ThreadPool)
         {
             if (run != null) add(run, Thread.CallType.Action, threadType, runTime);
@@ -75,7 +75,7 @@ namespace AutoCSer.Threading
         /// 触发定时任务
         /// </summary>
         /// <param name="now"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void OnTimer(DateTime now)
         {
             if (now.Ticks >= nearTime && System.Threading.Interlocked.CompareExchange(ref isTimer, 1, 0) == 0) onTimer();

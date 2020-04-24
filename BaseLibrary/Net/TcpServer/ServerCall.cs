@@ -3,7 +3,7 @@ using System.Threading;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务器端同步调用
@@ -16,7 +16,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="taskType">任务类型</param>
         /// <param name="server">TCP 服务</param>
         /// <returns>是否添加成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool CheckCall(ServerTaskType taskType, ServerBase server = null)
         {
             switch (taskType)
@@ -38,7 +38,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <param name="server">TCP 服务</param>
         /// <returns>是否添加成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool CheckCall(ServerTaskType taskType, byte callQueueIndex, ServerBase server)
         {
             switch (taskType)
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 回话标识
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public uint CommandIndex;
     }
 }

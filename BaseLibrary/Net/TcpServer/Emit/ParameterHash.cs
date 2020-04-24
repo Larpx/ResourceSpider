@@ -2,7 +2,7 @@
 using System.Reflection;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
     /// <summary>
     /// TCP 参数集合

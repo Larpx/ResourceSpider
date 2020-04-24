@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.WebClient.Form
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Form
 {
     /// <summary>
     /// 自定义类型函数标识配置

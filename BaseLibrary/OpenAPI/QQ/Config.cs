@@ -2,7 +2,7 @@
 using System.Text;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.QQ
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
 {
     /// <summary>
     /// 应用配置

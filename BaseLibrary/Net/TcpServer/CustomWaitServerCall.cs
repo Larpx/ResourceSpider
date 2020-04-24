@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 自定义 TCP 服务器端同步调用任务

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 范围

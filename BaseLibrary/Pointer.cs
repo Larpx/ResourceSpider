@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 指针(因为指针无法静态初始化)
@@ -75,7 +75,7 @@ namespace AutoCSer
             /// <summary>
             /// 清空数据
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void SetNull()
             {
                 Data = null;
@@ -86,7 +86,7 @@ namespace AutoCSer
             /// </summary>
             /// <param name="data"></param>
             /// <param name="size"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void Set(void* data, int size)
             {
                 Data = data;

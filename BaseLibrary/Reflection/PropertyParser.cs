@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 属性解析（反射模式）
@@ -15,14 +15,17 @@ namespace AutoCSer.Reflection
         /// 获取函数信息
         /// </summary>
         protected Func<object, object> getMethod;
+
         /// <summary>
         /// 设置函数信息
         /// </summary>
         protected Func<object, object, object> setMethod;
+
         /// <summary>
         /// 解析函数信息
         /// </summary>
         protected Func<parserType, object, object> method;
+
         /// <summary>
         /// 属性解析
         /// </summary>
@@ -32,13 +35,19 @@ namespace AutoCSer.Reflection
         {
             if (property.CanRead)
             {
-                if (property.DeclaringType.IsValueType) getMethod = (Func<object, object>)typeof(AutoCSer.Reflection.InvokeMethodRefReturn<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetGetMethod(true) });
-                else getMethod = (Func<object, object>)typeof(AutoCSer.Reflection.InvokeMethodReturn<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetGetMethod(true) });
+                if (property.DeclaringType.IsValueType)
+                    getMethod = (Func<object, object>)typeof(Reflection.InvokeMethodRefReturn<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetGetMethod(true) });
+                else
+                    getMethod = (Func<object, object>)typeof(Reflection.InvokeMethodReturn<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetGetMethod(true) });
             }
-            if (property.DeclaringType.IsValueType) setMethod = (Func<object, object, object>)typeof(AutoCSer.Reflection.InvokeMethodRef1<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetSetMethod(true) });
-            else setMethod = (Func<object, object, object>)typeof(AutoCSer.Reflection.InvokeMethod<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetSetMethod(true) });
-            if (methodInfo != null) createMethod(property, methodInfo);
+            if (property.DeclaringType.IsValueType)
+                setMethod = (Func<object, object, object>)typeof(Reflection.InvokeMethodRef1<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetSetMethod(true) });
+            else
+                setMethod = (Func<object, object, object>)typeof(Reflection.InvokeMethod<,>).MakeGenericType(property.DeclaringType, property.PropertyType).GetMethod("getObjectObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { property.GetSetMethod(true) });
+            if (methodInfo != null)
+                createMethod(property, methodInfo);
         }
+
         /// <summary>
         /// 创建解析函数信息
         /// </summary>
@@ -46,8 +55,9 @@ namespace AutoCSer.Reflection
         /// <param name="methodInfo"></param>
         protected void createMethod(PropertyInfo property, MethodInfo methodInfo)
         {
-            method = (Func<parserType, object, object>)typeof(AutoCSer.Reflection.InvokeMethodRef2<,>).MakeGenericType(typeof(parserType), property.PropertyType).GetMethod(getMethod == null ? "getTypeObjectReturnDefault" : "getTypeObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { methodInfo });
+            method = (Func<parserType, object, object>)typeof(Reflection.InvokeMethodRef2<,>).MakeGenericType(typeof(parserType), property.PropertyType).GetMethod(getMethod == null ? "getTypeObjectReturnDefault" : "getTypeObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { methodInfo });
         }
+
         /// <summary>
         /// 解析委托
         /// </summary>
@@ -58,6 +68,7 @@ namespace AutoCSer.Reflection
             object fieldValue = getMethod(value), newValue = method(parser, fieldValue);
             if (!object.ReferenceEquals(newValue, fieldValue)) setMethod(value, newValue);
         }
+
         /// <summary>
         /// 解析委托
         /// </summary>
@@ -69,6 +80,7 @@ namespace AutoCSer.Reflection
             if (!object.ReferenceEquals(newValue, fieldValue)) objectValue = setMethod(objectValue, newValue);
             value = (valueType)objectValue;
         }
+
         /// <summary>
         /// 解析委托
         /// </summary>
@@ -78,6 +90,7 @@ namespace AutoCSer.Reflection
         {
             setMethod(value, method(parser, null));
         }
+
         /// <summary>
         /// 解析委托
         /// </summary>

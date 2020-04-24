@@ -3,7 +3,7 @@ using AutoCSer.Metadata;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// XML 序列化函数信息

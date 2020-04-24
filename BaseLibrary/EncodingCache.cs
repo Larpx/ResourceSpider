@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using AutoCSer.Extension;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 编码类型
@@ -105,7 +105,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal byte[] GetBytesNotNull(string text)
         {
             return text.Length == 0 ? NullValue<byte>.Array : GetBytesNotEmpty(text);
@@ -152,7 +152,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value"></param>
         /// <param name="stream"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void WriteBytes(string value, UnmanagedStream stream)
         {
             if (!string.IsNullOrEmpty(value))
@@ -165,7 +165,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value"></param>
         /// <param name="stream"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void WriteBytesNotEmpty(string value, UnmanagedStream stream)
         {
             fixed (char* valueFixed = value) WriteBytes(valueFixed, value.Length, stream);
@@ -175,7 +175,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value"></param>
         /// <param name="stream"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void WriteBytes(ref SubString value, UnmanagedStream stream)
         {
             if (value.Length != 0)
@@ -231,7 +231,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int GetByteCountNotNull(string text)
         {
             if ((Type & (1 | 4)) == 0) return Encoding.GetByteCount(text);
@@ -242,7 +242,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="charStream"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int GetByteCountNotNull(CharStream charStream)
         {
             if ((Type & (1 | 4)) == 0) return Encoding.GetByteCount(charStream.Char, charStream.ByteSize >> 1);
@@ -254,7 +254,7 @@ namespace AutoCSer
         /// <param name="start"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int GetByteCountNotNull(char* start, int count)
         {
             if ((Type & (1 | 4)) == 0) return Encoding.GetByteCount(start, count);
@@ -283,7 +283,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="stream"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Write(byte value, UnmanagedStream stream)
         {
             char* write = (char*)stream.GetPrepSizeCurrent(3 * sizeof(char));
@@ -295,7 +295,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="stream"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Write(sbyte value, UnmanagedStream stream)
         {
             char* write = (char*)stream.GetPrepSizeCurrent(4 * sizeof(char));
@@ -307,7 +307,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="stream"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Write(ushort value, UnmanagedStream stream)
         {
             char* write = (char*)stream.GetPrepSizeCurrent(5 * sizeof(char));
@@ -319,7 +319,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="stream"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Write(short value, UnmanagedStream stream)
         {
             char* write = (char*)stream.GetPrepSizeCurrent(6 * sizeof(char));

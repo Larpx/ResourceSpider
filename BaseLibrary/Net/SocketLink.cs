@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
     /// <summary>
     /// 套接字链表
@@ -17,7 +17,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 释放套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void DisposeSocket()
         {
 #if !DotNetStandard
@@ -29,7 +29,7 @@ namespace AutoCSer.Net
         /// 释放套接字
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal SocketLink Cancel()
         {
 #if !DotNetStandard
@@ -43,7 +43,7 @@ namespace AutoCSer.Net
         /// <param name="server"></param>
         /// <param name="serverSocket"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal SocketLink Start(AutoCSer.Net.TcpOpenServer.Server server, ref AutoCSer.Net.TcpOpenServer.ServerSocket serverSocket)
         {
             serverSocket = new TcpOpenServer.ServerSocket(server, ref Socket);

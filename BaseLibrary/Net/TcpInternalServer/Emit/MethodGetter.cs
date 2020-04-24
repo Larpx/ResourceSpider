@@ -3,7 +3,7 @@ using AutoCSer.Net.TcpServer.Emit;
 using System.Reflection;
 using AutoCSer.Net.TcpServer;
 
-namespace AutoCSer.Net.TcpInternalServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {
     /// <summary>
     /// 获取 TCP 服务函数信息

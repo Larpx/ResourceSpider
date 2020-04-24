@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 日期相关操作
@@ -27,7 +27,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static DateTime toUniversalTime(this DateTime date)
         {
             return date.Kind == DateTimeKind.Utc ? date : new DateTime(date.Ticks - LocalTimeTicks, DateTimeKind.Utc);
@@ -37,7 +37,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="date">时间</param>
         /// <param name="data">写入数据起始位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void ToBytes(DateTime date, byte* data)
         {
             UniversalToBytes(date.toUniversalTime(), data);
@@ -78,7 +78,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static byte[] ToBytes(this DateTime date)
         {
             byte[] data = new byte[ToByteLength];
@@ -90,7 +90,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="date">时间</param>
         /// <returns>字节流</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public unsafe static byte[] UniversalNewBytes(this DateTime date)
         {
             byte[] data = new byte[ToByteLength];
@@ -139,7 +139,7 @@ namespace AutoCSer
         /// <param name="time">时间</param>
         /// <param name="split">分隔符</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public unsafe static string toDateString(this DateTime time, char split = '/')
         {
             string timeString = AutoCSer.Extension.StringExtension.FastAllocateString(10);
@@ -189,7 +189,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="ticks"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static long GetTimestampByTicks(long ticks)
         {
             return Stopwatch.IsHighResolution ? (long)(ticks * ticksToTimestamp) : ticks;
@@ -203,7 +203,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="timestamp"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static long GetMillisecondsByTimestamp(long timestamp)
         {
             if (Stopwatch.IsHighResolution) return (long)(timestamp * timestampToMilliseconds);
@@ -218,7 +218,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="milliseconds"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static long GetTimestampByMilliseconds(long milliseconds)
         {
             if (Stopwatch.IsHighResolution) return (long)(milliseconds * millisecondsToTimestamp);
@@ -229,7 +229,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="startTimestamp"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static TimeSpan GetTimestampTimeSpan(long startTimestamp)
         {
             return new TimeSpan(GetTicksByTimestamp(Stopwatch.GetTimestamp() - startTimestamp));
@@ -239,7 +239,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="timestamp"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static long GetTicksByTimestamp(long timestamp)
         {
             return Stopwatch.IsHighResolution ? timestamp * TimeSpan.TicksPerSecond / Stopwatch.Frequency : timestamp;

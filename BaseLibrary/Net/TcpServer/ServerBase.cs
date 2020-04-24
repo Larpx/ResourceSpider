@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Net;
 using System.Diagnostics;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务基类
@@ -173,7 +173,7 @@ namespace AutoCSer.Net.TcpServer
         /// 启动服务
         /// </summary>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected bool start()
         {
             return IsDisposed == 0 && Interlocked.CompareExchange(ref isStart, 1, 0) == 0 && listen();
@@ -264,7 +264,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置命令索引信息
         /// </summary>
         /// <param name="methodIndex">命令处理索引</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected internal void setCommand(int methodIndex)
         {
             int command = methodIndex + TcpServer.Server.CommandStartIndex;
@@ -301,7 +301,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool IsCommand(int index)
         {
             if ((uint)index <= (uint)MaxCommand)
@@ -320,7 +320,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置验证命令序号
         /// </summary>
         /// <param name="methodIndex"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected internal void setVerifyCommand(int methodIndex)
         {
             VerifyCommandIdentity = methodIndex + Server.CommandStartIndex;
@@ -331,7 +331,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="serverSocket"></param>
         /// <param name="socket"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool PushReceiveVerifyCommandTimeout(SocketTimeoutLink serverSocket, Socket socket)
         {
             SocketTimeoutLink.TimerLink receiveVerifyCommandTimeout = this.ReceiveVerifyCommandTimeout;
@@ -346,7 +346,7 @@ namespace AutoCSer.Net.TcpServer
         /// 取消超时套接字
         /// </summary>
         /// <param name="socket"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CancelReceiveVerifyCommandTimeout(SocketTimeoutLink socket)
         {
             SocketTimeoutLink.TimerLink receiveVerifyCommandTimeout = this.ReceiveVerifyCommandTimeout;

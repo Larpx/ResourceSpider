@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务器端同步调用队列接口集合

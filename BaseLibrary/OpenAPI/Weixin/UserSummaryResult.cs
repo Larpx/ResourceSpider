@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
 #pragma warning disable
     /// <summary>

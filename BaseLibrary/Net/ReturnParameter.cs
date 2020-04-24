@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
 #if NOJIT
     /// <summary>

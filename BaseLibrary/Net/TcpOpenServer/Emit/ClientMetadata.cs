@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpOpenServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// TCP 客户端元数据

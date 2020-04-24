@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.StateSearcher
+namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
     /// <summary>
     /// ASCII字节搜索器
@@ -14,7 +14,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="value">匹配状态</param>
         /// <returns>状态索引,失败返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int Search(string value)
         {
             if (value != null && value.Length != 0)
@@ -67,7 +67,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="value">匹配状态</param>
         /// <returns>状态索引,失败返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int SearchLower(string value)
         {
             if (value != null && value.Length != 0)
@@ -81,7 +81,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="value">匹配状态</param>
         /// <returns>状态索引,失败返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int SearchLower(ref SubString value)
         {
             if (value.Length != 0)
@@ -142,7 +142,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="data">匹配状态</param>
         /// <returns>状态索引,失败返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int Search(SubArray<byte> data)
         {
             return Search(ref data);
@@ -152,7 +152,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="data">匹配状态</param>
         /// <returns>状态索引,失败返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int Search(ref SubArray<byte> data)
         {
             if (data.Length != 0)
@@ -170,7 +170,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="data">匹配状态</param>
         /// <returns>状态索引,失败返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int SearchNotEmpty(byte[] data)
         {
             fixed (byte* dataFixed = data) return Search(dataFixed, dataFixed + data.Length);
@@ -219,7 +219,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="data">匹配状态</param>
         /// <returns>状态索引,失败返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int SearchLower(ref SubArray<byte> data)
         {
             if (data.Length != 0)
@@ -327,7 +327,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="state">查询状态</param>
         /// <param name="nullValue">默认空值</param>
         /// <returns>状态数据,失败返回默认空值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType Get(string state, valueType nullValue = default(valueType))
         {
             int index = Searcher.Search(state);
@@ -338,7 +338,7 @@ namespace AutoCSer.StateSearcher
         ///// </summary>
         ///// <param name="state">查询状态</param>
         ///// <returns>是否存在状态数据</returns>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal int IndexOf(string state)
         //{
         //    return Searcher.Search(state);
@@ -348,7 +348,7 @@ namespace AutoCSer.StateSearcher
         ///// </summary>
         ///// <param name="state">查询状态</param>
         ///// <returns>是否存在状态数据</returns>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal int IndexOfLower(string state)
         //{
         //    return Searcher.SearchLower(state);
@@ -359,7 +359,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="state">查询状态</param>
         /// <param name="nullValue">默认空值</param>
         /// <returns>状态数据,失败返回默认空值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType Get(ref SubArray<byte> state, valueType nullValue = default(valueType))
         {
             int index = Searcher.Search(ref state);
@@ -371,7 +371,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="state">查询状态</param>
         /// <param name="nullValue">默认空值</param>
         /// <returns>状态数据,失败返回默认空值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType GetLower(ref SubArray<byte> state, valueType nullValue = default(valueType))
         {
             int index = Searcher.SearchLower(ref state);
@@ -383,7 +383,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="state">查询状态</param>
         /// <param name="nullValue">默认空值</param>
         /// <returns>状态数据,失败返回默认空值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType Get(SubArray<byte> state, valueType nullValue = default(valueType))
         {
             return Get(ref state, nullValue);
@@ -394,7 +394,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="state">查询状态</param>
         /// <param name="nullValue">默认空值</param>
         /// <returns>状态数据,失败返回默认空值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType GetLower(SubArray<byte> state, valueType nullValue = default(valueType))
         {
             return GetLower(ref state, nullValue);
@@ -405,7 +405,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="state">查询状态</param>
         /// <param name="nullValue">默认空值</param>
         /// <returns>状态数据,失败返回默认空值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType GetNotEmpty(byte[] state, valueType nullValue = default(valueType))
         {
             int index = Searcher.SearchNotEmpty(state);

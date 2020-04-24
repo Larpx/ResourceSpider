@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// 内存或字节数组处理

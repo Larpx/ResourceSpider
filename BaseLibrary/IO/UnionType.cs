@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-namespace AutoCSer.IO
+namespace Larpx.ResourceSpider.BaseLibrary.IO
 {
     /// <summary>
     /// 类型转换
@@ -18,6 +17,6 @@ namespace AutoCSer.IO
         /// 文件流写入器
         /// </summary>
         [FieldOffset(0)]
-        public AutoCSer.IO.FileStreamWriter FileStreamWriter;
+        public FileStreamWriter FileStreamWriter;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// TCP 服务信息集合缓存信息
@@ -27,7 +27,7 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         /// <param name="name"></param>
         /// <param name="serverSet"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(string name, ServerSet serverSet)
         {
             Name = name;

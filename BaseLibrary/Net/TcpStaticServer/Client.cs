@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Log;
 
-namespace AutoCSer.Net.TcpStaticServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {
     /// <summary>
     /// TCP 静态服务客户端

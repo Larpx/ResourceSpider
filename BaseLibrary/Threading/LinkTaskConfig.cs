@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 链表任务配置
@@ -31,7 +31,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="threadCount"></param>
         /// <param name="newThreadMilliseconds"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void set(int threadCount, int newThreadMilliseconds)
         {
             if (threadCount != 1)

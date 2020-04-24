@@ -2,7 +2,7 @@
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 客户端回调任务处理

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 反射调用函数
@@ -14,6 +14,7 @@ namespace AutoCSer.Reflection
         /// 函数委托
         /// </summary>
         private Func<valueType, returnType> method;
+
         /// <summary>
         /// 反射调用函数
         /// </summary>
@@ -22,6 +23,7 @@ namespace AutoCSer.Reflection
         {
             this.method = method;
         }
+
         /// <summary>
         /// 调用函数委托
         /// </summary>
@@ -31,17 +33,19 @@ namespace AutoCSer.Reflection
         {
             return method((valueType)value);
         }
+
         /// <summary>
         /// 获取反射调用函数
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Func<object, object> getObjectReturn(MethodInfo method)
         {
             return new InvokeMethodReturn<valueType, returnType>((Func<valueType, returnType>)Delegate.CreateDelegate(typeof(Func<valueType, returnType>), method)).objectReturn;
         }
     }
+
     /// <summary>
     /// 反射调用函数
     /// </summary>
@@ -54,6 +58,7 @@ namespace AutoCSer.Reflection
         /// 函数委托
         /// </summary>
         private Func<valueType1, valueType2, returnType> method;
+
         /// <summary>
         /// 反射调用函数
         /// </summary>
@@ -62,6 +67,7 @@ namespace AutoCSer.Reflection
         {
             this.method = method;
         }
+
         /// <summary>
         /// 调用函数委托
         /// </summary>
@@ -72,12 +78,12 @@ namespace AutoCSer.Reflection
         {
             return method(value1, (valueType2)value2);
         }
+
         /// <summary>
         /// 获取反射调用函数
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         private static Func<valueType1, object, returnType> getTypeObjectReturnType(MethodInfo method)
         {
             return new InvokeMethodReturn<valueType1, valueType2, returnType>((Func<valueType1, valueType2, returnType>)Delegate.CreateDelegate(typeof(Func<valueType1, valueType2, returnType>), method)).typeObjectReturnType;

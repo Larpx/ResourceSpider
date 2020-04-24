@@ -58,7 +58,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// <summary>
         /// 释放缓冲区
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void TryFree()
         {
             if (Buffer != null)
@@ -71,7 +71,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// 复制数据并清除数据源
         /// </summary>
         /// <param name="buffer"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CopyToClear(ref PoolBufferFull buffer)
         {
             buffer.Buffer = Buffer;
@@ -83,7 +83,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// 设置数组子串
         /// </summary>
         /// <param name="data"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void ToSubByteArray(ref SubArray<byte> data)
         {
             data.Set(Buffer, StartIndex, Length);
@@ -93,7 +93,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// </summary>
         /// <param name="buffer"></param>
         /// <param name="count"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CopyTo(ref PoolBufferFull buffer, int count)
         {
             System.Buffer.BlockCopy(Buffer, StartIndex, buffer.Buffer, buffer.StartIndex, count);
@@ -101,7 +101,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// <summary>
         /// 清除数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Clear()
         {
             Buffer = null;
@@ -111,7 +111,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         ///// 不相等则释放缓冲区
         ///// </summary>
         ///// <param name="other"></param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal void FreeNotEquals(ref PoolBufferFull other)
         //{
         //    Buffer = null;

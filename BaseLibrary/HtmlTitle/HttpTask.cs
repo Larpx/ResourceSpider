@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// HTML 标题获取客户端任务池
@@ -277,7 +277,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// 取消超时操作
         /// </summary>
         /// <param name="client"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CancelTimeout(HttpClient client)
         {
             SocketTimeoutLink.TimerLink socketTimeout = this.socketTimeout;
@@ -288,7 +288,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// </summary>
         /// <param name="client"></param>
         /// <param name="socket"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void PushTimeout(HttpClient client, Socket socket)
         {
             SocketTimeoutLink.TimerLink socketTimeout = this.socketTimeout;

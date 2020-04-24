@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using System.Net;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务客户端
@@ -65,7 +65,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 命令超时触发事件
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CallOnTimeout()
         {
             if (OnTimeout != null) OnTimeout();
@@ -76,7 +76,7 @@ namespace AutoCSer.Net.TcpServer
         ///// </summary>
         ///// <param name="callback">回调委托</param>
         ///// <returns>异步回调</returns>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //public Callback<ReturnValue<outputParameterType>> GetCallback<outputParameterType>(Action<ReturnValue> callback)
         //{
         //    return callback != null ? new CallbackReturnValue<outputParameterType>(callback) : (Callback<ReturnValue<outputParameterType>>)NullCallbackReturnValue<outputParameterType>.Default;

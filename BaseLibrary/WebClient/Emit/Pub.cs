@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.Net.WebClient.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Emit
 {
     /// <summary>
     /// 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 命令队列
@@ -19,7 +19,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="command"></param>
         /// <returns>是否正在等待读取</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int Push(ClientCommand.Command command)
         {
             //command.LinkNext = null;
@@ -35,7 +35,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置等待读取
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal byte TrySetWait()
         {
             if (Head.LinkNext == null)
@@ -55,7 +55,7 @@ namespace AutoCSer.Net.TcpServer
         /// 弹出命令
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ClientCommand.Command Pop()
         {
             ClientCommand.Command value = Head.TryFreeBuildQueue();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// TCP 内部注册服务客户端 绑定 TCP 服务客户端

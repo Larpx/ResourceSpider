@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 常用公共定义

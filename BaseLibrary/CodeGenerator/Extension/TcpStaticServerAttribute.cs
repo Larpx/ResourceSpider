@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// TCP 静态服务配置相关操作
@@ -22,7 +22,7 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="value">TCP 服务配置</param>
         /// <param name="copyValue">TCP 服务配置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void CopyFrom(this AutoCSer.Net.TcpStaticServer.ServerAttribute value, AutoCSer.Net.TcpStaticServer.ServerAttribute copyValue)
         {
             AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Copy(value, copyValue, copyMemberMap);
@@ -41,7 +41,7 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="value">TCP 服务配置</param>
         /// <param name="copyValue">TCP 服务配置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void CopyFrom(this AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute value, AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute copyValue)
         {
             AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Copy(value, copyValue, simpleCopyMemberMap);

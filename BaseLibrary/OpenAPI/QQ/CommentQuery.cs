@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.QQ
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
 {
     /// <summary>
     /// 第三方分享的评论列表 请求

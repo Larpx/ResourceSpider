@@ -4,7 +4,7 @@ using System.Collections;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 数组子串
@@ -120,7 +120,7 @@ namespace AutoCSer
         /// <summary>
         /// 置空并释放数组
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void SetNull()
         {
             Array = null;
@@ -129,7 +129,7 @@ namespace AutoCSer
         /// <summary>
         /// 重置数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetFull()
         {
             Start = 0;
@@ -139,7 +139,7 @@ namespace AutoCSer
         /// 重置数据
         /// </summary>
         /// <param name="array"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(valueType[] array)
         {
             if (array == null) SetNull();
@@ -149,7 +149,7 @@ namespace AutoCSer
         /// 转换数组
         /// </summary>
         /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType[] GetArray()
         {
             return Length == 0 ? NullValue<valueType>.Array : getArray();

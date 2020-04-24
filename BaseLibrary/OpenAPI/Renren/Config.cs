@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Text;
 
-namespace AutoCSer.OpenAPI.Renren
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Renren
 {
     /// <summary>
     /// 应用配置

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 链表任务节点接口
@@ -79,7 +79,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool CheckAdd(ILinkTask value)
         {
             if (value.NextLinkTask == null)
@@ -118,7 +118,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 启动线程
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void runThread()
         {
             try
@@ -134,7 +134,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 链表任务处理
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Run()
         {
             do

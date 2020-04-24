@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 字符串 HASH

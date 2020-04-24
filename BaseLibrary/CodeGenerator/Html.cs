@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// HTML模板

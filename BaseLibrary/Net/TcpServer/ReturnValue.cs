@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 异步返回值
@@ -19,7 +19,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 返回值类型
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public ReturnType Type;
         /// <summary>
         /// 是否存在返回值
@@ -57,12 +57,12 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 返回值
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public returnType Value;
         /// <summary>
         /// 返回值类型
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public ReturnType Type;
         /// <summary>
         /// 是否存在返回值

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Runtime.CompilerServices;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 客户端等待连接，避免连接与验证时间长造成阻塞
@@ -50,7 +50,7 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 客户端套接字初始化处理
         /// </summary>
         /// <param name="parameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnCheckSocketVersion(ClientSocketEventParameter parameter)
         {
             if (parameter.Type == ClientSocketEventParameter.EventType.SetSocket) WaitEvent.Set();
@@ -66,7 +66,7 @@ namespace AutoCSer.Net.TcpServer
         /// 等待连接初始化
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool WaitConnected()
         {
             return CheckSocketVersion.IsConnected || waitConnected();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpInternalServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {
     /// <summary>
     /// TCP 客户端

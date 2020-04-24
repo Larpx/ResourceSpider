@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using AutoCSer.CodeGenerator.Metadata;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// TCP 服务代码生成基类

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// XML节点
@@ -60,7 +60,7 @@ namespace AutoCSer.Xml
         /// 设置字符串
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetString(string value)
         {
             String.Set(value, 0, value.Length);
@@ -72,7 +72,7 @@ namespace AutoCSer.Xml
         /// <param name="value"></param>
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetString(string value, int startIndex, int length)
         {
             String.Set(value, startIndex, length);
@@ -82,7 +82,7 @@ namespace AutoCSer.Xml
         /// 设置子节点集合
         /// </summary>
         /// <param name="nodes"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetNode(ref LeftArray<KeyValue<SubString, Node>> nodes)
         {
             this.nodes = nodes.Array;
@@ -94,7 +94,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="xml"></param>
         /// <param name="attributes"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetAttribute(string xml, KeyValue<Range, Range>[] attributes)
         {
             String.String = xml;

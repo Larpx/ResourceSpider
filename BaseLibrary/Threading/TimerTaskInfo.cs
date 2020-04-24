@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 定时任务信息
@@ -25,7 +25,7 @@ namespace AutoCSer.Threading
         /// 任务抛到线程池
         /// </summary>
         /// <param name="threadPool"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Start(ThreadPool threadPool)
         {
             threadPool.FastStart(Value, CallType);
@@ -33,7 +33,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 任务调用
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Call()
         {
             new Thread.CallInfo { Value = Value, Type = CallType }.Call();

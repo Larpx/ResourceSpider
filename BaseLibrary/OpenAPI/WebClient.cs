@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using AutoCSer.Extension;
 using AutoCSer.Net.WebClient;
 
-namespace AutoCSer.OpenAPI
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
 {
     /// <summary>
     /// web请求

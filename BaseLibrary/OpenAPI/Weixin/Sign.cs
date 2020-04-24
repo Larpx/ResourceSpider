@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using AutoCSer.Extension;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 签名计算 https://pay.weixin.qq.com/wiki/tools/signverify/

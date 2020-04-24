@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using AutoCSer.CodeGenerator.Metadata;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// 数据关键字 代码生成

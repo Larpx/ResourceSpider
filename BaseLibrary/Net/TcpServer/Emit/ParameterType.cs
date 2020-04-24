@@ -6,7 +6,7 @@ using System.Threading;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
     /// <summary>
     /// TCP 参数类型
@@ -194,7 +194,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         ///// </summary>
         ///// <param name="parameter"></param>
         ///// <returns></returns>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal static bool IsParameterType(ParameterInfo parameter)
         //{
         //    Type type = parameter.ParameterType;
@@ -206,7 +206,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static bool IsInputParameter(ParameterInfo parameter)
         {
             if (parameter.IsOut) return false;

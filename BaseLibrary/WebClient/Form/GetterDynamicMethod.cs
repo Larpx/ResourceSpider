@@ -9,7 +9,7 @@ using AutoCSer.Extension;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Net.WebClient.Form
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Form
 {
     /// <summary>
     /// web表单生成动态函数

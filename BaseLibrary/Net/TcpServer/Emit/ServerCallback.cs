@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
     /// <summary>
     /// 服务端回调转换
@@ -34,7 +34,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// </summary>
         /// <param name="callback">服务端回调委托</param>
         /// <returns>服务端回调转换</returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //
         public static Func<returnType, bool> Get(Func<ReturnValue<returnType>, bool> callback)
         {
             return new ServerCallback<returnType>(callback).call;

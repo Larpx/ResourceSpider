@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// TCP 内部注册读取服务
@@ -26,7 +26,7 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         /// <returns>TCP 服务端标识</returns>
         [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private ClientId register()
         {
             return Server.Register();
@@ -37,7 +37,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="clientId">TCP 服务端标识</param>
         /// <param name="onLog">TCP 服务注册通知委托</param>
         [TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void getLog(ClientId clientId, Func<TcpServer.ReturnValue<Log>, bool> onLog)
         {
             Server.GetLog(ref clientId, onLog);
@@ -47,7 +47,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 创建 TCP 注册服务目标对象
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ReaderServer Create()
         {
             return new ReaderServer { Server = new Server() };

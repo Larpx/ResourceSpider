@@ -3,7 +3,7 @@ using System.Text;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// Uri 与回调函数信息
@@ -33,7 +33,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// <param name="onGet">获取HTML标题回调函数</param>
         /// <param name="encoding">默认编码格式</param>
         /// <returns>Uri与回调函数信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(string uri, Action<string> onGet, Encoding encoding)
         {
             UriString = uri;
@@ -46,7 +46,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// <param name="uri">Uri</param>
         /// <param name="onGet">获取HTML标题回调函数</param>
         /// <param name="encoding">默认编码格式</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ref SubArray<byte> uri, Action<string> onGet, Encoding encoding)
         {
             this.UriBytes = uri;

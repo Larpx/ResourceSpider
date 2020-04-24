@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 内存或字节数组处理
@@ -13,7 +13,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="src">串起始地址</param>
         /// <param name="count">整数数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void Clear(ulong* src, int count)
         {
             if (src == null) throw new ArgumentNullException();
@@ -26,7 +26,7 @@ namespace AutoCSer
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>是否相等</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static bool equal(this byte[] left, byte[] right)
         {
             if (left == null) return right == null;
@@ -38,7 +38,7 @@ namespace AutoCSer
         /// <param name="left">不能为null</param>
         /// <param name="right">不能为null</param>
         /// <returns>是否相等</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static bool EqualNotNull(byte[] left, byte[] right)
         {
             return left.Length == right.Length && EqualNotNull(left, right, left.Length);
@@ -50,7 +50,7 @@ namespace AutoCSer
         /// <param name="right">不能为null</param>
         /// <param name="count">比较字节数,必须大于等于0</param>
         /// <returns>是否相等</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static bool EqualNotNull(byte[] left, byte[] right, int count)
         {
             fixed (byte* leftFixed = left, rightFixed = right) return EqualNotNull(leftFixed, rightFixed, count);
@@ -62,7 +62,7 @@ namespace AutoCSer
         /// <param name="right">不能为null</param>
         /// <param name="count">比较字节数,必须大于等于0</param>
         /// <returns>是否相等</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static bool EqualNotNull(byte[] left, void* right, int count)
         {
             fixed (byte* leftFixed = left) return EqualNotNull(leftFixed, (byte*)right, count);
@@ -92,7 +92,7 @@ namespace AutoCSer
         /// <param name="data">字节数组</param>
         /// <param name="value">字节值</param>
         /// <returns>字节位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static int indexOfNotNull(this byte[] data, byte value)
         {
             return data.Length > 0 ? IndexOf(data, value) : -1;
@@ -103,7 +103,7 @@ namespace AutoCSer
         /// <param name="data">长度不为 0 的字节数组</param>
         /// <param name="value">字节值</param>
         /// <returns>字节位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static int IndexOf(byte[] data, byte value)
         {
             fixed (byte* dataFixed = data)
@@ -119,7 +119,7 @@ namespace AutoCSer
         /// <param name="end">结束位置,不能为null,长度不为 0</param>
         /// <param name="value">字节值</param>
         /// <returns>字节位置,失败为null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static byte* Find(byte* start, byte* end, byte value)
         {
             do
@@ -136,7 +136,7 @@ namespace AutoCSer
         /// <param name="end">结束位置,不能为null</param>
         /// <param name="value">字节值</param>
         /// <returns>字节位置,失败为null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static byte* FindLast(byte* start, byte* end, byte value)
         {
             do
@@ -151,7 +151,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static string toStringNotNull(this byte[] data)
         {
             if (data.Length == 0) return string.Empty;
@@ -164,7 +164,7 @@ namespace AutoCSer
         /// <param name="start"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static string toStringNotNull(this byte[] data, int start, int count)
         {
             if (count == 0) return string.Empty;
@@ -195,7 +195,7 @@ namespace AutoCSer
         /// 大写转小写
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void toLowerNotNull(this byte[] value)
         {
             fixed (byte* valueFixed = value) ToLowerNotNull(valueFixed, valueFixed + value.Length);
@@ -205,7 +205,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="start">起始位置,不能为null</param>
         /// <param name="end">结束位置,不能为null</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void ToLowerNotNull(byte* start, byte* end)
         {
             while (start != end)
@@ -220,7 +220,7 @@ namespace AutoCSer
         /// <param name="source">原串起始地址,不能为null</param>
         /// <param name="destination">目标串起始地址,不能为null</param>
         /// <param name="length">字节长度,大于0</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void SimpleCopyNotNull64(byte[] source, byte* destination, int length)
         {
             fixed (byte* sourceFixed = source) SimpleCopyNotNull64(sourceFixed, destination, length);

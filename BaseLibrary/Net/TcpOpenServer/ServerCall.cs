@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// TCP 服务器端同步调用
@@ -26,7 +26,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="socket">套接字</param>
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="taskType"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ServerSocketSender socket, serverType serverValue, TcpServer.ServerTaskType taskType)
         {
             this.Sender = socket;
@@ -51,7 +51,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="taskType"></param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ServerSocketSender sender, serverType serverValue, TcpServer.ServerTaskType taskType, byte callQueueIndex)
         {
             this.Sender = sender;
@@ -70,7 +70,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="sender">套接字</param>
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="queue">自定义队列</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ServerSocketSender sender, serverType serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue)
         {
             this.Sender = sender;
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.TcpOpenServer
         ///// <param name="socket"></param>
         ///// <param name="serverValue"></param>
         ///// <param name="taskType"></param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //public static void Call(ServerSocketSender socket, serverType serverValue, TcpServer.ServerTaskType taskType)
         //{
         //    (AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New()).Set(socket, serverValue, taskType);
@@ -94,7 +94,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 获取服务器端调用
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static callType Pop()
         {
             return AutoCSer.Threading.RingPool<callType>.Default.Pop();
@@ -103,7 +103,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 服务器端调用入池
         /// </summary>
         /// <param name="call">服务器端调用</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void push(callType call)
         {
             Sender = null;
@@ -132,7 +132,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="taskType"></param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ServerSocketSender sender, serverType serverValue, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -159,7 +159,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="taskType"></param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ServerSocketSender sender, serverType serverValue, TcpServer.ServerTaskType taskType, byte callQueueIndex, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -180,7 +180,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="queue">自定义队列</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ServerSocketSender sender, serverType serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -197,7 +197,7 @@ namespace AutoCSer.Net.TcpOpenServer
         ///// <param name="serverValue"></param>
         ///// <param name="taskType"></param>
         ///// <param name="inputParameter"></param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //public static void Call(ServerSocketSender socket, serverType serverValue, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
         //{
         //    (AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New()).Set(socket, serverValue, taskType, ref inputParameter);
@@ -206,7 +206,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 服务器端调用入池
         /// </summary>
         /// <param name="call">服务器端调用</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected new void push(callType call)
         {
             Sender = null;

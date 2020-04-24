@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 可重用字典静态数据
@@ -17,7 +17,7 @@ namespace AutoCSer
         /// <param name="capacity">容器初始化大小</param>
         /// <param name="isClear">是否需要清除数据</param>
         /// <returns>字典</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ReusableDictionary<HashString, valueType> CreateHashString<valueType>(int capacity = 0, bool isClear = true)
         {
 #if __IOS__
@@ -49,7 +49,7 @@ namespace AutoCSer
             /// </summary>
             /// <param name="value"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal int RemoveGetNext(out valueType value)
             {
                 value = Value;
@@ -60,7 +60,7 @@ namespace AutoCSer
             /// </summary>
             /// <param name="node"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal uint RemoveSet(ref Node node)
             {
                 Source = node.Source;
@@ -128,7 +128,7 @@ namespace AutoCSer
         /// <summary>
         /// 长度设为0（注意：对于引用类型没有置 0 可能导致内存泄露）
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Empty()
         {
             count = 0;
@@ -138,7 +138,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="key">关键字</param>
         /// <returns>是否存在关键字</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool ContainsKey(ref keyType key)
         {
             return count != 0 && indexOf(ref key) >= 0;
@@ -148,7 +148,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="key">关键字</param>
         /// <returns>是否存在关键字</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool ContainsKey(keyType key)
         {
             return count != 0 && indexOf(ref key) >= 0;
@@ -158,7 +158,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="key"></param>
         /// <returns>是否存在关键字</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Remove(keyType key)
         {
             valueType value;
@@ -169,7 +169,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="key"></param>
         /// <returns>是否存在关键字</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Remove(ref keyType key)
         {
             valueType value;
@@ -181,7 +181,7 @@ namespace AutoCSer
         /// <param name="key"></param>
         /// <param name="value">被删除数据</param>
         /// <returns>是否存在关键字</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Remove(keyType key, out valueType value)
         {
             return Remove(ref key, out value);

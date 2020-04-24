@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 定时任务线程模式

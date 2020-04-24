@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 客户端命令
@@ -112,7 +112,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="callback">异步回调</param>
         /// <param name="inputParameter">输入参数</param>
         /// <param name="outputParameter">输出参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback, ref inputParameterType inputParameter, ref outputParameterType outputParameter)
         {
             if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();
@@ -130,7 +130,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="command">命令信息</param>
         /// <param name="callback">异步回调</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback, ref inputParameterType inputParameter)
         {
             if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();

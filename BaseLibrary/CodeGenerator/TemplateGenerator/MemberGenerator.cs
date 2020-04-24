@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// 自定义属性字段模板生成基类

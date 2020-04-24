@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// TCP 服务信息集合
@@ -128,7 +128,7 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         /// <param name="onLog"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool OnLog(AutoCSer.Net.TcpServer.ServerCallback<ServerLog> onLog)
         {
             foreach (ServerLog log in Servers)

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// CSharp代码建树器
@@ -187,7 +187,7 @@ namespace AutoCSer.CodeGenerator
             /// 设置子节点集合
             /// </summary>
             /// <param name="childs">子节点集合</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void SetChilds(Node[] childs)
             {
                 this.childs.Set(childs);
@@ -313,7 +313,7 @@ namespace AutoCSer.CodeGenerator
         /// 普通代码段
         /// </summary>
         /// <param name="code">代码</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void code(SubString code)
         {
             tree.Append(new Node
@@ -375,7 +375,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 清除节点
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Empty()
         {
             nodes.Length = 0;
@@ -384,7 +384,7 @@ namespace AutoCSer.CodeGenerator
         /// 追加新节点
         /// </summary>
         /// <param name="node">新节点</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Append(nodeType node)
         {
             nodes.Add(new KeyValue<nodeType, bool>(node, true));
@@ -394,7 +394,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="node">新节点</param>
         /// <param name="isRound">是否需要判断回合</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Append(nodeType node, bool isRound)
         {
             nodes.Add(new KeyValue<nodeType, bool>(node, isRound));
@@ -405,7 +405,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="tagName">树节点标识</param>
         /// <param name="isAny">是否匹配任意索引位置,否则只能匹配最后一个索引位置</param>
         /// <returns>节点回合是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool IsRound(tagType tagName, bool isAny)
         {
             return round(tagName, isAny) == CheckType.Ok;

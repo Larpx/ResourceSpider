@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpInternalServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
     /// <summary>
     /// TCP 内部服务客户端套接字数据发送

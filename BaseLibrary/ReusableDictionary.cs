@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 可重用字典静态数据
@@ -17,7 +17,7 @@ namespace AutoCSer
         /// <param name="capacity">容器初始化大小</param>
         /// <param name="isClear">是否需要清除数据</param>
         /// <returns>字典</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ReusableDictionary<int, valueType> CreateInt<valueType>(int capacity = 0, bool isClear = true)
         {
 #if __IOS__
@@ -124,7 +124,7 @@ namespace AutoCSer
         /// <param name="capacity">容器初始化大小</param>
         /// <param name="isClear">是否需要清除数据</param>
         /// <returns>字典</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ReusableDictionary<keyType, valueType> Create<valueType>(int capacity = 0, bool isClear = true)
         {
 #if __IOS__
@@ -175,7 +175,7 @@ namespace AutoCSer
             /// <summary>
             /// 清除数据
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void Clear()
             {
                 Key = default(keyType);
@@ -220,7 +220,7 @@ namespace AutoCSer
             /// </summary>
             /// <param name="node">查找节点</param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal bool Search(ref SearchNode node)
             {
                 if (HashCode == node.HashCode && this.Key.Equals(node.Key)) return true;
@@ -458,7 +458,7 @@ namespace AutoCSer
         /// <param name="key">关键字</param>
         /// <param name="value">目标数据</param>
         /// <returns>是否获取成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool TryGetValue(keyType key, out valueType value)
         {
             return TryGetValue(ref key, out value);
@@ -549,7 +549,7 @@ namespace AutoCSer
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns>是否新增数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Set(keyType key, valueType value)
         {
             SearchNode node = new SearchNode(ref key);
@@ -561,7 +561,7 @@ namespace AutoCSer
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns>是否新增数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Set(ref keyType key, valueType value)
         {
             SearchNode node = new SearchNode(ref key);

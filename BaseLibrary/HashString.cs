@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 字符串 HASH
@@ -46,7 +46,7 @@ namespace AutoCSer
         /// <summary>
         /// 清空数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Null()
         {
             String.SetNull();
@@ -65,7 +65,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(HashString other)
         {
             return hashCode == other.hashCode && String.Equals(ref other.String);
@@ -75,7 +75,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(ref HashString other)
         {
             return hashCode == other.hashCode && String.Equals(ref other.String);
@@ -94,7 +94,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(SubString other)
         {
             return String.Equals(ref other);
@@ -104,7 +104,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(ref SubString other)
         {
             return String.Equals(ref other);
@@ -114,7 +114,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(string other)
         {
             return String.Equals(other);

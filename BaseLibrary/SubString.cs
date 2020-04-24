@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 字符子串
@@ -33,7 +33,7 @@ namespace AutoCSer
         /// <summary>
         /// 清空数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void SetNull()
         {
             String = null;
@@ -45,7 +45,7 @@ namespace AutoCSer
         /// <param name="value">字符串,不能为null</param>
         /// <param name="startIndex">起始位置,必须合法</param>
         /// <param name="length">长度,必须合法</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(string value, int startIndex, int length)
         {
             String = value;
@@ -91,7 +91,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other">待比较子串</param>
         /// <returns>子串是否相等</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(SubString other)
         {
             return Equals(ref other);
@@ -151,7 +151,7 @@ namespace AutoCSer
         /// <param name="startIndex">起始位置</param>
         /// <param name="length">长度</param>
         /// <returns>子串</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal SubString GetSub(int startIndex, int length)
         {
             return new SubString { String = String, Start = Start + startIndex, Length = length };

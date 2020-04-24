@@ -5,7 +5,7 @@ using System.Reflection;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 动态数组信息
@@ -102,7 +102,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="length">数组长度</param>
         /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static valueType[] GetNewArray(int length)
         {
             return new valueType[(uint)length <= ((int.MaxValue >> 1) + 1) ? (int)((uint)length).UpToPower2() : int.MaxValue];
@@ -120,7 +120,7 @@ namespace AutoCSer
         /// 添加数据集合
         /// </summary>
         /// <param name="values">数据集合</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Add(valueType[] values)
         {
             if (values != null) Add(values, 0, values.Length);

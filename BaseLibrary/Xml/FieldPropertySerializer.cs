@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 类型序列化
@@ -73,7 +73,7 @@ namespace AutoCSer.Xml
                 /// <param name="value"></param>
                 /// <param name="fieldValue"></param>
                 /// <returns></returns>
-                [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                
                 public bool IsSerialize(Serializer serializer, object value, out object fieldValue)
                 {
                     fieldValue = field.GetValue(value);
@@ -84,7 +84,7 @@ namespace AutoCSer.Xml
                 /// </summary>
                 /// <param name="serializer"></param>
                 /// <param name="value"></param>
-                [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                
                 public void Serialize(Serializer serializer, object value)
                 {
                     if (itemName != null) serializer.ItemName = itemName;
@@ -151,7 +151,7 @@ namespace AutoCSer.Xml
                 /// <param name="value"></param>
                 /// <param name="propertyValue"></param>
                 /// <returns></returns>
-                [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                
                 public bool IsSerialize(Serializer serializer, object value, out object propertyValue)
                 {
                     propertyValue = getMethod(value);
@@ -162,7 +162,7 @@ namespace AutoCSer.Xml
                 /// </summary>
                 /// <param name="serializer"></param>
                 /// <param name="propertyValue"></param>
-                [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                
                 public void Serialize(Serializer serializer, object propertyValue)
                 {
                     if (itemName != null) serializer.ItemName = itemName;
@@ -198,7 +198,7 @@ namespace AutoCSer.Xml
             /// <param name="serializer"></param>
             /// <param name="value"></param>
             /// <param name="field"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             protected static void serialize(Serializer serializer, object value, Field field)
             {
                 object fieldValue;
@@ -223,7 +223,7 @@ namespace AutoCSer.Xml
             /// <param name="serializer"></param>
             /// <param name="value"></param>
             /// <param name="property"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             protected static void serialize(Serializer serializer, object value, Poperty property)
             {
                 object propertyValue;

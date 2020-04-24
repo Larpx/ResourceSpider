@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 输出创建参数
@@ -62,7 +62,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 清除数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Clear()
         {
             Count = IsSend = 0;

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 常用公共定义
@@ -33,7 +33,7 @@ namespace AutoCSer
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void clearCache(int count)
         {
             AutoCSer.Metadata.MemberIndexGroup.ClearCache();
@@ -45,7 +45,7 @@ namespace AutoCSer
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void clearUnmanagedCache(int count)
         {
             UnmanagedPool.ClearCache(count);
@@ -54,7 +54,7 @@ namespace AutoCSer
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void ClearCache(int count = 0)
         {
             clearCache(count);
@@ -65,7 +65,7 @@ namespace AutoCSer
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void ClearCacheNoGC(int count = 0)
         {
             clearCache(count);
@@ -75,7 +75,7 @@ namespace AutoCSer
         /// <summary>
         /// 空委托
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void emptyAction() { }
         /// <summary>
         /// 空委托

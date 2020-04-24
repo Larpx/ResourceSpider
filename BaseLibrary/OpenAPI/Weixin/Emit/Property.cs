@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.OpenAPI.Weixin.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin.Emit
 {
     /// <summary>
     /// 属性操作

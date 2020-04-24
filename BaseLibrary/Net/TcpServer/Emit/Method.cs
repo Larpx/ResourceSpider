@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
     /// <summary>
     /// TCP 函数信息
@@ -485,7 +485,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static int compare(ParameterInfo left, ParameterInfo right)
         {
             int value = string.CompareOrdinal(left.Name, right.Name);

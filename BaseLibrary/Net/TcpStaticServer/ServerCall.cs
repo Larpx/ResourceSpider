@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpStaticServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {
     /// <summary>
     /// TCP 服务器端同步调用
@@ -16,7 +16,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// </summary>
         /// <param name="socket">套接字</param>
         /// <param name="taskType"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(TcpInternalServer.ServerSocketSender socket, TcpServer.ServerTaskType taskType)
         {
             this.Sender = socket;
@@ -39,7 +39,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// <param name="socket">套接字</param>
         /// <param name="taskType"></param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(TcpInternalServer.ServerSocketSender socket, TcpServer.ServerTaskType taskType, byte callQueueIndex)
         {
             this.Sender = socket;
@@ -56,7 +56,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// </summary>
         /// <param name="sender">套接字</param>
         /// <param name="queue">自定义队列</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(TcpInternalServer.ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallQueue queue)
         {
             this.Sender = sender;
@@ -68,7 +68,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// 获取服务器端调用
         /// </summary>
         /// <returns>服务器端调用</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static callType Pop()
         {
             return AutoCSer.Threading.RingPool<callType>.Default.Pop();
@@ -77,7 +77,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// 服务器端调用入池
         /// </summary>
         /// <param name="call">服务器端调用</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void push(callType call)
         {
             Sender = null;
@@ -102,7 +102,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// <param name="sender">套接字</param>
         /// <param name="taskType"></param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(TcpInternalServer.ServerSocketSender sender, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -127,7 +127,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// <param name="taskType"></param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(TcpInternalServer.ServerSocketSender sender, TcpServer.ServerTaskType taskType, byte callQueueIndex, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -146,7 +146,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// <param name="sender">套接字</param>
         /// <param name="queue">自定义队列</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(TcpInternalServer.ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -159,7 +159,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// 服务器端调用入池
         /// </summary>
         /// <param name="call">服务器端调用</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected new void push(callType call)
         {
             Sender = null;

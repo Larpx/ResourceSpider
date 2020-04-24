@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 客户端命令
@@ -13,7 +13,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="socket">TCP客户端命令流处理套接字</param>
         /// <param name="command">命令信息</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command)
         {
             Socket = socket;
@@ -64,7 +64,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="socket">TCP客户端命令流处理套接字</param>
         /// <param name="command">命令信息</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command, ref inputParameterType inputParameter)
         {
             Socket = socket;

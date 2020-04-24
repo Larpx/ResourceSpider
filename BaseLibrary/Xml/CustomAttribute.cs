@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 自定义类型函数标识配置

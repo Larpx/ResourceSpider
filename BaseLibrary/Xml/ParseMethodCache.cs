@@ -8,7 +8,7 @@ using AutoCSer.Extension;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 类型解析器静态信息

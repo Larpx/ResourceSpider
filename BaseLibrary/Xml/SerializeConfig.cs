@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// XML 序列化配置参数
@@ -50,7 +50,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="memberMap">序列化成员位图</param>
         /// <returns>序列化成员位图</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public MemberMap SetCustomMemberMap(MemberMap memberMap)
         {
             MemberMap oldMemberMap = MemberMap;

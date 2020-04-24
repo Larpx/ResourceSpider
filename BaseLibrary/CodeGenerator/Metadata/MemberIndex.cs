@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 成员信息
@@ -117,7 +117,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <param name="type">类型</param>
         /// <param name="filter">选择类型</param>
         /// <returns>成员信息集合</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static MemberIndex[] GetMembers(Type type, MemberFilters filter)
         {
             return getMembers(type).getFindArray(value => (value.MemberFilters & filter) != 0);
@@ -131,7 +131,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <param name="isAttribute">是否匹配自定义属性类型</param>
         /// <param name="isBaseType">是否搜索父类属性</param>
         /// <returns>成员信息集合</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static MemberIndex[] GetMembers<attributeType>(Type type, MemberFilters filter, bool isAttribute, bool isBaseType)
             where attributeType : AutoCSer.Metadata.IgnoreMemberAttribute
         {
@@ -168,7 +168,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <param name="type">类型</param>
         /// <param name="filter">选择类型</param>
         /// <returns>成员信息集合</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static MemberIndex[] GetStaticMembers(Type type, MemberFilters filter)
         {
             return getStaticMembers(type).getFindArray(value => (value.MemberFilters & filter) != 0);
@@ -182,7 +182,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <param name="isAttribute">是否匹配自定义属性类型</param>
         /// <param name="isBaseType">是否搜索父类属性</param>
         /// <returns>成员信息集合</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static MemberIndex[] GetStaticMembers<attributeType>(Type type, MemberFilters filter, bool isAttribute, bool isBaseType)
             where attributeType : AutoCSer.Metadata.IgnoreMemberAttribute
         {

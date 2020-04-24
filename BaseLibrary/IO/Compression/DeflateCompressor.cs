@@ -2,7 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 
-namespace AutoCSer.IO.Compression
+namespace Larpx.ResourceSpider.BaseLibrary.IO.Compression
 {
     /// <summary>
     /// deflate 压缩处理
@@ -24,7 +24,7 @@ namespace AutoCSer.IO.Compression
         {
             int length = count + seek;
             SubBuffer.Pool.GetBuffer(ref buffer, length);
-            using (MemoryStream dataStream = AutoCSer.Extension.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
+            using (MemoryStream dataStream = Extension.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
             {
                 if (seek != 0) dataStream.Seek(seek, SeekOrigin.Begin);
 #if DOTNET2 || DOTNET4 || UNITY3D
@@ -42,22 +42,5 @@ namespace AutoCSer.IO.Compression
             }
             return false;
         }
-//        /// <summary>
-//        /// 数据压缩
-//        /// </summary>
-//        /// <param name="data"></param>
-//        /// <returns></returns>
-//        internal static LeftArray<byte> Get(byte[] data)
-//        {
-//            using (MemoryStream dataStream = new MemoryStream())
-//            {
-//#if DOTNET2 || DOTNET4 || UNITY3D
-//                using (DeflateStream compressStream = new DeflateStream(dataStream, CompressionMode.Compress, true)) compressStream.Write(data, 0, data.Length);
-//#else
-//                using (DeflateStream compressStream = new DeflateStream(dataStream, CompressionLevel.Fastest, true)) compressStream.Write(data, 0, data.Length);
-//#endif
-//                return new LeftArray<byte>((int)dataStream.Position, dataStream.GetBuffer());
-//            }
-//        }
     }
 }

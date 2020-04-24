@@ -5,7 +5,7 @@ using System.Text;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// XML 文档注释
@@ -73,7 +73,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string Get(Type type)
         {
             XmlDocumentAssembly assembly = get(type.Assembly);
@@ -84,7 +84,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string Get(FieldInfo field)
         {
             XmlDocumentAssembly assembly = get(field.DeclaringType.Assembly);
@@ -95,7 +95,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string Get(PropertyInfo property)
         {
             XmlDocumentAssembly assembly = get(property.DeclaringType.Assembly);
@@ -106,7 +106,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string Get(MethodInfo method)
         {
             XmlDocumentAssembly assembly = get(method.DeclaringType.Assembly);
@@ -117,7 +117,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string GetReturn(MethodInfo method)
         {
             XmlDocumentAssembly assembly = get(method.DeclaringType.Assembly);
@@ -129,7 +129,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="method"></param>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string Get(MethodInfo method, ParameterInfo parameter)
         {
             XmlDocumentAssembly assembly = get(method.DeclaringType.Assembly);
@@ -140,7 +140,7 @@ namespace AutoCSer.CodeGenerator
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void clearCache(int count)
         {
             assemblyLock.Clear();

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpOpenServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// TCP 服务器端同步调用
@@ -24,7 +24,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <param name="socket">套接字</param>
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="taskType">服务端任务类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Call(ServerSocketSender socket, object serverValue, TcpServer.ServerTaskType taskType)
         {
             this.Sender = socket;
@@ -49,7 +49,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="taskType">服务端任务类型</param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Call(ServerSocketSender socket, object serverValue, TcpServer.ServerTaskType taskType, byte callQueueIndex)
         {
             this.Sender = socket;
@@ -67,7 +67,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// </summary>
         /// <typeparam name="callType">服务器端调用类型</typeparam>
         /// <param name="call">服务器端调用</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void push<callType>(callType call)
             where callType : ServerCall
         {
@@ -79,7 +79,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// 获取服务器端调用
         /// </summary>
         /// <typeparam name="callType">服务器端调用类型</typeparam>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static callType PopNew<callType>() where callType : ServerCall
         {
             return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New();
@@ -120,7 +120,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="taskType">任务类型</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void CallEmit(ServerSocketSender sender, object serverValue, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -147,7 +147,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <param name="taskType">任务类型</param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void CallQueueEmit(ServerSocketSender sender, object serverValue, TcpServer.ServerTaskType taskType, byte callQueueIndex, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -168,7 +168,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="queue">自定义队列</param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void CallQueue(ServerSocketSender sender, object serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
@@ -183,7 +183,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// </summary>
         /// <typeparam name="callType">服务器端调用类型</typeparam>
         /// <param name="call">服务器端调用</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected new void push<callType>(callType call)
             where callType : ServerCall<inputParameterType>
         {
@@ -196,7 +196,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// 获取服务器端调用
         /// </summary>
         /// <typeparam name="callType">服务器端调用类型</typeparam>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static new callType PopNew<callType>() where callType : ServerCall<inputParameterType>
         {
             return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? Larpx.ResourceSpider.BaseLibrary.Emit.Constructor<callType>.New();

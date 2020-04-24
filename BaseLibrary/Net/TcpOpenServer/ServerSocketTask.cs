@@ -2,7 +2,7 @@
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// TCP 服务端套接字任务处理

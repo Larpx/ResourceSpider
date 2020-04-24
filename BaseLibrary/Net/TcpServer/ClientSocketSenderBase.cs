@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务客户端套接字数据发送
@@ -58,7 +58,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放资源
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Close()
         {
             if (!isClose)

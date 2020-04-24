@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 错误信息
@@ -101,7 +101,7 @@ namespace AutoCSer.CodeGenerator
         /// 添加错误信息
         /// </summary>
         /// <param name="error">错误信息</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Add(string error)
         {
             errors.Add(error);
@@ -110,7 +110,7 @@ namespace AutoCSer.CodeGenerator
         /// 添加异常
         /// </summary>
         /// <param name="error">异常</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void Add(Exception error)
         {
             exceptions.Add(error);
@@ -119,7 +119,7 @@ namespace AutoCSer.CodeGenerator
         /// 添加提示信息
         /// </summary>
         /// <param name="value">提示信息</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Message(string value)
         {
             messages.Add(value);

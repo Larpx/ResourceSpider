@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.StateSearcher
+namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
     /// <summary>
     /// ASCII 字节搜索器

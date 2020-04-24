@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 委托定义
@@ -35,7 +35,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static ActionRef1<valueType1, valueType2> get(MethodInfo method)
         {
             return (ActionRef1<valueType1, valueType2>)Delegate.CreateDelegate(typeof(ActionRef1<valueType1, valueType2>), method);
@@ -57,7 +57,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Func<object, valueType2, object> getObjectTypeReturn(MethodInfo method)
         {
             return new InvokeMethodRef1<valueType1, valueType2>((ActionRef1<valueType1, valueType2>)Delegate.CreateDelegate(typeof(ActionRef1<valueType1, valueType2>), method)).objectTypeReturn;
@@ -79,7 +79,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Func<object, valueType2, object> getObjectTypeReturnDefault(MethodInfo method)
         {
             return new InvokeMethodRef1<valueType1, valueType2>((ActionRef1<valueType1, valueType2>)Delegate.CreateDelegate(typeof(ActionRef1<valueType1, valueType2>), method)).objectTypeReturnDefault;
@@ -99,7 +99,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Action<object, valueType2> getObjectType(MethodInfo method)
         {
             return new InvokeMethodRef1<valueType1, valueType2>((ActionRef1<valueType1, valueType2>)Delegate.CreateDelegate(typeof(ActionRef1<valueType1, valueType2>), method)).objectType;
@@ -121,7 +121,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Func<object, object, object> getObjectObjectReturn(MethodInfo method)
         {
             return new InvokeMethodRef1<valueType1, valueType2>((ActionRef1<valueType1, valueType2>)Delegate.CreateDelegate(typeof(ActionRef1<valueType1, valueType2>), method)).objectObjectReturn;

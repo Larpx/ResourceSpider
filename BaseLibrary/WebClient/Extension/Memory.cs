@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// 内存或字节数组处理
@@ -13,7 +13,7 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="data">原始字节流</param>
         /// <returns>字符串</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static string BytesToStringNotEmpty(this byte[] data)
         {
             fixed (byte* dataFixed = data) return BytesToStringNotEmpty(dataFixed, data.Length);

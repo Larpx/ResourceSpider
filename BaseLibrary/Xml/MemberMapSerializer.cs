@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 类型序列化

@@ -1,8 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.IO
+namespace Larpx.ResourceSpider.BaseLibrary.IO
 {
     /// <summary>
     /// 文件扩展操作
@@ -54,7 +53,7 @@ namespace AutoCSer.IO
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static string FileNameToLower(string fileName)
         {
 #if MONO

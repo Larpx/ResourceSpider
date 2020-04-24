@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.QQ
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
 {
     /// <summary>
     /// 访问令牌

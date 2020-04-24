@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// 域名 IP 转换配置

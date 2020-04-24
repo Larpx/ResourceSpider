@@ -1,7 +1,7 @@
 ﻿using System;
 using fastCSharp.Extension;
 
-namespace fastCSharp.StateSearcher
+namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
     /// <summary>
     /// 状态数据创建器

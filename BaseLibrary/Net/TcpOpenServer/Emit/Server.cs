@@ -2,7 +2,7 @@
 using System.Reflection;
 using AutoCSer.Net.TcpServer.Emit;
 
-namespace AutoCSer.Net.TcpOpenServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// TCP 服务

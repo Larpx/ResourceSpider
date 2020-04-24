@@ -7,7 +7,7 @@ using AutoCSer.Metadata;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 动态函数

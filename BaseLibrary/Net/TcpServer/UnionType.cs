@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 类型转换

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using AutoCSer.CodeGenerator.Metadata;
 using AutoCSer.Extension;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// 远程表达式 代码生成

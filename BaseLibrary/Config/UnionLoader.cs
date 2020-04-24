@@ -13,7 +13,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Config
         /// <param name="type">配置类型</param>
         /// <param name="name">配置名称</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static UnionType GetUnion(Type type, string name = "")
         {
             return new UnionType { Value = AutoCSer.Config.Loader.GetObject(type, name) };

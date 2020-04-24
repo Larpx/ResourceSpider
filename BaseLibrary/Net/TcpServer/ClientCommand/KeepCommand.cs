@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 客户端命令

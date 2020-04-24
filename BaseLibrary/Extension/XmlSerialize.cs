@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using AutoCSer.Xml;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// XML 序列化扩展操作
@@ -42,7 +42,7 @@ namespace AutoCSer.Extension
         /// <param name="xml">XML 字符串</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ParseResult fromXml<valueType>(this valueType value, SubString xml, ParseConfig config = null)
         {
             return Parser.Parse(ref xml, ref value, config);
@@ -55,7 +55,7 @@ namespace AutoCSer.Extension
         /// <param name="xml">XML 字符串</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ParseResult fromXml<valueType>(this valueType value, ref SubString xml, ParseConfig config = null)
         {
             return Parser.Parse(ref xml, ref value, config);
@@ -68,7 +68,7 @@ namespace AutoCSer.Extension
         /// <param name="xml">XML 字符串</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ParseResult fromXml<valueType>(this valueType value, string xml, ParseConfig config = null)
         {
             return Parser.Parse(xml, ref value, config);

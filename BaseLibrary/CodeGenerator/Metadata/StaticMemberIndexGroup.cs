@@ -4,7 +4,7 @@ using System.Threading;
 using System.Collections.Generic;
 using AutoCSer.Extension;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 成员索引分组

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 调用客户端回调保持
@@ -38,7 +38,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="commandIndex">命令会话标识</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool SetCommandIndex(int commandIndex)
         {
             while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallbackSetCommandIndex);

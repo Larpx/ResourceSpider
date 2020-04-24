@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
 {
     /// <summary>
     /// 数据是否有效

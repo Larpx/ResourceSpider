@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.SimpleSerialize
+namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
     /// <summary>
     /// 简单序列化
@@ -32,7 +32,7 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Serializer(UnmanagedStream stream, ref valueType value)
         {
             object objectValue = value;
@@ -56,7 +56,7 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <summary>
         /// 预编译
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Compile() { }
 
         static TypeSerializer()

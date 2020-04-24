@@ -2,7 +2,7 @@
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpInternalServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
     /// <summary>
     /// TCP 内部服务端套接字任务处理

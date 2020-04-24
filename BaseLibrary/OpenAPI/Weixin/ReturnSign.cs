@@ -1,7 +1,7 @@
 ﻿using System;
 #pragma warning disable
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// XML签名返回值

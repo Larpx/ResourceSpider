@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// XML 解析器
@@ -262,7 +262,7 @@ namespace AutoCSer.Xml
         /// <typeparam name="valueType"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool TypeParse<valueType>(ref valueType value)
         {
             TypeParser<valueType>.Parse(this, ref value);
@@ -273,7 +273,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType TypeParse<valueType>()
         {
             valueType value = default(valueType);
@@ -285,7 +285,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool VerifyRead(int size)
         {
             if ((current += size) <= end) return true;
@@ -297,7 +297,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool MoveRead(int size)
         {
             if (size >= 0)
@@ -310,7 +310,7 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 释放XML解析器
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void free()
         {
             xml = null;
@@ -355,7 +355,7 @@ namespace AutoCSer.Xml
         /// 空格过滤
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private char* endSpace()
         {
             char* end = current;
@@ -484,7 +484,7 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 查找CDATA数据结束位置
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void searchCData2()
         {
             if (((*(int*)(current + 2) ^ ('[' + ('C' << 16))) | (*(int*)(current + 4) ^ ('D' + ('A' << 16))) | (*(int*)(current + 6) ^ ('T' + ('A' << 16))) | (*(short*)(current + 8) ^ '[')) == 0)
@@ -589,7 +589,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <returns></returns>
 
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private bool isNaN()
         {
             return *valueStart == 'N' && *(int*)(valueStart + 1) == 'a' + ('N' << 16);
@@ -598,7 +598,7 @@ namespace AutoCSer.Xml
         /// 是否 Infinity
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private bool isPositiveInfinity()
         {
             return *valueStart == 'I' && ((*(long*)valueStart ^ ('I' + ('n' << 16) + ((long)'f' << 32) + ((long)'i' << 48))) | (*(long*)(valueStart + 4) ^ ('n' + ('i' << 16) + ((long)'t' << 32) + ((long)'y' << 48)))) == 0;
@@ -607,7 +607,7 @@ namespace AutoCSer.Xml
         /// 是否 -Infinity
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private bool isNegativeInfinity()
         {
             return *valueStart == '-' && ((*(long*)(valueStart + 1) ^ ('I' + ('n' << 16) + ((long)'f' << 32) + ((long)'i' << 48))) | (*(long*)(valueStart + 5) ^ ('n' + ('i' << 16) + ((long)'t' << 32) + ((long)'y' << 48)))) == 0;
@@ -686,7 +686,7 @@ namespace AutoCSer.Xml
         /// <param name="nameSize">节点名称长度</param>
         /// <param name="isTagEnd">名称解析节点是否结束</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal char* GetName(ref int nameSize, ref byte isTagEnd)
         {
             char* nameStart = getName(ref nameSize);
@@ -831,7 +831,7 @@ namespace AutoCSer.Xml
         /// 读取下一个枚举字符
         /// </summary>
         /// <returns>枚举字符,结束或者错误返回0</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal char NextEnumChar()
         {
             if (((bits[*(byte*)current] & spaceBit) | *(((byte*)current) + 1)) != 0)
@@ -852,7 +852,7 @@ namespace AutoCSer.Xml
         /// 读取下一个枚举字符
         /// </summary>
         /// <returns>枚举字符,结束或者错误返回0</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal char NextCDataEnumChar()
         {
             if (valueSize == 0) return (char)0;
@@ -863,7 +863,7 @@ namespace AutoCSer.Xml
         /// 枚举值是否结束
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int IsNextFlagEnum()
         {
             if (State == ParseState.Success)
@@ -907,7 +907,7 @@ namespace AutoCSer.Xml
         /// 查找枚举数字
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool IsEnumNumber()
         {
             searchValue();
@@ -952,7 +952,7 @@ namespace AutoCSer.Xml
         /// 查找枚举数字
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool IsEnumNumberFlag()
         {
             searchValue();
@@ -1045,7 +1045,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">第一位数字</param>
         /// <returns>数字</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private uint parseUInt32(uint value)
         {
             uint number;
@@ -1270,7 +1270,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">第一位数字</param>
         /// <returns>数字</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private ulong parseUInt64(uint value)
         {
             ulong number = value;
@@ -1385,7 +1385,7 @@ namespace AutoCSer.Xml
         /// 解析16进制字符
         /// </summary>
         /// <returns>字符</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private uint parseHex2()
         {
             uint code = (uint)(*valueStart++ - '0'), number = (uint)(*valueStart++ - '0');
@@ -1473,7 +1473,7 @@ namespace AutoCSer.Xml
         /// 判断否存存在数据
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int IsValue()
         {
             space();
@@ -1485,7 +1485,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool CustomParse(ref uint value)
         {
             CallParse(ref value);
@@ -1496,7 +1496,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool CustomParse(ref uint? value)
         {
             CallParse(ref value);
@@ -1507,7 +1507,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool CustomParse(ref string value)
         {
             CallParse(ref value);
@@ -1518,7 +1518,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool CustomEnumByte<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumByte.Parse(this, ref value);
@@ -1528,7 +1528,7 @@ namespace AutoCSer.Xml
         /// 忽略数据
         /// </summary>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool CustomIgnoreValue()
         {
             return IgnoreValue() != 0;
@@ -1584,8 +1584,8 @@ namespace AutoCSer.Xml
         /// 引用类型对象解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void typeParse<valueType>(ref valueType value)
         {
             TypeParser<valueType>.ParseClass(this, ref value);
@@ -1594,8 +1594,8 @@ namespace AutoCSer.Xml
         /// 值类型对象解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void structParse<valueType>(ref valueType value) where valueType : struct
         {
             TypeParser<valueType>.ParseStruct(this, ref value);
@@ -1604,7 +1604,7 @@ namespace AutoCSer.Xml
         /// 基类转换
         /// </summary>
         /// <param name="value">目标数据</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private void baseParse<valueType, childType>(ref childType value) where childType : valueType
         {
             if (value == null)
@@ -1629,8 +1629,8 @@ namespace AutoCSer.Xml
         /// 数组解析
         /// </summary>
         /// <param name="values">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void array<valueType>(ref valueType[] values)
         {
             TypeParser<valueType>.Array(this, ref values);
@@ -1639,7 +1639,7 @@ namespace AutoCSer.Xml
         /// 值类型对象解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //
         internal void nullableEnumParse<valueType>(ref Nullable<valueType> value) where valueType : struct
         {
             space();
@@ -1671,8 +1671,8 @@ namespace AutoCSer.Xml
         /// 值类型对象解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void nullableParse<valueType>(ref Nullable<valueType> value) where valueType : struct
         {
             valueType newValue = value.HasValue ? value.Value : default(valueType);
@@ -1683,8 +1683,8 @@ namespace AutoCSer.Xml
         /// 值类型对象解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void keyValuePairParse<keyType, valueType>(ref KeyValuePair<keyType, valueType> value)
         {
             KeyValue<keyType, valueType> keyValue = new KeyValue<keyType, valueType>(value.Key, value.Value);
@@ -1695,8 +1695,8 @@ namespace AutoCSer.Xml
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void listConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
@@ -1708,8 +1708,8 @@ namespace AutoCSer.Xml
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void collectionConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
@@ -1721,8 +1721,8 @@ namespace AutoCSer.Xml
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumerableConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
@@ -1734,8 +1734,8 @@ namespace AutoCSer.Xml
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void arrayConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
@@ -1750,7 +1750,7 @@ namespace AutoCSer.Xml
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //
         internal void dictionaryConstructor<dictionaryType, keyType, valueType>(ref dictionaryType value)
         {
             KeyValuePair<keyType, valueType>[] values = null;
@@ -1774,8 +1774,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumByte<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumByte.Parse(this, ref value);
@@ -1784,8 +1784,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumSByte<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumSByte.Parse(this, ref value);
@@ -1794,8 +1794,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumShort<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumShort.Parse(this, ref value);
@@ -1804,8 +1804,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumUShort<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUShort.Parse(this, ref value);
@@ -1814,8 +1814,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumInt<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumInt.Parse(this, ref value);
@@ -1824,8 +1824,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumUInt<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUInt.Parse(this, ref value);
@@ -1834,8 +1834,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumLong<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumLong.Parse(this, ref value);
@@ -1844,8 +1844,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumULong<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumULong.Parse(this, ref value);
@@ -1854,8 +1854,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumByteFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumByte.ParseFlags(this, ref value);
@@ -1864,8 +1864,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumSByteFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumSByte.ParseFlags(this, ref value);
@@ -1874,8 +1874,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumShortFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumShort.ParseFlags(this, ref value);
@@ -1884,8 +1884,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumUShortFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUShort.ParseFlags(this, ref value);
@@ -1894,8 +1894,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumIntFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumInt.ParseFlags(this, ref value);
@@ -1904,8 +1904,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumUIntFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUInt.ParseFlags(this, ref value);
@@ -1914,8 +1914,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumLongFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumLong.ParseFlags(this, ref value);
@@ -1924,8 +1924,8 @@ namespace AutoCSer.Xml
         /// 枚举值解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         internal void enumULongFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumULong.ParseFlags(this, ref value);
@@ -1939,7 +1939,7 @@ namespace AutoCSer.Xml
         /// <param name="value">目标数据</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ParseResult Parse<valueType>(SubString xml, ref valueType value, ParseConfig config = null)
         {
             return Parse(ref xml, ref value, config);
@@ -1951,7 +1951,7 @@ namespace AutoCSer.Xml
         /// <param name="xml">XML 字符串</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static valueType Parse<valueType>(SubString xml, ParseConfig config = null)
         {
             valueType value = default(valueType);
@@ -1965,7 +1965,7 @@ namespace AutoCSer.Xml
         /// <param name="value">目标数据</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ParseResult Parse<valueType>(ref SubString xml, ref valueType value, ParseConfig config = null)
         {
             if (xml.Length == 0) return new ParseResult { State = ParseState.NullXml };
@@ -1983,7 +1983,7 @@ namespace AutoCSer.Xml
         /// <param name="xml">XML 字符串</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static valueType Parse<valueType>(ref SubString xml, ParseConfig config = null)
         {
             valueType value = default(valueType);
@@ -1997,7 +1997,7 @@ namespace AutoCSer.Xml
         /// <param name="value">目标数据</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ParseResult Parse<valueType>(string xml, ref valueType value, ParseConfig config = null)
         {
             if (string.IsNullOrEmpty(xml)) return new ParseResult { State = ParseState.NullXml };
@@ -2015,7 +2015,7 @@ namespace AutoCSer.Xml
         /// <param name="xml">XML 字符串</param>
         /// <param name="config">配置参数</param>
         /// <returns>XML 解析结果</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static valueType Parse<valueType>(string xml, ParseConfig config = null)
         {
             valueType value = default(valueType);

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Runtime.CompilerServices;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 客户端套接字初始化处理
@@ -73,7 +73,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void DisposeSocket()
         {
             System.Net.Sockets.Socket socket = this.socket.Socket;

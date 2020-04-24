@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpOpenServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// 获取 TCP 服务函数信息

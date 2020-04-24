@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 函数参数类型与名称集合关键字
@@ -127,7 +127,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// 复制参数集合
         /// </summary>
         /// <param name="index"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Copy(int index)
         {
             Index = index;

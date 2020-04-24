@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 非托管内存
@@ -82,7 +82,7 @@ namespace AutoCSer
         /// <param name="size">内存字节数</param>
         /// <param name="isClear">是否需要清除</param>
         /// <returns>非托管内存起始指针</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static Pointer.Size GetSizeUnsafe64(int size, bool isClear)
         {
             return new Pointer.Size { Data = Get64(size, isClear), ByteSize = size };
@@ -92,7 +92,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="data">非托管内存起始指针</param>
         /// <param name="size"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Free(byte* data, int size)
         {
             Marshal.FreeHGlobal((IntPtr)data);
@@ -102,7 +102,7 @@ namespace AutoCSer
         /// 释放内存
         /// </summary>
         /// <param name="data">非托管内存起始指针</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void Free(ref Pointer.Size data)
         {
             if (data.Data != null)
@@ -132,7 +132,7 @@ namespace AutoCSer
         /// <param name="isClear"></param>
         /// <param name="isStaticUnmanaged"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static Pointer.Size Get(int size, bool isClear, bool isStaticUnmanaged)
         {
             return new Pointer.Size { Data = isStaticUnmanaged ? GetStatic(size, isClear) : Get(size, isClear), ByteSize = size };

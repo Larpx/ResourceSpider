@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// Emit 类型创建器扩展
@@ -18,7 +18,7 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="typeBuilder"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static Type CreateType(this TypeBuilder typeBuilder)
         {
             return typeBuilder.CreateTypeInfo().AsType();

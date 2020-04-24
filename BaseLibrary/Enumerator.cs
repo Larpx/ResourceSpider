@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 枚举器
@@ -41,7 +41,7 @@ namespace AutoCSer
             /// 转到下一个数据元素
             /// </summary>
             /// <returns>是否存在下一个数据元素</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public bool MoveNext()
             {
                 return false;
@@ -49,7 +49,7 @@ namespace AutoCSer
             /// <summary>
             /// 重置枚举器状态
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Reset() { }
             /// <summary>
             /// 释放枚举器
@@ -124,7 +124,7 @@ namespace AutoCSer
             /// 转到下一个数据元素
             /// </summary>
             /// <returns>是否存在下一个数据元素</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public bool MoveNext()
             {
                 if (++currentIndex != endIndex) return true;
@@ -134,7 +134,7 @@ namespace AutoCSer
             /// <summary>
             /// 重置枚举器状态
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Reset()
             {
                 currentIndex = startIndex - 1;

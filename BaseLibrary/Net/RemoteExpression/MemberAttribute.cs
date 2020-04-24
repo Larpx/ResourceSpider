@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.RemoteExpression
+namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
 {
     /// <summary>
     /// 远程表达式成员配置

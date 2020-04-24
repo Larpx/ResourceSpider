@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// 获取远程表达式服务端节点标识同步调用
@@ -22,7 +22,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="sender">套接字</param>
         /// <param name="attribute"></param>
         /// <param name="inputParameter">输入参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ServerSocketSender sender, ref TcpServer.ServerAttributeCache attribute, RemoteType[] inputParameter)
         {
             this.Sender = sender;

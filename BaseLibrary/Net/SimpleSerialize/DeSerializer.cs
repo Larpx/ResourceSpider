@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.Net.SimpleSerialize
+namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
 
     /// <summary>
@@ -26,8 +26,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">逻辑值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref bool value)
         {
             value = *(bool*)Read++;
@@ -37,8 +37,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">逻辑值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref bool? value)
         {
             if (*Read == 0) value = null;
@@ -50,8 +50,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref byte value)
         {
             value = *(byte*)Read;
@@ -62,8 +62,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref byte? value)
         {
             if (*(Read + sizeof(byte)) == 0) value = *(byte*)Read;
@@ -75,8 +75,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref sbyte value)
         {
             value = *(sbyte*)Read;
@@ -87,8 +87,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref sbyte? value)
         {
             if (*(Read + sizeof(byte)) == 0) value = *(sbyte*)Read;
@@ -100,8 +100,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref short value)
         {
             value = *(short*)Read;
@@ -112,8 +112,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref short? value)
         {
             if (*(ushort*)(Read + sizeof(ushort)) == 0) value = *(short*)Read;
@@ -125,8 +125,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref ushort value)
         {
             value = *(ushort*)Read;
@@ -137,8 +137,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref ushort? value)
         {
             if (*(ushort*)(Read + sizeof(ushort)) == 0) value = *(ushort*)Read;
@@ -150,8 +150,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref int value)
         {
             value = *(int*)Read;
@@ -162,8 +162,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref int? value)
         {
             if (*(int*)Read == 0)
@@ -182,8 +182,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref uint value)
         {
             value = *(uint*)Read;
@@ -194,8 +194,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref uint? value)
         {
             if (*(int*)Read == 0)
@@ -214,8 +214,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref long value)
         {
             value = *(long*)Read;
@@ -226,8 +226,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref long? value)
         {
             if (*(int*)Read == 0)
@@ -246,8 +246,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref ulong value)
         {
             value = *(ulong*)Read;
@@ -258,8 +258,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref ulong? value)
         {
             if (*(int*)Read == 0)
@@ -278,8 +278,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref float value)
         {
             value = *(float*)Read;
@@ -290,8 +290,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref float? value)
         {
             if (*(int*)Read == 0)
@@ -310,8 +310,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref double value)
         {
             value = *(double*)Read;
@@ -322,8 +322,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref double? value)
         {
             if (*(int*)Read == 0)
@@ -342,8 +342,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref decimal value)
         {
             value = *(decimal*)Read;
@@ -354,8 +354,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref decimal? value)
         {
             if (*(int*)Read == 0)
@@ -374,8 +374,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">字符</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref char value)
         {
             value = *(char*)Read;
@@ -386,8 +386,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">字符</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref char? value)
         {
             if (*(ushort*)(Read + sizeof(char)) == 0) value = *(char*)Read;
@@ -399,8 +399,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref DateTime value)
         {
             value = *(DateTime*)Read;
@@ -411,8 +411,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">时间</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref DateTime? value)
         {
             if (*(int*)Read == 0)
@@ -431,8 +431,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">数值</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref Guid value)
         {
             value = *(Guid*)Read;
@@ -443,8 +443,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="value">Guid</param>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref Guid? value)
         {
             if (*(int*)Read == 0)
@@ -464,8 +464,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">字符串</param>
 
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void deSerialize(ref string value)
         {
             if (Read != null)
@@ -515,8 +515,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void enumByte<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, byte>.FromInt(*Read++);
@@ -525,8 +525,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void enumSByte<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, sbyte>.FromInt(*(sbyte*)Read++);
@@ -535,8 +535,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void enumShort<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, short>.FromInt(*(short*)Read);
@@ -546,8 +546,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void enumUShort<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, ushort>.FromInt(*(ushort*)Read);
@@ -557,8 +557,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void EnumInt<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, int>.FromInt(*(int*)Read);
@@ -568,8 +568,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void EnumUInt<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, uint>.FromInt(*(uint*)Read);
@@ -579,8 +579,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void EnumLong<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, long>.FromInt(*(long*)Read);
@@ -590,8 +590,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 枚举值序列化
         /// </summary>
         /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private void EnumULong<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, ulong>.FromInt(*(ulong*)Read);
@@ -605,8 +605,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">逻辑值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref bool value)
         {
             value = *(bool*)data;
@@ -619,8 +619,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">逻辑值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref bool? value)
         {
             if (*data == 0) value = null;
@@ -634,8 +634,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref byte value)
         {
             value = *(byte*)data;
@@ -648,8 +648,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref byte? value)
         {
             if (*(data + sizeof(byte)) == 0) value = *(byte*)data;
@@ -663,8 +663,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref sbyte value)
         {
             value = *(sbyte*)data;
@@ -677,8 +677,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref sbyte? value)
         {
             if (*(data + sizeof(byte)) == 0) value = *(sbyte*)data;
@@ -692,8 +692,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref short value)
         {
             value = *(short*)data;
@@ -706,8 +706,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref short? value)
         {
             if (*(ushort*)(data + sizeof(ushort)) == 0) value = *(short*)data;
@@ -721,8 +721,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref ushort value)
         {
             value = *(ushort*)data;
@@ -735,8 +735,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref ushort? value)
         {
             if (*(ushort*)(data + sizeof(ushort)) == 0) value = *(ushort*)data;
@@ -750,8 +750,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref int value)
         {
             value = *(int*)data;
@@ -764,8 +764,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref int? value)
         {
             if (*(int*)data == 0)
@@ -783,8 +783,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref uint value)
         {
             value = *(uint*)data;
@@ -797,8 +797,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref uint? value)
         {
             if (*(int*)data == 0)
@@ -816,8 +816,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref long value)
         {
             value = *(long*)data;
@@ -830,8 +830,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref long? value)
         {
             if (*(int*)data == 0)
@@ -849,8 +849,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref ulong value)
         {
             value = *(ulong*)data;
@@ -863,8 +863,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref ulong? value)
         {
             if (*(int*)data == 0)
@@ -882,8 +882,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref float value)
         {
             value = *(float*)data;
@@ -896,8 +896,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref float? value)
         {
             if (*(int*)data == 0)
@@ -915,8 +915,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref double value)
         {
             value = *(double*)data;
@@ -929,8 +929,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref double? value)
         {
             if (*(int*)data == 0)
@@ -948,8 +948,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref decimal value)
         {
             value = *(decimal*)data;
@@ -962,8 +962,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref decimal? value)
         {
             if (*(int*)data == 0)
@@ -981,8 +981,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">字符</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref char value)
         {
             value = *(char*)data;
@@ -995,8 +995,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">字符</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref char? value)
         {
             if (*(ushort*)(data + sizeof(char)) == 0) value = *(char*)data;
@@ -1010,8 +1010,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref DateTime value)
         {
             value = *(DateTime*)data;
@@ -1024,8 +1024,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">时间</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref DateTime? value)
         {
             if (*(int*)data == 0)
@@ -1043,8 +1043,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">数值</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref Guid value)
         {
             value = *(Guid*)data;
@@ -1057,8 +1057,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="value">Guid</param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* data, ref Guid? value)
         {
             if (*(int*)data == 0)
@@ -1077,8 +1077,8 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <param name="end"></param>
         /// <returns></returns>
         [DeSerializeMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         private static byte* deSerialize(byte* start, ref string value, byte* end)
         {
             if (start != null)
@@ -1141,7 +1141,7 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         /// <param name="type">基本类型</param>
         /// <returns>转换函数</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static MethodInfo GetDeSerializeMethod(Type type)
         {
             MethodInfo method;

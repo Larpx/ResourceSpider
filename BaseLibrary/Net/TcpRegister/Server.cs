@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using AutoCSer.Net.TcpInternalServer;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// TCP 内部注册服务
@@ -76,7 +76,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 设置只读模式
         /// </summary>
         /// <param name="sender"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void SetReadCommand(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
         {
             sender.SetCommand((int)command.getLog);

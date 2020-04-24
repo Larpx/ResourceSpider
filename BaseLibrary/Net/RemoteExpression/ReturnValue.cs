@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.RemoteExpression
+namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
 {
     /// <summary>
     /// 返回值
@@ -40,7 +40,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="returnType"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool TryGetValue<returnType>(ref returnType value)
         {
             ReturnValue<returnType> returnValue = this as ReturnValue<returnType>;
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <typeparam name="returnType"></typeparam>
         /// <param name="nullValue">失败默认值</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public returnType GetValue<returnType>(returnType nullValue)
         {
             ReturnValue<returnType> returnValue = this as ReturnValue<returnType>;
@@ -74,7 +74,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         [AutoCSer.BinarySerialize.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static void serialize(AutoCSer.BinarySerialize.Serializer serializer, ReturnValue value)
         {
             if(value == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
@@ -91,7 +91,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="deSerializer"></param>
         /// <param name="value"></param>
         [AutoCSer.BinarySerialize.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref ReturnValue value)
         {
             value = createReturnValues.Array[deSerializer.ReadInt()]();
@@ -108,7 +108,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         [AutoCSer.Json.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static void serialize(AutoCSer.Json.Serializer serializer, ReturnValue value)
         {
             if (value == null) serializer.CharStream.WriteJsonArray();
@@ -133,7 +133,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="parser"></param>
         /// <param name="value"></param>
         [AutoCSer.Json.ParseCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private unsafe static void deSerialize(AutoCSer.Json.Parser parser, ref ReturnValue value)
         {
             if (*parser.Current++ == '[')
@@ -168,7 +168,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="createReturnValue">新建一个返回值的委托</param>
         /// <returns>表达式节点映射编号</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static int RegisterClient(Func<ReturnValue> createReturnValue)
         {
             Monitor.Enter(createReturnValueLock);

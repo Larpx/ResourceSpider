@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.OpenAPI
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
 {
     /// <summary>
     /// 微博编码

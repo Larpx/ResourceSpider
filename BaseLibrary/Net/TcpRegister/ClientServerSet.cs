@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// 客户端 TCP 服务信息集合
@@ -35,7 +35,7 @@ namespace AutoCSer.Net.TcpRegister
         ///// <summary>
         ///// 清除数据
         ///// </summary>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal bool Clear()
         //{
         //    if (clients.Length == 0) return true;
@@ -46,7 +46,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 添加 TCP 客户端
         /// </summary>
         /// <param name="client">TCP 客户端</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Add(IClient client)
         {
             clients.Add(client);
@@ -56,7 +56,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 移除 TCP 客户端
         /// </summary>
         /// <param name="client"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Remove(IClient client)
         {
             clients.Remove(client);
@@ -65,7 +65,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 添加服务
         /// </summary>
         /// <param name="log"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Add(ServerLog log)
         {
             bool isMainChanged;

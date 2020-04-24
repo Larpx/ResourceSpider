@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// C# 类定义生成

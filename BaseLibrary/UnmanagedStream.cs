@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 非托管内存数据流
@@ -29,8 +29,8 @@ namespace AutoCSer
         /// 预增数据流长度
         /// </summary>
         /// <param name="length">增加长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void PrepLength(int length)//virtual
         {
             prepSize(length);
@@ -39,7 +39,7 @@ namespace AutoCSer
         /// 预增数据流长度
         /// </summary>
         /// <param name="size">增加长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal byte* GetPrepSizeCurrent(int size)
         {
             prepSize(size);
@@ -50,7 +50,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="length">增加长度</param>
         /// <returns>增加后的流长度</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int AddSize(int length)
         {
             prepSize(length);
@@ -64,7 +64,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(bool value)
         {
             if (ByteSize == Data.ByteSize) setStreamLength(ByteSize << 1);
@@ -74,7 +74,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(byte value)
         {
             if (ByteSize == Data.ByteSize) setStreamLength(ByteSize << 1);
@@ -84,7 +84,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(sbyte value)
         {
             if (ByteSize == Data.ByteSize) setStreamLength(ByteSize << 1);
@@ -94,7 +94,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(short value)
         {
             prepSize(sizeof(short));
@@ -105,7 +105,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(ushort value)
         {
             prepSize(sizeof(ushort));
@@ -116,7 +116,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(int value)
         {
             prepSize(sizeof(int));
@@ -127,7 +127,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(uint value)
         {
             prepSize(sizeof(uint));
@@ -138,7 +138,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(long value)
         {
             prepSize(sizeof(long));
@@ -149,7 +149,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(ulong value)
         {
             prepSize(sizeof(ulong));
@@ -160,7 +160,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(DateTime value)
         {
             prepSize(sizeof(DateTime));
@@ -171,7 +171,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(float value)
         {
             prepSize(sizeof(float));
@@ -182,7 +182,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(double value)
         {
             prepSize(sizeof(double));
@@ -193,7 +193,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(decimal value)
         {
             prepSize(sizeof(decimal));
@@ -204,7 +204,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Write(Guid value)
         {
             prepSize(sizeof(Guid));
@@ -215,7 +215,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeWrite(bool value)
         {
             Data.Byte[ByteSize++] = (byte)(value ? 1 : 0);
@@ -224,8 +224,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(byte value)
         {
             Data.Byte[ByteSize++] = value;
@@ -234,8 +234,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(sbyte value)
         {
             Data.Byte[ByteSize++] = (byte)value;
@@ -244,8 +244,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(short value)
         {
             *(short*)CurrentData = value;
@@ -255,8 +255,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(ushort value)
         {
             *(ushort*)CurrentData = value;
@@ -266,7 +266,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeWrite(char value)
         {
             *(char*)CurrentData = value;
@@ -276,8 +276,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(int value)
         {
             *(int*)(Data.Byte + ByteSize) = value;
@@ -287,8 +287,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(uint value)
         {
             *(uint*)CurrentData = value;
@@ -298,8 +298,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(long value)
         {
             *(long*)CurrentData = value;
@@ -309,8 +309,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal void UnsafeWrite(ulong value)
         {
             *(ulong*)CurrentData = value;
@@ -320,7 +320,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeWrite(DateTime value)
         {
             *(long*)CurrentData = *(long*)&value;
@@ -330,7 +330,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeWrite(float value)
         {
             *(float*)CurrentData = value;
@@ -340,7 +340,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeWrite(double value)
         {
             *(double*)CurrentData = value;
@@ -350,7 +350,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeWrite(decimal value)
         {
             *(decimal*)CurrentData = value;
@@ -360,7 +360,7 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeWrite(Guid value)
         {
             *(Guid*)CurrentData = value;
@@ -370,7 +370,7 @@ namespace AutoCSer
         /// 二进制序列化填充空白字符
         /// </summary>
         /// <param name="fillSize">字节数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SerializeFill(int fillSize)
         {
             switch (fillSize)
@@ -395,7 +395,7 @@ namespace AutoCSer
         /// 补白对齐 4 字节
         /// </summary>
         /// <param name="startIndex">起始位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SerializeFillWithStartIndex(int startIndex)
         {
             switch ((ByteSize - startIndex) & 3)
@@ -420,7 +420,7 @@ namespace AutoCSer
         /// 增加当前数据长度并且补白对齐 4 字节
         /// </summary>
         /// <param name="size">增加数据长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SerializeFillByteSize(int size)
         {
             ByteSize += size;

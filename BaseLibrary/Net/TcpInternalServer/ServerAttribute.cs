@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.Net.TcpInternalServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
     /// <summary>
     /// TCP 内部服务配置

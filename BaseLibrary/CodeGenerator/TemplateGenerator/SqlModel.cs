@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// 数据模型 代码生成

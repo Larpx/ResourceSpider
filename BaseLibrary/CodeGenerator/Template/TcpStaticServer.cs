@@ -2,7 +2,7 @@
 #pragma warning disable 649
 #pragma warning disable 162
 
-namespace AutoCSer.CodeGenerator.Template
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
 {
     class TcpStaticServer : Pub
     {
@@ -949,7 +949,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF MethodReturnType.Type
                 [AutoCSer.Json.IgnoreMember]
                 public @MethodReturnType.FullName Ret;
-                [AutoCSer.IOS.Preserve(Conditional = true)]
+                
                 public @MethodReturnType.FullName Return
                 {
                     get { return Ret; }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 委托定义
@@ -40,7 +40,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static ActionRef13<valueType1, valueType2, valueType3, returnType> get(MethodInfo method)
         {
             return (ActionRef13<valueType1, valueType2, valueType3, returnType>)Delegate.CreateDelegate(typeof(ActionRef13<valueType1, valueType2, valueType3, returnType>), method);

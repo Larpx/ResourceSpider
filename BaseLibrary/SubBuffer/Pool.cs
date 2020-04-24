@@ -171,7 +171,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// 获取缓冲区
         /// </summary>
         /// <param name="buffer">缓冲区</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Get(ref PoolBufferFull buffer)
         {
             Get(ref buffer.PoolBuffer);
@@ -224,7 +224,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// 添加缓冲区
         /// </summary>
         /// <param name="buffer">缓冲区</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Push(ref PoolBufferFull buffer)
         {
             Push(ref buffer.PoolBuffer);
@@ -251,7 +251,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static Pool GetPool(Size size)
         {
             int bits = ((uint)(int)size).DeBruijnLog2(), index = bits - minBufferSizeBits;
@@ -283,7 +283,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static Pool getPool(int index)
         {
             return getPool(index + minBufferSizeBits, index);
@@ -293,7 +293,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// </summary>
         /// <param name="size">缓冲区字节大小</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static Pool GetPool(int size)
         {
             if (size <= (int)SubBuffer.Size.Kilobyte4)
@@ -321,7 +321,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// </summary>
         /// <param name="buffer"></param>
         /// <param name="size"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void GetBuffer(ref PoolBufferFull buffer, int size)
         {
             Pool pool = GetPool(size);
@@ -332,7 +332,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void clearCache(int count)
         {
             foreach (Pool pool in pools)

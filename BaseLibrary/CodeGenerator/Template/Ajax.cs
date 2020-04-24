@@ -1,7 +1,7 @@
 ﻿using System;
 #pragma warning disable 649
 
-namespace AutoCSer.CodeGenerator.Template
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
 {
     class Ajax : Pub
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 内存或字节数组处理
@@ -13,7 +13,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="src">串起始地址,不能为null</param>
         /// <param name="count">整数数量,大于0</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void ClearUnsafe(ulong* src, int count)
         {
             ulong* end = src + count;
@@ -58,7 +58,7 @@ namespace AutoCSer
         /// <param name="src">串起始地址,不能为null</param>
         /// <param name="value">填充整数</param>
         /// <param name="count">整数数量,大于0</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void Fill(ulong* src, ulong value, int count)
         {
             ulong* end = src + count;
@@ -74,7 +74,7 @@ namespace AutoCSer
         /// <param name="data">数据起始位置</param>
         /// <param name="length">数据长度</param>
         /// <returns>32 位 HASH 值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static int GetHashCode(void* data, int length)
         {
             ulong value = GetHashCode64((byte*)data, length);
@@ -176,7 +176,7 @@ namespace AutoCSer
         /// <param name="source">原字节起始地址,不能为null</param>
         /// <param name="destination">目标串数组,不能为null</param>
         /// <param name="length">字节长度,大于等于0</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void CopyNotNull(void* source, byte[] destination, int length)
         {
             fixed (byte* data = destination) CopyNotNull(source, (void*)data, length);
@@ -188,7 +188,7 @@ namespace AutoCSer
         /// <param name="destination">目标串起始地址,不能为null</param>
         /// <param name="length">字节长度,大于等于0</param>
 #if !MONO
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
 #endif
         internal unsafe static void CopyNotNull(void* source, void* destination, int length)
         {
@@ -278,7 +278,7 @@ namespace AutoCSer
         /// <param name="right">不能为null</param>
         /// <param name="count">比较字节数,必须大于等于0</param>
         /// <returns>是否相等</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static unsafe bool SimpleEqualNotNull(byte[] left, byte[] right, int count)
         {
             fixed (byte* leftFixed = left, rightFixed = right) return SimpleEqualNotNull(leftFixed, rightFixed, count);
@@ -333,7 +333,7 @@ namespace AutoCSer
         /// <param name="source">原串起始地址,不能为null</param>
         /// <param name="destination">目标串起始地址,不能为null</param>
         /// <param name="length">字节长度,大于0</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void SimpleCopyNotNull64(byte* source, byte* destination, int length)
         {
             byte* end = source + ((length + (sizeof(ulong) - 1)) & (int.MaxValue - (sizeof(ulong) - 1)));

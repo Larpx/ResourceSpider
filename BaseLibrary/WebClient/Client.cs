@@ -6,7 +6,7 @@ using System.Text;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.WebClient
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
 {
     /// <summary>
     /// WebClient 包装
@@ -188,7 +188,7 @@ namespace AutoCSer.Net.WebClient
         /// </summary>
         /// <param name="request">URI请求信息</param>
         /// <returns>页面字节流,失败返回null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public byte[] CrawlData(Request request)
         {
             return CrawlData(ref request);
@@ -221,7 +221,7 @@ namespace AutoCSer.Net.WebClient
         /// <param name="request">URI请求信息</param>
         /// <param name="encoding">页面编码</param>
         /// <returns>页面HTML代码,失败返回null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string CrawlHtml(ref Request request, Encoding encoding)
         {
             return ChineseEncoder.ToString(CrawlData(ref request), encoding ?? this.TextEncoding);
@@ -232,7 +232,7 @@ namespace AutoCSer.Net.WebClient
         /// <param name="request">URI请求信息</param>
         /// <param name="encoding">页面编码</param>
         /// <returns>页面HTML代码,失败返回null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string CrawlHtml(Request request, Encoding encoding)
         {
             return CrawlHtml(ref request, encoding);
@@ -242,7 +242,7 @@ namespace AutoCSer.Net.WebClient
         /// </summary>
         /// <param name="error">异常信息</param>
         /// <param name="request">请求信息</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void onError(Exception error, ref Request request)
         {
             if (request.IsErrorOut)

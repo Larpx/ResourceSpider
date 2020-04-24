@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 一级菜单数组，个数应为1~3个
@@ -44,7 +44,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         [AutoCSer.Json.SerializeCustom]
         private void toJson(AutoCSer.Json.Serializer serializer)
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.Win32
+namespace Larpx.ResourceSpider.BaseLibrary.Win32
 {
     /// <summary>
     /// kernel32.dll API

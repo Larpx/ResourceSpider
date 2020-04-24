@@ -2,7 +2,7 @@
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// API调用http://mp.weixin.qq.com/wiki/6/01405db0092f76bb96b12a9f954cd866.html

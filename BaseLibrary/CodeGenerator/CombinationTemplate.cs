@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.IO;
 using System.Collections.Generic;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 自定义简单组合模板

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 范围
@@ -14,7 +14,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="start">起始位置</param>
         /// <param name="length">数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(int start, int length)
         {
             Start = start;

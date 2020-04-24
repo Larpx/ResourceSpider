@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 环池
@@ -35,7 +35,7 @@ namespace AutoCSer.Threading
             /// 弹出数组元素
             /// </summary>
             /// <returns>数组元素</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal valueType Pop()
             {
                 valueType value = Value;

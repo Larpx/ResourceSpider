@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 字段解析
@@ -33,7 +33,7 @@ namespace AutoCSer.Reflection
         /// <param name="methodInfo"></param>
         protected void createMethod(MethodInfo methodInfo)
         {
-            method = (Func<parserType, object, object>)typeof(AutoCSer.Reflection.InvokeMethodRef2<,>).MakeGenericType(typeof(parserType), field.FieldType).GetMethod("getTypeObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { methodInfo });
+            method = (Func<parserType, object, object>)typeof(Reflection.InvokeMethodRef2<,>).MakeGenericType(typeof(parserType), field.FieldType).GetMethod("getTypeObjectReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { methodInfo });
         }
         /// <summary>
         /// 解析委托

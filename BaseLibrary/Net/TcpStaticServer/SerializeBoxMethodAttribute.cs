@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Net.TcpServer;
 
-namespace AutoCSer.Net.TcpStaticServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {
     /// <summary>
     /// TCP 调用函数配置

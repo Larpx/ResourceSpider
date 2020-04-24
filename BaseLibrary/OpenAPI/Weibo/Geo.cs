@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Weibo
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weibo
 {
     /// <summary>
     /// 地理信息

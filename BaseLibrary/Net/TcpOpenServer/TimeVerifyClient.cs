@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// 时间验证服务客户端

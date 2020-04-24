@@ -3,7 +3,7 @@ using AutoCSer.Threading;
 using System.Reflection;
 using AutoCSer.Net.TcpServer;
 
-namespace AutoCSer.Net.TcpOpenServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer.Emit
 {
     /// <summary>
     /// 输入+输出参数泛型类型元数据
@@ -20,7 +20,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <typeparam name="Type1"></typeparam>
         /// <typeparam name="Type2"></typeparam>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static ParameterGenericType2 create<Type1, Type2>()
             where Type1 : struct
             where Type2 : struct

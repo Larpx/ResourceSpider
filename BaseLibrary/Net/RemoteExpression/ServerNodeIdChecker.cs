@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace AutoCSer.Net.RemoteExpression
+namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
 {
     /// <summary>
     /// 客户端检测服务端映射标识
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="nodeType">远程表达式节点类型</param>
         /// <returns>服务端映射标识</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public int Get(Type nodeType)
         {
             return ServerNodeIds[nodeType];
@@ -73,7 +73,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="node"></param>
         /// <returns>是否映射成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe AutoCSer.Net.TcpServer.ReturnType Check(Node node)
         {
             LeftArray<Type> types = default(LeftArray<Type>);

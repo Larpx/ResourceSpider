@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// HTTP 头名称唯一哈希

@@ -4,7 +4,7 @@ using System.Threading;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
     /// <summary>
     /// 套接字超时链表节点
@@ -52,7 +52,7 @@ namespace AutoCSer.Net
         /// </summary>
         /// <param name="timeoutSeconds"></param>
         /// <param name="socket"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void setTimeout(long timeoutSeconds, Socket socket)
         {
             this.timeoutSeconds = timeoutSeconds;
@@ -64,7 +64,7 @@ namespace AutoCSer.Net
         /// <param name="timeoutSeconds"></param>
         /// <param name="socket"></param>
         /// <param name="timeoutCount"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void setTimeout(long timeoutSeconds, Socket socket, ushort timeoutCount)
         {
             setTimeout(timeoutSeconds, socket);
@@ -74,7 +74,7 @@ namespace AutoCSer.Net
         /// 设置超时秒数
         /// </summary>
         /// <param name="timeoutSeconds"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void setTimeout(long timeoutSeconds)
         {
             this.timeoutSeconds = timeoutSeconds;
@@ -85,7 +85,7 @@ namespace AutoCSer.Net
         /// </summary>
         /// <param name="socket"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private byte getTimeoutSocket(ref Socket socket)
         {
             if (timeoutCount == 0)
@@ -100,7 +100,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 等待取消超时
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void waitCancelTimeout()
         {
             while (isSetReceiveTimeout == 0) AutoCSer.Threading.ThreadYield.Yield(Threading.ThreadYield.Type.SocketTimeoutLinkCancelTimeout);
@@ -109,7 +109,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 弹出节点
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void freeTimeout()
         {
             if (nextTimeout != null)
@@ -133,7 +133,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 释放套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void DisposeSocket()
         {
             Socket socket = Socket;
@@ -143,7 +143,7 @@ namespace AutoCSer.Net
         ///// <summary>
         ///// 释放套接字
         ///// </summary>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal void TryDisposeSocket()
         //{
         //    Socket socket = Socket;
@@ -195,7 +195,7 @@ namespace AutoCSer.Net
             ///// 添加超时套接字
             ///// </summary>
             ///// <param name="value"></param>
-            //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            //
             //internal void Push(SocketTimeoutLink value)
             //{
             //    value.setTimeout(currentSeconds + seconds);
@@ -261,7 +261,7 @@ namespace AutoCSer.Net
             /// <summary>
             /// 定时器触发
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void OnTimer()
             {
                 ++currentSeconds;
@@ -397,7 +397,7 @@ namespace AutoCSer.Net
     //        /// 添加节点
     //        /// </summary>
     //        /// <param name="value"></param>
-    //        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+    //        
     //        internal void PushNotNull(valueType value)
     //        {
     //            valueType headValue;
@@ -421,7 +421,7 @@ namespace AutoCSer.Net
     //        /// 弹出节点
     //        /// </summary>
     //        /// <returns></returns>
-    //        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+    //        
     //        public valueType Pop()
     //        {
     //            valueType headValue;
@@ -471,7 +471,7 @@ namespace AutoCSer.Net
     //        /// </summary>
     //        /// <param name="value">链表头部</param>
     //        /// <param name="end">链表尾部</param>
-    //        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+    //        
     //        internal void PushLink(valueType value, valueType end)
     //        {
     //            valueType headValue;

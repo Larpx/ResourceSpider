@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using AutoCSer.CodeGenerator.Metadata;
 using System.Collections.Generic;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// AJAX调用配置

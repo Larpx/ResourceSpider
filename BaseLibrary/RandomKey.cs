@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 随机防 HASH 构造关键字

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Renren
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Renren
 {
     /// <summary>
     /// API调用http://wiki.dev.renren.com/wiki/Authorization#.E6.9C.8D.E5.8A.A1.E7.AB.AF.E6.B5.81.E7.A8.8B

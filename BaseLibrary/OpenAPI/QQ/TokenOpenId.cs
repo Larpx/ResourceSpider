@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.OpenAPI.QQ
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
 {
     /// <summary>
     /// 访问令牌+用户身份的标识，用于保存

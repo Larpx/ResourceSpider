@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.QQ
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.QQ
 {
     /// <summary>
     /// 数据是否有效

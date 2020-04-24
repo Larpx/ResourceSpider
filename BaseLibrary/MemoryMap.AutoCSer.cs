@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 指针位图
@@ -13,7 +13,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="map">位图指针,不能为null</param>
         /// <param name="count">整数数量,大于0</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ulong* map, int count)
         {
             Map = (byte*)map;
@@ -39,7 +39,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="start">位值</param>
         /// <param name="count">段长</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(int start, int count)
         {
             if (start < 0)
@@ -53,7 +53,7 @@ namespace AutoCSer
         /// 清除占位
         /// </summary>
         /// <param name="bit">位值</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Clear(int bit)
         {
             Map[bit >> 3] &= (byte)((1 << (bit & 7)) ^ byte.MaxValue);

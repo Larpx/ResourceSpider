@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Threading;
+using Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 程序集扩展操作
@@ -15,7 +15,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="fullName">程序集名称</param>
         /// <returns>程序集,失败返回null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static System.Reflection.Assembly Get(string fullName)
         {
             if (fullName != null)
@@ -33,7 +33,7 @@ namespace AutoCSer.Reflection
         /// 加载程序集
         /// </summary>
         /// <param name="assembly">程序集</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void loadAssembly(System.Reflection.Assembly assembly)
         {
             nameCache.Set(assembly.FullName, assembly);

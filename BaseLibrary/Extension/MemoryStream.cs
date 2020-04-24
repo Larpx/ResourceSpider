@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// MemoryStream 扩展操作
@@ -12,7 +11,7 @@ namespace AutoCSer.Extension
         /// <summary>
         /// 内存流扩展设置
         /// </summary>
-        private static readonly Action<MemoryStream, bool> memoryStreamExpandable = Larpx.ResourceSpider.BaseLibrary.Emit.Field.UnsafeSetField<MemoryStream, bool>("_expandable");
+        private static readonly Action<MemoryStream, bool> memoryStreamExpandable = Field.UnsafeSetField<MemoryStream, bool>("_expandable");
         /// <summary>
         /// 内存流转换
         /// </summary>
@@ -20,7 +19,6 @@ namespace AutoCSer.Extension
         /// <param name="index"></param>
         /// <param name="count"></param>
         /// <returns>内存流</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static MemoryStream New(byte[] data, int index, int count)
         {
             MemoryStream memoryStream = new MemoryStream(data, index, count, true, true);

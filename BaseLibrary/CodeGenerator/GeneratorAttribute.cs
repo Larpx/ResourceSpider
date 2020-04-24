@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 代码生成器配置
@@ -49,7 +49,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="type">模板数据视图</param>
         /// <returns>模板文件名</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string GetFileName(Type type)
         {
             return Template ?? (IsDeclaringTypeName ? type.DeclaringType.Name : type.Name);

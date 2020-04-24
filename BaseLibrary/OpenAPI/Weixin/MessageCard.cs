@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 卡券扩展

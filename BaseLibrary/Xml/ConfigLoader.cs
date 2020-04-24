@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 配置加载
@@ -17,10 +17,10 @@ namespace AutoCSer.Xml
         /// <param name="type">配置类型</param>
         /// <param name="name">配置名称</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static UnionType GetUnion(Type type, string name = "")
         {
-            return new UnionType { Value = AutoCSer.Config.Loader.GetObject(type, name) };
+            return new UnionType { Value = Config.Loader.GetObject(type, name) };
         }
     }
 }

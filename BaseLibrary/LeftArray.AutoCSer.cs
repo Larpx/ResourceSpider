@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 数组子串
@@ -84,7 +84,7 @@ namespace AutoCSer
         /// <summary>
         /// 长度设为0（注意：对于引用类型没有置 0 可能导致内存泄露）
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Empty()
         {
             Length = 0;
@@ -109,7 +109,7 @@ namespace AutoCSer
         /// 获取最后一个值
         /// </summary>
         /// <returns>最后一个值,失败为default(valueType)</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType LastOrDefault()
         {
             return Length != 0 ? Array[Length - 1] : default(valueType);
@@ -118,7 +118,7 @@ namespace AutoCSer
         /// 添加数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeAdd(valueType value)
         {
             Array[Length++] = value;
@@ -186,7 +186,7 @@ namespace AutoCSer
         /// 弹出最后一个数据
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType UnsafePopOnly()
         {
             return Array[--Length];
@@ -194,7 +194,7 @@ namespace AutoCSer
         /// <summary>
         /// 逆转列表
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Reverse()
         {
             if (Length > 1) System.Array.Reverse(Array, 0, Length);
@@ -222,7 +222,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>匹配值,失败为 default(valueType)</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType FirstOrDefault(Func<valueType, bool> isValue)
         {
             int index = indexOf(isValue);
@@ -278,7 +278,7 @@ namespace AutoCSer
         /// <param name="toString">字符串转换器</param>
         /// <param name="join">连接串</param>
         /// <returns>字符串</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string JoinString(string join, Func<valueType, string> toString)
         {
             return string.Join(join, GetArray(toString));
@@ -287,7 +287,7 @@ namespace AutoCSer
         /// 设置数据长度并清除其它数据
         /// </summary>
         /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void setLengthClear(int length)
         {
             if (DynamicArray<valueType>.IsClearArray) System.Array.Clear(Array, length, Length - length);
@@ -351,7 +351,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>数组中的匹配位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private int indexOfNot(Func<valueType, bool> isValue)
         {
             int index = 0;
@@ -390,7 +390,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns>是否存在移除数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool RemoveToEnd(valueType value)
         {
             return removeAtToEnd(IndexOf(value));
@@ -400,7 +400,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="index">起始位置</param>
         /// <param name="count">移除数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void RemoveRangeOnly(int index, int count)
         {
             AutoCSer.Extension.ArrayExtension.MoveNotNull(Array, index + count, index, (Length -= count) - index);

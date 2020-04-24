@@ -4,7 +4,7 @@ using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 线程操作
@@ -148,7 +148,7 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="value"></param>
             /// <param name="type"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Set(object value, CallType type)
             {
                 Value = value;
@@ -157,7 +157,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 任务调用
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Call()
             {
                 switch (Type)
@@ -213,7 +213,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 等待结束
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Wait()
             {
                 Monitor.Enter(waitLock);
@@ -228,7 +228,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 结束等待
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Set()
             {
                 Monitor.Enter(waitLock);
@@ -448,7 +448,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务委托调用类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void RunTask(object task, CallType taskType)
         {
             //this.domainUnload.Type = AutoCSer.DomainUnload.Type.None;
@@ -460,7 +460,7 @@ namespace AutoCSer.Threading
         /// 结束线程
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal Thread StopLink()
         {
             Thread next = LinkNext;

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using AutoCSer.Extension;
 
-namespace AutoCSer.CodeGenerator.X64
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.X64
 {
     public class Program
     {

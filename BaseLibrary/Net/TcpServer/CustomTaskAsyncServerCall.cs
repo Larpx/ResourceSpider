@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 自定义 TCP 服务器端同步调用任务
@@ -53,13 +53,13 @@ namespace AutoCSer.Net.TcpServer
         /// 获取返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void GetResult() { }
         /// <summary>
         /// 设置异步回调
         /// </summary>
         /// <param name="continuation"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnCompleted(Action continuation)
         {
             if (System.Threading.Interlocked.CompareExchange(ref this.continuation, continuation, null) != null) continuation();
@@ -68,7 +68,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取 await
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public CustomTaskAsyncServerCall GetAwaiter()
         {
             return this;

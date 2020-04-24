@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// 单向动态数组扩展操作
@@ -14,7 +14,6 @@ namespace AutoCSer.Extension
         /// <typeparam name="valueType"></typeparam>
         /// <param name="array">单向动态数组</param>
         /// <returns>数组子串</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public unsafe static LeftArray<valueType> ToLeftArray<valueType>(this ListArray<valueType> array)
         {
             return new LeftArray<valueType>(array);

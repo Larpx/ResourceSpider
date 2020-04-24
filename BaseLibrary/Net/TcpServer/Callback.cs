@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
     /// <summary>
     /// 异步回调

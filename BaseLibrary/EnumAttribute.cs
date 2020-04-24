@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 枚举属性获取器
@@ -103,7 +103,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="index">索引</param>
         /// <returns>属性</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static attributeType Array(int index)
         {
             return (uint)index < (uint)AttributeArray.Length ? AttributeArray[index] : null;

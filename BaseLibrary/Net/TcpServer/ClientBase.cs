@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Net;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务客户端
@@ -130,7 +130,7 @@ namespace AutoCSer.Net.TcpServer
         ///// </summary>
         ///// <param name="clientSocketCreator"></param>
         ///// <param name="clientSocket"></param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal void OnSocketClosed(ClientSocketCreator clientSocketCreator, ClientSocketBase clientSocket)
         //{
         //    if (onSocket != null) onSocket(new ClientSocketEventParameter( clientSocketCreator, clientSocket, ClientSocketEventParameter.EventType.SocketClosed));
@@ -140,7 +140,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
         /// <returns>TCP 客户端套接字初始化处理</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public CheckSocketVersion CreateCheckSocketVersion(Action<ClientSocketEventParameter> onCheckSocketVersion)
         {
             return new CheckSocketVersion(this, onCheckSocketVersion);
@@ -170,7 +170,7 @@ namespace AutoCSer.Net.TcpServer
         /// 删除 TCP 客户端套接字事件
         /// </summary>
         /// <param name="onSocket"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void RemoveOnSetSocket(Action<ClientSocketEventParameter> onSocket)
         {
             if (onSocket != null)
@@ -210,7 +210,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="clientSocketCreator">TCP 服务客户端创建器</param>
         /// <param name="socket"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CallOnSetSocketOnly(ClientSocketCreator clientSocketCreator, ClientSocketBase socket)
         {
             onSocket(new ClientSocketEventParameter(clientSocketCreator, socket, ClientSocketEventParameter.EventType.SetSocket));
@@ -221,8 +221,8 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="callback">回调委托</param>
         /// <returns>异步回调</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public Callback<ReturnValue<outputParameterType>> GetCallback<returnType, outputParameterType>(Action<ReturnValue<returnType>> callback)
 #if NOJIT
         where outputParameterType : IReturnParameter
@@ -236,7 +236,7 @@ namespace AutoCSer.Net.TcpServer
         /// 自定义数据包处理
         /// </summary>
         /// <param name="data"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CustomData(ref SubArray<byte> data)
         {
             if (onCustomData == null) Log.Add(AutoCSer.Log.LogType.Info, "客户端自定义数据包被丢弃");

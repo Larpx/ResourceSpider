@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 非托管内存数据流
@@ -16,7 +16,7 @@ namespace AutoCSer
         /// <summary>
         /// 当前数据长度
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         internal int ByteSize;
         /// <summary>
         /// 当前写入位置
@@ -105,8 +105,8 @@ namespace AutoCSer
         /// 预增数据流长度
         /// </summary>
         /// <param name="length">增加长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         protected void prepSize(int length)
         {
             if ((LastPrepSize = length + ByteSize) > Data.ByteSize) setStreamLength(Math.Max(LastPrepSize, Data.ByteSize << 1));
@@ -115,8 +115,8 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void Write(char value)
         {
             prepSize(sizeof(char));
@@ -127,7 +127,7 @@ namespace AutoCSer
         /// 写字符串
         /// </summary>
         /// <param name="value">字符串</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public unsafe void Write(string value)
         {
             if (value != null)
@@ -142,7 +142,7 @@ namespace AutoCSer
         ///// 写字符串
         ///// </summary>
         ///// <param name="value">字符串</param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //public void Write(SubString value)
         //{
         //    Write(ref value);
@@ -181,7 +181,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="start">字符串起始位置</param>
         /// <param name="count">写入字符数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe void Write(char* start, int count)
         {
             if (start != null) WriteNotNull(start, count);
@@ -258,8 +258,8 @@ namespace AutoCSer
         /// <param name="value1"></param>
         /// <param name="value2"></param>
         /// <param name="value3"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal unsafe void UnsafeWrite(ulong value0, ulong value1, ulong value2, ulong value3)
         {
             byte* data = Data.Byte + ByteSize;
@@ -277,8 +277,8 @@ namespace AutoCSer
         /// <param name="value2"></param>
         /// <param name="value3"></param>
         /// <param name="size"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal unsafe void UnsafeWrite(ulong value0, ulong value1, ulong value2, ulong value3, int size)
         {
             byte* data = Data.Byte + ByteSize;
@@ -295,8 +295,8 @@ namespace AutoCSer
         /// <param name="value1"></param>
         /// <param name="value2"></param>
         /// <param name="size"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal unsafe void UnsafeWrite(ulong value0, ulong value1, ulong value2, int size)
         {
             byte* data = Data.Byte + ByteSize;
@@ -311,8 +311,8 @@ namespace AutoCSer
         /// <param name="value0"></param>
         /// <param name="value1"></param>
         /// <param name="size"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal unsafe void UnsafeWrite(ulong value0, ulong value1, int size)
         {
             byte* data = Data.Byte + ByteSize;
@@ -325,8 +325,8 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value"></param>
         /// <param name="size"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         internal unsafe void UnsafeWrite(ulong value, int size)
         {
             *(ulong*)(Data.Byte + ByteSize) = value;

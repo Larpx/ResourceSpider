@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 先进先出优先队列
@@ -108,7 +108,7 @@ namespace AutoCSer
         /// <summary>
         /// 长度设为0（注意：对于引用类型没有置 0 可能导致内存泄露）
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Empty()
         {
             dictionary.Empty();
@@ -117,7 +117,7 @@ namespace AutoCSer
         /// <summary>
         /// 清除数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Clear()
         {
             dictionary.Clear();
@@ -129,7 +129,7 @@ namespace AutoCSer
         /// <param name="key">键值</param>
         /// <param name="nullValue">失败空值</param>
         /// <returns>数据对象</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType Get(ref keyType key, valueType nullValue)
         {
             Node node = getNode(ref key);
@@ -141,7 +141,7 @@ namespace AutoCSer
         /// <param name="key">键值</param>
         /// <param name="value">目标数据对象</param>
         /// <returns>是否获取成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool TryGetValue(ref keyType key, out valueType value)
         {
             Node node = getNode(ref key);
@@ -219,7 +219,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="key">键值</param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void SetOnly(keyType key, valueType value)
         {
             Node node;
@@ -230,7 +230,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void UnsafeAdd(ref keyType key, valueType value)
         {
             Node node = new Node { Value = value, Key = key, Previous = end };
@@ -257,7 +257,7 @@ namespace AutoCSer
         /// <summary>
         /// 弹出一个值
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Pop()
         {
             if (header != null) UnsafePopNode();
@@ -266,7 +266,7 @@ namespace AutoCSer
         /// 弹出一个值
         /// </summary>
         /// <returns>值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType UnsafePopValue()
         {
             return UnsafePopNode().Value;

@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.StateSearcher
+namespace Larpx.ResourceSpider.BaseLibrary.StateSearcher
 {
     /// <summary>
     /// 状态数据创建器

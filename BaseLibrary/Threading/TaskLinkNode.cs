@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 任务链表节点
@@ -19,7 +19,7 @@ namespace AutoCSer.Threading
         /// 执行任务
         /// </summary>
         /// <param name="next"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void RunTask(ref taskType next)
         {
             next = LinkNext;
@@ -30,7 +30,7 @@ namespace AutoCSer.Threading
         /// 系统线程池调用处理
         /// </summary>
         /// <param name="state"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void ThreadPoolCall(object state)
         {
             try

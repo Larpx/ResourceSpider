@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 心跳检测命令
@@ -48,7 +48,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="socket">TCP客户端命令流处理套接字</param>
         /// <returns>心跳检测命令</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static CheckCommand Get(ClientSocket socket)
         {
             CheckCommand command = AutoCSer.Threading.RingPool<CheckCommand>.Default.Pop();

@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 数组子串
@@ -80,7 +80,7 @@ namespace AutoCSer
         /// 枚举器
         /// </summary>
         /// <returns>枚举器</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         IEnumerator<valueType> IEnumerable<valueType>.GetEnumerator()
         {
             if (Length != 0) return new Enumerator<valueType>.Array(this);
@@ -90,7 +90,7 @@ namespace AutoCSer
         /// 枚举器
         /// </summary>
         /// <returns>枚举器</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         IEnumerator IEnumerable.GetEnumerator()
         {
             if (Length != 0) return new Enumerator<valueType>.Array(this);
@@ -99,7 +99,7 @@ namespace AutoCSer
         /// <summary>
         /// 置空并释放数组
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void SetNull()
         {
             Array = null;
@@ -109,7 +109,7 @@ namespace AutoCSer
         /// 置空并释放数组
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType[] GetNull()
         {
             valueType[] array = Array;
@@ -121,7 +121,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="array"></param>
         /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void GetNull(ref valueType[] array, ref int length)
         {
             array = Array;
@@ -132,7 +132,7 @@ namespace AutoCSer
         /// 数组互换
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Exchange(ref LeftArray<valueType> value)
         {
             LeftArray<valueType> temp = value;
@@ -143,7 +143,7 @@ namespace AutoCSer
         /// 重置数据
         /// </summary>
         /// <param name="value">数组,不能为null</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(valueType[] value)
         {
             Array = value;
@@ -154,7 +154,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数组,不能为null</param>
         /// <param name="length">长度,必须合法</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(valueType[] value, int length)
         {
             Array = value;
@@ -164,7 +164,7 @@ namespace AutoCSer
         /// 设置数据容器长度
         /// </summary>
         /// <param name="count">数据长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void setLength(int count)
         {
             valueType[] newArray = DynamicArray<valueType>.GetNewArray(count);
@@ -175,7 +175,7 @@ namespace AutoCSer
         /// 增加数据长度
         /// </summary>
         /// <param name="length">数据长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void addToLength(int length)
         {
             if (Array == null) Array = new valueType[length < defalutArraySize ? defalutArraySize : length];
@@ -185,7 +185,7 @@ namespace AutoCSer
         /// 预增长度
         /// </summary>
         /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void PrepLength(int length)
         {
             if (Array == null) Array = new valueType[length < defalutArraySize ? defalutArraySize : length];
@@ -194,7 +194,7 @@ namespace AutoCSer
         /// <summary>
         /// 清除所有数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Clear()
         {
             if (Array != null)
@@ -206,7 +206,7 @@ namespace AutoCSer
         /// <summary>
         /// 清除当前长度有效数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void ClearOnlyLength()
         {
             if (Array != null)
@@ -283,7 +283,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">匹配数据</param>
         /// <returns>是否存在数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Contains(valueType value)
         {
             return IndexOf(value) != -1;
@@ -293,7 +293,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">匹配数据</param>
         /// <returns>匹配位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public int IndexOf(valueType value)
         {
             return Length == 0 ? -1 : System.Array.IndexOf(Array, value, 0, Length);
@@ -303,7 +303,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>数组中的匹配位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private int indexOf(Func<valueType, bool> isValue)
         {
             int index = 0;
@@ -319,7 +319,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>数组中的匹配位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public int IndexOf(Func<valueType, bool> isValue)
         {
             return Length == 0 ? -1 : indexOf(isValue);
@@ -370,7 +370,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>是否存在移除数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool RemoveToEnd(Func<valueType, bool> isValue)
         {
             return removeAtToEnd(IndexOf(isValue));
@@ -379,7 +379,7 @@ namespace AutoCSer
         /// 弹出最后一个数据
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType UnsafePop()
         {
             valueType value = Array[--Length];
@@ -401,7 +401,7 @@ namespace AutoCSer
         /// 转换数组
         /// </summary>
         /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType[] ToArray()
         {
             if (Length == 0) return NullValue<valueType>.Array;
@@ -411,7 +411,7 @@ namespace AutoCSer
         /// 转换数组
         /// </summary>
         /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private valueType[] getArray()
         {
             valueType[] newArray = new valueType[Length];
@@ -422,7 +422,7 @@ namespace AutoCSer
         /// 转换数组
         /// </summary>
         /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType[] GetArray()
         {
             return Length != 0 ? getArray() : NullValue<valueType>.Array;
@@ -432,7 +432,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="comparer">比较器</param>
         /// <returns>排序后的数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public LeftArray<valueType> Sort(Func<valueType, valueType, int> comparer)
         {
             AutoCSer.Algorithm.QuickSort.Sort(Array, comparer, 0, Length);

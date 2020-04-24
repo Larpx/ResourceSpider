@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// TCP 服务端
@@ -31,7 +31,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
             : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpOpenServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
@@ -39,7 +39,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 获取客户端请求
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void GetSocket()
         {
             //ThreadPriority priority = Thread.CurrentThread.Priority;

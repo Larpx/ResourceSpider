@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// Guid 联合体
@@ -35,7 +35,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe bool Equals(Guid* other)
         {
             return ((ULong0 ^ *(ulong*)other) | (ULong1 ^ *(ulong*)(((byte*)other) + sizeof(ulong)))) == 0;
@@ -45,7 +45,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool Equals(GuidCreator other)
         {
             return ((ULong0 ^ other.ULong0) | (ULong1 ^ other.ULong1)) == 0;

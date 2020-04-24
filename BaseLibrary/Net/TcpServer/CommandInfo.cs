@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 客户端命令信息
@@ -29,7 +29,7 @@ namespace AutoCSer.Net.TcpServer
         /// 更新最大命令数据字节长度
         /// </summary>
         /// <param name="size">命令数据字节长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CheckMaxDataSize(int size)
         {
             if (size > MaxDataSize) MaxDataSize = size;

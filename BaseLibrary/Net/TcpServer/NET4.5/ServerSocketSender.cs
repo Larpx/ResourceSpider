@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务套接字数据发送
@@ -15,7 +15,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务类型</param>
         /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public async Task AddTaskAsync(Action task, TcpServer.ServerTaskType taskType, byte callQueueIndex = 0)
         {
             if (task != null)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 代码生成接口

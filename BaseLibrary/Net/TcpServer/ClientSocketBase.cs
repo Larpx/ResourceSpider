@@ -6,7 +6,7 @@ using System.Threading;
 using AutoCSer.Log;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务客户端套接字
@@ -236,7 +236,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="oldSocket"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool IsSocketVersion(ref ClientSocketBase oldSocket)
         {
             if (oldSocket == null || CreateVersion > oldSocket.CreateVersion)
@@ -250,7 +250,7 @@ namespace AutoCSer.Net.TcpServer
         /// 套接字操作失败重新创建版本检测
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool CheckCreateVersion()
         {
             return (ClientCreator.CommandClient.IsDisposed | (CreateVersion ^ ClientCreator.CreateVersion)) == 0
@@ -293,7 +293,7 @@ namespace AutoCSer.Net.TcpServer
         /// 版本有效性检测
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected int checkCreate()
         {
             if (ClientCreator.CommandClient.IsDisposed == 0)
@@ -311,7 +311,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 重置心跳检测
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void ResetCheck()
         {
             if (CheckTimer != null) CheckTimer.Reset(this);
@@ -319,7 +319,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 心跳检测
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Check()
         {
             if (!isClose) Sender.Check();
@@ -327,7 +327,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 弹出节点
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void FreeCheck()
         {
             FreeCheckReset();
@@ -336,7 +336,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 弹出节点
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void FreeCheckReset()
         {
             CheckPrevious.CheckNext = CheckNext;
@@ -346,7 +346,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放输出数据序列化
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void FreeOutputSerializer()
         {
             if (OutputSerializer != null)
@@ -361,7 +361,7 @@ namespace AutoCSer.Net.TcpServer
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="commandInfo"></param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Serialize<valueType>(CommandInfo commandInfo, ref valueType value)
             where valueType : struct
         {
@@ -382,7 +382,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void JsonSerialize<valueType>(ref valueType value)
             where valueType : struct
         {
@@ -400,7 +400,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="data">数据</param>
         /// <param name="value">目标对象</param>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool DeSerialize<valueType>(ref SubArray<byte> data, ref valueType value)
             where valueType : struct
         {
@@ -421,7 +421,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="data">数据</param>
         /// <param name="value">目标对象</param>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool ParseJson<valueType>(ref SubArray<byte> data, ref valueType value)
             where valueType : struct
         {
@@ -438,7 +438,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放回调数据反序列化
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void FreeReceiveDeSerializer()
         {
             BinarySerialize.DeSerializer deSerializer = Interlocked.Exchange(ref ReceiveDeSerializer, null);
@@ -449,7 +449,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放资源
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CloseFree()
         {
             ReceiveBuffer.Free();

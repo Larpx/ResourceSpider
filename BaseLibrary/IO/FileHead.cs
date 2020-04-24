@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.IO
+namespace Larpx.ResourceSpider.BaseLibrary.IO
 {
     /// <summary>
     /// AutoCSer 文件头

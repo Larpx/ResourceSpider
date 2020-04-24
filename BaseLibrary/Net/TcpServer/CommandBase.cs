@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Net.Sockets;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 组件基类
@@ -76,7 +76,7 @@ namespace AutoCSer.Net.TcpServer
         /// 添加日志
         /// </summary>
         /// <param name="error"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void AddLog(Exception error)
         {
             Log.Add(AutoCSer.Log.LogType.Error, error);
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 关闭套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void ShutdownClient(Socket socket)
         {
             shutdown(socket, CatchCount.Type.TcpServerClientSocket_Dispose);
@@ -105,7 +105,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 关闭套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void ShutdownServer(Socket socket)
         {
             shutdown(socket, CatchCount.Type.TcpServerSocket_Dispose);
@@ -115,7 +115,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="socket"></param>
 #if !DotNetStandard
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
 #endif
         internal static void CloseServer(Socket socket)
         {
@@ -135,7 +135,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="data"></param>
         /// <param name="markData"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void Mark(ref SubArray<byte> data, ulong markData)
         {
             fixed (byte* dataFixed = data.Array) Mark(dataFixed + data.Start, markData, data.Length);
@@ -147,7 +147,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="markData"></param>
         /// <param name="startIndex"></param>
         /// <param name="dataLength"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void Mark(byte[] data, ulong markData, int startIndex, int dataLength)
         {
             fixed (byte* dataFixed = data) Mark(dataFixed + startIndex, markData, dataLength);
@@ -158,7 +158,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="data"></param>
         /// <param name="markData"></param>
         /// <param name="dataLength"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void Mark(byte* data, ulong markData, int dataLength)
         {
             if (((int)data & 7) == 4) Mark32(data, markData, dataLength);
@@ -170,7 +170,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="data"></param>
         /// <param name="markData"></param>
         /// <param name="dataLength"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void Mark32(byte* data, ulong markData, int dataLength)
         {
             *(uint*)data ^= (uint)markData;
@@ -246,7 +246,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="deSerializeTypes"></param>
         /// <param name="jsonSerializeTypes"></param>
         /// <param name="jsonDeSerializeTypes"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void ClientCompileSerialize(Type[] simpleSerializeTypes, Type[] simpleDeSerializeTypes, Type[] serializeTypes, Type[] deSerializeTypes, Type[] jsonSerializeTypes, Type[] jsonDeSerializeTypes)
         {
             CompileSerialize(simpleDeSerializeTypes, simpleSerializeTypes, deSerializeTypes, serializeTypes, jsonDeSerializeTypes, jsonSerializeTypes);

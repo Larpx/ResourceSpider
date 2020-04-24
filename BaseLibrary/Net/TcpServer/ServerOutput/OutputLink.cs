@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ServerOutput
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
 {
     /// <summary>
     /// TCP 服务端套接字输出信息
@@ -34,7 +34,7 @@ namespace AutoCSer.Net.TcpServer.ServerOutput
         /// 取消输出
         /// </summary>
         /// <param name="head"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void CancelLink(outputLinkType head)
         {
             while (head != null) head = head.free();

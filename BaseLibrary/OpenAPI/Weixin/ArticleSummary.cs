@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 图文群发每日数据，某天所有被阅读过的文章（仅包括群发的文章）在当天的阅读次数等数据

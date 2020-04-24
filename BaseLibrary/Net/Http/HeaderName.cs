@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.Http
+namespace Larpx.ResourceSpider.BaseLibrary.Net.Http
 {
     /// <summary>
     /// HTTP 头部名称数据

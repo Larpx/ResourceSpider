@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 警告提示状态

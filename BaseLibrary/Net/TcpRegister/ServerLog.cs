@@ -2,7 +2,7 @@
 using System.Net;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// TCP 服务注册信息
@@ -61,7 +61,7 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         /// <param name="server"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool HostPortEquals(ServerLog server)
         {
             return Port == server.Port && Host == server.Host;

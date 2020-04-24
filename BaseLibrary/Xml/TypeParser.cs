@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 类型解析器
@@ -645,7 +645,7 @@ namespace AutoCSer.Xml
             /// <param name="parser">XML解析器</param>
             /// <param name="value">目标数据</param>
             /// <returns>是否存在下一个数据</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public int Call(Parser parser, ref valueType value)
             {
                 //parser.ItemName = ItemName;
@@ -666,7 +666,7 @@ namespace AutoCSer.Xml
             /// <param name="memberMap">成员位图</param>
             /// <param name="value">目标数据</param>
             /// <returns>是否存在下一个数据</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public int Call(Parser parser, MemberMap memberMap, ref valueType value)
             {
                 //parser.ItemName = ItemName;
@@ -756,7 +756,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser">XML解析器</param>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void parseClass(Parser parser, ref valueType value)
         {
             if (value == null)
@@ -777,7 +777,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser">XML解析器</param>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void ParseClass(Parser parser, ref valueType value)
         {
             if (DefaultParser == null) parseClass(parser, ref value);
@@ -788,7 +788,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser">XML解析器</param>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void ParseStruct(Parser parser, ref valueType value)
         {
             if (DefaultParser == null) ParseMembers(parser, ref value);
@@ -942,7 +942,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser">XML解析器</param>
         /// <param name="values">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Array(Parser parser, ref valueType[] values)
         {
             int count = ArrayIndex(parser, ref values);
@@ -1012,7 +1012,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser">XML解析器</param>
         /// <param name="value">目标数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void notSupport(Parser parser, ref valueType value)
         {
             parser.State = ParseState.NotSupport;
@@ -1022,7 +1022,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser"></param>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void unbox(Parser parser, ref valueType value)
         {
             if (parser.IsValue() != 0) memberParsers[0].TryParse(parser, ref value);

@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 同步等待调用
@@ -30,7 +30,7 @@ namespace AutoCSer.Net.TcpServer
         /// 调用返回值（警告：每次调用只能使用一次）
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Get(out ReturnValue value)
         {
             waitHandle.Wait();
@@ -42,7 +42,7 @@ namespace AutoCSer.Net.TcpServer
         /// 等待返回
         /// </summary>
         /// <returns>是否存在返回值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ReturnType Wait()
         {
             waitHandle.Wait();
@@ -71,7 +71,7 @@ namespace AutoCSer.Net.TcpServer
         /// 回调处理
         /// </summary>
         /// <param name="outputParameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CallbackSet(ReturnValue outputParameter)
         {
             this.outputParameter = outputParameter.Type;
@@ -107,8 +107,8 @@ namespace AutoCSer.Net.TcpServer
         /// 添加节点
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public static void PushNotNull(AutoWaitReturnValue value)
         {
             if (poolCount >= poolMaxCount) return;
@@ -134,8 +134,8 @@ namespace AutoCSer.Net.TcpServer
         /// 弹出节点
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        //
         public static AutoWaitReturnValue Pop()
         {
             while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
@@ -164,7 +164,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="value">链表头部</param>
         /// <param name="end">链表尾部</param>
         /// <param name="count">数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void pushLink(AutoWaitReturnValue value, AutoWaitReturnValue end, int count)
         {
             System.Threading.Interlocked.Add(ref poolCount, count);
@@ -237,7 +237,7 @@ namespace AutoCSer.Net.TcpServer
         /// 调用返回值（警告：每次调用只能使用一次）
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ReturnValue<outputParameterType> Get()
         {
             waitHandle.Wait();
@@ -251,7 +251,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ReturnType Get(out outputParameterType value)
         {
             waitHandle.Wait();
@@ -265,7 +265,7 @@ namespace AutoCSer.Net.TcpServer
         /// 调用返回值（警告：每次调用只能使用一次）
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Get(out ReturnValue<outputParameterType> value)
         {
             waitHandle.Wait();
@@ -277,7 +277,7 @@ namespace AutoCSer.Net.TcpServer
         /// 等待返回(无意义)
         /// </summary>
         /// <returns>是否存在返回值</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ReturnType Wait()
         {
             return ReturnType.Unknown;
@@ -319,8 +319,8 @@ namespace AutoCSer.Net.TcpServer
         /// 添加节点
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public static void PushNotNull(AutoWaitReturnValue<outputParameterType> value)
         {
             if (poolCount >= poolMaxCount) return;
@@ -346,7 +346,7 @@ namespace AutoCSer.Net.TcpServer
         /// 弹出节点
         /// </summary>
         /// <returns></returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //
         public static AutoWaitReturnValue<outputParameterType> Pop()
         {
             while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
@@ -375,7 +375,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="value">链表头部</param>
         /// <param name="end">链表尾部</param>
         /// <param name="count">数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void pushLink(AutoWaitReturnValue<outputParameterType> value, AutoWaitReturnValue<outputParameterType> end, int count)
         {
             System.Threading.Interlocked.Add(ref poolCount, count);

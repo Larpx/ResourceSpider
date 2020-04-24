@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.WebClient
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
 {
     /// <summary>
     /// URI请求信息
@@ -49,7 +49,7 @@ namespace AutoCSer.Net.WebClient
         /// <summary>
         /// 清除请求信息
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Clear()
         {
             Uri = null;

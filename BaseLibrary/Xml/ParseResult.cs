@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// XML 解析结果

@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 客户端回调队列处理

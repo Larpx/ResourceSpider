@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 最后关键字缓存字典
@@ -35,7 +35,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 清除数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Clear()
         {
             Monitor.Enter(dictionaryLock);
@@ -82,7 +82,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(keyType key, valueType value)
         {
             while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
@@ -94,7 +94,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 释放目标
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Exit()
         {
             Monitor.Exit(dictionaryLock);

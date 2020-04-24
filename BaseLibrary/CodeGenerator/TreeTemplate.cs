@@ -7,7 +7,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 树节点模板
@@ -239,7 +239,7 @@ namespace AutoCSer.CodeGenerator
             /// </summary>
             /// <param name="name">成员名称</param>
             /// <returns>子节点成员</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal MemberNode Get(string name)
             {
                 SubString subName = new SubString { String = name, Start = 0, Length = name.Length };
@@ -323,7 +323,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="index">临时变量层次</param>
         /// <returns>变量名称</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected string path(int index)
         {
             return "_value" + (index == 0 ? (currentMembers.Length - 1) : index).ToString() + "_";
@@ -333,7 +333,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="index">临时变量层次</param>
         /// <returns>循环索引变量名称</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected string loopIndex(int index)
         {
             return "_loopIndex" + (index == 0 ? (currentMembers.Length - 1) : index).ToString() + "_";
@@ -343,7 +343,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="index">临时变量层次</param>
         /// <returns>循环数量变量名称</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected string loopCount(int index)
         {
             return "_loopCount" + (index == 0 ? (currentMembers.Length - 1) : index).ToString() + "_";
@@ -428,7 +428,7 @@ namespace AutoCSer.CodeGenerator
         /// 添加当前成员节点
         /// </summary>
         /// <param name="member">成员节点</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void pushMember(MemberNode member)
         {
             currentMembers.Add(member);
@@ -540,7 +540,7 @@ namespace AutoCSer.CodeGenerator
         /// if结束代码段
         /// </summary>
         /// <param name="isMember">是否删除成员节点</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void ifEnd(bool isMember)
         {
             if (isMember) --currentMembers.Length;
@@ -740,7 +740,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="isMember">是否删除当前成员节点</param>
         /// <param name="popCount">删除成员节点数量</param>
         /// <param name="isNot"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void ifThen(nodeType node, ExtensionType type, string name, string ifName, bool isMember, int popCount, bool isNot)
         {
             ifOr(type, name, ifName, isMember, popCount);
@@ -855,7 +855,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="ifName">逻辑变量名称</param>
         /// <param name="popCount">删除成员节点数量</param>
         /// <param name="isNot"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void ifThen(MemberNode member, nodeType node, string value, string ifName, int popCount, bool isNot)
         {
             if (value == null) ifThen(node, member.Type, member.AwaitPath, ifName, false, popCount, isNot);
@@ -871,7 +871,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="ifName">逻辑变量名称</param>
         /// <param name="popCount">删除成员节点数量</param>
         /// <param name="isNot"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void ifThen(nodeType node, ExtensionType type, string name, string value, string ifName, int popCount, bool isNot)
         {
             ifOr(type, name, value, ifName, popCount);
@@ -1013,7 +1013,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="value">匹配值</param>
         /// <param name="ifName">逻辑变量名称</param>
         /// <param name="popCount">删除成员节点数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void ifOr(MemberNode member, string value, string ifName, int popCount)
         {
             if (value == null) ifOr(member.Type, member.AwaitPath, ifName, false, popCount);
@@ -1085,7 +1085,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="ifName">逻辑变量名称</param>
         /// <param name="popCount">删除成员节点数量</param>
         /// <param name="isNot"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void not(MemberNode member, nodeType node, string value, string ifName, int popCount, bool isNot)
         {
             notOr(member, value, ifName, popCount);

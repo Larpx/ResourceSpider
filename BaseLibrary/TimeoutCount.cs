@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 超时计数
@@ -36,7 +36,7 @@ namespace AutoCSer
             /// </summary>
             /// <param name="Size"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal long Next(int Size)
             {
                 ++Second;
@@ -93,7 +93,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="seconds">超时秒数</param>
         /// <returns>超时秒计数</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal uint TryIncrement(ushort seconds)
         {
             return seconds == 0 || isPushEvents == 0 ? 0 : Increment(seconds);
@@ -124,7 +124,7 @@ namespace AutoCSer
         /// 减少超时计数
         /// </summary>
         /// <param name="seconds">超时秒计数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void TryDecrement(uint seconds)
         {
             if (seconds != 0 && isPushEvents != 0) Decrement(seconds);

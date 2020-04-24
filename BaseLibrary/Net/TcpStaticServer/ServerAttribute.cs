@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpStaticServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {
     /// <summary>
     /// TCP 静态服务配置
@@ -60,7 +60,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// <param name="type">TCP 服务器类型</param>
         /// <param name="isServer">是否服务端</param>
         /// <returns>TCP 调用服务器端配置信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static TcpInternalServer.ServerAttribute GetConfig(string serviceName, Type type, bool isServer)
         {
             TcpInternalServer.ServerAttribute attribute = GetConfig(serviceName, type);
@@ -73,7 +73,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// <param name="serviceName">TCP 调用服务名称</param>
         /// <param name="isServer">是否服务端</param>
         /// <returns>TCP 调用服务器端配置信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static TcpInternalServer.ServerAttribute GetConfig(string serviceName, bool isServer)
         {
             return GetConfig(serviceName, null, isServer);
@@ -83,7 +83,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// </summary>
         /// <param name="serviceName">TCP 调用服务名称</param>
         /// <returns>TCP 调用服务器端配置信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static TcpInternalServer.ServerAttribute GetConfig(string serviceName)
         {
             return GetConfig(serviceName, null);

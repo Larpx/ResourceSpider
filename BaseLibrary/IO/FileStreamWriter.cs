@@ -1,12 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using AutoCSer.Log;
 using System.Threading;
-using AutoCSer.Extension;
-using System.Runtime.CompilerServices;
 
-namespace AutoCSer.IO
+namespace Larpx.ResourceSpider.BaseLibrary.IO
 {
     /// <summary>
     /// 文件流写入器
@@ -42,13 +39,13 @@ namespace AutoCSer.IO
             ///// 设置等待缓冲区
             ///// </summary>
             ///// <param name="buffer">缓冲区</param>
-            //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            //
             //public void Set(ref SubBuffer.PoolBufferFull buffer)
             //{
             //    Buffer = buffer;
             //    WaitLength = 0;
             //}
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal void Clear()
             {
                 Buffer.Buffer = null;
@@ -58,7 +55,7 @@ namespace AutoCSer.IO
             /// <summary>
             /// 释放缓冲区
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal void Free()
             {
                 Buffer.PoolBuffer.Free();
@@ -89,7 +86,7 @@ namespace AutoCSer.IO
             /// 获取缓冲区
             /// </summary>
             /// <param name="bufferPool"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal void Get(SubBuffer.Pool bufferPool)
             {
                 bufferPool.Get(ref Buffer);
@@ -101,7 +98,7 @@ namespace AutoCSer.IO
             /// </summary>
             /// <param name="value"></param>
             /// <param name="encoding"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal void Write(string value, ref EncodingCache encoding)
             {
                 WriteIndex += encoding.WriteBytesNotEmpty(value, Buffer.Buffer, WriteIndex);
@@ -112,7 +109,7 @@ namespace AutoCSer.IO
             /// <param name="value"></param>
             /// <param name="buffer"></param>
             /// <param name="encoding"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal void WriteNotPool(string value, byte[] buffer, ref EncodingCache encoding)
             {
                 Buffer.Set(buffer, 0);
@@ -124,7 +121,7 @@ namespace AutoCSer.IO
             /// </summary>
             /// <param name="length"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal bool CanWrite(int length)
             {
                 if (Buffer.Buffer == null) return false;
@@ -135,7 +132,7 @@ namespace AutoCSer.IO
             /// 写入文件
             /// </summary>
             /// <param name="writer"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal void WriteFile(FileStreamWriter writer)
             {
                 if (Buffer.Buffer != null)
@@ -152,7 +149,7 @@ namespace AutoCSer.IO
             /// </summary>
             /// <param name="writer"></param>
             /// <returns>是否等待</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
             internal bool Error(FileStreamWriter writer)
             {
                 if (Buffer.Buffer != null)
@@ -172,10 +169,6 @@ namespace AutoCSer.IO
         /// 缓冲区池
         /// </summary>
         private readonly SubBuffer.Pool bufferPool;
-        /// <summary>
-        /// 日志处理
-        /// </summary>
-        private readonly ILog log;
         /// <summary>
         /// 缓存操作锁
         /// </summary>
@@ -259,7 +252,7 @@ namespace AutoCSer.IO
         /// <param name="log">日志处理</param>
         /// <param name="encoding">文件编码</param>
         public FileStreamWriter(string fileName, FileMode mode = FileMode.CreateNew, FileShare fileShare = FileShare.None, FileOptions fileOption = FileOptions.None, SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte4, ILog log = null, Encoding encoding = null)
-            : this(fileName, mode, fileShare, fileOption, bufferSize, log, new EncodingCache(encoding ?? Encoding.UTF8))
+            : this(fileName, mode, fileShare, fileOption, bufferSize, new EncodingCache(encoding ?? Encoding.UTF8))
         {
         }
         /// <summary>
@@ -272,11 +265,10 @@ namespace AutoCSer.IO
         /// <param name="bufferSize">缓冲区字节大小</param>
         /// <param name="log">日志处理</param>
         /// <param name="encoding">文件编码</param>
-        internal FileStreamWriter(string fileName, FileMode mode, FileShare fileShare, FileOptions fileOption, SubBuffer.Size bufferSize, ILog log, EncodingCache encoding)
+        internal FileStreamWriter(string fileName, FileMode mode, FileShare fileShare, FileOptions fileOption, SubBuffer.Size bufferSize, EncodingCache encoding)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException("fileName is null");
             FileName = fileName;
-            this.log = log;
             this.fileShare = fileShare;
             this.fileOption = fileOption;
             this.encoding = encoding;
@@ -287,13 +279,15 @@ namespace AutoCSer.IO
         /// 打开文件
         /// </summary>
         /// <param name="mode">打开方式</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
         private unsafe void open(FileMode mode)
         {
             fileStream = new FileStream(FileName, mode, FileAccess.Write, fileShare, bufferPool.Size, fileOption);
             fileLength = fileBufferLength = waitFileLength = openLength = fileStream.Length;
-            if (fileLength == 0) buffer.WriteBom(this, encoding.Encoding);
-            else fileStream.Seek(0, SeekOrigin.End);
+            if (fileLength == 0) 
+                buffer.WriteBom(this, encoding.Encoding);
+            else 
+                fileStream.Seek(0, SeekOrigin.End);
         }
         /// <summary>
         /// 释放资源
@@ -317,7 +311,7 @@ namespace AutoCSer.IO
         /// <summary>
         /// 等待缓存写入
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
         public void Flush()
         {
             Monitor.Enter(bufferLock);
@@ -461,7 +455,6 @@ namespace AutoCSer.IO
                     catch (Exception error)
                     {
                         isError = true;
-                        log.Add(Log.LogType.Error, error);
                         AutoCSer.Threading.ThreadPool.Tiny.FastStart(this, AutoCSer.Threading.Thread.CallType.FileStreamWriterDispose);
                     }
                 }
@@ -473,7 +466,7 @@ namespace AutoCSer.IO
         /// <summary>
         /// 唤醒等待
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
         private void pulseWait()
         {
             fileStream.Flush(true);
@@ -485,7 +478,7 @@ namespace AutoCSer.IO
         /// <summary>
         /// 设置等待文件长度
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
         private void setErrorWaitFileLength()
         {
             waitFileLength = fileLength;

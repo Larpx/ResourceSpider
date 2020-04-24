@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// 字符串扩展操作
@@ -35,7 +35,7 @@ namespace AutoCSer.Extension
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static bool SimpleEqual(string source, void* destination)
         {
             fixed (char* sourceFixed = source) return AutoCSer.Memory.SimpleEqualNotNull((byte*)sourceFixed, (byte*)destination, source.Length << 1);

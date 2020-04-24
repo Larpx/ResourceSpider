@@ -3,7 +3,7 @@ using AutoCSer.Net.TcpServer.Emit;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpInternalServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {
     /// <summary>
     /// TCP 客户端
@@ -52,7 +52,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// </summary>
         /// <param name="index"></param>
         /// <returns>客户端命令信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         //[AutoCSer.IOS.Preserve]
         public static TcpServer.CommandInfo GetCommand(int index)
         {

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.Net.SimpleSerialize
+namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
     /// <summary>
     /// 简单反序列化
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <summary>
         /// 预编译
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Compile() { }
 
         static TypeDeSerializer()

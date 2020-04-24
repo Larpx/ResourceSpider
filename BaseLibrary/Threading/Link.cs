@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 链表节点
@@ -19,7 +19,7 @@ namespace AutoCSer.Threading
         /// 获取并清除下一个节点
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal valueType GetLinkNextClear()
         {
             valueType value = LinkNext;

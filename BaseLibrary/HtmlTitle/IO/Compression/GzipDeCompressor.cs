@@ -2,7 +2,7 @@
 using System.IO.Compression;
 using System.IO;
 
-namespace AutoCSer.IO.Compression
+namespace Larpx.ResourceSpider.BaseLibrary.IO.Compression
 {
     /// <summary>
     /// gzip 解压缩处理

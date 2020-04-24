@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 类型序列化
@@ -44,7 +44,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="xmlSerializer">对象转换XML字符串</param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Serialize(Serializer xmlSerializer, valueType value)
         {
             if (isValueType) StructSerialize(xmlSerializer, value);
@@ -55,7 +55,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="xmlSerializer">对象转换XML字符串</param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void StructSerialize(Serializer xmlSerializer, valueType value)
         {
             if (defaultSerializer == null) MemberSerialize(xmlSerializer, value);
@@ -110,7 +110,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="xmlSerializer">对象转换XML字符串</param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void enumToString(Serializer xmlSerializer, valueType value)
         {
             xmlSerializer.CallSerialize(value.ToString());
@@ -120,7 +120,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="xmlSerializer">对象转换XML字符串</param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void ignore(Serializer xmlSerializer, valueType value) { }
 
         static TypeSerializer()

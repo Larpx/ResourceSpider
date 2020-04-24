@@ -3,7 +3,7 @@ using System.Text;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 汉字编码检测
@@ -98,7 +98,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="data">字节数组</param>
         /// <returns>编码,失败为null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public Encoding Get(byte[] data)
         {
             fixed (byte* dataFixed = data) return get(dataFixed, data.Length);
@@ -748,7 +748,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="data">字节数组</param>
         /// <returns>编码,失败为null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static Encoding ChineseEncoding(byte[] data)
         {
             return data != null ? (data.Length != 0 ? new ChineseEncoder().Get(data) : Encoding.ASCII) : null;
@@ -759,7 +759,7 @@ namespace AutoCSer
         /// <param name="data">字节数组</param>
         /// <param name="length">字节数量</param>
         /// <returns>编码,失败为null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static Encoding ChineseEncoding(byte* data, int length)
         {
             return new ChineseEncoder().get(data, length);

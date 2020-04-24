@@ -6,7 +6,7 @@ using System.Net;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务基类
@@ -95,7 +95,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="commandIndex"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static ReturnType GetReturnType(ref uint commandIndex)
         {
             ReturnType type = (ReturnType)(byte)(commandIndex >> CommandIndexBits);
@@ -107,7 +107,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="commandIndex"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static CommandFlags GetCommandFlags(ref uint commandIndex)
         {
             CommandFlags flags = (CommandFlags)(commandIndex & CommandFlagsAnd);
@@ -120,7 +120,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="commandIndex"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static uint GetCommandIndex(uint commandIndex, ReturnType type)
         {
             return (commandIndex & TcpServer.Server.CommandIndexAnd) | ((uint)(byte)type << TcpServer.Server.CommandIndexBits);
@@ -189,7 +189,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 获取客户端套接字
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void startGetSocket()
         {
             AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, getSocketThreadCallType);
@@ -200,7 +200,7 @@ namespace AutoCSer.Net.TcpServer
         /// 自定义数据包处理
         /// </summary>
         /// <param name="data"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CustomData(ref SubArray<byte> data)
         {
             if (onCustomData == null) Log.Add(AutoCSer.Log.LogType.Info, "客户端自定义数据包被丢弃");
@@ -222,7 +222,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <typeparam name="queueKeyType">关键字类型</typeparam>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected IServerCallQueue getServerCallQueue<queueKeyType>()
         {
             return serverCallQueue.Get<queueKeyType>();
@@ -233,7 +233,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <typeparam name="queueKeyType">关键字类型</typeparam>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected IServerCallQueue<queueKeyType> getServerCallQueue<queueKeyType>()
         {
             return serverCallQueue.Get<queueKeyType>();
@@ -279,7 +279,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="socket"></param>
         /// <param name="buffer"></param>
         /// <param name="dataSize"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void DoCommand(int index, serverSocketSenderType socket, ref SubBuffer.PoolBufferFull buffer, int dataSize)
         {
             SubArray<byte> data = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = dataSize };

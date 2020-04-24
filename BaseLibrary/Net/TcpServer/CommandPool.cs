@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using AutoCSer.Log;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 客户端命令池
@@ -44,7 +44,7 @@ namespace AutoCSer.Net.TcpServer
             /// <param name="command">客户端命令</param>
             /// <param name="timeoutSeconds">超时秒计数</param>
             /// <returns>下一个命令序号</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal int Set(ClientCommand.Command command, uint timeoutSeconds)
             {
                 Command = command;
@@ -58,7 +58,7 @@ namespace AutoCSer.Net.TcpServer
             /// <param name="command"></param>
             /// <param name="timeoutSeconds"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal int Get(int nextIndex, out ClientCommand.Command command, ref uint timeoutSeconds)
             {
                 command = Command;
@@ -80,7 +80,7 @@ namespace AutoCSer.Net.TcpServer
             /// </summary>
             /// <param name="nextIndex">下一个命令序号</param>
             /// <returns>超时秒计数</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal uint Cancel(int nextIndex)
             {
                 Command = null;
@@ -109,7 +109,7 @@ namespace AutoCSer.Net.TcpServer
             /// <param name="timeoutSeconds"></param>
             /// <param name="nextIndex"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal ClientCommand.Command CheckTimeout(uint timeoutSeconds, int nextIndex)
             {
                 if (Command != null && TimeoutSeconds == timeoutSeconds)
@@ -267,7 +267,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放超时计数
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void DisposeTimeout()
         {
             if (timeout != null) timeout.Dispose();
@@ -585,7 +585,7 @@ namespace AutoCSer.Net.TcpServer
     //    /// 取消接收数据
     //    /// </summary>
     //    /// <returns>接收数据回调+回调是否使用任务池</returns>
-    //    [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+    //    
     //    public ClientCommand.Command Cancel()
     //    {
     //        ClientCommand.Command command = Command;
@@ -596,7 +596,7 @@ namespace AutoCSer.Net.TcpServer
     //    /// 取消接收数据
     //    /// </summary>
     //    /// <param name="command"></param>
-    //    [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+    //    
     //    public void Cancel(ClientCommand.Command command)
     //    {
     //        if (Command == command) Command = null;
@@ -620,7 +620,7 @@ namespace AutoCSer.Net.TcpServer
     //    /// </summary>
     //    /// <param name="isKeepCallback">是否保持异步回调</param>
     //    /// <returns>客户端命令</returns>
-    //    [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+    //    
     //    public ClientCommand.Command Get(ref int isKeepCallback)
     //    {
     //        ClientCommand.Command command = Command;

@@ -5,7 +5,7 @@ using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.Net.WebClient.Form
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Form
 {
     /// <summary>
     /// WEB表单生成
@@ -26,7 +26,7 @@ namespace AutoCSer.Net.WebClient.Form
         /// </summary>
         /// <param name="value">查询对象</param>
         /// <returns>POST表单</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static NameValueCollection Get(valueType value)
         {
             if (getter != null)
@@ -42,7 +42,7 @@ namespace AutoCSer.Net.WebClient.Form
         /// </summary>
         /// <param name="value">查询对象</param>
         /// <param name="form">POST表单</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void Get(valueType value, NameValueCollection form)
         {
             if (getter != null)

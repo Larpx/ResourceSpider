@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// 主机端口信息
@@ -23,7 +23,7 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         /// <param name="host"></param>
         /// <param name="port"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(string host, int port)
         {
             Host = host;

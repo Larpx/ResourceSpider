@@ -5,7 +5,7 @@ using System.Reflection;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Net.TcpInternalServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
     /// <summary>
     /// TCP 服务器端异步调用

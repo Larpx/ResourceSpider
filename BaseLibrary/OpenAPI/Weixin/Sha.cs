@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// SHA
@@ -23,7 +23,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// </summary>
         /// <param name="buffer">数据</param>
         /// <returns>SHA1哈希</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static byte[] Sha1(byte[] buffer)
         {
             return Sha1(buffer, 0, buffer.Length);

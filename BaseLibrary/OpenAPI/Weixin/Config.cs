@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 应用配置

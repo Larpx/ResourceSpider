@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 随机数
@@ -106,7 +106,7 @@ namespace AutoCSer
         /// 获取随机种子位置
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private int nextIndex()
         {
             int index = Interlocked.Increment(ref current);
@@ -148,7 +148,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="mod">求余取模数</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public int Next(int mod)
         {
             if (mod <= 1) return 0;
@@ -247,7 +247,7 @@ namespace AutoCSer
         /// 获取随机种子位置
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private int nextIndex64()
         {
             while (System.Threading.Interlocked.CompareExchange(ref currentLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNext64);
@@ -292,7 +292,7 @@ namespace AutoCSer
         /// <summary>
         /// 获取下一个非0随机数
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public uint SecureNextUIntNotZero()
         {
             uint value = (uint)SecureNext();
@@ -315,7 +315,7 @@ namespace AutoCSer
         /// <summary>
         /// 获取下一个非0随机数
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ulong SecureNextULongNotZero()
         {
             ulong value = SecureNextULong();

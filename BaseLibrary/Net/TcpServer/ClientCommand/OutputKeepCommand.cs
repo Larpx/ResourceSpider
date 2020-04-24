@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 客户端命令
@@ -62,7 +62,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="data"></param>
         /// <param name="outputParameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private unsafe void onReceive(ref SubArray<byte> data, ref ReturnValue<outputParameterType> outputParameter)
         {
             outputParameter.Type = GetReturnType(ref data);
@@ -235,7 +235,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         ///// <param name="callback">异步回调</param>
         ///// <param name="outputParameter">输出参数</param>
         ///// <returns>客户端命令</returns>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal bool Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback, ref outputParameterType outputParameter)
         //{
         //    if (callback != null && command.TaskType != ClientTaskType.Synchronous)
@@ -261,7 +261,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="command">命令信息</param>
         /// <param name="callback">异步回调</param>
         /// <param name="outputParameter">输出参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback, ref outputParameterType outputParameter)
         {
             if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();
@@ -278,7 +278,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         ///// <param name="command">命令信息</param>
         ///// <param name="callback">异步回调</param>
         ///// <returns>客户端命令</returns>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal bool Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback)
         //{
         //    if (callback != null && command.TaskType != ClientTaskType.Synchronous)
@@ -303,7 +303,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="socket">TCP客户端命令流处理套接字</param>
         /// <param name="command">命令信息</param>
         /// <param name="callback">异步回调</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback)
         {
             if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();

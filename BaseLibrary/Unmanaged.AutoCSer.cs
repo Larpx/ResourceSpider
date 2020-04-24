@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 非托管内存
@@ -16,7 +16,7 @@ namespace AutoCSer
         /// <param name="size">内存字节数</param>
         /// <param name="isClear">是否需要清除</param>
         /// <returns>非托管内存起始指针</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static Pointer.Size GetSize64(int size, bool isClear = false)
         {
             return GetSizeUnsafe64((size + 7) & (int.MaxValue - 7), isClear);
@@ -25,7 +25,7 @@ namespace AutoCSer
         /// 释放内存
         /// </summary>
         /// <param name="data"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void FreeStatic(ref Pointer.Size data)
         {
             if (data.Data != null)
@@ -40,7 +40,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="data"></param>
         /// <param name="isStaticUnmanaged"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Free(ref Pointer.Size data, bool isStaticUnmanaged)
         {
             if (isStaticUnmanaged) FreeStatic(ref data);

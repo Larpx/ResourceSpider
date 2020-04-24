@@ -117,7 +117,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Algorithm
         /// <typeparam name="valueType">排序数据类型</typeparam>
         /// <param name="values">待排序数组</param>
         /// <param name="comparer">排序比较器</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void Sort<valueType>(valueType[] values, Func<valueType, valueType, int> comparer)
         {
             if (values != null && values.Length > 1)
@@ -133,7 +133,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Algorithm
         /// <param name="comparer">排序比较器</param>
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">排序数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void Sort<valueType>(valueType[] values, Func<valueType, valueType, int> comparer, int startIndex, int count)
         {
             FormatRange range = new FormatRange(values.length(), startIndex, count);

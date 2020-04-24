@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 字典
@@ -15,7 +15,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 字典
         /// </summary>
-        private Dictionary<keyType, valueType> dictionary = DictionaryCreator.CreateAny<keyType, valueType>();
+        private Dictionary<keyType, valueType> dictionary = new Dictionary<keyType, valueType>();
         /// <summary>
         /// 访问锁
         /// </summary>
@@ -42,7 +42,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+
         public void Set(keyType key, valueType value)
         {
             Monitor.Enter(dictionaryLock);
@@ -86,7 +86,8 @@ namespace AutoCSer.Threading
             Monitor.Enter(dictionaryLock);
             try
             {
-                if (dictionary.Count != 0) dictionary = DictionaryCreator.CreateAny<keyType, valueType>();
+                if (dictionary.Count != 0)
+                    dictionary = new Dictionary<keyType, valueType>();
             }
             finally { Monitor.Exit(dictionaryLock); }
         }

@@ -3,7 +3,7 @@ using System.IO;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.WebClient
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
 {
     /// <summary>
     /// 压缩流处理
@@ -27,7 +27,7 @@ namespace AutoCSer.Net.WebClient
         /// </summary>
         /// <param name="compressData">压缩数据</param>
         /// <returns>解压缩后的数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public byte[] GetDeCompress(byte[] compressData)
         {
             if (compressData.length() > 0)

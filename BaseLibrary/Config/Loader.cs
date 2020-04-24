@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace AutoCSer.Config
+namespace Larpx.ResourceSpider.BaseLibrary.Config
 {
     /// <summary>
     /// 配置加载
@@ -142,7 +142,7 @@ namespace AutoCSer.Config
         /// </summary>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static bool checkName(Assembly assembly)
         {
             string name = assembly.FullName;
@@ -252,7 +252,7 @@ namespace AutoCSer.Config
         /// 配置加载检测
         /// </summary>
         /// <param name="assembly"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void load(Assembly assembly)
         {
             foreach (KeyValue<Key, Creator> config in getConfigs(assembly, false)) set(config);
@@ -261,7 +261,7 @@ namespace AutoCSer.Config
         /// 设置配置
         /// </summary>
         /// <param name="config"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void set(KeyValue<Key, Creator> config)
         {
             Creator oldCreator;

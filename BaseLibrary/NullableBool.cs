@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 可空逻辑值

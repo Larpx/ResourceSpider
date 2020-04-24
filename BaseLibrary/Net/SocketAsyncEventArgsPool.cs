@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Threading;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
     /// <summary>
     /// 套接字异步事件对象池

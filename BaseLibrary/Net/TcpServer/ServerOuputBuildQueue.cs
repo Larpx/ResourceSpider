@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using AutoCSer.Net.TcpServer.ServerOutput;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 服务端输出队列
@@ -73,7 +73,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="output"></param>
         /// <returns>是否正在输出</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int Push(ServerOutput.OutputLink output)
         {
             AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);
@@ -88,7 +88,7 @@ namespace AutoCSer.Net.TcpServer
         /// 弹出输出
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal ServerOutput.OutputLink Pop()
         {
             ServerOutput.OutputLink value = head.TryFreeBuildQueue();
@@ -102,7 +102,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 设置队列节点
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void PushHead()
         {
             Head.LinkNext = head;
@@ -112,7 +112,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置是否正在输出
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int TryOutputEnd()
         {
             if (head.LinkNext == null)
@@ -132,7 +132,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置是否正在输出
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int TryOutput()
         {
             AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(ref pushLock);

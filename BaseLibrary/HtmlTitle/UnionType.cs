@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// 类型转换

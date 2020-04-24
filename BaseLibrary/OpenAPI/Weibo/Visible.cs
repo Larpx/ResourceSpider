@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.OpenAPI.Weibo
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weibo
 {
     /// <summary>
     /// 可见性

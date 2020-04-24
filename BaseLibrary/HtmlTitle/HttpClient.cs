@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
 using System.Threading;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// HTML 标题获取客户端
@@ -197,7 +197,7 @@ Host: ").getBytes();
         /// <summary>
         /// 释放资源
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Free()
         {
 #if !DOTNET2
@@ -244,7 +244,7 @@ Host: ").getBytes();
         /// </summary>
         /// <param name="buffer">数据</param>
         /// <param name="encoding">HTML标题编码</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void callback(ref SubBuffer.PoolBufferFull buffer, Encoding encoding)
         {
             callback(encoding.GetString(buffer.Buffer, buffer.StartIndex + title.StartIndex, title.Length - title.StartIndex));

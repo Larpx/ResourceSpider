@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 客户端命令
@@ -165,7 +165,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="socket">TCP客户端命令流处理套接字</param>
         /// <param name="command">命令信息</param>
         /// <param name="onCall">回调委托</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ClientSocket socket, CommandInfo command, Action<ReturnValue> onCall)
         {
             if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();

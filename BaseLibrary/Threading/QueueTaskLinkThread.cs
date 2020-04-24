@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 队列链表任务线程
@@ -155,7 +155,7 @@ namespace AutoCSer.Threading
             /// 添加任务
             /// </summary>
             /// <param name="node"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void Add(taskType node)
             {
                 if (node != null)
@@ -247,7 +247,7 @@ namespace AutoCSer.Threading
         /// 创建低优先级任务队列链表
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public LowPriorityLink CreateLink()
         {
             return new LowPriorityLink(this);

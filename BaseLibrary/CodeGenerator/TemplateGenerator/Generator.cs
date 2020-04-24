@@ -5,7 +5,7 @@ using AutoCSer.CodeGenerator.Metadata;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// 模板生成基类
@@ -155,7 +155,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// </summary>
         /// <param name="value">数据集合</param>
         /// <returns>null为0</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static int _getCount_<valueType>(ICollection<valueType> value)
         {
             return value != null ? value.Count : 0;
@@ -213,7 +213,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// 获取类型与自定义配置信息
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal KeyValue<Type, attributeType>[] GetTypeAttributes()
         {
             return AutoParameter.Types.getArray(type => new KeyValue<Type, attributeType>(type, AutoCSer.Metadata.TypeAttribute.GetAttribute<attributeType>(type, IsBaseType)))

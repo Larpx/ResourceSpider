@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 指针位图
@@ -36,7 +36,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="bit">位值</param>
         /// <returns>是否已占位</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public int Get(int bit)
         {
             return Map[bit >> 3] & (1 << (bit & 7));
@@ -46,7 +46,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="bit">位值</param>
         /// <returns>是否已占位</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public int Get(char bit)
         {
             return Map[bit >> 3] & (1 << (bit & 7));
@@ -55,7 +55,7 @@ namespace AutoCSer
         /// 设置占位
         /// </summary>
         /// <param name="bit">位值</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(int bit)
         {
             Map[bit >> 3] |= (byte)(1 << (bit & 7));
@@ -64,7 +64,7 @@ namespace AutoCSer
         /// 设置占位
         /// </summary>
         /// <param name="bit">位值</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(char bit)
         {
             Map[bit >> 3] |= (byte)(1 << (bit & 7));

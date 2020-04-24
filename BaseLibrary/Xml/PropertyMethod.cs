@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Reflection;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 属性成员信息

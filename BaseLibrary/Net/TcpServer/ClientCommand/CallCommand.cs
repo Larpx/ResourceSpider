@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 客户端命令
@@ -59,7 +59,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="socket">TCP客户端命令流处理套接字</param>
         /// <param name="command">命令信息</param>
         /// <param name="onCall">回调委托</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(ClientSocket socket, CommandInfo command, Action<ReturnValue> onCall)
         {
             Socket = socket;
@@ -78,7 +78,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 设置回调任务
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void setTask()
         {
             if (CommandInfo.TaskType == ClientTaskType.Synchronous) onReceive();
@@ -96,7 +96,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 回调处理
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void onReceive()
         {
             Action<ReturnValue> callback = Callback;

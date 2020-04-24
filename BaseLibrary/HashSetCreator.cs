@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 创建 HashSet
@@ -14,7 +14,7 @@ namespace AutoCSer
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static HashSet<valueType> CreateOnly<valueType>() where valueType : class
         {
             return new HashSet<valueType>();
@@ -24,7 +24,7 @@ namespace AutoCSer
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static HashSet<valueType> CreateAny<valueType>()
         {
 #if __IOS__
@@ -37,7 +37,7 @@ namespace AutoCSer
         /// 创建HASH表
         /// </summary>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static HashSet<int> CreateInt()
         {
 #if __IOS__
@@ -50,7 +50,7 @@ namespace AutoCSer
         /// 创建HASH表
         /// </summary>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static HashSet<SubString> CreateSubString()
         {
 #if __IOS__
@@ -63,7 +63,7 @@ namespace AutoCSer
         /// 创建HASH表
         /// </summary>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static HashSet<HashString> CreateHashString()
         {
 #if __IOS__
@@ -87,7 +87,7 @@ namespace AutoCSer
         /// 创建字典
         /// </summary>
         /// <returns>字典</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static HashSet<valueType> Create()
         {
 #if __IOS__

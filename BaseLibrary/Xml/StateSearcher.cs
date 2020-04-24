@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 枚举状态查找器
@@ -64,7 +64,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">特殊字符</param>
         /// <returns>索引值,匹配失败返回0</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private int getCharIndex(char value)
         {
             if (charStart == charEnd) return 0;
@@ -186,7 +186,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int SearchFlagEnum(Parser parser)
         {
             if (parser.IsCData == 0) return searchFlagEnum(parser);
@@ -282,7 +282,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="parser">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal int NextFlagEnum(Parser parser)
         {
             return parser.IsCData == 0 ? searchFlagEnum(parser) : searchCDataFlagEnum(parser);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Renren
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Renren
 {
     /// <summary>
     /// 访问令牌

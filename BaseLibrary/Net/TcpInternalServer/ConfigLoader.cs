@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpInternalServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
     /// <summary>
     /// 配置加载
@@ -14,7 +14,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="type">配置类型</param>
         /// <param name="name">配置名称</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static UnionType GetUnion(Type type, string name = "")
         {
             return new UnionType { Value = AutoCSer.Config.Loader.GetObject(type, name) };

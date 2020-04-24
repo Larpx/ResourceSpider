@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpRegister
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpRegister
 {
     /// <summary>
     /// 端口集合
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 设置端口使用状态
         /// </summary>
         /// <param name="port"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(int port)
         {
             new MemoryMap(Map.Byte).Set(port - Start);
@@ -94,7 +94,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 清除端口使用状态
         /// </summary>
         /// <param name="port"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Clear(int port)
         {
             new MemoryMap(Map.Byte).Clear(port - Start);

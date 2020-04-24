@@ -5,7 +5,7 @@ using System.Reflection;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     ///// <summary>
     ///// 异步回调

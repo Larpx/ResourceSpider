@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.WebView;
 
-namespace AutoCSer.CodeGenerator.Template
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
 {
     class WebView : Pub
     {

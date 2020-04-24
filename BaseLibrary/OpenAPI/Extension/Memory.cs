@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// 内存或字节数组处理
@@ -14,7 +14,7 @@ namespace AutoCSer.Extension
         /// <param name="source">原字节数组,不能为null</param>
         /// <param name="destination">目标串起始地址,不能为null</param>
         /// <param name="length">字节长度,大于等于0</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void CopyNotNull(byte[] source, void* destination, int length)
         {
             fixed (byte* data = source) AutoCSer.Memory.CopyNotNull((void*)data, destination, length);

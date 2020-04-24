@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 查询退款，请求需要双向证书 https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_4

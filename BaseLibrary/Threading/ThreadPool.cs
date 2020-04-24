@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 线程池
@@ -72,7 +72,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 释放线程池
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void disposePool()
         {
             Thread thread = threads.GetClear();
@@ -83,7 +83,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="thread">线程池线程</param>
         /// <returns>是否已经释放资源</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool Push(Thread thread)
         {
             if (isDisposed) return true;
@@ -95,7 +95,7 @@ namespace AutoCSer.Threading
         /// 获取一个线程并执行任务
         /// </summary>
         /// <param name="task">任务委托</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void FastStart(Action task)
         {
             Thread thread = threads.Pop();
@@ -107,7 +107,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务委托调用类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void FastStart(object task, AutoCSer.Threading.Thread.CallType taskType)
         {
             Thread thread = threads.Pop();
@@ -119,7 +119,7 @@ namespace AutoCSer.Threading
         ///// </summary>
         ///// <param name="task">任务委托</param>
         ///// <param name="taskType">任务委托调用类型</param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal void CheckStart(object task, AutoCSer.Threading.Thread.CallType taskType)
         //{
         //    Thread thread = threads.Pop();
@@ -138,7 +138,7 @@ namespace AutoCSer.Threading
         /// 获取一个线程并执行任务
         /// </summary>
         /// <param name="task"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Start(Action task)
         {
             if (isDisposed) throw new ObjectDisposedException("ThreadPool is disposed");
@@ -164,7 +164,7 @@ namespace AutoCSer.Threading
             /// 获取链表尾部并清除数据
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal ThreadPool GetClear()
             {
                 while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
@@ -177,7 +177,7 @@ namespace AutoCSer.Threading
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void Push(ThreadPool value)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePush);
@@ -248,7 +248,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 前台退出测试
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void CheckExit()
         {
             if (exitTestThread.IsAborted && System.Threading.Interlocked.CompareExchange(ref isThreadPoolExit, 1, 0) == 0) exit();
@@ -276,7 +276,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 清除线程退出数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void clearExit()
         {
             exitNext = exitPrevious = null;

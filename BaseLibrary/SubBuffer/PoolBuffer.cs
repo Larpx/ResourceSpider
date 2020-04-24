@@ -22,7 +22,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// </summary>
         /// <param name="pool">缓冲区池</param>
         /// <param name="index">缓冲区索引信息</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(Pool pool, uint index)
         {
             Pool = pool;
@@ -31,7 +31,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// <summary>
         /// 释放缓冲区
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Free()
         {
             if (Pool != null) Pool.Push(ref this);
@@ -40,7 +40,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         /// 复制数据并清除数据源
         /// </summary>
         /// <param name="targetBuffer"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CopyToClear(ref PoolBuffer targetBuffer)
         {
             targetBuffer.Pool = Pool;
@@ -51,7 +51,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.SubBuffer
         ///// 不相等则释放缓冲区
         ///// </summary>
         ///// <param name="other"></param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal void FreeNotEquals(ref PoolBuffer other)
         //{
         //    if (Pool != null && (Index != other.Index || Pool != other.Pool))

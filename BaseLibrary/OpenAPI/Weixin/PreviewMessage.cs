@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 预览消息
@@ -78,7 +78,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         [AutoCSer.Json.SerializeCustom]
         private static void toJson(AutoCSer.Json.Serializer serializer, PreviewMessage value)
         {

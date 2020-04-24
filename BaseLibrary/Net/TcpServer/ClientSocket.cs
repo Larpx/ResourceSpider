@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using AutoCSer.Log;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务客户端套接字
@@ -67,7 +67,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放命令索引池
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void disposeCommandPoolTimeout()
         {
             if (CommandPool != null) CommandPool.DisposeTimeout();
@@ -76,7 +76,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置 TCP 服务客户端套接字数据发送
         /// </summary>
         /// <param name="sender"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetSender(ClientSocketSender sender)
         {
             base.Sender = Sender = sender;
@@ -113,7 +113,7 @@ namespace AutoCSer.Net.TcpServer
         /// 接收数据处理
         /// </summary>
         /// <param name="type"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void onReceive(ReturnType type)
         {
             ClientCommand.Command command = CommandPool.GetCommand((int)CommandIndex);
@@ -126,7 +126,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 接收数据处理
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void onReceive()
         {
             ClientCommand.Command command = CommandPool.GetCommand((int)CommandIndex);
@@ -140,7 +140,7 @@ namespace AutoCSer.Net.TcpServer
         /// 接收数据处理
         /// </summary>
         /// <param name="buffer"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void OnReceive(ref SubBuffer.PoolBufferFull buffer)
         {
             ClientCommand.Command command = CommandPool.GetCommand((int)CommandIndex);
@@ -209,7 +209,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="command">TCP 客户端命令</param>
         /// <param name="commandIndex">命令会话标识</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CancelKeep(ClientCommand.Command command, int commandIndex)
         {
             ClientSocketSender sender = Sender;
@@ -225,7 +225,7 @@ namespace AutoCSer.Net.TcpServer
         ///// 释放命令信息集合索引
         ///// </summary>
         ///// <param name="index">命令信息集合索引</param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //internal void FreeIndex(int index)
         //{
         //    Monitor.Enter(CommandPool.ArrayLock);
@@ -334,7 +334,7 @@ namespace AutoCSer.Net.TcpServer
         /// 验证函数调用
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected bool verifyMethod()
         {
             if (CommandPool == null)

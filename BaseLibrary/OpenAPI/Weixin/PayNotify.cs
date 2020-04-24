@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 #pragma warning disable
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 扫码支付完成回调通知请求参数
@@ -64,7 +64,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="value"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         [AutoCSer.Xml.UnknownName]
         private unsafe static bool parseCoupon(AutoCSer.Xml.Parser parser, ref PayNotify value, ref Pointer.Size name)
         {

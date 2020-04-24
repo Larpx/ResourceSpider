@@ -5,7 +5,7 @@ using System.Reflection;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Net.SimpleSerialize
+namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
     /// <summary>
     /// 动态函数

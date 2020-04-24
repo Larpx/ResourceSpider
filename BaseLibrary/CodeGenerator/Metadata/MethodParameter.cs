@@ -3,7 +3,7 @@ using System.Reflection;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 函数参数信息
@@ -201,7 +201,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// </summary>
         /// <param name="name">名称</param>
         /// <returns>带引用修饰的名称</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private string getRefName(string name)
         {
             if (IsOut) return "out " + name;

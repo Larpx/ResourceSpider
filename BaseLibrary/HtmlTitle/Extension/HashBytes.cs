@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// HASH 的字节数组扩展
@@ -13,7 +13,7 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="value"></param>
         /// <returns>HASH 字节数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static HashBytes Copy(this HashBytes value)
         {
             return new HashBytes { SubArray = new SubArray<byte>(value.SubArray.GetArray()), HashCode = value.HashCode };

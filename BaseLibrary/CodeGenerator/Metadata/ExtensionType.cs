@@ -6,7 +6,7 @@ using System.Reflection;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 成员类型
@@ -475,7 +475,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// 清除缓存数据
         /// </summary>
         /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void clearCache(int count)
         {
             Monitor.Enter(typeLock);

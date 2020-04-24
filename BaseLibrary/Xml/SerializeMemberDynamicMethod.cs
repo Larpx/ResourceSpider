@@ -7,7 +7,7 @@ using Larpx.ResourceSpider.BaseLibrary.Emit;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 动态函数

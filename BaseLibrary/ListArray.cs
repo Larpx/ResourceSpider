@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 单向动态数组
@@ -62,7 +62,7 @@ namespace AutoCSer
         /// 枚举器
         /// </summary>
         /// <returns>枚举器</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         IEnumerator<valueType> IEnumerable<valueType>.GetEnumerator()
         {
             if (Length != 0) return new Enumerator<valueType>.Array(Array, 0, Length);
@@ -72,7 +72,7 @@ namespace AutoCSer
         /// 枚举器
         /// </summary>
         /// <returns>枚举器</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         IEnumerator IEnumerable.GetEnumerator()
         {
             if (Length != 0) return new Enumerator<valueType>.Array(Array, 0, Length);
@@ -82,7 +82,7 @@ namespace AutoCSer
         /// 增加数据长度
         /// </summary>
         /// <param name="length">数据长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void addToLength(int length)
         {
             if (length > Array.Length) Array = Array.copyNew(length, Length);
@@ -123,7 +123,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">匹配数据</param>
         /// <returns>匹配位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public int IndexOf(valueType value)
         {
             return Length != 0 ? System.Array.IndexOf<valueType>(Array, value, 0, Length) : -1;
@@ -133,7 +133,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns>是否存在移除数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Remove(valueType value)
         {
             int index = IndexOf(value);
@@ -149,7 +149,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="index">数据位置</param>
         /// <returns>被移除数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void removeAt(int index)
         {
             AutoCSer.Extension.ArrayExtension.MoveNotNull(Array, index + 1, index, --Length - index);
@@ -160,7 +160,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="index">数据位置</param>
         /// <returns>被移除数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void RemoveAt(int index)
         {
             if ((uint)index >= (uint)Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] >= length[" + Length.toString() + "]");
@@ -170,7 +170,7 @@ namespace AutoCSer
         /// 移除数据并使用最后一个数据移动到当前位置
         /// </summary>
         /// <param name="index">数据位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void RemoveAtEnd(int index)
         {
             if ((uint)index >= (uint)Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] >= length[" + Length.toString() + "]");
@@ -181,7 +181,7 @@ namespace AutoCSer
         /// 转换数组
         /// </summary>
         /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private valueType[] getArray()
         {
             valueType[] values = new valueType[Length];
@@ -192,7 +192,7 @@ namespace AutoCSer
         /// 转换数组
         /// </summary>
         /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public valueType[] ToArray()
         {
             return Length == 0 ? NullValue<valueType>.Array : (Length == Array.Length ? Array : getArray());

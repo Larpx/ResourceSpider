@@ -4,7 +4,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// TCP 内部服务套接字数据发送
@@ -46,7 +46,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="outputInfo">服务端输出信息</param>
         /// <returns>异步回调</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public Func<TcpServer.ReturnValue, bool> GetCallbackEmit(TcpServer.OutputInfo outputInfo)
         {
             if (outputInfo.IsKeepCallback == 0) return new ServerCallback(this, outputInfo.IsBuildOutputThread).Callback;
@@ -58,7 +58,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>异步回调</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public Func<TcpServer.ReturnValue<returnType>, bool> GetCallbackEmit<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct, IReturnParameter<returnType>
         {
@@ -71,7 +71,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>异步回调</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public Func<returnType, bool> GetCallbackReturn<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct, IReturnParameter<returnType>
         {
@@ -92,7 +92,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="outputInfo">服务端输出信息</param>
         /// <returns>异步回调</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.ServerCallback GetCallback(TcpServer.OutputInfo outputInfo)
         {
             if (outputInfo.IsKeepCallback == 0) return new ServerCallback(this, outputInfo.IsBuildOutputThread);
@@ -104,7 +104,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>异步回调</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TcpServer.ServerCallback<returnType> GetCallback<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
 #if NOJIT
             where outputParameterType : struct, IReturnParameter
@@ -118,7 +118,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 释放资源
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Close()
         {
             if (!isClose && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) close();
@@ -306,7 +306,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 发送数据
         /// </summary>
         /// <returns>发送数据状态</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private SendState send()
         {
 #if !DOTNET2

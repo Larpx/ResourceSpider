@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// 类型扩展操作
@@ -115,7 +115,7 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="type">类型</param>
         /// <returns>是否值类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static bool isStruct(this Type type)
         {
             return type != null && type.IsValueType && !type.IsEnum;
@@ -145,7 +145,7 @@ namespace AutoCSer.Extension
         /// <param name="type">类型</param>
         /// <param name="interfaceType">泛型接口类型定义</param>
         /// <returns>泛型接口类型,失败返回null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static Type getGenericInterface(this Type type, Type interfaceType)
         {
             foreach (Type nextType in getGenericInterfaces(type, interfaceType)) return nextType;

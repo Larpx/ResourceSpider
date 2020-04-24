@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 客户端
@@ -17,7 +17,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="deSerializeTypes"></param>
         /// <param name="jsonSerializeTypes"></param>
         /// <param name="jsonDeSerializeTypes"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected static void _compileSerialize_(Type[] simpleSerializeTypes, Type[] simpleDeSerializeTypes, Type[] serializeTypes, Type[] deSerializeTypes, Type[] jsonSerializeTypes, Type[] jsonDeSerializeTypes)
         {
             CommandBase.CompileSerialize(simpleDeSerializeTypes, simpleSerializeTypes, deSerializeTypes, serializeTypes, jsonDeSerializeTypes, jsonSerializeTypes);

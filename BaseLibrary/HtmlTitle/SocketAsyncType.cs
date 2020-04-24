@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// 套接字异步操作类型

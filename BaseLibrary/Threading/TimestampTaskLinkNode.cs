@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 任务链表节点，带线程切换检测时间
@@ -45,7 +45,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="next"></param>
         /// <param name="currentTaskTimestamp"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void RunTask(ref taskType next, ref long currentTaskTimestamp)
         {
             next = LinkNext;

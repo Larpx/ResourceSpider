@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Diagnostics;
 
-namespace AutoCSer.Extension
+namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {
     /// <summary>
     /// 文件相关操作
@@ -26,6 +25,7 @@ namespace AutoCSer.Extension
             }
             return null;
         }
+
         /// <summary>
         /// 在文件当前目录启动进程
         /// </summary>
@@ -36,6 +36,7 @@ namespace AutoCSer.Extension
         {
             return startProcessDirectory(file, arguments) != null;
         }
+
         /// <summary>
         /// 在文件当前目录启动进程并等待结束
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace AutoCSer.OpenAPI.Weibo
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weibo
 {
     /// <summary>
     /// 应用配置

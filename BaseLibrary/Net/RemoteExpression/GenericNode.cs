@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.RemoteExpression
+namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
 {
     /// <summary>
     /// 远程表达式泛型节点
@@ -22,7 +22,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <typeparam name="nodeType"></typeparam>
         /// <returns>远程表达式节点</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public nodeType Cast<nodeType>()
             where nodeType : Node
         {

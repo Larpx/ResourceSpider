@@ -1,8 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 
-namespace AutoCSer.IO.Compression
+namespace Larpx.ResourceSpider.BaseLibrary.IO.Compression
 {
     /// <summary>
     /// deflate 解压缩处理
@@ -20,7 +19,6 @@ namespace AutoCSer.IO.Compression
         {
             using (MemoryStream memoryStream = new MemoryStream(data, startIndex, count))
             using (DeflateStream compressStream = new DeflateStream(memoryStream, CompressionMode.Decompress, true))
-            //using (DeflateStream compressStream = new DeflateStream(memoryStream, CompressionMode.Decompress, false))
             {
                 int size = buffer.StartIndex;
                 SubBuffer.Pool.GetBuffer(ref buffer, size);

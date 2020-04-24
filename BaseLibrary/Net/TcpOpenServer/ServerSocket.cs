@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpOpenServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpOpenServer
 {
     /// <summary>
     /// TCP 服务端套接字
@@ -43,7 +43,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="next"></param>
         /// <param name="currentTaskTimestamp"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void RunTask(ref ServerSocket next, ref long currentTaskTimestamp)
         {
             next = NextTask;
@@ -466,7 +466,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 获取命令
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private bool isReceiveCommand()
         {
             Socket socket = Socket;
@@ -501,7 +501,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 获取命令
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private bool isCommand()
         {
 #if DOTNET2
@@ -1032,7 +1032,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 命令处理委托
         /// </summary>
         /// <param name="data"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void doCommandMark(ref SubArray<byte> data)
         {
             if (MarkData != 0) TcpServer.CommandBuffer.Mark(ref data, MarkData);
@@ -1042,7 +1042,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 命令处理委托
         /// </summary>
         /// <param name="data"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void doCommand(ref SubArray<byte> data)
         {
             switch (command - TcpServer.Server.MinCommandIndex)
@@ -1062,7 +1062,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 命令处理委托
         /// </summary>
         /// <param name="buffer"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void doCommand(ref SubBuffer.PoolBufferFull buffer)
         {
             SubArray<byte> data = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = dataSize };
@@ -1179,7 +1179,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SendCustomData(byte[] data)
         {
             return Sender.CustomData(data);
@@ -1189,7 +1189,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SendCustomData(ref SubArray<byte> data)
         {
             return Sender.CustomData(ref data);
@@ -1199,7 +1199,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns>是否添加到发送队列</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool SendCustomData(SubArray<byte> data)
         {
             return Sender.CustomData(ref data);

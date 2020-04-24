@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 双向链表节点
@@ -21,7 +21,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 弹出节点
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void freeNotEnd()
         {
             DoubleLinkNext.DoubleLinkPrevious = DoubleLinkPrevious;
@@ -51,7 +51,7 @@ namespace AutoCSer.Threading
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void PushNotNull(valueType value)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePush);
@@ -72,7 +72,7 @@ namespace AutoCSer.Threading
             /// 弹出节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void PopNotNull(valueType value)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
@@ -90,7 +90,7 @@ namespace AutoCSer.Threading
             ///// <summary>
             ///// 清除数据
             ///// </summary>
-            //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            //
             //internal void Clear()
             //{
             //    while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);

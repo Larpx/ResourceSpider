@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.WebClient.Form
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient.Form
 {
     /// <summary>
     /// web表单类型配置

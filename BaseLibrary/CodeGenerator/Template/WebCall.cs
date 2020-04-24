@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.CodeGenerator.Template
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
 {
     class WebCall : Pub
     {

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 链表节点
@@ -35,7 +35,7 @@ namespace AutoCSer.Threading
             /// 获取链表头部并清除数据
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal valueType GetClear()
             {
                 return System.Threading.Interlocked.Exchange(ref this.head, null);
@@ -44,7 +44,7 @@ namespace AutoCSer.Threading
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void PushNotNull(valueType value)
             {
                 valueType headValue;
@@ -68,7 +68,7 @@ namespace AutoCSer.Threading
             /// 弹出节点
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public valueType Pop()
             {
                 valueType headValue;
@@ -94,7 +94,7 @@ namespace AutoCSer.Threading
             /// 弹出节点（单线程）
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public valueType SinglePop()
             {
                 valueType headValue;
@@ -138,7 +138,7 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="value">链表头部</param>
             /// <param name="end">链表尾部</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void PushLink(valueType value, valueType end)
             {
                 valueType headValue;
@@ -192,7 +192,7 @@ namespace AutoCSer.Threading
             /// 获取链表头部并清除数据
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal valueType GetClear()
             {
                 valueType value = head.LinkNext;
@@ -205,7 +205,7 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="end"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal valueType GetClear(out valueType end)
             {
                 end = this.end;
@@ -217,7 +217,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 头节点 next 设置为 null
             /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void SetHeaderNextNull()
             {
                 head.LinkNext = null;
@@ -226,7 +226,7 @@ namespace AutoCSer.Threading
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Push(valueType value)
             {
                 end.LinkNext = value;
@@ -236,7 +236,7 @@ namespace AutoCSer.Threading
             /// 弹出节点（不处理下一个节点，可能会造成少许暂时的内存泄露）
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public valueType PopOnly()
             {
                 return head == end ? null : UnsafePopOnly();
@@ -245,7 +245,7 @@ namespace AutoCSer.Threading
             /// 弹出节点（不处理下一个节点，可能会造成少许暂时的内存泄露）
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public valueType UnsafePopOnly()
             {
                 valueType value = head.LinkNext;
@@ -257,7 +257,7 @@ namespace AutoCSer.Threading
             /// 链表互换
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Exchange(ref Queue value)
             {
                 Queue temp = value;
@@ -303,7 +303,7 @@ namespace AutoCSer.Threading
             /// 获取链表头部并清除数据
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal valueType GetClear()
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
@@ -318,7 +318,7 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="end"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal valueType GetClear(out valueType end)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
@@ -333,7 +333,7 @@ namespace AutoCSer.Threading
             /// 获取链表并清除数据
             /// </summary>
             /// <param name="end"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void GetToEndClear(ref valueType end)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
@@ -350,7 +350,7 @@ namespace AutoCSer.Threading
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void Push(valueType value)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
@@ -362,7 +362,7 @@ namespace AutoCSer.Threading
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal bool IsPushHead(valueType value)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
@@ -377,7 +377,7 @@ namespace AutoCSer.Threading
             /// 添加首节点
             /// </summary>
             /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal bool TryPushHead(valueType value)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
@@ -396,7 +396,7 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="head"></param>
             /// <param name="end"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal void PushHead(ref valueType head, valueType end)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
@@ -420,7 +420,7 @@ namespace AutoCSer.Threading
             /// <param name="head"></param>
             /// <param name="end"></param>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal bool IsPushHead(ref valueType head, valueType end)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
@@ -457,7 +457,7 @@ namespace AutoCSer.Threading
             /// 添加节点
             /// </summary>
             /// <param name="next">尾节点</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public void Append(valueType next)
             {
                 if (head == null) head = end = next;
@@ -471,7 +471,7 @@ namespace AutoCSer.Threading
             /// 获取首节点并清除队列
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public valueType GetClear()
             {
                 valueType value = head;

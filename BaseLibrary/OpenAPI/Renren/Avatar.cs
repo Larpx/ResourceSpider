@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoCSer.OpenAPI.Renren
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Renren
 {
     /// <summary>
     /// 用户头像

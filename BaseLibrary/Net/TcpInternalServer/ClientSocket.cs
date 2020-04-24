@@ -5,7 +5,7 @@ using System.Threading;
 using System.Net;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpInternalServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer
 {
     /// <summary>
     /// TCP 内部服务客户端套接字

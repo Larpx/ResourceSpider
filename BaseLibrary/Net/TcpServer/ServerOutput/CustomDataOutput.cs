@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.TcpServer.ServerOutput
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ServerOutput
 {
     /// <summary>
     /// TCP 服务端套接字输出信息

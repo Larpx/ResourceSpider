@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer.ClientCommand
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.ClientCommand
 {
     /// <summary>
     /// 取消保持回调客户端命令
@@ -54,7 +54,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="socket">TCP客户端命令流处理套接字</param>
         /// <param name="cancelCommandIndex">取消保持回调会话标识</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ClientSocket socket, int cancelCommandIndex)
         {
             Socket = socket;

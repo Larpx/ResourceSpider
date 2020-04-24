@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// 解析类型
@@ -20,7 +20,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref bool value)
         {
             searchValue();
@@ -60,7 +60,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref bool? value)
         {
             searchValue();
@@ -105,8 +105,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref byte value)
         {
             searchValue();
@@ -117,7 +117,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref byte? value)
         {
             searchValue();
@@ -156,8 +156,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref sbyte value)
         {
             searchValue();
@@ -168,7 +168,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref sbyte? value)
         {
             searchValue();
@@ -208,8 +208,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref ushort value)
         {
             searchValue();
@@ -220,7 +220,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref ushort? value)
         {
             searchValue();
@@ -259,8 +259,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref short value)
         {
             searchValue();
@@ -271,7 +271,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref short? value)
         {
             searchValue();
@@ -311,8 +311,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref uint value)
         {
             searchValue();
@@ -323,7 +323,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref uint? value)
         {
             searchValue();
@@ -362,8 +362,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref int value)
         {
             searchValue();
@@ -374,7 +374,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref int? value)
         {
             searchValue();
@@ -414,8 +414,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref ulong value)
         {
             searchValue();
@@ -426,7 +426,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref ulong? value)
         {
             searchValue();
@@ -464,8 +464,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
+        
         public void CallParse(ref long value)
         {
             searchValue();
@@ -476,7 +476,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref long? value)
         {
             searchValue();
@@ -515,7 +515,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref float value)
         {
             getValue();
@@ -562,7 +562,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref float? value)
         {
             getValue();
@@ -615,7 +615,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref double value)
         {
             getValue();
@@ -662,7 +662,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref double? value)
         {
             getValue();
@@ -715,7 +715,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref decimal value)
         {
             getValue();
@@ -738,7 +738,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref decimal? value)
         {
             getValue();
@@ -767,7 +767,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref char value)
         {
             getValue();
@@ -790,7 +790,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref char? value)
         {
             getValue();
@@ -828,7 +828,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref DateTime value)
         {
             getValue();
@@ -851,7 +851,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref DateTime? value)
         {
             getValue();
@@ -880,7 +880,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref Guid value)
         {
             getValue();
@@ -901,7 +901,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref Guid? value)
         {
             getValue();
@@ -927,7 +927,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref string value)
         {
             space();
@@ -984,7 +984,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref SubString value)
         {
             space();
@@ -1050,7 +1050,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref object value)
         {
             Node node = default(Node);
@@ -1063,7 +1063,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         public void CallParse(ref Node value)
         {
             space();
@@ -1152,7 +1152,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="type">基本类型</param>
         /// <returns>解析函数</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static MethodInfo GetParseMethod(Type type)
         {
             MethodInfo method;

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 时间验证服务
@@ -22,7 +22,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="randomPrefix"></param>
         /// <param name="ticks"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static byte[] Md5(string value, ulong randomPrefix, long ticks)
         {
             using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider()) return Md5(md5, value, randomPrefix, ticks);
@@ -59,7 +59,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static ulong IsMd5(byte[] left, byte[] right)
         {
             fixed (byte* leftFixed = left, rightRixed = right)

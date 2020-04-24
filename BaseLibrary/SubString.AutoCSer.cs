@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 字符子串
@@ -77,7 +77,7 @@ namespace AutoCSer
         /// 修改起始位置
         /// </summary>
         /// <param name="count"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void MoveStart(int count)
         {
             Start += count;
@@ -88,7 +88,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="startIndex">起始位置</param>
         /// <returns>子串</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal SubString GetSub(int startIndex)
         {
             return new SubString { String = String, Start = Start + startIndex, Length = Length - startIndex };
@@ -98,7 +98,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="startIndex">起始位置</param>
         /// <param name="length">长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Sub(int startIndex, int length)
         {
             Start += startIndex;
@@ -108,7 +108,7 @@ namespace AutoCSer
         /// 设置为子串
         /// </summary>
         /// <param name="startIndex">起始位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Sub(int startIndex)
         {
             Start += startIndex;

@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 函数参数类型集合关键字
@@ -145,7 +145,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// 复制参数集合
         /// </summary>
         /// <param name="index"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Copy(int index)
         {
             Index = index;
@@ -159,7 +159,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// 设置函数参数类型集合关键字
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(MethodParameterTypeNames value)
         {
             Parameters = value.Parameters;
@@ -184,7 +184,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string GetParameterTypeName(int index)
         {
             return "_p" + index.toString();

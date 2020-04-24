@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.OpenAPI.Renren
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Renren
 {
     /// <summary>
     /// API调用表单

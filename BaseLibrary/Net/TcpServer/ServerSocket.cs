@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务端套接字
@@ -169,7 +169,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe bool IsCommand(int index)
         {
             return commands.Map == null || commands.Get(index) != 0;
@@ -182,7 +182,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="value">目标对象</param>
         /// <param name="isSimpleSerialize"></param>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool DeSerialize<valueType>(ref SubArray<byte> data, ref valueType value, bool isSimpleSerialize)
             where valueType : struct
         {
@@ -216,7 +216,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放数据反序列化
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void FreeReceiveDeSerializer()
         {
             if (ReceiveDeSerializer != null)
@@ -233,7 +233,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放资源
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void CloseFree()
         {
             ReceiveBuffer.Free();

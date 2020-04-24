@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.HtmlTitle
+namespace Larpx.ResourceSpider.BaseLibrary.Net.HtmlTitle
 {
     /// <summary>
     /// IP 地址信息

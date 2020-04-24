@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace AutoCSer.Net.TcpServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
     /// <summary>
     /// 异步等待
@@ -14,7 +14,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 等待返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public async Task<ReturnValue<returnType>> Wait()
         {
             return await this;
@@ -39,7 +39,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 设置错误返回值类型
         /// </summary>
         /// <param name="type">返回值类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Call(ReturnType type)
         {
             returnValueType = type;
@@ -60,7 +60,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 获取返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ReturnValue<returnType> GetResult()
         {
             return new ReturnValue<returnType> { Type = returnValueType, Value = returnValue };
@@ -69,7 +69,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 设置异步回调
         /// </summary>
         /// <param name="continuation"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnCompleted(Action continuation)
         {
             if (System.Threading.Interlocked.CompareExchange(ref this.continuation, continuation, null) != null) continuation();
@@ -78,7 +78,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 获取 await
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public Awaiter<returnType> GetAwaiter()
         {
             return this;

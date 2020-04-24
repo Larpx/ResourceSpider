@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 非托管内存数据流
@@ -32,7 +32,7 @@ namespace AutoCSer
         /// 写字符串
         /// </summary>
         /// <param name="value">字符串</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public unsafe void Write(SubString value)
         {
             if (value.Length != 0) WriteNotEmpty(ref value);

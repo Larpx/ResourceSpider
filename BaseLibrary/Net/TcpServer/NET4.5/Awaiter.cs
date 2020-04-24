@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 异步等待
@@ -13,7 +13,7 @@ namespace AutoCSer.Net.TcpServer
         /// 等待返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public async Task<ReturnValue> Wait()
         {
             return await this;
@@ -30,7 +30,7 @@ namespace AutoCSer.Net.TcpServer
         /// 回调处理
         /// </summary>
         /// <param name="outputParameter">输出参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Call(ReturnValue outputParameter)
         {
             returnType = outputParameter.Type;
@@ -40,7 +40,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置错误返回值类型
         /// </summary>
         /// <param name="type">返回值类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Call(ReturnType type)
         {
             returnType = type;
@@ -51,7 +51,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ReturnValue GetResult()
         {
             return new ReturnValue { Type = returnType };
@@ -60,7 +60,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置异步回调
         /// </summary>
         /// <param name="continuation"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnCompleted(Action continuation)
         {
             if (System.Threading.Interlocked.CompareExchange(ref this.continuation, continuation, null) != null) continuation();
@@ -69,7 +69,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取 await
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public Awaiter GetAwaiter()
         {
             return this;
@@ -84,7 +84,7 @@ namespace AutoCSer.Net.TcpServer
         /// 等待返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public async Task<ReturnValue<returnType>> Wait()
         {
             return await this;
@@ -101,7 +101,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置错误返回值类型
         /// </summary>
         /// <param name="type">返回值类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Call(ReturnType type)
         {
             returnValueType = type;
@@ -113,7 +113,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="returnType">返回值类型</param>
         /// <param name="returnValue">输出参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         protected void call(ReturnType returnType, ref returnType returnValue)
         {
             returnValueType = returnType;
@@ -124,7 +124,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ReturnValue<returnType> GetResult()
         {
             return new ReturnValue<returnType> { Type = returnValueType, Value = returnValue };
@@ -133,7 +133,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置异步回调
         /// </summary>
         /// <param name="continuation"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnCompleted(Action continuation)
         {
             if (System.Threading.Interlocked.CompareExchange(ref this.continuation, continuation, null) != null) continuation();
@@ -142,7 +142,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取 await
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public Awaiter<returnType, awaiterReturnValueType> GetAwaiter()
         {
             return this;

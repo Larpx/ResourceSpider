@@ -4,7 +4,7 @@ using AutoCSer.Log;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
     /// <summary>
     /// TCP 服务主机与端口信息
@@ -25,7 +25,7 @@ namespace AutoCSer.Net
         /// </summary>
         /// <param name="host"></param>
         /// <param name="port"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(string host, int port)
         {
             Host = host;
@@ -35,7 +35,7 @@ namespace AutoCSer.Net
         /// 主机名称转换为 IP 地址
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool HostToIPAddress()
         {
             IPAddress ipAddress = HostToIPAddress(Host);
@@ -48,7 +48,7 @@ namespace AutoCSer.Net
         /// </summary>
         /// <param name="other">TCP服务端口信息</param>
         /// <returns>是否同一TCP服务端口信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(ref HostPort other)
         {
             return Host == other.Host && Port == other.Port;
@@ -59,7 +59,7 @@ namespace AutoCSer.Net
         /// </summary>
         /// <param name="other">TCP服务端口信息</param>
         /// <returns>是否同一TCP服务端口信息</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool Equals(HostPort other)
         {
             return Host == other.Host && Port == other.Port;

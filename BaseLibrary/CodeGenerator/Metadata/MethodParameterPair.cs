@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator.Metadata
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Metadata
 {
     /// <summary>
     /// 函数参数匹配信息
@@ -151,7 +151,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// </summary>
         /// <param name="outputParameters"></param>
         /// <param name="inputParameters"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void SetInputParameter(MethodParameterPair[] outputParameters, MethodParameterPair[] inputParameters)
         {
             for (int index = outputParameters.Length; index != 0; outputParameters[--index].setInputParameter(inputParameters)) ;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 键值对
@@ -44,7 +44,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(keyType key, valueType value)
         {
             Key = key;

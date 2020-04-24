@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 程序集 XML 文档注释信息
@@ -61,7 +61,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string GetSummary(Type type)
         {
             return get(get(type), "summary");
@@ -119,7 +119,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string GetSummary(FieldInfo field)
         {
             return get(get(field), "summary");
@@ -177,7 +177,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string GetSummary(PropertyInfo property)
         {
             return get(get(property), "summary");
@@ -255,7 +255,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string GetSummary(MethodInfo method)
         {
             return get(get(method), "summary");
@@ -265,7 +265,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public string GetReturn(MethodInfo method)
         {
             return get(get(method), "returns");
@@ -309,7 +309,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static void formatName(char* start, char* end)
         {
             do
@@ -358,7 +358,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="node">成员节点</param>
         /// <param name="name">节点名称</param>
         /// <returns>字符串</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private static string get(Xml.Node node, string name)
         {
             return (node = node[name]).String.Length != 0 ? node.String.ToString() : string.Empty;

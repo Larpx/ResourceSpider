@@ -6,7 +6,7 @@ using AutoCSer;
 #else
 #pragma warning disable
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class Ajax
     {
@@ -1198,7 +1198,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class Ajax
     {
@@ -1446,7 +1446,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal abstract partial class DataPrimaryKey
     {
@@ -1723,7 +1723,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal abstract partial class RemoteExpression
     {
@@ -5554,7 +5554,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 #else
 #if MONO
 #else
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal abstract partial class SqlModel
     {
@@ -10116,7 +10116,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 #else
 #if MONO
 #else
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal abstract partial class SqlTable
     {
@@ -11007,7 +11007,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 }
 #endif
 #endif
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class TcpInternalServer
     {
@@ -13876,7 +13876,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    
                     public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -18788,7 +18788,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class TcpInternalSimpleServer
     {
@@ -20362,7 +20362,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    
                     public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -22192,7 +22192,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class TcpOpenServer
     {
@@ -25059,7 +25059,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    
                     public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -29959,7 +29959,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class TcpOpenSimpleServer
     {
@@ -31532,7 +31532,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    
                     public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -33353,7 +33353,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class TcpStaticServer
     {
@@ -40958,7 +40958,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                [AutoCSer.IOS.Preserve(Conditional = true)]
+                
                 public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -41283,7 +41283,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                [AutoCSer.IOS.Preserve(Conditional = true)]
+                
                 public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -45717,7 +45717,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class TcpStaticSimpleServer
     {
@@ -48475,7 +48475,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                [AutoCSer.IOS.Preserve(Conditional = true)]
+                
                 public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -48800,7 +48800,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@" Ret;
-                [AutoCSer.IOS.Preserve(Conditional = true)]
+                
                 public ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
@@ -49230,7 +49230,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class WebCall
     {
@@ -50024,7 +50024,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal abstract partial class WebPath
     {
@@ -50120,7 +50120,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal abstract partial class WebPath
     {
@@ -50244,7 +50244,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class WebView
     {
@@ -51416,7 +51416,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     internal partial class WebView
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 异步等待
@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpServer
         /// 回调处理
         /// </summary>
         /// <param name="outputParameter">输出参数</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Call(ReturnValue outputParameter)
         {
             this.outputParameter = outputParameter.Type;
@@ -43,7 +43,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ReturnType GetResult()
         {
             return outputParameter;
@@ -52,7 +52,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置异步回调
         /// </summary>
         /// <param name="continuation"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnCompleted(Action continuation)
         {
             if (System.Threading.Interlocked.CompareExchange(ref this.continuation, continuation, null) != null) continuation();
@@ -61,7 +61,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取 await
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TaskAsyncReturnValue GetAwaiter()
         {
             return this;
@@ -98,7 +98,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取返回值
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ReturnValue<outputParameterType> GetResult()
         {
             return outputParameter;
@@ -107,7 +107,7 @@ namespace AutoCSer.Net.TcpServer
         /// 设置异步回调
         /// </summary>
         /// <param name="continuation"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void OnCompleted(Action continuation)
         {
             if (System.Threading.Interlocked.CompareExchange(ref this.continuation, continuation, null) != null) continuation();
@@ -116,7 +116,7 @@ namespace AutoCSer.Net.TcpServer
         /// 获取 await
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public TaskAsyncReturnValue<outputParameterType> GetAwaiter()
         {
             return this;

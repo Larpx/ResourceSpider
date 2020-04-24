@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net.SimpleSerialize
+namespace Larpx.ResourceSpider.BaseLibrary.Net.SimpleSerialize
 {
     /// <summary>
     /// 基本类型反序列化函数

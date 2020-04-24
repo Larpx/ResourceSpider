@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// 客户端心跳检测定时
@@ -34,7 +34,7 @@ namespace AutoCSer.Net.TcpServer
         /// 添加心跳检测
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Push(ClientSocketBase value)
         {
             value.CheckTimeoutSeconds = currentSeconds + seconds;
@@ -91,7 +91,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="currentSecond"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private ClientSocketBase pop(long currentSecond)
         {
             while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePop);
@@ -155,7 +155,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 定时器触发
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void OnTimer()
         {
             ++currentSeconds;

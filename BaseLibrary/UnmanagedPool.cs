@@ -4,7 +4,7 @@ using System.Threading;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 非托管内存池
@@ -43,7 +43,7 @@ namespace AutoCSer
         /// 获取缓冲区
         /// </summary>
         /// <returns>缓冲区,失败返回null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public byte* TryGet()
         {
             while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.UnmanagedPoolFreePop);
@@ -61,7 +61,7 @@ namespace AutoCSer
         /// 获取缓冲区
         /// </summary>
         /// <returns>缓冲区</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal byte* Get()
         {
             byte* data = TryGet();
@@ -72,7 +72,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="minSize">数据字节长度</param>
         /// <returns>缓冲区</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal Pointer.Size GetSize64(int minSize)
         {
             return new Pointer.Size { Data = minSize <= Size ? Get() : (byte*)Unmanaged.Get64(minSize, false), ByteSize = minSize };
@@ -81,7 +81,7 @@ namespace AutoCSer
         /// 保存缓冲区
         /// </summary>
         /// <param name="buffer">缓冲区</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Push(byte* buffer)
         {
             while (System.Threading.Interlocked.CompareExchange(ref freeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.UnmanagedPoolFreePush);
@@ -93,7 +93,7 @@ namespace AutoCSer
         /// 保存缓冲区
         /// </summary>
         /// <param name="buffer">缓冲区</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void PushOnly(ref Pointer.Size buffer)
         {
             if (buffer.ByteSize == Size) Push(buffer.Byte);
@@ -177,7 +177,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="length">缓冲区字节长度</param>
         /// <returns>临时缓冲区</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static UnmanagedPool GetDefaultPool(int length)
         {
             return length <= TinySize ? Tiny : Default;

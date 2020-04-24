@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using fastCSharp.Extension;
 
-namespace fastCSharp.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 垃圾定时清理
@@ -28,6 +27,7 @@ namespace fastCSharp.Threading
             ///// </summary>
             //SocketShutdown,
         }
+
         /// <summary>
         /// 任务信息
         /// </summary>

@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
-namespace AutoCSer.Net.TcpStaticServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpStaticServer
 {
     /// <summary>
     /// 时间验证

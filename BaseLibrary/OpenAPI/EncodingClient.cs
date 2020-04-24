@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using System.Text;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI
 {
     /// <summary>
     /// 编码绑定请求

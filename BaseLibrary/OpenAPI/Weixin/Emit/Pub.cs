@@ -2,7 +2,7 @@
 using System.Reflection;
 using AutoCSer.Metadata;
 
-namespace AutoCSer.OpenAPI.Weixin.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin.Emit
 {
     /// <summary>
     /// 

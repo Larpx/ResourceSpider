@@ -4,7 +4,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 日期相关操作
@@ -65,7 +65,7 @@ namespace AutoCSer
             /// 重置时间
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal static DateTime Set()
             {
                 DateTime now = DateTime.Now;
@@ -77,7 +77,7 @@ namespace AutoCSer
             /// 重置时间
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             internal static DateTime SetUtc()
             {
                 DateTime now = DateTime.Now;
@@ -181,7 +181,7 @@ namespace AutoCSer
             /// <summary>
             /// 激活计时器
             /// </summary>
-            [AutoCSer.IOS.Preserve(Conditional = true)]
+            
             public static bool OnTimeFlag;
 
             static NowTime()
@@ -234,7 +234,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="time">时间</param>
         /// <param name="charStream">字符流</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void ToMillisecondString(DateTime time, CharStream charStream)
         {
             toMillisecondString(time, charStream.CurrentChar);
@@ -326,7 +326,7 @@ namespace AutoCSer
         /// <param name="time">时间</param>
         /// <param name="dateSplit">日期分隔符</param>
         /// <returns>时间字符串</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public unsafe static string toString(this DateTime time, char dateSplit = DateSplitChar)
         {
             string timeString = AutoCSer.Extension.StringExtension.FastAllocateString(19);
@@ -344,7 +344,7 @@ namespace AutoCSer
         /// <param name="time">时间</param>
         /// <param name="charStream">字符流</param>
         /// <param name="dateSplit">日期分隔符</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal unsafe static void ToString(this DateTime time, CharStream charStream, char dateSplit = DateSplitChar)
         {
             char* timeFixed = charStream.GetPrepSizeCurrent(19);
@@ -383,7 +383,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static DateTime localToUniversalTime(this DateTime date)
         {
             return new DateTime(date.Ticks - LocalTimeTicks, DateTimeKind.Utc);

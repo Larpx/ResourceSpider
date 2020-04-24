@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 
-namespace AutoCSer.OpenAPI.Weixin
+namespace Larpx.ResourceSpider.BaseLibrary.OpenAPI.Weixin
 {
     /// <summary>
     /// 订单查询结果
@@ -23,7 +23,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="value"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         [AutoCSer.Xml.UnknownName]
         private unsafe static bool parseCoupon(AutoCSer.Xml.Parser parser, ref OrderResult value, ref Pointer.Size name)
         {

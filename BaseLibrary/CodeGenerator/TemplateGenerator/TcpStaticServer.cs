@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using AutoCSer.Extension;
 using System.Reflection;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// TCP 静态服务代码生成

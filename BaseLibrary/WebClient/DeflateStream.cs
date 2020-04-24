@@ -2,7 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 
-namespace AutoCSer.Net.WebClient
+namespace Larpx.ResourceSpider.BaseLibrary.Net.WebClient
 {
     /// <summary>
     /// deflate压缩流处理

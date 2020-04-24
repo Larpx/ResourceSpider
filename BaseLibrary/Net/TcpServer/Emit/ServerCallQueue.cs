@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Reflection;
 
-namespace AutoCSer.Net.TcpServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer.Emit
 {
     /// <summary>
     /// 自定义队列

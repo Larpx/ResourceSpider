@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Extension
 {

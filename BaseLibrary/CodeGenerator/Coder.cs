@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 模板代码生成器
@@ -139,7 +139,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="typeName">类型名称</param>
         /// <returns>模板文件名</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private string getTemplateFileName(string typeName)
         {
             return new DirectoryInfo(parameter.ProjectPath).fullName() + templatePath + typeName + extensionName;
@@ -225,7 +225,7 @@ using AutoCSer;
         /// <param name="cSharperType">模板类型</param>
         /// <param name="type">实例类型</param>
         /// <returns>锁定是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static bool Add(Type cSharperType, Type type)
         {
             if (codeTypes.Contains(new CodeType { TemplateType = cSharperType, Type = type })) return false;
@@ -237,7 +237,7 @@ using AutoCSer;
         /// </summary>
         /// <param name="code">代码</param>
         /// <param name="language">代码生成语言</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static void Add(string code, CodeLanguage language = CodeLanguage.CSharp)
         {
             codes[(int)(byte)language].Add(code);
@@ -248,7 +248,7 @@ using AutoCSer;
         /// <param name="cSharperType">模板类型</param>
         /// <param name="type">实例类型</param>
         /// <returns>是否已经存在代码</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static bool CheckCodeType(Type cSharperType, Type type)
         {
             return codeTypes.Contains(new CodeType { TemplateType = cSharperType, Type = type });
@@ -257,7 +257,7 @@ using AutoCSer;
         ///// 添加没有依赖的记忆代码
         ///// </summary>
         ///// <param name="code">没有依赖的记忆代码</param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //
         //public static void AddRemember(string code)
         //{
         //    rememberCodes.Add(code);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 常用公共定义

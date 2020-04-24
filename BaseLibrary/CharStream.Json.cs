@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 内存字符流
@@ -11,7 +11,7 @@ namespace AutoCSer
         /// <summary>
         /// 输出 null 值
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void WriteJsonNull()
         {
             *(long*)GetPrepSizeCurrent(4) = 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48);
@@ -20,7 +20,7 @@ namespace AutoCSer
         /// <summary>
         /// 输出空对象
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void WriteJsonObject()
         {
             *(int*)GetPrepSizeCurrent(2) = '{' + ('}' << 16);
@@ -29,7 +29,7 @@ namespace AutoCSer
         /// <summary>
         /// 输出对象字符串 [object Object]
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void WriteJsonObjectString()
         {
             char* chars = GetPrepSizeCurrent(16);
@@ -42,7 +42,7 @@ namespace AutoCSer
         /// <summary>
         /// 输出空数组
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void WriteJsonArray()
         {
             *(int*)GetPrepSizeCurrent(2) = '[' + (']' << 16);
@@ -290,7 +290,7 @@ namespace AutoCSer
         /// 输出 double 值
         /// </summary>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void WriteJson(float value)
         {
             if (!float.IsNaN(value) && !float.IsInfinity(value)) SimpleWriteNotNull(value.ToString(System.Globalization.CultureInfo.InvariantCulture));

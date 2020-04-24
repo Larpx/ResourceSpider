@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 属性解析（反射模式）
@@ -9,7 +9,7 @@ namespace AutoCSer.Reflection
     /// <typeparam name="parserType"></typeparam>
     /// <typeparam name="valueType"></typeparam>
     internal abstract class CustomPropertyParser<parserType, valueType> : PropertyParser<parserType, valueType>
-        where parserType : class
+            where parserType : class
     {
         /// <summary>
         /// 自定义解析函数信息
@@ -23,7 +23,7 @@ namespace AutoCSer.Reflection
         {
             bool isCustom = false;
             MethodInfo method = getMethodInfo(property.PropertyType, ref isCustom);
-            if (isCustom) customMethod = (Func<object, parserType, object>)typeof(AutoCSer.Reflection.InvokeMethodRef1<,>).MakeGenericType(property.PropertyType, typeof(parserType)).GetMethod(getMethod == null ? "getObjectTypeReturnDefault" : "getObjectTypeReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
+            if (isCustom) customMethod = (Func<object, parserType, object>)typeof(Reflection.InvokeMethodRef1<,>).MakeGenericType(property.PropertyType, typeof(parserType)).GetMethod(getMethod == null ? "getObjectTypeReturnDefault" : "getObjectTypeReturn", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { method });
             else createMethod(property, method);
         }
         /// <summary>

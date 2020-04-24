@@ -3,7 +3,7 @@ using System.IO;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 常用公共定义
@@ -19,7 +19,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static string fileNameToLower(this string fileName)
         {
 #if MONO
@@ -33,7 +33,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static string FileNameToLower(this string fileName)
         {
 #if MONO
@@ -48,7 +48,7 @@ namespace AutoCSer
         /// <param name="path">文件路径</param>
         /// <param name="fileName">文件名称</param>
         /// <returns>匹配返回 0</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public static int PathCompare(this string path, string fileName)
         {
 #if MONO

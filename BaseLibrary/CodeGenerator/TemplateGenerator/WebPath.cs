@@ -2,7 +2,7 @@
 using System.Reflection;
 using AutoCSer.Extension;
 
-namespace AutoCSer.CodeGenerator.TemplateGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.TemplateGenerator
 {
     /// <summary>
     /// WEB Path 代码生成
@@ -204,7 +204,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 get
                 {
-                    return @"namespace AutoCSerPath {
+                    return @"namespace Larpx.ResourceSpider.BaseLibraryPath {
 " + code.ToString() + @"}";
                 }
             }

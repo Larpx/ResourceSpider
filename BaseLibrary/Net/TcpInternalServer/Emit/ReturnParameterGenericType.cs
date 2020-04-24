@@ -3,7 +3,7 @@ using AutoCSer.Threading;
 using System.Reflection;
 using AutoCSer.Net.TcpServer;
 
-namespace AutoCSer.Net.TcpInternalServer.Emit
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpInternalServer.Emit
 {
     /// <summary>
     /// 输出参数泛型类型元数据
@@ -20,7 +20,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <typeparam name="returnType"></typeparam>
         /// <typeparam name="outputParameterType"></typeparam>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static ReturnParameterGenericType create<returnType, outputParameterType>()
         where outputParameterType : struct, IReturnParameter<returnType>
         {

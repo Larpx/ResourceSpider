@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer
+namespace Larpx.ResourceSpider.BaseLibrary
 {
     /// <summary>
     /// 指针(因为指针无法静态初始化)
@@ -21,7 +21,7 @@ namespace AutoCSer
             /// 字节长度
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             public int GetSize()
             {
                 return ByteSize;

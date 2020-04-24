@@ -5,7 +5,7 @@ using AutoCSer.Extension;
 using/**/System.Reflection.Emit;
 #endif
 
-namespace AutoCSer.Data
+namespace Larpx.ResourceSpider.BaseLibrary.Data
 {
     /// <summary>
     /// 数据模型

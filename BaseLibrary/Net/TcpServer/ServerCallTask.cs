@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.Net.TcpServer
+namespace Larpx.ResourceSpider.BaseLibrary.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务器端同步调用任务处理
@@ -48,7 +48,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal bool CheckAdd(ServerCallBase value)
         {
             if (value.LinkNext == null)

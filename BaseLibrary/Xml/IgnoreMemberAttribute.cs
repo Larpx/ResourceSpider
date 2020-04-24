@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Xml
+namespace Larpx.ResourceSpider.BaseLibrary.Xml
 {
     /// <summary>
     /// XML 序列化成员忽略配置

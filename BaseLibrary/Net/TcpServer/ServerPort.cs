@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
     /// <summary>
     /// TCP 服务默认端口号

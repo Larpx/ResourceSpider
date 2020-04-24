@@ -2,7 +2,7 @@
 using System.IO;
 using AutoCSer.Extension;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 代码生成项目配置

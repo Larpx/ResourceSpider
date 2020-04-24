@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AutoCSer.Reflection
+namespace Larpx.ResourceSpider.BaseLibrary.Reflection
 {
     /// <summary>
     /// 反射调用函数
@@ -45,7 +45,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Func<valueType1, object, object> getTypeObjectReturn(MethodInfo method)
         {
             return new InvokeMethodRef2<valueType1, valueType2>((ActionRef)Delegate.CreateDelegate(typeof(ActionRef), method)).typeObjectReturn;
@@ -67,7 +67,7 @@ namespace AutoCSer.Reflection
         /// </summary>
         /// <param name="method">函数信息</param>
         /// <returns>反射调用函数</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private static Func<valueType1, object, object> getTypeObjectReturnDefault(MethodInfo method)
         {
             return new InvokeMethodRef2<valueType1, valueType2>((ActionRef)Delegate.CreateDelegate(typeof(ActionRef), method)).typeObjectReturnDefault;

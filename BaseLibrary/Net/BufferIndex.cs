@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net
+namespace Larpx.ResourceSpider.BaseLibrary.Net
 {
     /// <summary>
     /// 索引位置
@@ -37,7 +37,7 @@ namespace AutoCSer.Net
         /// </summary>
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(short startIndex, short length)
         {
             StartIndex = startIndex;
@@ -48,7 +48,7 @@ namespace AutoCSer.Net
         /// </summary>
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Set(long startIndex, long length)
         {
             StartIndex = (short)startIndex;
@@ -57,7 +57,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 移动到下一个位置
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Next()
         {
             ++StartIndex;

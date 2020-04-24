@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 字典
@@ -31,7 +31,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 清除数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Clear()
         {
             Monitor.Enter(Lock);
@@ -49,7 +49,7 @@ namespace AutoCSer.Threading
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns>是否存在数据</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public bool TryGetValue(ref keyType key, out valueType value)
         {
             if (TryGetValueEnter(ref key, out value)) return true;
@@ -85,7 +85,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public void Set(ref keyType key, valueType value)
         {
             Monitor.Enter(Lock);
@@ -100,7 +100,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetOnly(ref keyType key, valueType value)
         {
             Dictionary[lastKey = key] = lastValue = value;
@@ -108,7 +108,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 释放目标
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void Exit()
         {
             Monitor.Exit(Lock);

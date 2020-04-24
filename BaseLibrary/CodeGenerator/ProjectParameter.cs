@@ -7,7 +7,7 @@ using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 using AutoCSer.CodeGenerator.Metadata;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// 项目安装参数
@@ -174,7 +174,7 @@ namespace AutoCSer.CodeGenerator
         /// 运行代码生成
         /// </summary>
         /// <param name="generator">代码生成接口</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         private void run(IGenerator generator)
         {
             if (!generator.Run(this)) Messages.Add(generator.GetType().fullName() + " 安装失败");

@@ -2,7 +2,7 @@
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.CodeGenerator
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator
 {
     /// <summary>
     /// CSharp代码生成数据视图生成
@@ -83,7 +83,7 @@ namespace AutoCSer.CodeGenerator
             /// 模板结束
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             private string end()
             {
                 codeBuilder.Append(@"
@@ -106,7 +106,7 @@ namespace AutoCSer.CodeGenerator
             /// 生成C#模板代码
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             private string cSharp()
             {
                 codeBuilder.Append(coder.PartCodes["CLASS"]);
@@ -116,7 +116,7 @@ namespace AutoCSer.CodeGenerator
             /// 生成JavaScript模板代码
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            
             private string javaScript()
             {
                 codeBuilder.Add(coder.Code);

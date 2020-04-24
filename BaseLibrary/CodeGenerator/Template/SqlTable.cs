@@ -1,7 +1,7 @@
 ﻿using System;
 #pragma warning disable 162
 
-namespace AutoCSer.CodeGenerator.Template
+namespace Larpx.ResourceSpider.BaseLibrary.CodeGenerator.Template
 {
     class SqlTable : Pub
     {

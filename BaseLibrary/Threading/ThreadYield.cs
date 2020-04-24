@@ -3,7 +3,7 @@ using AutoCSer.Extension;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Threading
+namespace Larpx.ResourceSpider.BaseLibrary.Threading
 {
     /// <summary>
     /// 线程操作
@@ -208,7 +208,7 @@ namespace AutoCSer.Threading
         /// 
         /// </summary>
         /// <param name="type">冲突统计类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void Yield(Type type)
         {
             ++yieldCounts.ULong[(int)type];
@@ -217,7 +217,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal static void YieldOnly()
         {
 #if DOTNET2 || UNITY3D

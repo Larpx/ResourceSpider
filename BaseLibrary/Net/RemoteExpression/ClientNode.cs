@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.RemoteExpression
+namespace Larpx.ResourceSpider.BaseLibrary.Net.RemoteExpression
 {
     /// <summary>
     /// 客户端远程表达式节点
@@ -28,7 +28,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <summary>
         /// 清除数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         internal void SetNull()
         {
             Node = null;
@@ -37,7 +37,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <summary>
         /// 服务端获取返回值
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public ReturnValue GetReturnValue()
         {
             return Node.Get(ClientNodeId);
@@ -47,7 +47,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         [AutoCSer.BinarySerialize.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
         {
             serializer.Stream.Write(ClientNodeId);
@@ -58,7 +58,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="deSerializer"></param>
         [AutoCSer.BinarySerialize.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
         {
             ClientNodeId = deSerializer.ReadInt();
@@ -69,7 +69,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         [AutoCSer.Json.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private void serialize(AutoCSer.Json.Serializer serializer)
         {
             serializer.CharStream.Write('[');
@@ -83,7 +83,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="parser"></param>
         [AutoCSer.Json.ParseCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private unsafe void deSerialize(AutoCSer.Json.Parser parser)
         {
             if (*parser.Current++ == '[')
@@ -120,7 +120,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <summary>
         /// 服务端获取返回值
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        
         public returnType GetReturnValue()
         {
             return Node.GetValue();
@@ -130,7 +130,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         [AutoCSer.BinarySerialize.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
         {
             Node.Serialize(serializer, Checker);
@@ -140,7 +140,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="deSerializer"></param>
         [AutoCSer.BinarySerialize.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
         {
             Node node;
@@ -152,7 +152,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="serializer"></param>
         [AutoCSer.Json.SerializeCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private void serialize(AutoCSer.Json.Serializer serializer)
         {
             Node.Serialize(serializer, Checker);
@@ -162,7 +162,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="parser"></param>
         [AutoCSer.Json.ParseCustom]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        
         private unsafe void deSerialize(AutoCSer.Json.Parser parser)
         {
             Node node = null;
