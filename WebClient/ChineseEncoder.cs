@@ -98,7 +98,6 @@ namespace Larpx.ResourceSpider.WebClient
         /// </summary>
         /// <param name="data">字节数组</param>
         /// <returns>编码,失败为null</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public Encoding Get(byte[] data)
         {
             fixed (byte* dataFixed = data) return get(dataFixed, data.Length);

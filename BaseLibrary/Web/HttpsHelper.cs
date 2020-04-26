@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Larpx.ResourceSpider.BaseLibrary.Cache;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -8,7 +9,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using static Larpx.ResourceSpider.CommonHelper.ClassData;
+using static Larpx.ResourceSpider.BaseLibrary.Data.ClassData;
 
 namespace Larpx.ResourceSpider.CommonHelper
 {
