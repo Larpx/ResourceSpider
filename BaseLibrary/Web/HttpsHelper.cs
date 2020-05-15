@@ -5,10 +5,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Http;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using static Larpx.ResourceSpider.BaseLibrary.Data.ClassData;
 
 namespace Larpx.ResourceSpider.CommonHelper
@@ -131,6 +133,7 @@ namespace Larpx.ResourceSpider.CommonHelper
             }
             #endregion
         }
+
         /// <summary>
         /// 设置编码
         /// </summary>
@@ -1043,5 +1046,380 @@ namespace Larpx.ResourceSpider.CommonHelper
             return oList[oRandom.Next(0, oList.Count - 1)];
         }
 
+    }
+
+    public class httph
+    {
+        private Uri oUri;
+        private int nTimeout = 6 * 1000;
+        private int nLoopTimes = 0;
+        private CookieContainer oCookieContainer;
+
+        /// <summary>
+        /// 资源地址
+        /// </summary>
+        public Uri Uri { get => oUri; set => oUri = value; }
+
+        /// <summary>
+        /// 请求时所携带的Cookie
+        /// </summary>
+        public CookieContainer CookieContainer { get => oCookieContainer; set => oCookieContainer = value; }
+
+        /// <summary>
+        /// 重复请求次数
+        /// </summary>
+        public int LoopTimes { get => nLoopTimes; set => nLoopTimes = value; }
+
+        /// <summary>
+        /// 请求超时时间，ms
+        /// </summary>
+        public int NTimeout { get => nTimeout; set => nTimeout = value; }
+
+        public httph(CookieContainer oCookieContainer)
+        {
+            this.CookieContainer = oCookieContainer;
+        }
+
+        public httph()
+        {
+            this.CookieContainer = new CookieContainer();
+            WebClient webClient = new WebClient();
+            
+        }
+
+        /// <summary>
+        /// Get
+        /// 获取数据,需要判断返回结果是否为空
+        /// </summary>
+        /// <param name="url">Uri资源</param>
+        /// <param name="sAccept">Accept头</param>
+        /// <param name="sUserAgent">UserAgent头</param>
+        /// <param name="oWebHeaderCollection">请求头信息</param>
+        /// <param name="oCookieContainer">Cookie容器</param>
+        /// <returns>响应信息</returns>
+        public static HttpWebResponse ReadData(string url, int n = 0, string sRedisKey = null,
+            string sAccept = null, string sUserAgent = null)
+        {
+            int nSign = 4;
+            try
+            {
+                if (n >= nSign)
+                    return null;
+
+                Uri oURL = new Uri(url);
+                Random oRand = new Random();
+                string sRdsKey = string.IsNullOrEmpty(sRedisKey) ? oURL.Host : sRedisKey;
+                StackExchangeRedisHelper oRedisCookie = new StackExchangeRedisHelper(nRedisCookieDB);
+
+                //设置https验证方式
+                if (url.ToString().StartsWith("https", StringComparison.OrdinalIgnoreCase))
+                {
+                    ServicePointManager.ServerCertificateValidationCallback =
+                            new RemoteCertificateValidationCallback(CheckValidationResult);
+                }
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                
+                request.AllowAutoRedirect = true;
+
+                //获取Cookie，从Redis
+                if (oRedisCookie.IsSet(sRdsKey))
+                {
+                    var oCookies = CookieHelper.GetCookiesByHeader(oRedisCookie.Get<string>(sRdsKey));
+                    request.CookieContainer.Add(oCookies);
+                }
+                else
+                    request.CookieContainer.Add(GetCookie(oURL, true, oURL.Host, 5));
+
+                if (!String.IsNullOrEmpty(sAccept))
+                    request.Accept = sAccept;
+                else
+                    request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
+                if (!String.IsNullOrEmpty(sUserAgent))
+                    request.UserAgent = sUserAgent;
+                else
+                    request.UserAgent = GetRandomUserAgent();
+                request.Timeout = 20 * 1000;
+                request.Headers.Add(HttpRequestHeader.CacheControl, @"no-cache");
+                request.Headers.Add("upgrade-insecure-requests", "1");
+                request.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
+                request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
+                request.Referer = new Uri(url).Host.ToString();
+
+                //sleep
+                int nRand = oRand.Next(20, 80);
+                Console.WriteLine("Net Request Sleeping: " + nRand + "ms");
+                HttpWebResponse respone = (HttpWebResponse)request.GetResponse();
+                if (respone.StatusCode == HttpStatusCode.OK)
+                    return respone;
+                else if (respone.StatusCode > HttpStatusCode.InternalServerError)
+                    return ReadData(url, n++, sRedisKey, sAccept, sUserAgent);
+                else
+                    return ReadData(url, n++, sRedisKey, sAccept, sUserAgent);
+            }
+            catch (IOException e)
+            {
+                if (n > nSign)
+                    throw e;
+                else
+                {
+                    n++;
+                    return ReadData(url, n, sRedisKey, sAccept, sUserAgent);
+                }
+            }
+            catch (WebException e)
+            {
+                if (e.Message.Contains("40") || e.Message.Contains("50"))
+                {
+                    return null;
+                }
+                else
+                {
+                    if (n > nSign)
+                        throw e;
+                    else
+                    {
+                        n++;
+                        return ReadData(url, n, sRedisKey, sAccept, sUserAgent);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("无效的控制字符"))
+                {
+                    if (n > nSign)
+                        throw ex;
+                    else
+                    {
+                        n++;
+                        return ReadData(url, n, sRedisKey, sAccept, sUserAgent);
+                    }
+                }
+                else
+                    throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 检查证书，适用于HTTPS
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="certificate"></param>
+        /// <param name="chain"></param>
+        /// <param name="errors"></param>
+        /// <returns></returns>
+        private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
+        {
+            return true; //总是接受   
+        }
+
+    }
+
+
+    /// <summary>
+    /// 基于HttpClient实现的Http帮助类
+    /// 线程安全，支持异步操作
+    /// </summary>
+    public class HttpClientHelper
+    {
+        private static Uri Uri;
+        private static HttpClient client = null;
+        private static readonly object LockObj = new object();
+
+        /// <summary>
+        /// 初始化HttpClientHelper对象
+        /// </summary>
+        /// <param name="sURI"></param>
+        /// <param name="bPreload"></param>
+        public HttpClientHelper(Uri sURI = null, bool bPreload = false)
+        {
+            try
+            {
+                GetInstance(sURI);
+
+                //预热HttpClient
+                if (Uri != null && bPreload)
+                    client.SendAsync(new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Head,
+                        RequestUri = new Uri(Uri.AbsoluteUri + "/")
+                    }).Result.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 初始化HttpClientHelper对象
+        /// </summary>
+        /// <param name="sURI"></param>
+        /// <param name="bPreload"></param>
+        public HttpClientHelper(string sURI = null, bool bPreload = false)
+        {
+            try
+            {
+                GetInstance(sURI);
+
+                //预热HttpClient
+                if (Uri != null && bPreload)
+                    client.SendAsync(new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Head,
+                        RequestUri = new Uri(Uri.AbsoluteUri + "/")
+                    }).Result.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 单例
+        /// </summary>
+        /// <param name="sURI"></param>
+        /// <returns></returns>
+        public static HttpClient GetInstance(string sURI = null)
+        {
+            try
+            {
+                return GetInstance(new Uri(sURI));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 单例
+        /// </summary>
+        /// <param name="sURI"></param>
+        /// <returns></returns>
+        public static HttpClient GetInstance(Uri sURI = null)
+        {
+            try
+            {
+                if (sURI == null)
+                    throw new ArgumentNullException();
+
+                if (client == null)
+                {
+                    lock (LockObj)
+                    {
+                        if (client == null)
+                        {
+                            client = new HttpClient();
+                        }
+
+                        if (Uri != null)
+                            Uri = sURI;
+                    }
+                }
+                return client;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<string> PostAsy(string url, HttpContent httpContent)
+        {
+            try
+            {
+                //由HttpClient发出异步Post请求
+                HttpResponseMessage res = await client.PostAsync(url, httpContent);
+
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                    return res.Content.ReadAsStringAsync().Result;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Post异步请求
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="strJson"></param>
+        /// <returns></returns>
+        public async Task<string> PostAsync(string url, string strJson)
+        {
+            try
+            {
+                HttpContent content = new StringContent(strJson);
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+                //由HttpClient发出异步Post请求
+                HttpResponseMessage res = await client.PostAsync(url, content);
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    string str = res.Content.ReadAsStringAsync().Result;
+                    return str;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Post同步请求
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="strJson"></param>
+        /// <returns></returns>
+        public string Post(string url, string strJson)//post同步请求方法
+        {
+            try
+            {
+                HttpContent content = new StringContent(strJson);
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                //client.DefaultRequestHeaders.Connection.Add("keep-alive");
+                //由HttpClient发出Post请求
+                Task<HttpResponseMessage> res = client.PostAsync(url, content);
+                if (res.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    string str = res.Result.Content.ReadAsStringAsync().Result;
+                    return str;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get同步请求
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public string Get(string url)
+        {
+            try
+            {
+                var responseString = client.GetStringAsync(url);
+                return responseString.Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
