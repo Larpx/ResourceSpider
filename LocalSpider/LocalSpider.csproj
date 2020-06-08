@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A2F0C1F2-41C2-424A-A15B-1B58B548472E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>LocalSpider</RootNamespace>
-    <AssemblyName>LocalSpider</AssemblyName>
+    <RootNamespace>Larpx.ResourceSpider.LocalSpider</RootNamespace>
+    <AssemblyName>Larpx.ResourceSpider.LocalSpider</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -65,6 +65,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Spider.cs" />
+    <Compile Include="Model\WebSite1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,5 +95,6 @@
       <Name>Engine</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
