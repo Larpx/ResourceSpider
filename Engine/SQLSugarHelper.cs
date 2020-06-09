@@ -1,18 +1,19 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace Larpx.ResourceSpider.Engine
 {
-    public class DbContext<T> where T : class, new()
+    public class SQLSugarHelper<T> where T : class, new()
     {
-        public DbContext()
+        public SQLSugarHelper()
         {
             Db = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = "server=.;uid=sa;pwd=sa;database=MovieSpider",
+                ConnectionString = ConfigurationManager.AppSettings["ConnString"].ToString(),
                 DbType = DbType.SqlServer,
                 InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
                 IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
