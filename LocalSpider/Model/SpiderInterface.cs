@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
-    interface Spider
+    interface SpiderInterface
     {
         /// <summary>
         /// 获取抓取网站地址

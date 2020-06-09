@@ -3,13 +3,32 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Larpx.ResourceSpider.BaseLibrary.CommonHelper
+namespace Larpx.ResourceSpider.CommonHelper
 {
     public class CommonHelper
     {
+        /// <summary>
+        /// 利用 System.Runtime.Serialization序列化与反序列化完成引用对象的复制  
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="RealObject"></param>
+        /// <returns></returns>
+        public static T Clone<T>(T RealObject)
+        {
+            using (Stream objectStream = new MemoryStream())
+            {
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(objectStream, RealObject);
+                objectStream.Seek(0, SeekOrigin.Begin);
+                return (T)formatter.Deserialize(objectStream);
+            }
+        }
+
         /// <summary>
         /// 将List随机排序
         /// </summary>

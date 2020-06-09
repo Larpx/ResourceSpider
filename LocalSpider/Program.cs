@@ -1,4 +1,5 @@
 ﻿using Larpx.Logs;
+using Larpx.ResourceSpider.LocalSpider.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,13 @@ namespace Larpx.ResourceSpider.LocalSpider
 			{
                 ThreadPool.SetMaxThreads(32, 32);
                 ThreadPool.SetMinThreads(8, 8);
+
+                Dictionary<string, object> oArr = new Dictionary<string, object>();
+                UUMP4Spider uUMP4Spider = new UUMP4Spider(false);
+
+                oArr.Add("ID", "94f0591a0d73fc445c613014d22aebdf");
+
+                uUMP4Spider.DoExce(oArr);
 
                 //DoExce2( obj );
                 //DoExce( obj );
