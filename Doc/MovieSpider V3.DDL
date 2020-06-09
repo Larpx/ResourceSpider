@@ -1,8 +1,8 @@
 /*    此 SQL DDL 脚本由 Microsoft Visual Studio (发布日期:LOCAL BUILD) 生成。                            */
 
 /*    所用驱动程序: Microsoft Visual Studio － Microsoft SQL Server 驱动程序。                            */
-/*    文档: F:\MyProject\Spider\MovieSpider\Doc\MovieSpider V3.vsd。                             */
-/*    创建时间: 2020年3月25日 3:30。                                                                  */
+/*    文档: F:\MyProject\Spider\ResourceSpider\Doc\MovieSpider V3.vsd。                          */
+/*    创建时间: 2020年6月9日 22:52。                                                                  */
 /*    操作: 来自 Visio 生成向导。                                                                      */
 /*    已连接的数据源: 没有连接。                                                                          */
 /*    已连接的服务器: 没有连接。                                                                          */
@@ -114,6 +114,7 @@ go
 /* 	"Date" : 日期                                                                               */
 /* 	"URL" : URL                                                                               */
 /* 	"Name" : 名称                                                                               */
+/* 	"ID" : 系统ID                                                                               */
 /* 	"NameChs" : 中文名称                                                                          */
 /* 	"Status" : 状态（0禁止 1正常 2下架）                                                                */
 /* 	"Priority" : 优先级（0正常 >0优先级增加）                                                             */
@@ -127,6 +128,7 @@ create table "Website" (
 	"Date" datetime default GETDATE() not null,
 	"URL" nvarchar(2048) not null,
 	"Name" nvarchar(max) not null,
+	"ID" nvarchar(100) not null,
 	"NameChs" nvarchar(max) null,
 	"Status" tinyint default 0 not null,
 	"Priority" tinyint default 0 not null,
@@ -208,7 +210,7 @@ create table "Link" (
 	"WebsiteGUID" uniqueidentifier not null,
 	"CategoryGUID" uniqueidentifier null,
 	"SN" varchar(100) not null,
-	"ID" nvarchar(50) not null,
+	"ID" nvarchar(100) not null,
 	"URL" nvarchar(max) not null,
 	"Name" nvarchar(2048) null,
 	"NameChs" nvarchar(2048) null,

@@ -2,9 +2,6 @@
 using Larpx.ResourceSpider.Engine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
@@ -12,6 +9,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
     {
         public UUMP4Spider(bool debug = true, string LoggerPath = null, Logger Logger = null) : base(debug, LoggerPath, Logger)
         {
+            //https://www.uump4.net/
         }
 
         public new int DoExce(Dictionary<string, object> arr)

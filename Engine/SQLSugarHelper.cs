@@ -32,17 +32,26 @@ namespace Larpx.ResourceSpider.Engine
         public SqlSugarClient Db;//用来处理事务多表查询和复杂的操作
         public SimpleClient<T> CurrentDb { get { return new SimpleClient<T>(Db); } }//用来操作当前表的数据
 
-        public SimpleClient<Setting> SettingDb { get { return new SimpleClient<Setting>(Db); } }//用来处理Setting表的常用操作
-        public SimpleClient<Manager> ManagerDb { get { return new SimpleClient<Manager>(Db); } }//用来处理Manager表的常用操作
-        public SimpleClient<SystemLog> SystemLogDb { get { return new SimpleClient<SystemLog>(Db); } }//用来处理SystemLog表的常用操作
-        public SimpleClient<Website> WebsiteDb { get { return new SimpleClient<Website>(Db); } }//用来处理Website表的常用操作
-        public SimpleClient<Category> CategoryDb { get { return new SimpleClient<Category>(Db); } }//用来处理Category表的常用操作
-        public SimpleClient<Link> LinkDb { get { return new SimpleClient<Link>(Db); } }//用来处理Link表的常用操作
-        public SimpleClient<PropertyKey> PropertyKeyDb { get { return new SimpleClient<PropertyKey>(Db); } }//用来处理PropertyKey表的常用操作
-        public SimpleClient<PropertyValue> PropertyValueDb { get { return new SimpleClient<PropertyValue>(Db); } }//用来处理PropertyValue表的常用操作
-        public SimpleClient<PropertyDetail> PropertyDetailDb { get { return new SimpleClient<PropertyDetail>(Db); } }//用来处理PropertyDetail表的常用操作
-        public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
-        public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
+        //public SimpleClient<Setting> SettingDb { get { return new SimpleClient<Setting>(Db); } }//用来处理Setting表的常用操作
+        //public SimpleClient<Manager> ManagerDb { get { return new SimpleClient<Manager>(Db); } }//用来处理Manager表的常用操作
+        //public SimpleClient<SystemLog> SystemLogDb { get { return new SimpleClient<SystemLog>(Db); } }//用来处理SystemLog表的常用操作
+        //public SimpleClient<Website> WebsiteDb { get { return new SimpleClient<Website>(Db); } }//用来处理Website表的常用操作
+        //public SimpleClient<Category> CategoryDb { get { return new SimpleClient<Category>(Db); } }//用来处理Category表的常用操作
+        //public SimpleClient<Link> LinkDb { get { return new SimpleClient<Link>(Db); } }//用来处理Link表的常用操作
+        //public SimpleClient<PropertyKey> PropertyKeyDb { get { return new SimpleClient<PropertyKey>(Db); } }//用来处理PropertyKey表的常用操作
+        //public SimpleClient<PropertyValue> PropertyValueDb { get { return new SimpleClient<PropertyValue>(Db); } }//用来处理PropertyValue表的常用操作
+        //public SimpleClient<PropertyDetail> PropertyDetailDb { get { return new SimpleClient<PropertyDetail>(Db); } }//用来处理PropertyDetail表的常用操作
+        //public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
+        //public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
+
+        /// <summary>
+        /// 获取所有
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool IsAny(Expression<Func<T, bool>> whereExpression)
+        {
+            return CurrentDb.IsAny(whereExpression);
+        }
 
         /// <summary>
         /// 获取所有
@@ -174,5 +183,42 @@ namespace Larpx.ResourceSpider.Engine
         }
 
         //自已扩展更多方法 
+    }
+
+    public class SQLSugarHelper
+    {
+        public SQLSugarHelper()
+        {
+            Db = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = ConfigurationManager.AppSettings["ConnString"].ToString(),
+                DbType = DbType.SqlServer,
+                InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+            });
+            //调式代码 用来打印SQL 
+            Db.Aop.OnLogExecuting = (sql, pars) =>
+            {
+                Console.WriteLine(sql + "\r\n" +
+                    Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                Console.WriteLine();
+            };
+        }
+
+        //注意：不能写成静态的
+        public SqlSugarClient Db;//用来处理事务多表查询和复杂的操作
+
+        public SimpleClient<Setting> SettingDb { get { return new SimpleClient<Setting>(Db); } }//用来处理Setting表的常用操作
+        public SimpleClient<Manager> ManagerDb { get { return new SimpleClient<Manager>(Db); } }//用来处理Manager表的常用操作
+        public SimpleClient<SystemLog> SystemLogDb { get { return new SimpleClient<SystemLog>(Db); } }//用来处理SystemLog表的常用操作
+        public SimpleClient<Website> WebsiteDb { get { return new SimpleClient<Website>(Db); } }//用来处理Website表的常用操作
+        public SimpleClient<Category> CategoryDb { get { return new SimpleClient<Category>(Db); } }//用来处理Category表的常用操作
+        public SimpleClient<Link> LinkDb { get { return new SimpleClient<Link>(Db); } }//用来处理Link表的常用操作
+        public SimpleClient<PropertyKey> PropertyKeyDb { get { return new SimpleClient<PropertyKey>(Db); } }//用来处理PropertyKey表的常用操作
+        public SimpleClient<PropertyValue> PropertyValueDb { get { return new SimpleClient<PropertyValue>(Db); } }//用来处理PropertyValue表的常用操作
+        public SimpleClient<PropertyDetail> PropertyDetailDb { get { return new SimpleClient<PropertyDetail>(Db); } }//用来处理PropertyDetail表的常用操作
+        public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
+        public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
     }
 }

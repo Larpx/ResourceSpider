@@ -206,37 +206,37 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 }
 
                 //获取任务网站列表
-                OnBeginGetWebsiteList();
+                OnBeginGetWebsiteList?.Invoke();
                 ListWebsites.AddRange(GetWebsiteList(sWebsiteID));
-                OnEndGetWebsiteList();
+                OnEndGetWebsiteList?.Invoke();
 
                 //获取分类列表
-                OnBeginGetCategoryList();
+                OnBeginGetCategoryList?.Invoke();
                 foreach (var item in _ListWebsites)
                 {
-                    OnGetingCategoryList(item);
+                    OnGetingCategoryList?.Invoke(item);
                     _ListCategory.AddRange(GetCategoryList(item));
                 }
-                OnEndGetCategoryList();
+                OnEndGetCategoryList?.Invoke();
 
                 //采集链接
-                OnBeginGetLinkList();
+                OnBeginGetLinkList?.Invoke();
                 foreach (var item in _ListCategory)
                 {
                     OnGetingLinkList(item);
                     ListLink.AddRange(GetLinkList(item));
                 }
-                OnEndGetLinkList();
+                OnEndGetLinkList?.Invoke();
 
                 //采集详情
-                OnBeginGetLinkDetail();
+                OnBeginGetLinkDetail?.Invoke();
                 foreach (var item in ListLink)
                 {
-                    OnGetingLinkDetail(item);
+                    OnGetingLinkDetail?.Invoke(item);;
                     GetLinkDetail(item);
                 }
-                OnEndGetLinkDetail();
-
+                OnEndGetLinkDetail?.Invoke(); 
+                
                 return 1;
             }
             catch (Exception ex)
@@ -257,11 +257,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                OnBeginGetWebsiteList();
+                OnBeginGetWebsiteList?.Invoke();
 
                 ListWebsites.AddRange(GetWebsiteList(sWebsiteID));
 
-                OnEndGetWebsiteList();
+                OnEndGetWebsiteList?.Invoke();
 
                 return 1;
             }
@@ -281,7 +281,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                OnBeginGetCategoryList();
+                OnBeginGetCategoryList?.Invoke();
 
                 var oTmpList = new List<Website>();
                 if (ListWebsites.Count > 0)
@@ -291,11 +291,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 foreach (var item in ListWebsites)
                 {
-                    OnGetingCategoryList(item);
+                    OnGetingCategoryList?.Invoke(item);
                     ListCategory.AddRange(GetCategoryList(item));
                 }
 
-                OnEndGetCategoryList();
+                OnEndGetCategoryList?.Invoke();
 
                 return 1;
             }
@@ -315,7 +315,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                OnBeginGetLinkList();
+                OnBeginGetLinkList?.Invoke();
 
                 var oTmpList = new List<Category>();
                 if (ListCategory.Count > 0)
@@ -325,11 +325,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 foreach (var item in ListCategory)
                 {
-                    OnGetingLinkList(item);
+                    OnGetingLinkList?.Invoke(item);
                     ListLink.AddRange(GetLinkList(item));
                 }
 
-                OnEndGetLinkList();
+                OnEndGetLinkList?.Invoke();
 
                 return 1;
             }
@@ -350,7 +350,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 //开始采集详情事件
-                OnBeginGetLinkDetail();
+                OnBeginGetLinkDetail?.Invoke();
 
                 //复制采集对象
                 var oTmpList = new List<Link>();
@@ -361,12 +361,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 foreach (var item in oTmpList)
                 {
-                    OnGetingLinkDetail(item);
+                    OnGetingLinkDetail?.Invoke(item);
                     GetLinkDetail(item);
                 }
 
                 //结束采集事件
-                OnEndGetLinkDetail();
+                OnEndGetLinkDetail?.Invoke();
 
                 return 1;
             }

@@ -24,12 +24,13 @@ namespace Larpx.ResourceSpider.LocalSpider
                 ThreadPool.SetMinThreads(8, 8);
 
                 Dictionary<string, object> oArr = new Dictionary<string, object>();
-                UUMP4Spider uUMP4Spider = new UUMP4Spider(false);
+                //UUMP4Spider uUMP4Spider = new UUMP4Spider(false);
+                _877JNSpider _877JNSpider = new _877JNSpider(false);
 
                 oArr.Add("ID", "94f0591a0d73fc445c613014d22aebdf");
 
-                uUMP4Spider.DoExce(oArr);
-
+                //uUMP4Spider.DoExce(oArr);
+                _877JNSpider.DoExce(oArr);
                 //DoExce2( obj );
                 //DoExce( obj );
 

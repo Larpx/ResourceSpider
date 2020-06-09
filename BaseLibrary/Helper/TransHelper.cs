@@ -82,11 +82,10 @@ namespace Larpx.ResourceSpider.CommonHelper
             try
             {
                 Uri oURL = null;
-                MD5 oMD5 = new MD5();
                 Random oRandom = new Random();
 
                 iSalt = oRandom.Next(10000, 1000000);
-                sSign = oMD5.GetBufferHash(Appid + sQuery + iSalt + sAppsec).ToLower();
+                sSign = MD5.GetBufferHash(Appid + sQuery + iSalt + sAppsec).ToLower();
                 sQuery = HttpUtility.UrlEncode(sQuery);
                 oURL = new Uri(sURL
                     + "?q=" + sQuery

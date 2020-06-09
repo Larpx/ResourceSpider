@@ -8,20 +8,20 @@ namespace Larpx.ResourceSpider.CommonHelper
 {
     public class MD5
     {
-        public string GetBufferHash(string sBuffer)
+        public static string GetBufferHash(string sBuffer)
         {
             UTF8Encoding uTF8Encoding = new UTF8Encoding();
-            return this.GetBufferHash(uTF8Encoding.GetBytes(sBuffer));
+            return MD5.GetBufferHash(uTF8Encoding.GetBytes(sBuffer));
         }
 
-        public string GetBufferHash(byte[] byBuffer)
+        public static string GetBufferHash(byte[] byBuffer)
         {
             System.Security.Cryptography.MD5 mD = new MD5CryptoServiceProvider();
             byte[] value = mD.ComputeHash(byBuffer);
             return BitConverter.ToString(value).Replace("-", "");
         }
 
-        public string GetFileHash(string sFileName)
+        public static string GetFileHash(string sFileName)
         {
             if (!File.Exists(sFileName))
             {
@@ -43,9 +43,9 @@ namespace Larpx.ResourceSpider.CommonHelper
             return result;
         }
 
-        public bool Verify(string sBuffer, string sHash)
+        public static bool Verify(string sBuffer, string sHash)
         {
-            string bufferHash = this.GetBufferHash(sBuffer);
+            string bufferHash = MD5.GetBufferHash(sBuffer);
             StringComparer ordinalIgnoreCase = StringComparer.OrdinalIgnoreCase;
             return ordinalIgnoreCase.Compare(bufferHash, sHash) == 0;
         }
