@@ -205,7 +205,130 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
+                string sHTML = "";
+                bool bGetCookie = false;
+                Random oRand = new Random();
+                IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper();
+
+                //整理分类不规范页面地址
+                if (!oCategory.URL.StartsWith("http"))
+                {
+                    //处理不规范URL
+                    var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
+
+                    oCategory.URL = oWebs.URL + oCategory.URL;
+                    oSQLSugarHelper.CategoryDb.Update(oCategory);
+                }
+
+                //获取Cookies
+                var oCookies = new CookieCollection();
+                if (bGetCookie)
+                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oCategory.URL), false);
+
+                //请求页面
+                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(oCategory.URL, oCookies))
+                {
+                    if (oResponse == null)
+                        return null;
+
+                    //页面解码
+                    if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
+                    {
+                        switch (oResponse.ContentEncoding.ToLower())
+                        {
+                            case "gzip":
+                                using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                                {
+                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                    {
+                                        sHTML = reader.ReadToEnd();
+                                        oPageDocument = new JumonyParser().Parse(sHTML);
+                                    }
+                                }
+                                break;
+                            case "deflate":
+                                using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                                {
+                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                    {
+                                        sHTML = reader.ReadToEnd();
+                                        oPageDocument = new JumonyParser().Parse(sHTML);
+                                    }
+                                }
+                                break;
+                            default:
+                                //未被压缩,直接解析
+                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        //未被压缩,直接解析
+                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
+                    }
+                }
+
+                //解析页面
+                if (oPageDocument != null)
+                {
+
+
+
+
+                    do
+                    {
+
+                    } while (false);
+
+
+
+
+
+
+
+
+
+
+                    if (oPageDocument.Exists(".box.list.channel ul li a"))
+                    {
+                        var oCategoryEnmuar = oPageDocument.Find(".box.list.channel ul li a");
+                        foreach (var item in oCategoryEnmuar)
+                        {
+                            if (item.Attribute("href").AttributeValue == "javascript:void(0);")
+                                continue;
+
+                            Category oCategory = new Category();
+                            oCategory.WebsiteGUID = oWebsite.GUID;
+                            oCategory.Name = item.InnerText();
+                            oCategory.URL = oWebsite.URL + item.Attribute("href").AttributeValue;
+
+                            if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oCategory.URL))
+                            {
+                                oSQLSugarHelper.CategoryDb.Insert(oCategory);
+                                oListResult.Add(oCategory);
+                            }
+                            else
+                                continue;
+                        }
+                    }
+                    else
+                    {
+                        //未找到分类标签
+                    }
+                }
+                else
+                {
+                    //解析页面失败
+                }
+
+
+
+
+
+
                 return oListLink;
             }
             catch (Exception ex)
