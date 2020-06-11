@@ -212,18 +212,18 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 //获取分类列表
                 OnBeginGetCategoryList?.Invoke();
-                foreach (var item in _ListWebsites)
+                foreach (var item in ListWebsites)
                 {
                     OnGetingCategoryList?.Invoke(item);
-                    _ListCategory.AddRange(GetCategoryList(item));
+                    ListCategory.AddRange(GetCategoryList(item));
                 }
                 OnEndGetCategoryList?.Invoke();
 
                 //采集链接
                 OnBeginGetLinkList?.Invoke();
-                foreach (var item in _ListCategory)
+                foreach (var item in ListCategory)
                 {
-                    OnGetingLinkList(item);
+                    OnGetingLinkList?.Invoke(item);
                     ListLink.AddRange(GetLinkList(item));
                 }
                 OnEndGetLinkList?.Invoke();

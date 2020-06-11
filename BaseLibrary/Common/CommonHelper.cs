@@ -13,6 +13,53 @@ namespace Larpx.ResourceSpider.CommonHelper
     public class CommonHelper
     {
         /// <summary>
+        /// 根据当前系统时间加随机序列来生成订单号
+        /// 17位长度
+        /// </summary>
+        /// <returns>订单号</returns>
+        public static string GenerateOutTradeNo()
+        {
+            Random oRan = new Random();
+            return string.Format("{0}{1}", DateTime.Now.ToString("yyyyMMddHHmmss"), oRan.Next(100, 999));
+        }
+
+        /// <summary>
+        /// 生成随机串，随机串包含字母或数字
+        /// </summary>
+        /// <returns>随机串</returns>
+        public static string GenerateNonceStr()
+        {
+            return Guid.NewGuid().ToString().Replace("-", "");
+        }
+
+        /// <summary>
+        /// 生成时间戳，标准北京时间，时区为东八区，自1970年1月1日 0点0分0秒以来的秒数
+        /// </summary>
+        /// <returns>时间戳</returns>
+        public static string GenerateTimeStamp()
+        {
+            TimeSpan oTimeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(oTimeSpan.TotalSeconds).ToString();
+        }
+
+        /// <summary>
+        /// 将字符串进行url编码
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string UrlEncode(string str)
+        {
+            StringBuilder oSb = new StringBuilder();
+            byte[] byStr = System.Text.Encoding.UTF8.GetBytes(str);
+            for (int i = 0; i < byStr.Length; i++)
+            {
+                oSb.Append(@"%" + Convert.ToString(byStr[i], 16));
+            }
+
+            return oSb.ToString();
+        }
+
+        /// <summary>
         /// 利用 System.Runtime.Serialization序列化与反序列化完成引用对象的复制  
         /// </summary>
         /// <typeparam name="T"></typeparam>

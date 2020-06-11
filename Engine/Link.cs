@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 
 namespace Larpx.ResourceSpider.Engine
 {
@@ -24,7 +25,8 @@ namespace Larpx.ResourceSpider.Engine
         /// Desc:
         /// Default:newid()
         /// Nullable:False
-        /// </summary>           
+        /// </summary>       
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public Guid GUID { get; set; }
 
         /// <summary>

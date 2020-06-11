@@ -200,9 +200,8 @@ namespace Larpx.ResourceSpider.Engine
             //调式代码 用来打印SQL 
             Db.Aop.OnLogExecuting = (sql, pars) =>
             {
-                Console.WriteLine(sql + "\r\n" +
-                    Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
-                Console.WriteLine();
+                //Console.WriteLine(sql + "\r\n" + Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                //Console.WriteLine();
             };
         }
 

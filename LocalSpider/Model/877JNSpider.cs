@@ -1,12 +1,14 @@
 ﻿using Ivony.Html;
 using Ivony.Html.Parser;
 using Larpx.Logs;
+using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
@@ -94,7 +96,6 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sHTML = "";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                List<Category> oListResult = new List<Category>();
                 SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper();
 
                 //整理分类不规范页面地址
@@ -107,89 +108,97 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     oSQLSugarHelper.WebsiteDb.Update(oWebsite);
                 }
 
-                //获取Cookies
-                var oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
-
-                //请求页面
-                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(oWebsite.URL, oCookies))
+                switch (oWebsite.Processed)
                 {
-                    if (oResponse == null)
-                        return null;
+                    case 0:
+                        //获取Cookies
+                        var oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
 
-                    //页面解码
-                    if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
-                    {
-                        switch (oResponse.ContentEncoding.ToLower())
+                        //请求页面
+                        using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(oWebsite.URL, oCookies))
                         {
-                            case "gzip":
-                                using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            case "deflate":
-                                using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            default:
-                                //未被压缩,直接解析
-                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        //未被压缩,直接解析
-                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                    }
-                }
+                            if (oResponse == null)
+                                return null;
 
-                //解析页面
-                if (oPageDocument != null)
-                {
-                    if (oPageDocument.Exists("#header_box ul li a"))
-                    {
-                        var oCategoryEnmuar = oPageDocument.Find("#header_box ul li a");
-                        foreach (var item in oCategoryEnmuar)
-                        {
-                            if (item.Attribute("href").AttributeValue == "javascript:void(0);")
-                                continue;
-
-                            Category oCategory = new Category();
-                            oCategory.WebsiteGUID = oWebsite.GUID;
-                            oCategory.Name = item.InnerText();
-                            oCategory.URL = oWebsite.URL + item.Attribute("href").AttributeValue;
-
-                            if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oCategory.URL))
+                            //页面解码
+                            if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
                             {
-                                oSQLSugarHelper.CategoryDb.Insert(oCategory);
-                                oListResult.Add(oCategory);
+                                switch (oResponse.ContentEncoding.ToLower())
+                                {
+                                    case "gzip":
+                                        using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                                        {
+                                            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                            {
+                                                sHTML = reader.ReadToEnd();
+                                                oPageDocument = new JumonyParser().Parse(sHTML);
+                                            }
+                                        }
+                                        break;
+                                    case "deflate":
+                                        using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                                        {
+                                            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                            {
+                                                sHTML = reader.ReadToEnd();
+                                                oPageDocument = new JumonyParser().Parse(sHTML);
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        //未被压缩,直接解析
+                                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
+                                        break;
+                                }
                             }
                             else
-                                continue;
+                            {
+                                //未被压缩,直接解析
+                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
+                            }
                         }
-                    }
-                    else
-                    {
-                        //未找到分类标签
-                    }
-                }
-                else
-                {
-                    //解析页面失败
-                }
 
-                return oListResult;
+                        //解析页面
+                        if (oPageDocument != null)
+                        {
+                            if (oPageDocument.Exists("#header_box ul li a"))
+                            {
+                                var oCategoryEnmuar = oPageDocument.Find("#header_box ul li a");
+                                foreach (var item in oCategoryEnmuar)
+                                {
+                                    if (item.Attribute("href").AttributeValue == "javascript:void(0);")
+                                        continue;
+
+                                    Category oCategory = new Category();
+                                    oCategory.WebsiteGUID = oWebsite.GUID;
+                                    oCategory.Status = 1;
+                                    oCategory.Name = item.InnerText();
+                                    oCategory.URL = oWebsite.URL + item.Attribute("href").AttributeValue;
+
+                                    if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oCategory.URL))
+                                    {
+                                        oSQLSugarHelper.CategoryDb.Insert(oCategory);
+                                    }
+                                    else
+                                        continue;
+                                }
+                            }
+                            else
+                            {
+                                //未找到分类标签
+                            }
+                        }
+                        else
+                        {
+                            //解析页面失败
+                        }
+
+                        return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false);
+
+                    case 1:
+                    default:
+                        return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false && it.Processed != 2);
+                }
             }
             catch (Exception ex)
             {
@@ -205,6 +214,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
+                bool bFirst = true;
+                int iEndPageNum = 0;
+                int iThisPageNum = 1;
+                string sGetUrl = "";
+
                 string sHTML = "";
                 bool bGetCookie = false;
                 Random oRand = new Random();
@@ -213,22 +227,25 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper();
 
                 //整理分类不规范页面地址
+                var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
                 if (!oCategory.URL.StartsWith("http"))
                 {
                     //处理不规范URL
-                    var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
-
                     oCategory.URL = oWebs.URL + oCategory.URL;
                     oSQLSugarHelper.CategoryDb.Update(oCategory);
                 }
 
+                sGetUrl = oCategory.URL;
+
                 //获取Cookies
                 var oCookies = new CookieCollection();
                 if (bGetCookie)
-                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oCategory.URL), false);
+                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+
+                GetUrl:
 
                 //请求页面
-                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(oCategory.URL, oCookies))
+                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sGetUrl, oCookies))
                 {
                     if (oResponse == null)
                         return null;
@@ -274,62 +291,102 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //解析页面
                 if (oPageDocument != null)
                 {
-
-
-
-
-                    do
+                    //获取总页码
+                    if (bFirst)
                     {
+                        bFirst = false;
+                        if (oPageDocument.Exists(".page .end"))
+                            iEndPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .end").InnerText());
+                        else
+                            iEndPageNum = -1;
+                    }
 
-                    } while (false);
+                    //获取本页页码
+                    if (oPageDocument.Exists(".page .current"))
+                        iThisPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .current").InnerText());
+                    else
+                        iThisPageNum++;
 
-
-
-
-
-
-
-
-
-
+                    //解析页面
                     if (oPageDocument.Exists(".box.list.channel ul li a"))
                     {
                         var oCategoryEnmuar = oPageDocument.Find(".box.list.channel ul li a");
                         foreach (var item in oCategoryEnmuar)
                         {
-                            if (item.Attribute("href").AttributeValue == "javascript:void(0);")
+                            Link oLink = new Link();
+                            oLink.CategoryGUID = oCategory.GUID;
+                            oLink.WebsiteGUID = oCategory.WebsiteGUID;
+                            oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
+                            oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
+                            oLink.ID = MD5.GetBufferHash(oLink.URL);
+                            oLink.Name = item.InnerText();
+                            oLink.NameChs = item.InnerText();
+                            //0 视频，1图片，2文字 ，3其他
+                            oLink.Type = 1;
+
+                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.URL == oLink.ID))
+                                oSQLSugarHelper.LinkDb.Insert(oLink);
+                            else
+                                continue;
+                        }
+                    }
+                    else if (oPageDocument.Exists(".box.movie_list ul li a"))
+                    {
+                        //未找到分类标签 box movie_list
+                        var oCategoryEnmuar = oPageDocument.Find(".box.movie_list ul li a");
+                        foreach (var item in oCategoryEnmuar)
+                        {
+                            if (item.Exists("h3"))
+                            {
+                                if (string.IsNullOrEmpty(item.FindFirst("h3").InnerText()))
+                                    continue;
+                            }
+                            else
                                 continue;
 
-                            Category oCategory = new Category();
-                            oCategory.WebsiteGUID = oWebsite.GUID;
-                            oCategory.Name = item.InnerText();
-                            oCategory.URL = oWebsite.URL + item.Attribute("href").AttributeValue;
+                            Link oLink = new Link();
+                            oLink.CategoryGUID = oCategory.GUID;
+                            oLink.WebsiteGUID = oCategory.WebsiteGUID;
+                            oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
+                            oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
+                            oLink.ID = MD5.GetBufferHash(oLink.URL);
+                            oLink.Name = item.InnerText();
+                            if (oLink.Name.StartsWith("(v)"))
+                                oLink.Name = oLink.Name.Remove(0, 3).Trim();
+                            oLink.NameChs = oLink.Name;
+                            //0 视频，1图片，2文字 ，3其他
+                            oLink.Type = 0;
 
-                            if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oCategory.URL))
-                            {
-                                oSQLSugarHelper.CategoryDb.Insert(oCategory);
-                                oListResult.Add(oCategory);
-                            }
+                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.URL == oLink.ID))
+                                oSQLSugarHelper.LinkDb.Insert(oLink);
                             else
                                 continue;
                         }
                     }
                     else
                     {
-                        //未找到分类标签
+
                     }
+
+                    //组合下一页地址
+                    sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 5) + "-" + (iThisPageNum + 1) +
+                        oCategory.URL.Substring(oCategory.URL.Length - 5, 5);
+
+                    Console.WriteLine("当前任务页码：" + iThisPageNum);
+                    Console.WriteLine("总任务页码：" + iEndPageNum);
+                    Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
+                    if (iThisPageNum != iEndPageNum)
+                        goto GetUrl;
                 }
                 else
                 {
                     //解析页面失败
                 }
 
+                oCategory.Processed = 2;
+                oSQLSugarHelper.CategoryDb.Update(oCategory);
 
-
-
-
-
-                return oListLink;
+                return oSQLSugarHelper.LinkDb.GetList(it => it.CategoryGUID == oCategory.GUID && it.Deleted == false);
             }
             catch (Exception ex)
             {
