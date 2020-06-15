@@ -714,7 +714,7 @@ namespace Larpx.ResourceSpider.CommonHelper
                 request.Referer = new Uri(url).Host.ToString();
 
                 //sleep
-                int nRand = oRand.Next(20, 80);
+                int nRand = oRand.Next(2, 8);
                 Console.WriteLine("Net Request Sleeping: " + nRand + "ms");
                 HttpWebResponse respone = (HttpWebResponse)request.GetResponse();
                 if (respone.StatusCode == HttpStatusCode.OK)

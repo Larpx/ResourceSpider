@@ -220,4 +220,9 @@ namespace Larpx.ResourceSpider.Engine
         public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
         public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
     }
+
+    public class DataBaseManager
+    {
+
+    }
 }

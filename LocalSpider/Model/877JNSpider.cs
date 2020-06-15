@@ -298,7 +298,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         if (oPageDocument.Exists(".page .end"))
                             iEndPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .end").InnerText());
                         else
-                            iEndPageNum = -1;
+                            iEndPageNum = 1;
                     }
 
                     //获取本页页码
@@ -324,7 +324,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             //0 视频，1图片，2文字 ，3其他
                             oLink.Type = 1;
 
-                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.URL == oLink.ID))
+                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID))
                                 oSQLSugarHelper.LinkDb.Insert(oLink);
                             else
                                 continue;
@@ -357,7 +357,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             //0 视频，1图片，2文字 ，3其他
                             oLink.Type = 0;
 
-                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.URL == oLink.ID))
+                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID))
                                 oSQLSugarHelper.LinkDb.Insert(oLink);
                             else
                                 continue;
