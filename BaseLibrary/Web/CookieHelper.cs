@@ -19,7 +19,7 @@ namespace Larpx.ResourceSpider.CommonHelper
         /// </summary>
         /// <param name="setCookie"></param>
         /// <returns></returns>
-        public static CookieCollection GetCookiesByHeader(string setCookie)
+        public static CookieCollection GetCookiesByHeader(string setCookie, string sURL = null)
         {
             var cookieCollection = new CookieCollection();
             //拆分Cookie
@@ -29,8 +29,13 @@ namespace Larpx.ResourceSpider.CommonHelper
             //循环遍历
             foreach (Match item in listStr)
             {
+                string sValue = item.Value;
+                if (!sValue.Contains("Domain") || !sValue.Contains("domain"))
+                {
+                    sValue += ";Domain="+ sURL;
+                }
                 //根据; 拆分Cookie 内容
-                var cookieItem = item.Value.Split(';');
+                var cookieItem = sValue.Split(';');
                 var cookie = new Cookie();
                 for (var index = 0; index < cookieItem.Length; index++)
                 {

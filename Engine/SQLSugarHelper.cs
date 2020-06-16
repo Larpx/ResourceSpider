@@ -9,7 +9,7 @@ namespace Larpx.ResourceSpider.Engine
 {
     public class SQLSugarHelper<T> where T : class, new()
     {
-        public SQLSugarHelper()
+        public SQLSugarHelper(bool bLog = false)
         {
             Db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -19,13 +19,16 @@ namespace Larpx.ResourceSpider.Engine
                 IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
 
             });
+
             //调式代码 用来打印SQL 
-            Db.Aop.OnLogExecuting = (sql, pars) =>
+            if (bLog)
             {
-                Console.WriteLine(sql + "\r\n" +
-                    Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
-                Console.WriteLine();
-            };
+                Db.Aop.OnLogExecuting = (sql, pars) =>
+                {
+                    Console.WriteLine(sql + "\r\n" + Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                    Console.WriteLine();
+                };
+            }
         }
 
         //注意：不能写成静态的
@@ -187,7 +190,7 @@ namespace Larpx.ResourceSpider.Engine
 
     public class SQLSugarHelper
     {
-        public SQLSugarHelper()
+        public SQLSugarHelper(bool bLog = false)
         {
             Db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -197,12 +200,16 @@ namespace Larpx.ResourceSpider.Engine
                 IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
 
             });
+
             //调式代码 用来打印SQL 
-            Db.Aop.OnLogExecuting = (sql, pars) =>
+            if (bLog)
             {
-                //Console.WriteLine(sql + "\r\n" + Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
-                //Console.WriteLine();
-            };
+                Db.Aop.OnLogExecuting = (sql, pars) =>
+                {
+                    Console.WriteLine(sql + "\r\n" + Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                    Console.WriteLine();
+                };
+            }
         }
 
         //注意：不能写成静态的
@@ -219,6 +226,7 @@ namespace Larpx.ResourceSpider.Engine
         public SimpleClient<PropertyDetail> PropertyDetailDb { get { return new SimpleClient<PropertyDetail>(Db); } }//用来处理PropertyDetail表的常用操作
         public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
         public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
+        public SimpleClient<MetaData> MetaDataDb { get { return new SimpleClient<MetaData>(Db); } }//用来处理Resource表的常用操作
     }
 
     public class DataBaseManager

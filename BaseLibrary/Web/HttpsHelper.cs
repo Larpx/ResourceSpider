@@ -474,13 +474,13 @@ namespace Larpx.ResourceSpider.CommonHelper
                 if (!String.IsNullOrEmpty(sAccept))
                     request.Accept = sAccept;
                 else
-                    request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3";
+                    request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
                 if (!String.IsNullOrEmpty(sUserAgent))
                     request.UserAgent = sUserAgent;
                 else
                     request.UserAgent = GetRandomUserAgent();
                 request.Timeout = 20 * 1000;
-                //request.Headers.Add( HttpRequestHeader.AcceptLanguage, @"zh-CN,zh;q=0.9" );
+                //request.Headers.Add( HttpRequestHeader.AcceptLanguage, @"zh-CN,zh;q=0.9,en;q=0.8" );
                 request.Headers.Add(HttpRequestHeader.CacheControl, @"max-age=0");
                 request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
                 request.Referer = new Uri(url).Host.ToString();
@@ -599,6 +599,7 @@ namespace Larpx.ResourceSpider.CommonHelper
                 else
                     request.CookieContainer.Add(GetCookie(oURL, true, oURL.Host, 5));
 
+                //拼接头
                 if (!String.IsNullOrEmpty(sAccept))
                     request.Accept = sAccept;
                 else
@@ -612,10 +613,14 @@ namespace Larpx.ResourceSpider.CommonHelper
                 request.Headers.Add("upgrade-insecure-requests", "1");
                 request.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
                 request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
+                request.Headers.Add("sec-fetch-dest", "document");
+                request.Headers.Add("sec-fetch-mode", "navigate");
+                request.Headers.Add("sec-fetch-user", "?1");
+                request.Headers.Add("sec-fetch-site", "none");
                 request.Referer = new Uri(url).Host.ToString();
 
                 //sleep
-                int nRand = oRand.Next(20, 80);
+                int nRand = oRand.Next(2, 80);
                 Console.WriteLine("Net Request Sleeping: " + nRand + "ms");
                 HttpWebResponse respone = (HttpWebResponse)request.GetResponse();
                 if (respone.StatusCode == HttpStatusCode.OK)
@@ -704,17 +709,22 @@ namespace Larpx.ResourceSpider.CommonHelper
                 if (request.CookieContainer == null)
                     request.CookieContainer = new CookieContainer();
                 request.CookieContainer.Add(oCookieCollection);
-                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
+
+                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
                 request.UserAgent = GetRandomUserAgent();
                 request.Timeout = 20 * 1000;
                 request.Headers.Add(HttpRequestHeader.CacheControl, @"no-cache");
                 request.Headers.Add("upgrade-insecure-requests", "1");
                 request.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
                 request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
+                request.Headers.Add("sec-fetch-dest", "document");
+                request.Headers.Add("sec-fetch-mode", "navigate");
+                request.Headers.Add("sec-fetch-user", "?1");
+                request.Headers.Add("sec-fetch-site", "none");
                 request.Referer = new Uri(url).Host.ToString();
 
                 //sleep
-                int nRand = oRand.Next(2, 8);
+                int nRand = oRand.Next(2, 80);
                 Console.WriteLine("Net Request Sleeping: " + nRand + "ms");
                 HttpWebResponse respone = (HttpWebResponse)request.GetResponse();
                 if (respone.StatusCode == HttpStatusCode.OK)
@@ -809,13 +819,13 @@ namespace Larpx.ResourceSpider.CommonHelper
                 }
 
                 request.AllowAutoRedirect = true;
-                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3";
+                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
                 request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
-                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"zh-CN,zh;q=0.9");
+                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"zh-CN,zh;q=0.9,en;q=0.8");
                 request.Headers.Add(HttpRequestHeader.CacheControl, @"max-age=0");
                 request.Headers.Add("DNT", "1");
                 request.Headers.Add("Upgrade-Insecure-Requests", "1");
-                request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36";
+                request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
                 request.Host = url.Host;
 
                 using (HttpWebResponse oHttpWebResponse = (HttpWebResponse)request.GetResponse())
@@ -825,7 +835,7 @@ namespace Larpx.ResourceSpider.CommonHelper
                         //将Cookies添加到Cookie集合中
                         if (oHttpWebResponse.Cookies.Count == 0 && !string.IsNullOrEmpty(oHttpWebResponse.Headers.Get("Set-Cookie")))
                         {
-                            var sCookies = CookieHelper.GetCookiesByHeader(oHttpWebResponse.Headers.Get("Set-Cookie"));
+                            var sCookies = CookieHelper.GetCookiesByHeader(oHttpWebResponse.Headers.Get("Set-Cookie"), url.Host);
                             oCookieCollection.Add(sCookies);
                         }
                         else
@@ -884,13 +894,13 @@ namespace Larpx.ResourceSpider.CommonHelper
                 }
 
                 request.AllowAutoRedirect = true;
-                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3";
+                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
                 request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
-                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"zh-CN,zh;q=0.9");
+                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"zh-CN,zh;q=0.9,en;q=0.8");
                 request.Headers.Add(HttpRequestHeader.CacheControl, @"max-age=0");
                 request.Headers.Add("DNT", "1");
                 request.Headers.Add("Upgrade-Insecure-Requests", "1");
-                request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36";
+                request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
                 request.Host = new Uri(url).Host;
 
                 using (HttpWebResponse oHttpWebResponse = (HttpWebResponse)request.GetResponse())
@@ -1024,6 +1034,7 @@ namespace Larpx.ResourceSpider.CommonHelper
                  @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586",
                  @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299",
                  @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36",
+                 @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
                  @"Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
                  @"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0",
                  @"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0",
@@ -1045,7 +1056,6 @@ namespace Larpx.ResourceSpider.CommonHelper
 
             return oList[oRandom.Next(0, oList.Count - 1)];
         }
-
     }
 
     public class httph
@@ -1084,7 +1094,7 @@ namespace Larpx.ResourceSpider.CommonHelper
         //{
         //    this.CookieContainer = new CookieContainer();
         //    WebClient webClient = new WebClient();
-            
+
         //}
 
         ///// <summary>
@@ -1119,7 +1129,7 @@ namespace Larpx.ResourceSpider.CommonHelper
         //        }
 
         //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                
+
         //        request.AllowAutoRedirect = true;
 
         //        //获取Cookie，从Redis

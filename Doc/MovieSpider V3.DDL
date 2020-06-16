@@ -1,8 +1,8 @@
 /*    此 SQL DDL 脚本由 Microsoft Visual Studio (发布日期:LOCAL BUILD) 生成。                            */
 
 /*    所用驱动程序: Microsoft Visual Studio － Microsoft SQL Server 驱动程序。                            */
-/*    文档: F:\MyProject\Spider\ResourceSpider\Doc\MovieSpider V3.vsd。                          */
-/*    创建时间: 2020年6月9日 22:52。                                                                  */
+/*    文档: E:\MyCode\ResourceSpider\ResourceSpider\Doc\MovieSpider V3.vsd。                     */
+/*    创建时间: 2020年6月16日 10:48。                                                                 */
 /*    操作: 来自 Visio 生成向导。                                                                      */
 /*    已连接的数据源: 没有连接。                                                                          */
 /*    已连接的服务器: 没有连接。                                                                          */
@@ -122,7 +122,8 @@ go
 /* 	"UpdateTime" : 更新时间                                                                       */
 /* 	"UpdateTimes" : 更新次数                                                                      */
 /* 	"Memo" : 备注                                                                               */
-/* 	"Deleted" : 删除标记                                                                          */  
+/* 	"Deleted" : 删除标记                                                                          */
+/* 	"IsCookies" : 是否需要Cookie                                                                  */  
 create table "Website" ( 
 	"GUID" uniqueidentifier default NEWID() not null,
 	"Date" datetime default GETDATE() not null,
@@ -136,7 +137,8 @@ create table "Website" (
 	"UpdateTime" datetime default GETDATE() not null,
 	"UpdateTimes" int default 0 not null,
 	"Memo" nvarchar(max) null,
-	"Deleted" bit default 0 not null)  
+	"Deleted" bit default 0 not null,
+	"IsCookies" bit default 0 not null)  
 
 go
 
@@ -394,6 +396,32 @@ alter table "Resource"
 
 go
 
+/* 创建新表 "MetaData"。                                                                           */
+/* "MetaData" : 元数据                                                                           */
+/* 	"GUID" : GUID 标识                                                                          */
+/* 	"WebsiteGUID" : 网站 GUID                                                                   */
+/* 	"Name" : 名称                                                                               */
+/* 	"Content" : URL                                                                           */
+/* 	"Date" : 日期                                                                               */
+/* 	"Type" : 状态（0:charset 1:viewport 2:keywords 3:description 4:renderer 5:X-UA-Compatible 6:Cache-Control） */
+/* 	"Deleted" : 删除标记                                                                          */  
+create table "MetaData" ( 
+	"GUID" uniqueidentifier default NEWID() not null,
+	"WebsiteGUID" uniqueidentifier not null,
+	"Name" nvarchar(max) not null,
+	"Content" nvarchar(max) null,
+	"Date" datetime default GETDATE() not null,
+	"Type" tinyint default 0 not null,
+	"Deleted" bit default 0 not null)  
+
+go
+
+alter table "MetaData"
+	add constraint "MetaData_PK" primary key ("GUID")   
+
+
+go
+
 /* 在表 "SystemLog" 中添加外键约束。                                                                    */
 alter table "SystemLog"
 	add constraint "Manager_SystemLog_FK1" foreign key (
@@ -493,6 +521,15 @@ alter table "Resource"
 	add constraint "Link_Resource_FK1" foreign key (
 		"PageGUID")
 	 references "Link" (
+		"GUID") on update no action on delete no action  
+
+go
+
+/* 在表 "MetaData" 中添加外键约束。                                                                     */
+alter table "MetaData"
+	add constraint "Website_MetaData_FK1" foreign key (
+		"WebsiteGUID")
+	 references "Website" (
 		"GUID") on update no action on delete no action  
 
 go

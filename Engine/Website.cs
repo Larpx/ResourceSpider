@@ -18,6 +18,7 @@ namespace Larpx.ResourceSpider.Engine
             this.UpdateTime = DateTime.Now;
             this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = false;
+            this.IsCookies = false;
         }
 
 
@@ -112,6 +113,13 @@ namespace Larpx.ResourceSpider.Engine
         /// Nullable:False
         /// </summary>           
         public bool Deleted { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary> 
+        public bool IsCookies { get; set; }
 
     }
 }

@@ -21,6 +21,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             //http://www.877jn.com
         }
 
+        /// <summary>
+        /// 执行操作
+        /// Done
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
         public new int DoExce(Dictionary<string, object> arr)
         {
             try
@@ -39,17 +45,24 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
         }
 
+        /// <summary>
+        /// 前置操作
+        /// Done
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
         public override int PerExce(Dictionary<string, object> arr)
         {
             try
             {
                 Website website = new Website();
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>();
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(Debug);
 
                 website.Name = "877jn";
                 website.URL = "http://www.877jn.com";
                 website.Status = 1;
                 website.Deleted = false;
+                website.IsCookies = false;
                 website.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
 
                 //查重
@@ -69,6 +82,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
         /// <summary>
         /// 获取网站列表
+        /// Done
         /// </summary>
         /// <param name="sID"></param>
         /// <returns></returns>
@@ -76,7 +90,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>();
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(Debug);
                 return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
             }
             catch (Exception ex)
@@ -96,7 +110,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sHTML = "";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper();
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
 
                 //整理分类不规范页面地址
                 if (!oWebsite.URL.StartsWith("http"))
@@ -224,7 +238,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper();
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
@@ -239,6 +253,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 //获取Cookies
                 var oCookies = new CookieCollection();
+
                 if (bGetCookie)
                     oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
@@ -409,6 +424,5 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 throw ex;
             }
         }
-
     }
 }

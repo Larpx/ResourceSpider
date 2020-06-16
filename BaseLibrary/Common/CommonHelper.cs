@@ -13,6 +13,21 @@ namespace Larpx.ResourceSpider.CommonHelper
     public class CommonHelper
     {
         /// <summary>
+        /// meta类型
+        /// </summary>
+        public enum MetaType
+        {
+            Charset,
+            Viewport,
+            Keywords,
+            Description,
+            Renderer,
+            X_UA_Compatible,
+            Cache_Control,
+            Other
+        }
+
+        /// <summary>
         /// 根据当前系统时间加随机序列来生成订单号
         /// 17位长度
         /// </summary>

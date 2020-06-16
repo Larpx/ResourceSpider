@@ -18,42 +18,31 @@ namespace Larpx.ResourceSpider.LocalSpider
 
         static void Main(string[] args)
         {
-			try
-			{
+            try
+            {
                 ThreadPool.SetMaxThreads(32, 32);
                 ThreadPool.SetMinThreads(8, 8);
 
                 Dictionary<string, object> oArr = new Dictionary<string, object>();
-                //UUMP4Spider uUMP4Spider = new UUMP4Spider(false);
-                _877JNSpider _877JNSpider = new _877JNSpider(false);
+                string s_877 = "d9e5780840f6766c7fcbac7cab9538f2",
+                    sUU = "fe1213ba1c94e4a42b72bda9840af83c";
 
-                oArr.Add("ID", "94f0591a0d73fc445c613014d22aebdf");
+                UUMP4Spider uUMP4Spider = new UUMP4Spider(true);
+                oArr.Add("ID", sUU);
+                uUMP4Spider.DoExce(oArr);
 
-                //uUMP4Spider.DoExce(oArr);
-                _877JNSpider.DoExce(oArr);
-                //DoExce2( obj );
-                //DoExce( obj );
-
-                //FilmModular2 filmModular1 = new FilmModular2();
-
-                //filmModular1.DoExce( obj );
-
-                //double hl = 691.4600;
-
-                //double dR = Math.Round( ( hl / 100.00 ) * 9.99, 4 );
-                //Console.WriteLine( "" + dR );
-
-                //ThreadPool.QueueUserWorkItem( filmModular1.DoExce, obj );
-                //ThreadPool.QueueUserWorkItem( filmModular1.DoExce, obj );
+                //_877JNSpider _877JNSpider = new _877JNSpider(false);
+                //oArr.Add("ID", s_877);
+                //_877JNSpider.DoExce(oArr);
 
                 Console.WriteLine("Task is End,Running times 99999999+ ms");
                 Console.ReadLine();
             }
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-				Console.ReadLine();
-			}
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+            }
         }
     }
 }
