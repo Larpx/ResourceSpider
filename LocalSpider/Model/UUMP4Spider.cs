@@ -360,8 +360,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                                 if (!oSQLSugarHelper.PropertyKeyDb.IsAny(it => it.Name == propertyKey.Name && it.WebsiteGUID == oWebsite.GUID && it.CategoryGUID == propertyKey.CategoryGUID))
                                                 {
                                                     oSQLSugarHelper.PropertyKeyDb.Insert(propertyKey);
-
                                                 }
+
                                                 var oList = oSQLSugarHelper.PropertyKeyDb.GetList(it => it.Name == propertyKey.Name && it.WebsiteGUID == propertyKey.WebsiteGUID && it.CategoryGUID == propertyKey.CategoryGUID);
                                                 oGUID = oList[0].GUID;
                                             }

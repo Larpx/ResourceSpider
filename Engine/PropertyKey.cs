@@ -14,6 +14,7 @@ namespace Larpx.ResourceSpider.Engine
             this.GUID = Guid.NewGuid();
             this.Type = Convert.ToByte("0");
             this.Deleted = false;
+            this.Date = DateTime.Now;
 
         }
 
@@ -38,6 +39,13 @@ namespace Larpx.ResourceSpider.Engine
         /// Nullable:True
         /// </summary>           
         public Guid? CategoryGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:DateTime.Now
+        /// Nullable:False
+        /// </summary>           
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Desc:
