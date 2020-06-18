@@ -391,6 +391,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         {
                             //解析页面失败
                         }
+                        oWebsite.Processed = 1;
+                        oSQLSugarHelper.WebsiteDb.Update(oWebsite);
 
                         return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false);
 
@@ -509,7 +511,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             var oPageListTmp = oPageDocument.Find(sTotlaPageNum).ToArray();
                             var oTotalPageElement = oPageListTmp[oPageListTmp.Count() - 2];
 
-                            iEndPageNum = Convert.ToInt32(oTotalPageElement.InnerText());
+                            string sTotalstr = oTotalPageElement.InnerText().TrimStart('.');
+                            iEndPageNum = Convert.ToInt32(sTotalstr);
                         }
                         else
                             iEndPageNum = 1;
@@ -523,11 +526,13 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                     //组合下一页地址
                     if (oPageDocument.Exists(sNextURL))
-                        iThisPageNum = Convert.ToInt32(oPageDocument.FindLastOrDefault(sNextURL)?.InnerText());
+                    {
+                        string sNextStr = oPageDocument.FindLastOrDefault(sNextURL)?.Attribute("href").AttributeValue;
+                        sGetUrl = (oWebs.URL.EndsWith("/") ? oWebs.URL : oWebs.URL + "/") + sNextStr;
+                    }
                     else
                     {
-                        sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 5) + "-" + (iThisPageNum + 1) +
-                                                oCategory.URL.Substring(oCategory.URL.Length - 5, 5);
+                        sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 4) + "-" + (iThisPageNum + 1) + ".htm?orderby=lastpid&digest=0";
                     }
 
                     //解析页面
@@ -536,21 +541,57 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         var oCategoryEnmuar = oPageDocument.Find(sLinkColllration);
                         foreach (var item in oCategoryEnmuar)
                         {
-                            Link oLink = new Link();
-                            oLink.CategoryGUID = oCategory.GUID;
-                            oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                            oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
-                            oLink.ID = MD5.GetBufferHash(oLink.URL);
-                            oLink.Name = item.InnerText();
-                            oLink.NameChs = item.InnerText();
-                            //0 视频，1图片，2文字 ，3其他
-                            oLink.Type = 0;
+                            List<PropertyDetail> propertyDetails = new List<PropertyDetail>();
+                            var oAList = item.Find("a");
 
-                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID))
-                                oSQLSugarHelper.LinkDb.Insert(oLink);
-                            else
-                                continue;
+                            foreach (var itemA in oAList)
+                            {
+                                if (itemA.Attribute("class") != null && itemA.Attribute("class").AttributeValue == "threadtags")
+                                {
+                                    //标签
+                                    var oPropertyVal = oSQLSugarHelper.PropertyValueDb.GetSingle(it => it.Name == itemA.InnerText().Trim().TrimStart('[').TrimEnd(']')
+                                      && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID);
+                                    var oPropertyKey = oSQLSugarHelper.PropertyKeyDb.GetById(oPropertyVal.KeyGUID);
+
+                                    PropertyDetail propertyDetail = new PropertyDetail();
+                                    propertyDetail.CategoryGUID = oCategory.GUID;
+                                    propertyDetail.WebsiteGUID = oWebs.GUID;
+                                    propertyDetail.KeyText = oPropertyKey.Name;
+                                    propertyDetail.PropertyKeyGUID = oPropertyKey.GUID;
+                                    propertyDetail.ValueText = oPropertyVal.Name;
+                                    propertyDetail.PropertyValueGUID = oPropertyVal.GUID;
+                                    propertyDetails.Add(propertyDetail);
+                                }
+                                else
+                                {
+                                    //Link
+
+                                    Link oLink = new Link();
+                                    oLink.CategoryGUID = oCategory.GUID;
+                                    oLink.WebsiteGUID = oCategory.WebsiteGUID;
+                                    oLink.URL = oWebs.URL +"/"+ itemA.Attribute("href").AttributeValue;
+                                    oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
+                                    oLink.ID = MD5.GetBufferHash(oLink.URL);
+                                    oLink.Name = itemA.InnerText();
+                                    oLink.NameChs = itemA.InnerText();
+                                    //0 视频，1图片，2文字 ，3其他
+                                    oLink.Type = 0;
+
+                                    if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID&& it.CategoryGUID == oCategory.GUID))
+                                    {
+                                        oSQLSugarHelper.LinkDb.Insert(oLink);
+
+                                        var oLinkGUID = oSQLSugarHelper.LinkDb.GetSingle(it => it.ID == oLink.ID).GUID;
+                                        foreach (var itemPro in propertyDetails)
+                                        {
+                                            itemPro.LinkGUID = oLinkGUID;
+                                            oSQLSugarHelper.PropertyDetailDb.Insert(itemPro);
+                                        }
+                                    }
+                                    else
+                                        continue;
+                                }
+                            }
                         }
                     }
                     else
