@@ -107,6 +107,9 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
+                string sMetaData = "meta"; 
+                string sCategoryCollection = "#header_box ul li a";
+
                 string sHTML = "";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
@@ -175,19 +178,21 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         //解析页面
                         if (oPageDocument != null)
                         {
-                            if (oPageDocument.Exists("#header_box ul li a"))
+                            if (oPageDocument.Exists(sCategoryCollection))
                             {
-                                var oCategoryEnmuar = oPageDocument.Find("#header_box ul li a");
+                                var oCategoryEnmuar = oPageDocument.Find(sCategoryCollection);
                                 foreach (var item in oCategoryEnmuar)
                                 {
-                                    if (item.Attribute("href").AttributeValue == "javascript:void(0);")
+                                    if (item.Attribute("href").AttributeValue == "javascript:void(0);" || item.Attribute("href").AttributeValue == "."
+                                        || string.IsNullOrEmpty(item.Attribute("href").AttributeValue))
                                         continue;
 
                                     Category oCategory = new Category();
                                     oCategory.WebsiteGUID = oWebsite.GUID;
                                     oCategory.Status = 1;
                                     oCategory.Name = item.InnerText();
-                                    oCategory.URL = oWebsite.URL + item.Attribute("href").AttributeValue;
+                                    oCategory.URL = (oWebsite.URL.EndsWith("/") ? oWebsite.URL.TrimEnd('/') : oWebsite.URL)
+                                        + (item.Attribute("href").AttributeValue.StartsWith("/") ? item.Attribute("href").AttributeValue : "/" + item.Attribute("href").AttributeValue);
 
                                     if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oCategory.URL))
                                     {
@@ -200,6 +205,92 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             else
                             {
                                 //未找到分类标签
+                            }
+
+                            if (oPageDocument.Exists(sMetaData))
+                            {
+                                var oListMeta = oSQLSugarHelper.MetaDataDb.GetList(it => it.WebsiteGUID == oWebsite.GUID);
+                                foreach (var item in oListMeta)
+                                {
+                                    oSQLSugarHelper.MetaDataDb.Delete(item);
+                                }
+
+                                var oCategoryEnmuar = oPageDocument.Find(sMetaData);
+                                foreach (var item in oCategoryEnmuar)
+                                {
+                                    MetaData metaData = new MetaData();
+
+                                    metaData.WebsiteGUID = oWebsite.GUID;
+
+                                    if (item.Attribute("charset") != null)
+                                    {
+                                        metaData.Name = "charset";
+                                        metaData.Content = item.Attribute("charset").AttributeValue;
+                                        metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Charset;
+                                    }
+                                    else if (item.Attribute("name") != null)
+                                    {
+                                        switch (item.Attribute("name").AttributeValue.ToLower())
+                                        {
+                                            case "viewport":
+                                                metaData.Name = "viewport";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Viewport;
+                                                break;
+                                            case "keywords":
+                                                metaData.Name = "keywords";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Keywords;
+                                                break;
+                                            case "description":
+                                                metaData.Name = "description";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Description;
+                                                break;
+                                            case "renderer":
+                                                metaData.Name = "renderer";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Renderer;
+                                                break;
+                                            default:
+                                                metaData.Name = "other";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Other;
+                                                break;
+                                        }
+                                    }
+                                    else if (item.Attribute("http-equiv") != null)
+                                    {
+                                        switch (item.Attribute("http-equiv").AttributeValue.ToLower())
+                                        {
+                                            case "x-ua-compatible":
+                                                metaData.Name = "X-UA-Compatible";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.X_UA_Compatible;
+                                                break;
+                                            case "cache-control":
+                                                metaData.Name = "Cache-Control";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Cache_Control;
+                                                break;
+                                            default:
+                                                metaData.Name = "other";
+                                                if (item.Attribute("content") != null)
+                                                    metaData.Content = item.Attribute("content").AttributeValue;
+                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Other;
+                                                break;
+                                        }
+                                    }
+
+                                    oSQLSugarHelper.MetaDataDb.Insert(metaData);
+                                }
                             }
                         }
                         else

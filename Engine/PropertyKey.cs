@@ -27,6 +27,20 @@ namespace Larpx.ResourceSpider.Engine
 
         /// <summary>
         /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public Guid WebsiteGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public Guid? CategoryGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
         /// Default:0
         /// Nullable:False
         /// </summary>           
