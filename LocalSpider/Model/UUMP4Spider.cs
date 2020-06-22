@@ -569,7 +569,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     Link oLink = new Link();
                                     oLink.CategoryGUID = oCategory.GUID;
                                     oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                                    oLink.URL = oWebs.URL +"/"+ itemA.Attribute("href").AttributeValue;
+                                    oLink.URL = oWebs.URL + "/" + itemA.Attribute("href").AttributeValue;
                                     oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
                                     oLink.ID = MD5.GetBufferHash(oLink.URL);
                                     oLink.Name = itemA.InnerText();
@@ -577,7 +577,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     //0 视频，1图片，2文字 ，3其他
                                     oLink.Type = 0;
 
-                                    if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID&& it.CategoryGUID == oCategory.GUID))
+                                    if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID))
                                     {
                                         oSQLSugarHelper.LinkDb.Insert(oLink);
 
@@ -629,7 +629,102 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                return;
+                //标题
+                string sTitle = ".media-body .break-all";
+                //海报 [0]
+                string sBannerImages = ".message.break-all img";
+                //简介
+                string sDetail = ".message.break-all p";
+                //截图 [1]
+                string sScreenShot = ".message.break-all img";
+                //资源链接
+                string sResourceLinks = ".message.break-all p";
+                //种子
+                string sTorrent = ".fieldset ul li a";
+
+                string sGetUrl = "";
+                string sHTML = "";
+                bool bGetCookie = false;
+                Random oRand = new Random();
+                IHtmlDocument oPageDocument = null;
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
+
+                //整理分类不规范页面地址
+                var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oResult.WebsiteGUID);
+                if (!oResult.URL.StartsWith("http"))
+                {
+                    //处理不规范URL
+                    oResult.URL = (oWebs.URL.EndsWith("/") ? oWebs.URL : oWebs.URL + "/") + (oResult.URL.StartsWith("/") ? oResult.URL.TrimStart('/') : oResult.URL);
+                    oSQLSugarHelper.LinkDb.Update(oResult);
+                }
+
+                sGetUrl = oResult.URL;
+
+                //获取Cookies
+                var oCookies = new CookieCollection();
+
+                if (bGetCookie)
+                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+
+                //请求页面
+                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sGetUrl, oCookies))
+                {
+                    if (oResponse == null)
+                        return;
+
+                    //页面解码
+                    if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
+                    {
+                        switch (oResponse.ContentEncoding.ToLower())
+                        {
+                            case "gzip":
+                                using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                                {
+                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                    {
+                                        sHTML = reader.ReadToEnd();
+                                        oPageDocument = new JumonyParser().Parse(sHTML);
+                                    }
+                                }
+                                break;
+                            case "deflate":
+                                using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                                {
+                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                    {
+                                        sHTML = reader.ReadToEnd();
+                                        oPageDocument = new JumonyParser().Parse(sHTML);
+                                    }
+                                }
+                                break;
+                            default:
+                                //未被压缩,直接解析
+                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        //未被压缩,直接解析
+                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
+                    }
+                }
+
+                //解析页面
+                if (oPageDocument != null)
+                {
+
+
+
+
+                }
+                else
+                {
+                    //解析页面失败
+                }
+
+                oResult.Processed = 2;
+                oSQLSugarHelper.LinkDb.Update(oResult);
             }
             catch (Exception ex)
             {
