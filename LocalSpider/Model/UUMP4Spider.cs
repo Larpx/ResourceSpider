@@ -49,7 +49,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 Website website = new Website();
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType,Debug);
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
 
                 website.Name = "悠悠MP4-MP4电影下载-uump4-久久MP4-99mp4-悠悠鸟影视论坛-电影天堂";
                 website.NameChs = website.Name;
@@ -648,7 +648,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 bool bGetCookie = false;
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oResult.WebsiteGUID);
