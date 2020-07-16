@@ -28,6 +28,18 @@ namespace Larpx.ResourceSpider.CommonHelper
         }
 
         /// <summary>
+        /// 数据库类型
+        /// </summary>
+        public enum DatabaseType
+        {
+            MySql = 0,
+            SqlServer = 1,
+            Sqlite = 2,
+            Oracle = 3,
+            PostgreSQL = 4
+        }
+
+        /// <summary>
         /// 根据当前系统时间加随机序列来生成订单号
         /// 17位长度
         /// </summary>

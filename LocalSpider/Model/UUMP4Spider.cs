@@ -1,7 +1,6 @@
 ﻿using Ivony.Html;
 using Ivony.Html.ExpandedAPI;
 using Ivony.Html.Parser;
-using JavaScriptEngineSwitcher.Core.Resources;
 using Larpx.Logs;
 using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
@@ -11,14 +10,16 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Text;
+using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
     public class UUMP4Spider : BaseSpider
     {
         private string sWebSiteID = "fe1213ba1c94e4a42b72bda9840af83c";
+
+        private DatabaseType DatabaseType = DatabaseType.MySql;
 
         public UUMP4Spider(bool debug = true, string LoggerPath = null, Logger Logger = null) : base(debug, LoggerPath, Logger)
         {
@@ -48,7 +49,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 Website website = new Website();
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(Debug);
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType,Debug);
 
                 website.Name = "悠悠MP4-MP4电影下载-uump4-久久MP4-99mp4-悠悠鸟影视论坛-电影天堂";
                 website.NameChs = website.Name;
@@ -83,7 +84,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(Debug);
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
                 return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
             }
             catch (Exception ex)
@@ -106,7 +107,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sMetaData = "meta";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 if (!oWebsite.URL.StartsWith("http"))
@@ -434,7 +435,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
@@ -569,7 +570,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     Link oLink = new Link();
                                     oLink.CategoryGUID = oCategory.GUID;
                                     oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                                    oLink.URL = oWebs.URL +"/"+ itemA.Attribute("href").AttributeValue;
+                                    oLink.URL = oWebs.URL + "/" + itemA.Attribute("href").AttributeValue;
                                     oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
                                     oLink.ID = MD5.GetBufferHash(oLink.URL);
                                     oLink.Name = itemA.InnerText();
@@ -577,7 +578,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     //0 视频，1图片，2文字 ，3其他
                                     oLink.Type = 0;
 
-                                    if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID&& it.CategoryGUID == oCategory.GUID))
+                                    if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID))
                                     {
                                         oSQLSugarHelper.LinkDb.Insert(oLink);
 

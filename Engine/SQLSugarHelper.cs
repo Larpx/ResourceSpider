@@ -4,21 +4,71 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
+using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.Engine
 {
     public class SQLSugarHelper<T> where T : class, new()
     {
-        public SQLSugarHelper(bool bLog = false)
+        public SQLSugarHelper(DatabaseType bDbType = DatabaseType.SqlServer, bool bLog = false)
         {
-            Db = new SqlSugarClient(new ConnectionConfig()
+            switch (bDbType)
             {
-                ConnectionString = ConfigurationManager.AppSettings["ConnString"].ToString(),
-                DbType = DbType.SqlServer,
-                InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
-                IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+                case DatabaseType.MySql:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["MySQL"].ToString(),
+                        DbType = DbType.MySql,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
 
-            });
+                    });
+                    break;
+
+                case DatabaseType.Oracle:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["Oracle"].ToString(),
+                        DbType = DbType.Oracle,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+
+                case DatabaseType.PostgreSQL:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["PostgreSQL"].ToString(),
+                        DbType = DbType.PostgreSQL,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+
+                case DatabaseType.Sqlite:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["SQLite"].ToString(),
+                        DbType = DbType.Sqlite,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+
+                case DatabaseType.SqlServer:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["SQLServer"].ToString(),
+                        DbType = DbType.SqlServer,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+            }
 
             //调式代码 用来打印SQL 
             if (bLog)
@@ -34,18 +84,6 @@ namespace Larpx.ResourceSpider.Engine
         //注意：不能写成静态的
         public SqlSugarClient Db;//用来处理事务多表查询和复杂的操作
         public SimpleClient<T> CurrentDb { get { return new SimpleClient<T>(Db); } }//用来操作当前表的数据
-
-        //public SimpleClient<Setting> SettingDb { get { return new SimpleClient<Setting>(Db); } }//用来处理Setting表的常用操作
-        //public SimpleClient<Manager> ManagerDb { get { return new SimpleClient<Manager>(Db); } }//用来处理Manager表的常用操作
-        //public SimpleClient<SystemLog> SystemLogDb { get { return new SimpleClient<SystemLog>(Db); } }//用来处理SystemLog表的常用操作
-        //public SimpleClient<Website> WebsiteDb { get { return new SimpleClient<Website>(Db); } }//用来处理Website表的常用操作
-        //public SimpleClient<Category> CategoryDb { get { return new SimpleClient<Category>(Db); } }//用来处理Category表的常用操作
-        //public SimpleClient<Link> LinkDb { get { return new SimpleClient<Link>(Db); } }//用来处理Link表的常用操作
-        //public SimpleClient<PropertyKey> PropertyKeyDb { get { return new SimpleClient<PropertyKey>(Db); } }//用来处理PropertyKey表的常用操作
-        //public SimpleClient<PropertyValue> PropertyValueDb { get { return new SimpleClient<PropertyValue>(Db); } }//用来处理PropertyValue表的常用操作
-        //public SimpleClient<PropertyDetail> PropertyDetailDb { get { return new SimpleClient<PropertyDetail>(Db); } }//用来处理PropertyDetail表的常用操作
-        //public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
-        //public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
 
         /// <summary>
         /// 获取所有
@@ -190,16 +228,65 @@ namespace Larpx.ResourceSpider.Engine
 
     public class SQLSugarHelper
     {
-        public SQLSugarHelper(bool bLog = false)
+        public SQLSugarHelper(DatabaseType bDbType = DatabaseType.SqlServer, bool bLog = false)
         {
-            Db = new SqlSugarClient(new ConnectionConfig()
+            switch (bDbType)
             {
-                ConnectionString = ConfigurationManager.AppSettings["ConnString"].ToString(),
-                DbType = DbType.SqlServer,
-                InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
-                IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+                case DatabaseType.MySql:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["MySQL"].ToString(),
+                        DbType = DbType.MySql,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
 
-            });
+                    });
+                    break;
+
+                case DatabaseType.Oracle:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["Oracle"].ToString(),
+                        DbType = DbType.Oracle,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+
+                case DatabaseType.PostgreSQL:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["PostgreSQL"].ToString(),
+                        DbType = DbType.PostgreSQL,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+
+                case DatabaseType.Sqlite:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["SQLite"].ToString(),
+                        DbType = DbType.Sqlite,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+
+                case DatabaseType.SqlServer:
+                    Db = new SqlSugarClient(new ConnectionConfig()
+                    {
+                        ConnectionString = ConfigurationManager.AppSettings["SQLServer"].ToString(),
+                        DbType = DbType.SqlServer,
+                        InitKeyType = InitKeyType.Attribute,//从特性读取主键和自增列信息
+                        IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+                    });
+                    break;
+            }
 
             //调式代码 用来打印SQL 
             if (bLog)
@@ -227,10 +314,5 @@ namespace Larpx.ResourceSpider.Engine
         public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
         public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
         public SimpleClient<MetaData> MetaDataDb { get { return new SimpleClient<MetaData>(Db); } }//用来处理Resource表的常用操作
-    }
-
-    public class DataBaseManager
-    {
-
     }
 }

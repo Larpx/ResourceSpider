@@ -8,14 +8,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Text;
+using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
     public class _877JNSpider : BaseSpider
     {
         private string sWebSiteID = "d9e5780840f6766c7fcbac7cab9538f2";
+
+        private DatabaseType DatabaseType = DatabaseType.MySql;
+
         public _877JNSpider(bool debug = true, string LoggerPath = null, Logger Logger = null) : base(debug, LoggerPath, Logger)
         {
             //http://www.877jn.com
@@ -56,7 +59,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 Website website = new Website();
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(Debug);
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
 
                 website.Name = "877jn";
                 website.URL = "http://www.877jn.com";
@@ -90,7 +93,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(Debug);
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
                 return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
             }
             catch (Exception ex)
@@ -107,13 +110,13 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                string sMetaData = "meta"; 
+                string sMetaData = "meta";
                 string sCategoryCollection = "#header_box ul li a";
 
                 string sHTML = "";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 if (!oWebsite.URL.StartsWith("http"))
@@ -329,7 +332,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(Debug);
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
