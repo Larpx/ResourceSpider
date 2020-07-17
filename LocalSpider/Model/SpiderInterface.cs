@@ -1,4 +1,4 @@
-﻿using Larpx.ResourceSpider.Engine;
+﻿using Larpx.ResourceSpider.Engine.SQLServer;
 using System.Collections.Generic;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model

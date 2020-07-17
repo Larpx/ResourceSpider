@@ -1,26 +1,25 @@
 ﻿using SqlSugar;
 using System;
 
-namespace Larpx.ResourceSpider.Engine
+namespace Larpx.ResourceSpider.Engine.SQLServer
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Website
+    public partial class Link
     {
-        public Website()
+        public Link()
         {
+
             this.GUID = Guid.NewGuid();
             this.Date = DateTime.Now;
-            this.Status = Convert.ToByte("0");
-            this.Priority = Convert.ToByte("0");
+            this.Type = Convert.ToByte("0");
             this.Processed = Convert.ToByte("0");
             this.UpdateTime = DateTime.Now;
             this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = false;
-            this.IsCookies = false;
-        }
 
+        }
 
         /// <summary>
         /// Desc:
@@ -32,17 +31,24 @@ namespace Larpx.ResourceSpider.Engine
 
         /// <summary>
         /// Desc:
-        /// Default:DateTime.Now
+        /// Default:
         /// Nullable:False
         /// </summary>           
-        public DateTime Date { get; set; }
+        public Guid WebsiteGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public Guid? CategoryGUID { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string URL { get; set; }
+        public string SN { get; set; }
 
         /// <summary>
         /// Desc:
@@ -56,6 +62,13 @@ namespace Larpx.ResourceSpider.Engine
         /// Default:
         /// Nullable:False
         /// </summary>           
+        public string URL { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
         public string Name { get; set; }
 
         /// <summary>
@@ -67,17 +80,59 @@ namespace Larpx.ResourceSpider.Engine
 
         /// <summary>
         /// Desc:
-        /// Default:0
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string TitleChs { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Brief { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string BriefChs { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Detail { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string DetailChs { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:DateTime.Now
         /// Nullable:False
         /// </summary>           
-        public byte Status { get; set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:0
         /// Nullable:False
         /// </summary>           
-        public byte Priority { get; set; }
+        public byte Type { get; set; }
 
         /// <summary>
         /// Desc:
@@ -105,7 +160,7 @@ namespace Larpx.ResourceSpider.Engine
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Memo { get; set; }
+        public string Remark { get; set; }
 
         /// <summary>
         /// Desc:
@@ -113,13 +168,6 @@ namespace Larpx.ResourceSpider.Engine
         /// Nullable:False
         /// </summary>           
         public bool Deleted { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary> 
-        public bool IsCookies { get; set; }
 
     }
 }

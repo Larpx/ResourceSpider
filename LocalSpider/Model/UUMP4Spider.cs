@@ -49,7 +49,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 Website website = new Website();
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
+                SQLServerSQLSugarHelper<Website> oWebsites = new SQLServerSQLSugarHelper<Website>(DatabaseType, Debug);
 
                 website.Name = "悠悠MP4-MP4电影下载-uump4-久久MP4-99mp4-悠悠鸟影视论坛-电影天堂";
                 website.NameChs = website.Name;
@@ -84,7 +84,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
+                SQLServerSQLSugarHelper<Website> oWebsites = new SQLServerSQLSugarHelper<Website>(DatabaseType, Debug);
                 return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
             }
             catch (Exception ex)
@@ -107,7 +107,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sMetaData = "meta";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 if (!oWebsite.URL.StartsWith("http"))
@@ -435,7 +435,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
@@ -552,16 +552,24 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     //标签
                                     var oPropertyVal = oSQLSugarHelper.PropertyValueDb.GetSingle(it => it.Name == itemA.InnerText().Trim().TrimStart('[').TrimEnd(']')
                                       && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID);
-                                    var oPropertyKey = oSQLSugarHelper.PropertyKeyDb.GetById(oPropertyVal.KeyGUID);
 
-                                    PropertyDetail propertyDetail = new PropertyDetail();
-                                    propertyDetail.CategoryGUID = oCategory.GUID;
-                                    propertyDetail.WebsiteGUID = oWebs.GUID;
-                                    propertyDetail.KeyText = oPropertyKey.Name;
-                                    propertyDetail.PropertyKeyGUID = oPropertyKey.GUID;
-                                    propertyDetail.ValueText = oPropertyVal.Name;
-                                    propertyDetail.PropertyValueGUID = oPropertyVal.GUID;
-                                    propertyDetails.Add(propertyDetail);
+                                    if (oPropertyVal != null)
+                                    {
+                                        var oPropertyKey = oSQLSugarHelper.PropertyKeyDb.GetById(oPropertyVal.KeyGUID);
+
+                                        PropertyDetail propertyDetail = new PropertyDetail();
+                                        propertyDetail.CategoryGUID = oCategory.GUID;
+                                        propertyDetail.WebsiteGUID = oWebs.GUID;
+                                        propertyDetail.KeyText = oPropertyKey.Name;
+                                        propertyDetail.PropertyKeyGUID = oPropertyKey.GUID;
+                                        propertyDetail.ValueText = oPropertyVal.Name;
+                                        propertyDetail.PropertyValueGUID = oPropertyVal.GUID;
+                                        propertyDetails.Add(propertyDetail);
+                                    }
+                                    else
+                                    {
+
+                                    }
                                 }
                                 else
                                 {
@@ -648,7 +656,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 bool bGetCookie = false;
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oResult.WebsiteGUID);

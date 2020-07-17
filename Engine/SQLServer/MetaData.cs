@@ -1,21 +1,19 @@
-﻿using System;
-using SqlSugar;
+﻿using SqlSugar;
+using System;
 
-namespace Larpx.ResourceSpider.Engine
+namespace Larpx.ResourceSpider.Engine.SQLServer
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class PropertyValue
+    public partial class MetaData
     {
-        public PropertyValue()
+        public MetaData()
         {
-
             this.GUID = Guid.NewGuid();
+            this.Date = DateTime.Now;
             this.Type = Convert.ToByte("0");
             this.Deleted = false;
-            this.Date = DateTime.Now;
-
         }
 
         /// <summary>
@@ -28,38 +26,10 @@ namespace Larpx.ResourceSpider.Engine
 
         /// <summary>
         /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public Guid WebsiteGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public Guid? CategoryGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
         /// Default:DateTime.Now
         /// Nullable:False
         /// </summary>           
-        public DateTime Date { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public Guid KeyGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary>           
-        public byte Type { get; set; }
+        public Guid WebsiteGUID { get; set; }
 
         /// <summary>
         /// Desc:
@@ -71,9 +41,23 @@ namespace Larpx.ResourceSpider.Engine
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:True
+        /// Nullable:False
         /// </summary>           
-        public string NameChs { get; set; }
+        public string Content { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:DateTime.Now
+        /// Nullable:False
+        /// </summary>           
+        public DateTime Date { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public byte Type { get; set; }
 
         /// <summary>
         /// Desc:

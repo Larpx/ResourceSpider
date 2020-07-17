@@ -1,23 +1,22 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine
+namespace Larpx.ResourceSpider.Engine.SQLServer
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Manager
+    public partial class Resource
     {
-        public Manager()
+        public Resource()
         {
 
             this.GUID = Guid.NewGuid();
+            this.Date = DateTime.Now;
             this.Type = Convert.ToByte("0");
-            this.Status = Convert.ToByte("0");
             this.Deleted = false;
 
         }
-
 
         /// <summary>
         /// Desc:
@@ -32,14 +31,35 @@ namespace Larpx.ResourceSpider.Engine
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string UserName { get; set; }
+        public Guid WebsiteGUID { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string Password { get; set; }
+        public Guid PageGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string URL { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Original { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:DateTime.Now
+        /// Nullable:False
+        /// </summary>           
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Desc:
@@ -50,31 +70,24 @@ namespace Larpx.ResourceSpider.Engine
 
         /// <summary>
         /// Desc:
-        /// Default:0
+        /// Default:
         /// Nullable:False
         /// </summary>           
-        public byte Status { get; set; }
+        public string Path { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string FileName { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string Mail { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string Mobile { get; set; }
+        public string Hash { get; set; }
 
         /// <summary>
         /// Desc:

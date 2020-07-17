@@ -1,19 +1,22 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine
+namespace Larpx.ResourceSpider.Engine.SQLServer
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Resource
+    public partial class ResourceData
     {
-        public Resource()
+        public ResourceData()
         {
 
             this.GUID = Guid.NewGuid();
             this.Date = DateTime.Now;
-            this.Type = Convert.ToByte("0");
+            this.ResourceType = Convert.ToByte("0");
+            this.Status = Convert.ToByte("0");
+            this.Size = Convert.ToInt64("0");
+            this.Processed = Convert.ToByte("0");
             this.Deleted = false;
 
         }
@@ -38,12 +41,19 @@ namespace Larpx.ResourceSpider.Engine
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid PageGUID { get; set; }
+        public Guid ObjectGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:DateTime.Now
+        /// Nullable:False
+        /// </summary>           
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:True
+        /// Nullable:False
         /// </summary>           
         public string URL { get; set; }
 
@@ -56,31 +66,59 @@ namespace Larpx.ResourceSpider.Engine
 
         /// <summary>
         /// Desc:
-        /// Default:DateTime.Now
+        /// Default:
         /// Nullable:False
         /// </summary>           
-        public DateTime Date { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string File { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public byte URLType { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:0
         /// Nullable:False
         /// </summary>           
-        public byte Type { get; set; }
+        public byte ResourceType { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public byte Status { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:False
+        /// Nullable:True
         /// </summary>           
-        public string Path { get; set; }
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:True
+        /// </summary>           
+        public long? Size { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:False
+        /// Nullable:True
         /// </summary>           
-        public string FileName { get; set; }
+        public string Md5 { get; set; }
 
         /// <summary>
         /// Desc:
@@ -88,6 +126,20 @@ namespace Larpx.ResourceSpider.Engine
         /// Nullable:True
         /// </summary>           
         public string Hash { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public byte Processed { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Memo { get; set; }
 
         /// <summary>
         /// Desc:

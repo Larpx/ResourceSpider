@@ -1,7 +1,7 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine
+namespace Larpx.ResourceSpider.Engine.SQLServer
 {
     ///<summary>
     ///

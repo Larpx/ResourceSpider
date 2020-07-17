@@ -1,25 +1,23 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine
+namespace Larpx.ResourceSpider.Engine.SQLServer
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Category
+    public partial class SystemLog
     {
-        public Category()
+        public SystemLog()
         {
+
             this.GUID = Guid.NewGuid();
+            this.IP = Convert.ToInt64("0");
             this.Date = DateTime.Now;
-            this.Status = Convert.ToByte("0");
-            this.Priority = Convert.ToByte("0");
-            this.Processed = Convert.ToByte("0");
-            this.UpdateTime = DateTime.Now;
-            this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = false;
 
         }
+
 
         /// <summary>
         /// Desc:
@@ -34,28 +32,14 @@ namespace Larpx.ResourceSpider.Engine
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid WebsiteGUID { get; set; }
+        public Guid ManagerGUID { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:
+        /// Default:0
         /// Nullable:False
         /// </summary>           
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string NameChs { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string URL { get; set; }
+        public long IP { get; set; }
 
         /// <summary>
         /// Desc:
@@ -66,38 +50,31 @@ namespace Larpx.ResourceSpider.Engine
 
         /// <summary>
         /// Desc:
-        /// Default:0
+        /// Default:
         /// Nullable:False
         /// </summary>           
-        public byte Status { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:0
-        /// Nullable:False
+        /// Default:
+        /// Nullable:True
         /// </summary>           
-        public byte Priority { get; set; }
+        public string Module { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:0
-        /// Nullable:False
+        /// Default:
+        /// Nullable:True
         /// </summary>           
-        public byte Processed { get; set; }
+        public string Action { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:DateTime.Now
-        /// Nullable:False
+        /// Default:
+        /// Nullable:True
         /// </summary>           
-        public DateTime UpdateTime { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary>           
-        public int UpdateTimes { get; set; }
+        public string Result { get; set; }
 
         /// <summary>
         /// Desc:

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Larpx.ResourceSpider.Engine
+namespace Larpx.ResourceSpider.Engine.SQLServer
 {
     public class DapperSQLHelper
     {
@@ -121,5 +121,4 @@ namespace Larpx.ResourceSpider.Engine
             }
         }
     }
-
 }

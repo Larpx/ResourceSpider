@@ -3,6 +3,7 @@ using Ivony.Html.Parser;
 using Larpx.Logs;
 using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
+using Larpx.ResourceSpider.Engine.SQLServer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,7 +60,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 Website website = new Website();
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
+                SQLServerSQLSugarHelper<Website> oWebsites = new SQLServerSQLSugarHelper<Website>(DatabaseType, Debug);
 
                 website.Name = "877jn";
                 website.URL = "http://www.877jn.com";
@@ -93,7 +94,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
+                SQLServerSQLSugarHelper<Website> oWebsites = new SQLServerSQLSugarHelper<Website>(DatabaseType, Debug);
                 return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
             }
             catch (Exception ex)
@@ -116,7 +117,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sHTML = "";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 if (!oWebsite.URL.StartsWith("http"))
@@ -332,7 +333,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
-                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
