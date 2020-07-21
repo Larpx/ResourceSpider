@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
     ///<summary>
     ///
     ///</summary>
-    public partial class PropertyKey
+    public partial class PropertyKey:BaseModel.PropertyKey
     {
         public PropertyKey()
         {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider
 {
@@ -31,6 +32,7 @@ namespace Larpx.ResourceSpider.LocalSpider
                 //Console.WriteLine(s);
                 UUMP4Spider uUMP4Spider = new UUMP4Spider(true);
                 oArr.Add("ID", sUU);
+                oArr.Add("DatabaseType", DatabaseType.MySql);
                 uUMP4Spider.DoExce(oArr);
 
                 //_877JNSpider _877JNSpider = new _877JNSpider(false);

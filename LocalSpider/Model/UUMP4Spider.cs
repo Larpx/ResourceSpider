@@ -4,6 +4,7 @@ using Ivony.Html.Parser;
 using Larpx.Logs;
 using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
+using Larpx.ResourceSpider.Engine.BaseModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,23 +20,31 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
     {
         private string sWebSiteID = "fe1213ba1c94e4a42b72bda9840af83c";
 
-        private DatabaseType DatabaseType = DatabaseType.MySql;
-
-        public UUMP4Spider(bool debug = true, string LoggerPath = null, Logger Logger = null) : base(debug, LoggerPath, Logger)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oDatabaseType"></param>
+        /// <param name="oWebGUID"></param>
+        /// <param name="sWebID"></param>
+        /// <param name="debug"></param>
+        /// <param name="LoggerPath"></param>
+        /// <param name="Logger"></param>
+        public UUMP4Spider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
+            base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
         {
             //https://www.uump4.net/
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
         public new int DoExce(Dictionary<string, object> arr)
         {
             try
             {
-                arr = new Dictionary<string, object>();
-                arr.Add("ID", sWebSiteID);
-
-                base.DoExce(arr);
-
-                return 1;
+                return base.DoExce(arr);
             }
             catch (Exception ex)
             {
@@ -48,24 +57,40 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                Website website = new Website();
-                SQLServerSQLSugarHelper<Website> oWebsites = new SQLServerSQLSugarHelper<Website>(DatabaseType, Debug);
-
+                var website = new Engine.BaseModel.Website();
                 website.Name = "悠悠MP4-MP4电影下载-uump4-久久MP4-99mp4-悠悠鸟影视论坛-电影天堂";
                 website.NameChs = website.Name;
                 website.URL = "https://www.uump4.net";
                 website.Status = 1;
                 website.Deleted = false;
                 website.IsCookies = true;
-                website.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
+                website.ID = MD5.GetBufferHash(website.URL).ToLower();
 
-                //查重
-                if (!oWebsites.IsAny(it => it.ID == website.ID))
+                switch (DatabaseType)
                 {
-                    oWebsites.Insert(website);
-                    sWebSiteID = website.ID;
+                    case DatabaseType.MySql:
+                        SQLSugarHelper<Engine.MySQL.Website> oMySQLWebsites = new SQLSugarHelper<Engine.MySQL.Website>(DatabaseType, Debug);
+                        var oWebsiteMySQL = new Engine.MySQL.Website();
+                        oWebsiteMySQL = (Engine.MySQL.Website)website;
+                        //查重
+                        if (!oMySQLWebsites.IsAny(it => it.ID == oWebsiteMySQL.ID))
+                        {
+                            oMySQLWebsites.Insert(oWebsiteMySQL);
+                            sWebSiteID = oWebsiteMySQL.ID;
+                        }
+                        break;
+                    case DatabaseType.SqlServer:
+                        SQLSugarHelper<Engine.SQLServer.Website> oSqlServerWebsites = new SQLSugarHelper<Engine.SQLServer.Website>(DatabaseType, Debug);
+                        var oWebsiteSqlServer = new Engine.SQLServer.Website();
+                        oWebsiteSqlServer = (Engine.SQLServer.Website)website;
+                        //查重
+                        if (!oSqlServerWebsites.IsAny(it => it.ID == website.ID))
+                        {
+                            oSqlServerWebsites.Insert(oWebsiteSqlServer);
+                            sWebSiteID = website.ID;
+                        }
+                        break;
                 }
-
                 return 1;
             }
             catch (Exception ex)
@@ -80,12 +105,24 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="sID"></param>
         /// <returns></returns>
-        public override List<Website> GetWebsiteList(string sID)
+        public override List<Engine.BaseModel.Website> GetWebsiteList(string sID)
         {
             try
             {
-                SQLServerSQLSugarHelper<Website> oWebsites = new SQLServerSQLSugarHelper<Website>(DatabaseType, Debug);
-                return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
+                List<Engine.BaseModel.Website> oListResult = new List<Engine.BaseModel.Website>();
+                switch (DatabaseType)
+                {
+                    case DatabaseType.MySql:
+                        MySQLSQLSugarHelper<Engine.MySQL.Website> oMySQLWebsites = new MySQLSQLSugarHelper<Engine.MySQL.Website>(Debug);
+                        oListResult.AddRange(oMySQLWebsites.GetList(it => it.ID == sID && it.Deleted == 0 && it.Status == 1 && it.Processed != 2));
+                        return oListResult;
+
+                    case DatabaseType.SqlServer:
+                        SQLServerSQLSugarHelper<Engine.SQLServer.Website> oSQLServerWebsites = new SQLServerSQLSugarHelper<Engine.SQLServer.Website>(Debug);
+                        oListResult.AddRange(oSQLServerWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2));
+                        return oListResult;
+                }
+                return oListResult;
             }
             catch (Exception ex)
             {
@@ -97,7 +134,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// 获取网站分类列表
         /// </summary>
         /// <returns></returns>
-        public override List<Category> GetCategoryList(Website oWebsite)
+        public override List<Engine.BaseModel.Category> GetCategoryList(Engine.BaseModel.Website oWebsite)
         {
             try
             {
@@ -107,7 +144,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sMetaData = "meta";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
+                Engine.MySQL.Website oMySQLWebsite = new Engine.MySQL.Website();
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 if (!oWebsite.URL.StartsWith("http"))
@@ -116,7 +154,16 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     oWebsite.URL = "http://" + oWebsite.URL;
                     oWebsite.ID = CommonHelper.MD5.GetBufferHash(oWebsite.URL).ToLower();
                     sWebSiteID = oWebsite.ID;
-                    oSQLSugarHelper.WebsiteDb.Update(oWebsite);
+                    switch (DatabaseType)
+                    {
+                        case DatabaseType.MySql:
+                            oMySQLWebsite = (Engine.MySQL.Website)oWebsite;
+                            oSQLSugarHelper.WebsiteDb.Update(oMySQLWebsite);
+                            break;
+                        case DatabaseType.SqlServer:
+                            oSQLSugarHelper.WebsiteDb.Update(oWebsite);
+                            break;
+                    }
                 }
 
                 switch (oWebsite.Processed)
@@ -184,7 +231,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                         || string.IsNullOrEmpty(item.Attribute("href").AttributeValue))
                                         continue;
 
-                                    Category oCategory = new Category();
+                                    Engine.BaseModel.Category oCategory = new Engine.BaseModel.Category();
                                     oCategory.WebsiteGUID = oWebsite.GUID;
                                     oCategory.Status = 1;
                                     oCategory.Name = item.InnerText();
@@ -192,10 +239,23 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                         + (item.Attribute("href").AttributeValue.StartsWith("/") ? item.Attribute("href").AttributeValue : "/" + item.Attribute("href").AttributeValue);
                                     sTagURL = oCategory.URL;
 
-                                    if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oCategory.URL))
-                                        oSQLSugarHelper.CategoryDb.Insert(oCategory);
-                                    else
-                                        continue;
+                                    switch (DatabaseType)
+                                    {
+                                        case DatabaseType.MySql:
+                                            Engine.MySQL.category oMySQLCategory = new Engine.MySQL.category();
+                                            oMySQLCategory = (Engine.MySQL.category)oCategory;
+                                            if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oMySQLCategory.URL))
+                                                oSQLSugarHelper.CategoryDb.Insert(oMySQLCategory);
+                                            else
+                                                continue;
+                                            break;
+                                        case DatabaseType.SqlServer:
+                                            if (!oSQLSugarHelper.CategoryDb.IsAny(it => it.URL == oCategory.URL))
+                                                oSQLSugarHelper.CategoryDb.Insert(oCategory);
+                                            else
+                                                continue;
+                                            break;
+                                    }
                                 }
                             }
                             else
@@ -286,7 +346,17 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                         }
                                     }
 
-                                    oSQLSugarHelper.MetaDataDb.Insert(metaData);
+                                    switch (DatabaseType)
+                                    {
+                                        case DatabaseType.MySql:
+                                            Engine.MySQL.metadata oMySQLMetaData = new Engine.MySQL.metadata();
+                                            oMySQLMetaData = (Engine.MySQL.metadata)metaData;
+                                            oSQLSugarHelper.MetaDataDb.Insert(oMySQLMetaData);
+                                            break;
+                                        case DatabaseType.SqlServer:
+                                            oSQLSugarHelper.MetaDataDb.Insert(metaData);
+                                            break;
+                                    }
                                 }
                             }
 
@@ -435,7 +505,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
-                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
+                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType1, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
@@ -656,7 +726,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 bool bGetCookie = false;
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
+                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType1, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oResult.WebsiteGUID);

@@ -1,102 +1,278 @@
-using SqlSugar;
+﻿using System;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Website
+    ///<summary>
+    ///
+    ///</summary>
+    public partial class Website : BaseModel.Website
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public Website()
         {
+
+            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.Status = Convert.ToByte("0");
+            this.Priority = Convert.ToByte("0");
+            this.Processed = Convert.ToByte("0");
+            this.UpdateTime = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.UpdateTimes = Convert.ToInt32("0");
+            this.Deleted = Convert.ToByte("0");
+            this.IsCookies = Convert.ToByte("0");
+
         }
 
-        private System.Guid _GUID;
         /// <summary>
-        /// 
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true)]
-        public System.Guid GUID { get { return this._GUID; } set { this._GUID = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string GUID
+        {
+            get
+            {
+                return this.GUID;
+            }
 
-        private System.DateTime _Date;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.DateTime Date { get { return this._Date; } set { this._Date = value; } }
+            set
+            {
+                this.GUID = base.GUID.ToString();
+            }
+        }
 
-        private System.String _URL;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String URL { get { return this._URL; } set { this._URL = value?.Trim(); } }
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public new DateTime Date
+        {
+            get
+            {
+                return this.Date;
+            }
 
-        private System.String _Name;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String Name { get { return this._Name; } set { this._Name = value?.Trim(); } }
+            set
+            {
+                this.Date = base.Date;
+            }
+        }
 
-        private System.String _NameChs;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String NameChs { get { return this._NameChs; } set { this._NameChs = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string URL
+        {
+            get
+            {
+                return this.URL;
+            }
 
-        private System.SByte _Status;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Status { get { return this._Status; } set { this._Status = value; } }
+            set
+            {
+                this.URL = base.URL;
+            }
+        }
 
-        private System.SByte _Priority;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Priority { get { return this._Priority; } set { this._Priority = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string Name
+        {
+            get
+            {
+                return this.Name;
+            }
 
-        private System.SByte _Processed;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Processed { get { return this._Processed; } set { this._Processed = value; } }
+            set
+            {
+                this.Name = base.Name;
+            }
+        }
 
-        private System.DateTime _UpdateTime;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.DateTime UpdateTime { get { return this._UpdateTime; } set { this._UpdateTime = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string NameChs
+        {
+            get
+            {
+                return this.NameChs;
+            }
 
-        private System.Int32 _UpdateTimes;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.Int32 UpdateTimes { get { return this._UpdateTimes; } set { this._UpdateTimes = value; } }
+            set
+            {
+                this.NameChs = base.NameChs;
+            }
+        }
 
-        private System.String _Memo;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String Memo { get { return this._Memo; } set { this._Memo = value?.Trim(); } }
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Status
+        {
+            get
+            {
+                return this.Status;
+            }
 
-        private System.SByte _Deleted;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Deleted { get { return this._Deleted; } set { this._Deleted = value; } }
+            set
+            {
+                this.Status = base.Status;
+            }
+        }
 
-        private System.String _ID;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String ID { get { return this._ID; } set { this._ID = value?.Trim(); } }
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Priority
+        {
+            get
+            {
+                return this.Priority;
+            }
 
-        private System.SByte _IsCookies;
+            set
+            {
+                this.Priority = base.Priority;
+            }
+        }
+
         /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte IsCookies { get { return this._IsCookies; } set { this._IsCookies = value; } }
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Processed
+        {
+            get
+            {
+                return this.Processed;
+            }
+
+            set
+            {
+                this.Processed = base.Processed;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public new DateTime UpdateTime
+        {
+            get
+            {
+                return this.UpdateTime;
+            }
+
+            set
+            {
+                this.UpdateTime = base.UpdateTime;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new int UpdateTimes
+        {
+            get
+            {
+                return this.UpdateTimes;
+            }
+
+            set
+            {
+                this.UpdateTimes = base.UpdateTimes;
+            }
+        }
+
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Memo
+        {
+            get
+            {
+                return this.Memo;
+            }
+
+            set
+            {
+                this.Memo = base.Memo;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Deleted
+        {
+            get
+            {
+                return this.Deleted;
+            }
+
+            set
+            {
+                this.Deleted = Convert.ToByte(base.Deleted);
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string ID
+        {
+            get
+            {
+                return this.ID;
+            }
+
+            set
+            {
+                this.ID = base.ID;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte IsCookies
+        {
+            get
+            {
+                return this.IsCookies;
+            }
+
+            set
+            {
+                this.IsCookies = Convert.ToByte(base.IsCookies);
+            }
+        }
+
     }
 }

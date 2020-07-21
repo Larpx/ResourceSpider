@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
     ///<summary>
     ///
     ///</summary>
-    public partial class MetaData
+    public partial class MetaData:BaseModel.MetaData
     {
         public MetaData()
         {

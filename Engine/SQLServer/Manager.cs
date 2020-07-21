@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
     ///<summary>
     ///
     ///</summary>
-    public partial class Manager
+    public partial class Manager:BaseModel.Manager
     {
         public Manager()
         {

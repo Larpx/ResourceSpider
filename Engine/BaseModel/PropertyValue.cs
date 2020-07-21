@@ -1,23 +1,20 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine.SQLServer
+namespace Larpx.ResourceSpider.Engine.BaseModel
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Category : BaseModel.Category
+    public partial class PropertyValue
     {
-        public Category()
+        public PropertyValue()
         {
+
             this.GUID = Guid.NewGuid();
-            this.Date = DateTime.Now;
-            this.Status = Convert.ToByte("0");
-            this.Priority = Convert.ToByte("0");
-            this.Processed = Convert.ToByte("0");
-            this.UpdateTime = DateTime.Now;
-            this.UpdateTimes = Convert.ToInt32("0");
+            this.Type = Convert.ToByte("0");
             this.Deleted = false;
+            this.Date = DateTime.Now;
 
         }
 
@@ -39,23 +36,9 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
         /// Nullable:True
         /// </summary>           
-        public string NameChs { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string URL { get; set; }
+        public Guid? CategoryGUID { get; set; }
 
         /// <summary>
         /// Desc:
@@ -66,38 +49,31 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
 
         /// <summary>
         /// Desc:
-        /// Default:0
+        /// Default:
         /// Nullable:False
         /// </summary>           
-        public byte Status { get; set; }
+        public Guid KeyGUID { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:0
         /// Nullable:False
         /// </summary>           
-        public byte Priority { get; set; }
+        public byte Type { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:0
+        /// Default:
         /// Nullable:False
         /// </summary>           
-        public byte Processed { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:DateTime.Now
-        /// Nullable:False
+        /// Default:
+        /// Nullable:True
         /// </summary>           
-        public DateTime UpdateTime { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary>           
-        public int UpdateTimes { get; set; }
+        public string NameChs { get; set; }
 
         /// <summary>
         /// Desc:

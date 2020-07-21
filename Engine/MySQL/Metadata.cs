@@ -1,60 +1,145 @@
-using SqlSugar;
+﻿using System;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Metadata
+    ///<summary>
+    ///
+    ///</summary>
+    public partial class metadata : BaseModel.MetaData
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public Metadata()
+        public metadata()
         {
+
+            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.Type = Convert.ToByte("0");
+            this.Deleted = Convert.ToByte("0");
+
         }
 
-        private System.Guid _GUID;
         /// <summary>
-        /// 
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true)]
-        public System.Guid GUID { get { return this._GUID; } set { this._GUID = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string GUID
+        {
+            get
+            {
+                return this.GUID;
+            }
 
-        private System.Guid _WebsiteGUID;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid WebsiteGUID { get { return this._WebsiteGUID; } set { this._WebsiteGUID = value; } }
+            set
+            {
+                this.GUID = base.GUID.ToString();
+            }
+        }
 
-        private System.String _Name;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String Name { get { return this._Name; } set { this._Name = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string WebsiteGUID
+        {
+            get
+            {
+                return this.WebsiteGUID;
+            }
 
-        private System.String _Content;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String Content { get { return this._Content; } set { this._Content = value?.Trim(); } }
+            set
+            {
+                this.WebsiteGUID = base.WebsiteGUID.ToString();
+            }
+        }
 
-        private System.DateTime _Date;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.DateTime Date { get { return this._Date; } set { this._Date = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string Name
+        {
+            get
+            {
+                return this.Name;
+            }
 
-        private System.SByte _Type;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Type { get { return this._Type; } set { this._Type = value; } }
+            set
+            {
+                this.Name = base.Name;
+            }
+        }
 
-        private System.SByte _Deleted;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Deleted { get { return this._Deleted; } set { this._Deleted = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Content
+        {
+            get
+            {
+                return this.Content;
+            }
+
+            set
+            {
+                this.Content = base.Content;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public new DateTime Date
+        {
+            get
+            {
+                return this.Date;
+            }
+
+            set
+            {
+                this.Date = base.Date;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Type
+        {
+            get
+            {
+                return this.Type;
+            }
+
+            set
+            {
+                this.Type = base.Type;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Deleted
+        {
+            get
+            {
+                return this.Deleted;
+            }
+
+            set
+            {
+                this.Deleted = Convert.ToByte(base.Deleted);
+            }
+        }
     }
 }

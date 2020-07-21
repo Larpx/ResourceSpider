@@ -1,144 +1,402 @@
-using SqlSugar;
+﻿using System;
+using System.Linq;
+using System.Text;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Link
+    ///<summary>
+    ///
+    ///</summary>
+    public class link : BaseModel.Link
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public Link()
+        public link()
         {
+
+            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.Type = Convert.ToByte("0");
+            this.Processed = Convert.ToByte("0");
+            this.UpdateTime = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.UpdateTimes = Convert.ToInt32("0");
+            this.Deleted = Convert.ToByte("0");
+
         }
 
-        private System.Guid _GUID;
         /// <summary>
-        /// 
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true)]
-        public System.Guid GUID { get { return this._GUID; } set { this._GUID = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string GUID
+        {
+            get
+            {
+                return this.GUID;
+            }
 
-        private System.Guid _WebsiteGUID;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid WebsiteGUID { get { return this._WebsiteGUID; } set { this._WebsiteGUID = value; } }
+            set
+            {
+                this.GUID = base.GUID.ToString();
+            }
+        }
 
-        private System.Guid? _CategoryGUID;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid? CategoryGUID { get { return this._CategoryGUID; } set { this._CategoryGUID = value ?? default(System.Guid); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string WebsiteGUID
+        {
+            get
+            {
+                return this.WebsiteGUID;
+            }
 
-        private System.String _SN;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String SN { get { return this._SN; } set { this._SN = value?.Trim(); } }
+            set
+            {
+                this.WebsiteGUID = base.WebsiteGUID.ToString();
+            }
+        }
 
-        private System.String _ID;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String ID { get { return this._ID; } set { this._ID = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string CategoryGUID
+        {
+            get
+            {
+                return this.CategoryGUID;
+            }
 
-        private System.String _URL;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String URL { get { return this._URL; } set { this._URL = value?.Trim(); } }
+            set
+            {
+                this.CategoryGUID = base.CategoryGUID.ToString();
+            }
+        }
 
-        private System.String _Name;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String Name { get { return this._Name; } set { this._Name = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string SN
+        {
+            get
+            {
+                return this.SN;
+            }
 
-        private System.String _NameChs;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String NameChs { get { return this._NameChs; } set { this._NameChs = value?.Trim(); } }
+            set
+            {
+                this.SN = base.SN;
+            }
+        }
 
-        private System.String _Title;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String Title { get { return this._Title; } set { this._Title = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string ID
+        {
+            get
+            {
+                return this.ID;
+            }
 
-        private System.String _TitleChs;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String TitleChs { get { return this._TitleChs; } set { this._TitleChs = value?.Trim(); } }
+            set
+            {
+                this.ID = base.ID;
+            }
+        }
 
-        private System.String _Brief;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String Brief { get { return this._Brief; } set { this._Brief = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string URL
+        {
+            get
+            {
+                return this.URL;
+            }
 
-        private System.String _BriefChs;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String BriefChs { get { return this._BriefChs; } set { this._BriefChs = value?.Trim(); } }
+            set
+            {
+                this.URL = base.URL;
+            }
+        }
 
-        private System.String _Detail;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String Detail { get { return this._Detail; } set { this._Detail = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string Name
+        {
+            get
+            {
+                return this.Name;
+            }
 
-        private System.String _DetailChs;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String DetailChs { get { return this._DetailChs; } set { this._DetailChs = value?.Trim(); } }
+            set
+            {
+                this.Name = base.Name;
+            }
+        }
 
-        private System.DateTime _Date;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.DateTime Date { get { return this._Date; } set { this._Date = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string NameChs
+        {
+            get
+            {
+                return this.NameChs;
+            }
 
-        private System.SByte _Type;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Type { get { return this._Type; } set { this._Type = value; } }
+            set
+            {
+                this.NameChs = base.NameChs;
+            }
+        }
 
-        private System.SByte _Processed;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Processed { get { return this._Processed; } set { this._Processed = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Title
+        {
+            get
+            {
+                return this.Title;
+            }
 
-        private System.DateTime _UpdateTime;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.DateTime UpdateTime { get { return this._UpdateTime; } set { this._UpdateTime = value; } }
+            set
+            {
+                this.Title = base.Title;
+            }
+        }
 
-        private System.Int32 _UpdateTimes;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.Int32 UpdateTimes { get { return this._UpdateTimes; } set { this._UpdateTimes = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string TitleChs
+        {
+            get
+            {
+                return this.TitleChs;
+            }
 
-        private System.String _Remark;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.String Remark { get { return this._Remark; } set { this._Remark = value?.Trim(); } }
+            set
+            {
+                this.TitleChs = base.TitleChs;
+            }
+        }
 
-        private System.SByte _Deleted;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Deleted { get { return this._Deleted; } set { this._Deleted = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Brief
+        {
+            get
+            {
+                return this.Brief;
+            }
+
+            set
+            {
+                this.Brief = base.Brief;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string BriefChs
+        {
+            get
+            {
+                return this.BriefChs;
+            }
+
+            set
+            {
+                this.BriefChs = base.BriefChs;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Detail
+        {
+            get
+            {
+                return this.Detail;
+            }
+
+            set
+            {
+                this.Detail = base.Detail;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string DetailChs
+        {
+            get
+            {
+                return this.DetailChs;
+            }
+
+            set
+            {
+                this.DetailChs = base.DetailChs;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public new DateTime Date
+        {
+            get
+            {
+                return this.Date;
+            }
+
+            set
+            {
+                this.Date = base.Date;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Type
+        {
+            get
+            {
+                return this.Type;
+            }
+
+            set
+            {
+                this.Type = base.Type;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Processed
+        {
+            get
+            {
+                return this.Processed;
+            }
+
+            set
+            {
+                this.Processed = base.Processed;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public new DateTime UpdateTime
+        {
+            get
+            {
+                return this.UpdateTime;
+            }
+
+            set
+            {
+                this.UpdateTime = base.UpdateTime;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new int UpdateTimes
+        {
+            get
+            {
+                return this.UpdateTimes;
+            }
+
+            set
+            {
+                this.UpdateTimes = base.UpdateTimes;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Remark
+        {
+            get
+            {
+                return this.Remark;
+            }
+
+            set
+            {
+                this.Remark = base.Remark;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Deleted
+        {
+            get
+            {
+                return this.Deleted;
+            }
+
+            set
+            {
+                this.Deleted = Convert.ToByte(base.Deleted);
+            }
+        }
     }
 }

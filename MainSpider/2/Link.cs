@@ -7,15 +7,15 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///<summary>
     ///
     ///</summary>
-    public partial class resourcedata
+    public partial class link
     {
-           public resourcedata(){
+           public link(){
 
             this.Date =Convert.ToDateTime("CURRENT_TIMESTAMP");
-            this.ResourceType =Convert.ToByte("0");
-            this.Status =Convert.ToByte("0");
-            this.Size =Convert.ToInt64("0");
+            this.Type =Convert.ToByte("0");
             this.Processed =Convert.ToByte("0");
+            this.UpdateTime =Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.UpdateTimes =Convert.ToInt32("0");
             this.Deleted =Convert.ToByte("0");
 
            }
@@ -36,16 +36,23 @@ namespace Larpx.ResourceSpider.Engine.MySQL
            /// <summary>
            /// Desc:
            /// Default:
-           /// Nullable:False
+           /// Nullable:True
            /// </summary>           
-           public string ObjectGUID {get;set;}
+           public string CategoryGUID {get;set;}
 
            /// <summary>
            /// Desc:
-           /// Default:CURRENT_TIMESTAMP
+           /// Default:
            /// Nullable:False
            /// </summary>           
-           public DateTime Date {get;set;}
+           public string SN {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:False
+           /// </summary>           
+           public string ID {get;set;}
 
            /// <summary>
            /// Desc:
@@ -57,72 +64,72 @@ namespace Larpx.ResourceSpider.Engine.MySQL
            /// <summary>
            /// Desc:
            /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string Original {get;set;}
-
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
+           /// Nullable:True
            /// </summary>           
            public string Name {get;set;}
 
            /// <summary>
            /// Desc:
            /// Default:
-           /// Nullable:False
+           /// Nullable:True
            /// </summary>           
-           public string File {get;set;}
+           public string NameChs {get;set;}
 
            /// <summary>
            /// Desc:
            /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string Title {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string TitleChs {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string Brief {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string BriefChs {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string Detail {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string DetailChs {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:CURRENT_TIMESTAMP
            /// Nullable:False
            /// </summary>           
-           public byte URLType {get;set;}
+           public DateTime Date {get;set;}
 
            /// <summary>
            /// Desc:
            /// Default:0
            /// Nullable:False
            /// </summary>           
-           public byte ResourceType {get;set;}
-
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte Status {get;set;}
-
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Password {get;set;}
-
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:True
-           /// </summary>           
-           public long? Size {get;set;}
-
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Md5 {get;set;}
-
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Hash {get;set;}
+           public byte Type {get;set;}
 
            /// <summary>
            /// Desc:
@@ -133,10 +140,24 @@ namespace Larpx.ResourceSpider.Engine.MySQL
 
            /// <summary>
            /// Desc:
+           /// Default:CURRENT_TIMESTAMP
+           /// Nullable:False
+           /// </summary>           
+           public DateTime UpdateTime {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:0
+           /// Nullable:False
+           /// </summary>           
+           public int UpdateTimes {get;set;}
+
+           /// <summary>
+           /// Desc:
            /// Default:
            /// Nullable:True
            /// </summary>           
-           public string Memo {get;set;}
+           public string Remark {get;set;}
 
            /// <summary>
            /// Desc:

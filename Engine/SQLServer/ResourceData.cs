@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
     ///<summary>
     ///
     ///</summary>
-    public partial class ResourceData
+    public partial class ResourceData:BaseModel.ResourceData
     {
         public ResourceData()
         {

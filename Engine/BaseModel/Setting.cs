@@ -1,12 +1,12 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine.SQLServer
+namespace Larpx.ResourceSpider.Engine.BaseModel
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Setting:BaseModel.Setting
+    public partial class Setting
     {
         public Setting()
         {

@@ -1,78 +1,145 @@
-using SqlSugar;
+﻿using System;
+using System.Linq;
+using System.Text;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Propertydetail
+    ///<summary>
+    ///
+    ///</summary>
+    public class propertydetail : BaseModel.PropertyDetail
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public Propertydetail()
+        public propertydetail()
         {
+
+            this.Deleted = Convert.ToByte("0");
+            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+
         }
 
-        private System.Guid _GUID;
         /// <summary>
-        /// 
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true)]
-        public System.Guid GUID { get { return this._GUID; } set { this._GUID = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string GUID
+        {
+            get
+            {
+                return this.GUID;
+            }
 
-        private System.Guid _LinkGUID;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid LinkGUID { get { return this._LinkGUID; } set { this._LinkGUID = value; } }
+            set
+            {
+                this.GUID = base.GUID.ToString();
+            }
+        }
 
-        private System.Guid _PropertyKeyGUID;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid PropertyKeyGUID { get { return this._PropertyKeyGUID; } set { this._PropertyKeyGUID = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string LinkGUID { get; set; }
 
-        private System.String _KeyText;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String KeyText { get { return this._KeyText; } set { this._KeyText = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string PropertyKeyGUID { get; set; }
 
-        private System.Guid? _PropertyValueGUID;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid? PropertyValueGUID { get { return this._PropertyValueGUID; } set { this._PropertyValueGUID = value ?? default(System.Guid); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string KeyText { get; set; }
 
-        private System.String _ValueText;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.String ValueText { get { return this._ValueText; } set { this._ValueText = value?.Trim(); } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string PropertyValueGUID { get; set; }
 
-        private System.SByte _Deleted;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.SByte Deleted { get { return this._Deleted; } set { this._Deleted = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string ValueText { get; set; }
 
-        private System.Guid _WebsiteGUID;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid WebsiteGUID { get { return this._WebsiteGUID; } set { this._WebsiteGUID = value; } }
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Deleted
+        {
+            get
+            {
+                return this.Deleted;
+            }
 
-        private System.Guid _CategoryGUID;
-        /// <summary>
-        /// 
-        /// </summary>
-        public System.Guid CategoryGUID { get { return this._CategoryGUID; } set { this._CategoryGUID = value; } }
+            set
+            {
+                this.Deleted = Convert.ToByte(base.Deleted);
+            }
+        }
 
-        private System.DateTime _Date;
         /// <summary>
-        /// 
-        /// </summary>
-        public System.DateTime Date { get { return this._Date; } set { this._Date = value; } }
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string WebsiteGUID
+        {
+            get
+            {
+                return this.WebsiteGUID;
+            }
+
+            set
+            {
+                this.WebsiteGUID = base.WebsiteGUID.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string CategoryGUID
+        {
+            get
+            {
+                return this.CategoryGUID;
+            }
+
+            set
+            {
+                this.CategoryGUID = base.CategoryGUID.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public new DateTime Date
+        {
+            get
+            {
+                return this.Date;
+            }
+
+            set
+            {
+                this.Date = base.Date;
+            }
+        }
     }
 }

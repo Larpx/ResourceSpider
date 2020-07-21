@@ -1,21 +1,19 @@
-﻿using System;
-using SqlSugar;
+﻿using SqlSugar;
+using System;
 
-namespace Larpx.ResourceSpider.Engine.SQLServer
+namespace Larpx.ResourceSpider.Engine.BaseModel
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Resource:BaseModel.Resource
+    public partial class MetaData
     {
-        public Resource()
+        public MetaData()
         {
-
             this.GUID = Guid.NewGuid();
             this.Date = DateTime.Now;
             this.Type = Convert.ToByte("0");
             this.Deleted = false;
-
         }
 
         /// <summary>
@@ -28,7 +26,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
 
         /// <summary>
         /// Desc:
-        /// Default:
+        /// Default:DateTime.Now
         /// Nullable:False
         /// </summary>           
         public Guid WebsiteGUID { get; set; }
@@ -38,21 +36,14 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid PageGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string URL { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string Original { get; set; }
+        public string Content { get; set; }
 
         /// <summary>
         /// Desc:
@@ -67,27 +58,6 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// Nullable:False
         /// </summary>           
         public byte Type { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Path { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string FileName { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string Hash { get; set; }
 
         /// <summary>
         /// Desc:

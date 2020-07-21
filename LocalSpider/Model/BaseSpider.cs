@@ -1,35 +1,39 @@
 ﻿using Larpx.Logs;
 using Larpx.ResourceSpider.Engine;
-using Larpx.ResourceSpider.Engine.SQLServer;
+using Larpx.ResourceSpider.Engine.BaseModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
     public abstract class BaseSpider : SpiderInterface
     {
         private bool _DeepClone = false;
+        private string _WebID = null;
         private bool bDebug = true;
         private string sLoggerPath = "../Logs";
+        private Guid _WebGUID = Guid.Empty;
+        private DatabaseType _DatabaseType = DatabaseType.SqlServer;
         private Logger m_oLogger = new ConsoleLogger();
 
         private List<Website> _ListWebsites;
         private List<Category> _ListCategory;
         private List<Link> _ListLink;
 
-        public delegate void BeginGetWebsiteListEventHandler();
-        public delegate void BeginGetCategoryListEventHandler();
-        public delegate void BeginGetLinkListEventHandler();
-        public delegate void BeginGetLinkDetailEventHandler();
-        public delegate void GetingWebsiteListEventHandler(string sID);
-        public delegate void GetingCategoryListEventHandler(Website website);
-        public delegate void GetingLinkListEventHandler(Category category);
-        public delegate void GetingLinkDetailEventHandler(Link link);
-        public delegate void EndGetWebsiteListEventHandler();
-        public delegate void EndGetCategoryListEventHandler();
-        public delegate void EndGetLinkListEventHandler();
-        public delegate void EndGetLinkDetailEventHandler();
+        public delegate void BeginGetWebsiteListEventHandler(DatabaseType databaseType);
+        public delegate void BeginGetCategoryListEventHandler(DatabaseType databaseType);
+        public delegate void BeginGetLinkListEventHandler(DatabaseType databaseType);
+        public delegate void BeginGetLinkDetailEventHandler(DatabaseType databaseType);
+        public delegate void GetingWebsiteListEventHandler(DatabaseType databaseType, string sID);
+        public delegate void GetingCategoryListEventHandler(DatabaseType databaseType, Website website);
+        public delegate void GetingLinkListEventHandler(DatabaseType databaseType, Category category);
+        public delegate void GetingLinkDetailEventHandler(DatabaseType databaseType, Link link);
+        public delegate void EndGetWebsiteListEventHandler(DatabaseType databaseType);
+        public delegate void EndGetCategoryListEventHandler(DatabaseType databaseType);
+        public delegate void EndGetLinkListEventHandler(DatabaseType databaseType);
+        public delegate void EndGetLinkDetailEventHandler(DatabaseType databaseType);
 
         public event BeginGetWebsiteListEventHandler OnBeginGetWebsiteList;
         public event BeginGetCategoryListEventHandler OnBeginGetCategoryList;
@@ -46,7 +50,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
         #region 属性
 
+        public string WebID { get => _WebID; set => _WebID = value; }
+        public DatabaseType DatabaseType { get => _DatabaseType; set => _DatabaseType = value; }
         public bool Debug { get => bDebug; set => bDebug = value; }
+        public Guid WebGUID { get => _WebGUID; set => _WebGUID = value; }
         public Logger Logger { get => m_oLogger; set => m_oLogger = value; }
         public List<Website> ListWebsites
         {
@@ -102,9 +109,16 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
         #endregion
 
-        public BaseSpider(bool debug = true, string LoggerPath = null, Logger oLogger = null, bool bDeepClone = false,
+        public BaseSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger oLogger = null, bool bDeepClone = false,
             List<Website> _ListWebsites = null, List<Category> _ListCategory = null, List<Link> _ListLink = null)
         {
+            if (oWebGUID == Guid.Empty && string.IsNullOrEmpty(sWebID))
+                throw new ArgumentNullException();
+
+            //赋值
+            WebID = sWebID;
+            WebGUID = oWebGUID;
+            DatabaseType = oDatabaseType;
             Debug = debug;
             _DeepClone = bDeepClone;
 
@@ -170,7 +184,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        public virtual int PerExce(Dictionary<string, object> arr)
+        public virtual int PerExce(Dictionary<string, object> arr = null)
         {
             try
             {
@@ -185,9 +199,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// <summary>
         /// 执行操作
         /// </summary>
-        /// <param name="arr"></param>
+        /// <param name="arr">
+        /// ID:处理网站的GUID
+        /// DatabaseType：数据库类型
+        /// </param>
         /// <returns></returns>
-        public virtual int DoExce(Dictionary<string, object> arr)
+        public virtual int DoExce(Dictionary<string, object> arr = null)
         {
             try
             {
@@ -196,48 +213,57 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sWebsiteID = "";
 
                 //解析参数
-                foreach (var item in arr)
+                if (arr != null)
                 {
-                    switch (item.Key)
+                    foreach (var item in arr)
                     {
-                        case "ID":
-                            sWebsiteID = item.Value.ToString();
-                            break;
+                        switch (item.Key)
+                        {
+                            case "ID":
+                                sWebsiteID = item.Value.ToString();
+                                break;
+                            case "DatabaseType":
+                                DatabaseType = (DatabaseType)item.Value;
+                                break;
+                            case "WebGUID":
+                                WebGUID = Guid.Parse(item.Value.ToString());
+                                break;
+                        }
                     }
                 }
 
                 //获取任务网站列表
-                OnBeginGetWebsiteList?.Invoke();
+                OnBeginGetWebsiteList?.Invoke(DatabaseType);
                 ListWebsites.AddRange(GetWebsiteList(sWebsiteID));
-                OnEndGetWebsiteList?.Invoke();
+                OnEndGetWebsiteList?.Invoke(DatabaseType);
 
                 //获取分类列表
-                OnBeginGetCategoryList?.Invoke();
+                OnBeginGetCategoryList?.Invoke(DatabaseType);
                 foreach (var item in ListWebsites)
                 {
-                    OnGetingCategoryList?.Invoke(item);
+                    OnGetingCategoryList?.Invoke(DatabaseType, item);
                     ListCategory.AddRange(GetCategoryList(item));
                 }
-                OnEndGetCategoryList?.Invoke();
+                OnEndGetCategoryList?.Invoke(DatabaseType);
 
                 //采集链接
-                OnBeginGetLinkList?.Invoke();
+                OnBeginGetLinkList?.Invoke(DatabaseType);
                 foreach (var item in ListCategory)
                 {
-                    OnGetingLinkList?.Invoke(item);
+                    OnGetingLinkList?.Invoke(DatabaseType, item);
                     ListLink.AddRange(GetLinkList(item));
                 }
-                OnEndGetLinkList?.Invoke();
+                OnEndGetLinkList?.Invoke(DatabaseType);
 
                 //采集详情
-                OnBeginGetLinkDetail?.Invoke();
+                OnBeginGetLinkDetail?.Invoke(DatabaseType);
                 foreach (var item in ListLink)
                 {
-                    OnGetingLinkDetail?.Invoke(item);;
+                    OnGetingLinkDetail?.Invoke(DatabaseType, item); ;
                     GetLinkDetail(item);
                 }
-                OnEndGetLinkDetail?.Invoke(); 
-                
+                OnEndGetLinkDetail?.Invoke(DatabaseType);
+
                 return 1;
             }
             catch (Exception ex)
@@ -254,15 +280,15 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        public virtual int DoWebSiteTask(string sWebsiteID)
+        public virtual int DoWebSiteTask(string sWebsiteID, DatabaseType databaseType)
         {
             try
             {
-                OnBeginGetWebsiteList?.Invoke();
+                OnBeginGetWebsiteList?.Invoke(DatabaseType);
 
                 ListWebsites.AddRange(GetWebsiteList(sWebsiteID));
 
-                OnEndGetWebsiteList?.Invoke();
+                OnEndGetWebsiteList?.Invoke(DatabaseType);
 
                 return 1;
             }
@@ -278,11 +304,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        public virtual int DoCagegoryTask()
+        public virtual int DoCagegoryTask(DatabaseType databaseType)
         {
             try
             {
-                OnBeginGetCategoryList?.Invoke();
+                OnBeginGetCategoryList?.Invoke(DatabaseType);
 
                 var oTmpList = new List<Website>();
                 if (ListWebsites.Count > 0)
@@ -292,11 +318,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 foreach (var item in ListWebsites)
                 {
-                    OnGetingCategoryList?.Invoke(item);
+                    OnGetingCategoryList?.Invoke(DatabaseType, item);
                     ListCategory.AddRange(GetCategoryList(item));
                 }
 
-                OnEndGetCategoryList?.Invoke();
+                OnEndGetCategoryList?.Invoke(DatabaseType);
 
                 return 1;
             }
@@ -312,11 +338,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        public virtual int DoLinkTask()
+        public virtual int DoLinkTask(DatabaseType databaseType)
         {
             try
             {
-                OnBeginGetLinkList?.Invoke();
+                OnBeginGetLinkList?.Invoke(DatabaseType);
 
                 var oTmpList = new List<Category>();
                 if (ListCategory.Count > 0)
@@ -326,11 +352,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 foreach (var item in ListCategory)
                 {
-                    OnGetingLinkList?.Invoke(item);
+                    OnGetingLinkList?.Invoke(DatabaseType, item);
                     ListLink.AddRange(GetLinkList(item));
                 }
 
-                OnEndGetLinkList?.Invoke();
+                OnEndGetLinkList?.Invoke(DatabaseType);
 
                 return 1;
             }
@@ -346,12 +372,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        public virtual int DoDetailTask()
+        public virtual int DoDetailTask(DatabaseType databaseType)
         {
             try
             {
                 //开始采集详情事件
-                OnBeginGetLinkDetail?.Invoke();
+                OnBeginGetLinkDetail?.Invoke(DatabaseType);
 
                 //复制采集对象
                 var oTmpList = new List<Link>();
@@ -362,12 +388,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 foreach (var item in oTmpList)
                 {
-                    OnGetingLinkDetail?.Invoke(item);
+                    OnGetingLinkDetail?.Invoke(DatabaseType, item);
                     GetLinkDetail(item);
                 }
 
                 //结束采集事件
-                OnEndGetLinkDetail?.Invoke();
+                OnEndGetLinkDetail?.Invoke(DatabaseType);
 
                 return 1;
             }

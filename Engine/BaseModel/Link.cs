@@ -1,12 +1,12 @@
 ﻿using SqlSugar;
 using System;
 
-namespace Larpx.ResourceSpider.Engine.SQLServer
+namespace Larpx.ResourceSpider.Engine.BaseModel
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Link:BaseModel.Link
+    public partial class Link
     {
         public Link()
         {

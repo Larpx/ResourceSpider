@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
     ///<summary>
     ///
     ///</summary>
-    public partial class Website
+    public partial class Website : BaseModel.Website
     {
         public Website()
         {
@@ -20,7 +20,6 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
             this.Deleted = false;
             this.IsCookies = false;
         }
-
 
         /// <summary>
         /// Desc:

@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
     ///<summary>
     ///
     ///</summary>
-    public partial class PropertyValue
+    public partial class PropertyValue:BaseModel.PropertyValue
     {
         public PropertyValue()
         {

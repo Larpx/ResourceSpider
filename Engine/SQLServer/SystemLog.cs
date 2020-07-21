@@ -6,7 +6,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
     ///<summary>
     ///
     ///</summary>
-    public partial class SystemLog
+    public partial class SystemLog : BaseModel.SystemLog
     {
         public SystemLog()
         {
