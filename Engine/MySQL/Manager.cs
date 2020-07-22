@@ -1,83 +1,181 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class manager
+    public class manager : BaseModel.Manager
     {
-           public manager(){
+        public manager()
+        {
 
-            this.Type =Convert.ToByte("0");
-            this.Status =Convert.ToByte("0");
-            this.Deleted =Convert.ToByte("0");
+            this.Type = Convert.ToByte("0");
+            this.Status = Convert.ToByte("0");
+            this.Deleted = Convert.ToByte("0");
 
-           }
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string GUID {get;set;}
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string UserName {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string GUID
+        {
+            get
+            {
+                return this.GUID;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string Password {get;set;}
+            set
+            {
+                this.GUID = base.GUID.ToString();
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte Type {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string UserName
+        {
+            get
+            {
+                return this.UserName;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte Status {get;set;}
+            set
+            {
+                this.UserName = base.UserName;
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Name {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string Password
+        {
+            get
+            {
+                return this.Password;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Mail {get;set;}
+            set
+            {
+                this.Password = base.Password;
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Mobile {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Type
+        {
+            get
+            {
+                return this.Type;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte Deleted {get;set;}
+            set
+            {
+                this.Type = base.Type;
+            }
+        }
 
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Status
+        {
+            get
+            {
+                return this.Status;
+            }
+
+            set
+            {
+                this.Status = base.Status;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Name
+        {
+            get
+            {
+                return this.Name;
+            }
+
+            set
+            {
+                this.Name = base.Name;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Mail
+        {
+            get
+            {
+                return this.Mail;
+            }
+
+            set
+            {
+                this.Mail = base.Mail;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Mobile
+        {
+            get
+            {
+                return this.Mobile;
+            }
+
+            set
+            {
+                this.Mobile = base.Mobile;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Deleted
+        {
+            get
+            {
+                return this.Deleted;
+            }
+
+            set
+            {
+                this.Deleted = Convert.ToByte(base.Deleted);
+            }
+        }
     }
 }

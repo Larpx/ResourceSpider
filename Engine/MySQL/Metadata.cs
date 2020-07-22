@@ -5,12 +5,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///<summary>
     ///
     ///</summary>
-    public partial class metadata : BaseModel.MetaData
+    public class metadata : BaseModel.MetaData
     {
         public metadata()
         {
-
-            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            
+            this.Date = DateTime.Now;
             this.Type = Convert.ToByte("0");
             this.Deleted = Convert.ToByte("0");
 

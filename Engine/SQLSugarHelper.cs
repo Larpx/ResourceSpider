@@ -424,7 +424,7 @@ namespace Larpx.ResourceSpider.Engine
         public SimpleClient<MySQL.setting> SettingDb { get { return new SimpleClient<MySQL.setting>(Db); } }//用来处理Setting表的常用操作
         public SimpleClient<MySQL.manager> ManagerDb { get { return new SimpleClient<MySQL.manager>(Db); } }//用来处理Manager表的常用操作
         public SimpleClient<MySQL.systemlog> SystemLogDb { get { return new SimpleClient<MySQL.systemlog>(Db); } }//用来处理SystemLog表的常用操作
-        public SimpleClient<MySQL.Website> WebsiteDb { get { return new SimpleClient<MySQL.Website>(Db); } }//用来处理Website表的常用操作
+        public SimpleClient<MySQL.website> WebsiteDb { get { return new SimpleClient<MySQL.website>(Db); } }//用来处理Website表的常用操作
         public SimpleClient<MySQL.category> CategoryDb { get { return new SimpleClient<MySQL.category>(Db); } }//用来处理Category表的常用操作
         public SimpleClient<MySQL.link> LinkDb { get { return new SimpleClient<MySQL.link>(Db); } }//用来处理Link表的常用操作
         public SimpleClient<MySQL.propertykey> PropertyKeyDb { get { return new SimpleClient<MySQL.propertykey>(Db); } }//用来处理PropertyKey表的常用操作

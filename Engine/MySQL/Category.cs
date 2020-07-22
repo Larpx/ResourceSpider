@@ -9,11 +9,11 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     {
         public category()
         {
-            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.Date = DateTime.Now;
             this.Status = Convert.ToByte("0");
             this.Priority = Convert.ToByte("0");
             this.Processed = Convert.ToByte("0");
-            this.UpdateTime = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.UpdateTime = DateTime.Now;
             this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = Convert.ToByte("0");
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
@@ -13,7 +11,7 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
 
             this.Deleted = Convert.ToByte("0");
-            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.Date = DateTime.Now;
 
         }
 
@@ -40,35 +38,90 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string LinkGUID { get; set; }
+        public new string LinkGUID
+        {
+            get
+            {
+                return this.LinkGUID;
+            }
+
+            set
+            {
+                this.LinkGUID = base.LinkGUID.ToString();
+            }
+        }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string PropertyKeyGUID { get; set; }
+        public new string PropertyKeyGUID
+        {
+            get
+            {
+                return this.PropertyKeyGUID;
+            }
+
+            set
+            {
+                this.PropertyKeyGUID = base.PropertyKeyGUID.ToString();
+            }
+        }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string KeyText { get; set; }
+        public new string KeyText
+        {
+            get
+            {
+                return this.KeyText;
+            }
+
+            set
+            {
+                this.KeyText = base.KeyText;
+            }
+        }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string PropertyValueGUID { get; set; }
+        public new string PropertyValueGUID
+        {
+            get
+            {
+                return this.PropertyValueGUID;
+            }
+
+            set
+            {
+                this.PropertyValueGUID = base.PropertyValueGUID.ToString();
+            }
+        }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string ValueText { get; set; }
+        public new string ValueText
+        {
+            get
+            {
+                return this.ValueText;
+            }
+
+            set
+            {
+                this.ValueText = base.ValueText;
+            }
+        }
 
         /// <summary>
         /// Desc:

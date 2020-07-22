@@ -5,16 +5,16 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///<summary>
     ///
     ///</summary>
-    public partial class Website : BaseModel.Website
+    public class website : BaseModel.Website
     {
-        public Website()
+        public website()
         {
 
-            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.Date = DateTime.Now;
             this.Status = Convert.ToByte("0");
             this.Priority = Convert.ToByte("0");
             this.Processed = Convert.ToByte("0");
-            this.UpdateTime = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.UpdateTime = DateTime.Now;
             this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = Convert.ToByte("0");
             this.IsCookies = Convert.ToByte("0");

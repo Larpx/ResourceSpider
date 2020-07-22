@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
@@ -12,10 +10,10 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         public link()
         {
 
-            this.Date = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.Date = DateTime.Now;
             this.Type = Convert.ToByte("0");
             this.Processed = Convert.ToByte("0");
-            this.UpdateTime = Convert.ToDateTime("CURRENT_TIMESTAMP");
+            this.UpdateTime = DateTime.Now;
             this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = Convert.ToByte("0");
 

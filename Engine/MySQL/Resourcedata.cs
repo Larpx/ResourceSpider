@@ -1,149 +1,346 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 
 namespace Larpx.ResourceSpider.Engine.MySQL
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class resourcedata
+    public class resourcedata : BaseModel.ResourceData
     {
-           public resourcedata(){
+        public resourcedata()
+        {
 
-            this.Date =Convert.ToDateTime("CURRENT_TIMESTAMP");
-            this.ResourceType =Convert.ToByte("0");
-            this.Status =Convert.ToByte("0");
-            this.Size =Convert.ToInt64("0");
-            this.Processed =Convert.ToByte("0");
-            this.Deleted =Convert.ToByte("0");
+            this.Date = DateTime.Now;
+            this.ResourceType = Convert.ToByte("0");
+            this.Status = Convert.ToByte("0");
+            this.Size = Convert.ToInt64("0");
+            this.Processed = Convert.ToByte("0");
+            this.Deleted = Convert.ToByte("0");
 
-           }
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string GUID {get;set;}
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string WebsiteGUID {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string GUID
+        {
+            get
+            {
+                return this.GUID;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string ObjectGUID {get;set;}
+            set
+            {
+                this.GUID = base.GUID.ToString();
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:CURRENT_TIMESTAMP
-           /// Nullable:False
-           /// </summary>           
-           public DateTime Date {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string WebsiteGUID
+        {
+            get
+            {
+                return this.WebsiteGUID;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string URL {get;set;}
+            set
+            {
+                this.WebsiteGUID = base.WebsiteGUID.ToString();
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string Original {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string ObjectGUID
+        {
+            get
+            {
+                return this.ObjectGUID;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string Name {get;set;}
+            set
+            {
+                this.ObjectGUID = base.ObjectGUID.ToString();
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public string File {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public new DateTime Date
+        {
+            get
+            {
+                return this.Date;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public byte URLType {get;set;}
+            set
+            {
+                this.Date = base.Date;
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte ResourceType {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string URL
+        {
+            get
+            {
+                return this.URL;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte Status {get;set;}
+            set
+            {
+                this.URL = base.URL;
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Password {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string Original
+        {
+            get
+            {
+                return this.Original;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:True
-           /// </summary>           
-           public long? Size {get;set;}
+            set
+            {
+                this.Original = base.Original;
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Md5 {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string Name
+        {
+            get
+            {
+                return this.Name;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Hash {get;set;}
+            set
+            {
+                this.Name = base.Name;
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte Processed {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new string File
+        {
+            get
+            {
+                return this.File;
+            }
 
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
-           public string Memo {get;set;}
+            set
+            {
+                this.File = base.File;
+            }
+        }
 
-           /// <summary>
-           /// Desc:
-           /// Default:0
-           /// Nullable:False
-           /// </summary>           
-           public byte Deleted {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public new byte URLType
+        {
+            get
+            {
+                return this.URLType;
+            }
 
+            set
+            {
+                this.URLType = base.URLType;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte ResourceType
+        {
+            get
+            {
+                return this.ResourceType;
+            }
+
+            set
+            {
+                this.ResourceType = base.ResourceType;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Status
+        {
+            get
+            {
+                return this.Status;
+            }
+
+            set
+            {
+                this.Status = base.Status;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Password
+        {
+            get
+            {
+                return this.Password;
+            }
+
+            set
+            {
+                this.Password = base.Password;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:True
+        /// </summary>           
+        public new long? Size
+        {
+            get
+            {
+                return this.Size;
+            }
+
+            set
+            {
+                this.Size = base.Size;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Md5
+        {
+            get
+            {
+                return this.Md5;
+            }
+
+            set
+            {
+                this.Md5 = base.Md5;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Hash
+        {
+            get
+            {
+                return this.Hash;
+            }
+
+            set
+            {
+                this.Hash = base.Hash;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Processed
+        {
+            get
+            {
+                return this.Processed;
+            }
+
+            set
+            {
+                this.Processed = base.Processed;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public new string Memo
+        {
+            get
+            {
+                return this.Memo;
+            }
+
+            set
+            {
+                this.Memo = base.Memo;
+            }
+        }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public new byte Deleted
+        {
+            get
+            {
+                return this.Deleted;
+            }
+
+            set
+            {
+                this.Deleted = Convert.ToByte(base.Deleted);
+            }
+        }
     }
 }
