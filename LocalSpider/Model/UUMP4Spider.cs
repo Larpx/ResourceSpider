@@ -38,12 +38,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                arr = new Dictionary<string, object>();
-                arr.Add("ID", sWebSiteID);
-
-                base.DoExce(arr);
-
-                return 1;
+                return base.DoExce(arr);
             }
             catch (Exception ex)
             {
@@ -65,7 +60,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 website.Status = 1;
                 website.Deleted = false;
                 website.IsCookies = true;
-                website.ID = CommonHelper.MD5.GetBufferHash(website.URL + "1").ToLower();
+                website.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
 
                 //查重
                 if (!oWebsites.IsAny(it => it.ID == website.ID))
@@ -560,16 +555,20 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     //标签
                                     var oPropertyVal = oSQLSugarHelper.PropertyValueDb.GetSingle(it => it.Name == itemA.InnerText().Trim().TrimStart('[').TrimEnd(']')
                                       && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID);
-                                    var oPropertyKey = oSQLSugarHelper.PropertyKeyDb.GetById(oPropertyVal.KeyGUID);
 
-                                    PropertyDetail propertyDetail = new PropertyDetail();
-                                    propertyDetail.CategoryGUID = oCategory.GUID;
-                                    propertyDetail.WebsiteGUID = oWebs.GUID;
-                                    propertyDetail.KeyText = oPropertyKey.Name;
-                                    propertyDetail.PropertyKeyGUID = oPropertyKey.GUID;
-                                    propertyDetail.ValueText = oPropertyVal.Name;
-                                    propertyDetail.PropertyValueGUID = oPropertyVal.GUID;
-                                    propertyDetails.Add(propertyDetail);
+                                    if (oPropertyVal != null)
+                                    {
+                                        var oPropertyKey = oSQLSugarHelper.PropertyKeyDb.GetById(oPropertyVal.KeyGUID);
+
+                                        PropertyDetail propertyDetail = new PropertyDetail();
+                                        propertyDetail.CategoryGUID = oCategory.GUID;
+                                        propertyDetail.WebsiteGUID = oWebs.GUID;
+                                        propertyDetail.KeyText = oPropertyKey.Name;
+                                        propertyDetail.PropertyKeyGUID = oPropertyKey.GUID;
+                                        propertyDetail.ValueText = oPropertyVal.Name;
+                                        propertyDetail.PropertyValueGUID = oPropertyVal.GUID;
+                                        propertyDetails.Add(propertyDetail);
+                                    }
                                 }
                                 else
                                 {

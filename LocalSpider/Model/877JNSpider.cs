@@ -17,9 +17,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
     {
         private string sWebSiteID = "d9e5780840f6766c7fcbac7cab9538f2";
 
-        private DatabaseType DatabaseType = DatabaseType.MySql;
-
-        public _877JNSpider(bool debug = true, string LoggerPath = null, Logger Logger = null) : base(debug, LoggerPath, Logger)
+        public _877JNSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
+            base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
         {
             //http://www.877jn.com
         }
@@ -58,9 +57,9 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                SQLSugarHelper<Engine.BaseModel.Website> oWebsites = new SQLSugarHelper<Engine.BaseModel.Website>(DatabaseType, Debug);
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
 
-                Engine.BaseModel.Website website = new Engine.BaseModel.Website();
+                Website website = new Website();
                 website.Name = "877jn";
                 website.URL = "http://www.877jn.com";
                 website.Status = 1;
@@ -89,11 +88,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="sID"></param>
         /// <returns></returns>
-        public override List<Engine.BaseModel.Website> GetWebsiteList(string sID)
+        public override List<Website> GetWebsiteList(string sID)
         {
             try
             {
-                SQLServerSQLSugarHelper<Engine.BaseModel.Website> oWebsites = new SQLServerSQLSugarHelper<Engine.BaseModel.Website>(DatabaseType, Debug);
+                SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
                 return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
             }
             catch (Exception ex)
@@ -106,7 +105,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// 获取网站分类列表
         /// </summary>
         /// <returns></returns>
-        public override List<Engine.BaseModel.Category> GetCategoryList(Engine.BaseModel.Website oWebsite)
+        public override List<Category> GetCategoryList(Website oWebsite)
         {
             try
             {
@@ -116,7 +115,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sHTML = "";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
-                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 if (!oWebsite.URL.StartsWith("http"))
@@ -190,7 +189,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                         || string.IsNullOrEmpty(item.Attribute("href").AttributeValue))
                                         continue;
 
-                                    Engine.BaseModel.Category oCategory = new Engine.BaseModel.Category();
+                                    Category oCategory = new Category();
                                     oCategory.WebsiteGUID = oWebsite.GUID;
                                     oCategory.Status = 1;
                                     oCategory.Name = item.InnerText();
@@ -221,7 +220,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 var oCategoryEnmuar = oPageDocument.Find(sMetaData);
                                 foreach (var item in oCategoryEnmuar)
                                 {
-                                    Engine.BaseModel.MetaData metaData = new Engine.BaseModel.MetaData();
+                                    MetaData metaData = new MetaData();
 
                                     metaData.WebsiteGUID = oWebsite.GUID;
 
@@ -318,7 +317,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// 采集目标Link
         /// </summary>
         /// <returns></returns>
-        public override List<Engine.BaseModel.Link> GetLinkList(Engine.BaseModel.Category oCategory)
+        public override List<Link> GetLinkList(Category oCategory)
         {
             try
             {
@@ -332,7 +331,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
                 List<Link> oListLink = new List<Link>();
-                SQLServerSQLSugarHelper oSQLSugarHelper = new SQLServerSQLSugarHelper(DatabaseType, Debug);
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
 
                 //整理分类不规范页面地址
                 var oWebs = oSQLSugarHelper.WebsiteDb.GetById(oCategory.WebsiteGUID);
@@ -422,7 +421,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         var oCategoryEnmuar = oPageDocument.Find(".box.list.channel ul li a");
                         foreach (var item in oCategoryEnmuar)
                         {
-                            Engine.BaseModel.Link oLink = new Engine.BaseModel.Link();
+                            Link oLink = new Link();
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
@@ -453,7 +452,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             else
                                 continue;
 
-                            Engine.BaseModel.Link oLink = new Engine.BaseModel.Link();
+                            Link oLink = new Link();
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
@@ -507,7 +506,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// 采集链接详情
         /// </summary>
         /// <param name="oResult"></param>
-        public override void GetLinkDetail(Engine.BaseModel.Link oResult)
+        public override void GetLinkDetail(Link oResult)
         {
             try
             {
