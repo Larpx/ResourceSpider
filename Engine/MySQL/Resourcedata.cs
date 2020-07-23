@@ -7,15 +7,34 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///</summary>
     public class resourcedata : BaseModel.ResourceData
     {
+        private byte _Deleted;
+        private string _Memo;
+        private byte _Processed;
+        private string _Hash;
+        private string _Md5;
+        private long? _Size;
+        private string _Password;
+        private byte _Status;
+        private byte _ResourceType;
+        private byte _URLType;
+        private string _File;
+        private string _Name;
+        private string _Original;
+        private string _URL;
+        private DateTime _Date;
+        private string _ObjectGUID;
+        private string _WebsiteGUID;
+        private string _GUID;
+
         public resourcedata()
         {
 
-            this.Date = DateTime.Now;
-            this.ResourceType = Convert.ToByte("0");
-            this.Status = Convert.ToByte("0");
-            this.Size = Convert.ToInt64("0");
-            this.Processed = Convert.ToByte("0");
-            this.Deleted = Convert.ToByte("0");
+            this._Date = DateTime.Now;
+            this._ResourceType = Convert.ToByte("0");
+            this._Status = Convert.ToByte("0");
+            this._Size = Convert.ToInt64("0");
+            this._Processed = Convert.ToByte("0");
+            this._Deleted = Convert.ToByte("0");
 
         }
 
@@ -28,12 +47,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.GUID;
+                return this._GUID;
             }
 
             set
             {
-                this.GUID = base.GUID.ToString();
+                this._GUID = base.GUID.ToString();
             }
         }
 
@@ -46,12 +65,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.WebsiteGUID;
+                return this._WebsiteGUID;
             }
 
             set
             {
-                this.WebsiteGUID = base.WebsiteGUID.ToString();
+                this._WebsiteGUID = base.WebsiteGUID.ToString();
             }
         }
 
@@ -64,12 +83,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.ObjectGUID;
+                return this._ObjectGUID;
             }
 
             set
             {
-                this.ObjectGUID = base.ObjectGUID.ToString();
+                this._ObjectGUID = base.ObjectGUID.ToString();
             }
         }
 
@@ -82,12 +101,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Date;
+                return this._Date;
             }
 
             set
             {
-                this.Date = base.Date;
+                this._Date = base.Date;
             }
         }
 
@@ -100,12 +119,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.URL;
+                return this._URL;
             }
 
             set
             {
-                this.URL = base.URL;
+                this._URL = base.URL;
             }
         }
 
@@ -118,12 +137,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Original;
+                return this._Original;
             }
 
             set
             {
-                this.Original = base.Original;
+                this._Original = base.Original;
             }
         }
 
@@ -136,12 +155,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Name;
+                return this._Name;
             }
 
             set
             {
-                this.Name = base.Name;
+                this._Name = base.Name;
             }
         }
 
@@ -154,12 +173,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.File;
+                return this._File;
             }
 
             set
             {
-                this.File = base.File;
+                this._File = base.File;
             }
         }
 
@@ -172,12 +191,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.URLType;
+                return this._URLType;
             }
 
             set
             {
-                this.URLType = base.URLType;
+                this._URLType = base.URLType;
             }
         }
 
@@ -190,12 +209,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.ResourceType;
+                return this._ResourceType;
             }
 
             set
             {
-                this.ResourceType = base.ResourceType;
+                this._ResourceType = base.ResourceType;
             }
         }
 
@@ -208,12 +227,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Status;
+                return this._Status;
             }
 
             set
             {
-                this.Status = base.Status;
+                this._Status = base.Status;
             }
         }
 
@@ -226,12 +245,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Password;
+                return this._Password;
             }
 
             set
             {
-                this.Password = base.Password;
+                this._Password = base.Password;
             }
         }
 
@@ -244,12 +263,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Size;
+                return this._Size;
             }
 
             set
             {
-                this.Size = base.Size;
+                this._Size = base.Size;
             }
         }
 
@@ -262,12 +281,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Md5;
+                return this._Md5;
             }
 
             set
             {
-                this.Md5 = base.Md5;
+                this._Md5 = base.Md5;
             }
         }
 
@@ -280,12 +299,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Hash;
+                return this._Hash;
             }
 
             set
             {
-                this.Hash = base.Hash;
+                this._Hash = base.Hash;
             }
         }
 
@@ -298,12 +317,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Processed;
+                return this._Processed;
             }
 
             set
             {
-                this.Processed = base.Processed;
+                this._Processed = base.Processed;
             }
         }
 
@@ -316,12 +335,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Memo;
+                return this._Memo;
             }
 
             set
             {
-                this.Memo = base.Memo;
+                this._Memo = base.Memo;
             }
         }
 
@@ -334,12 +353,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Deleted;
+                return this._Deleted;
             }
 
             set
             {
-                this.Deleted = Convert.ToByte(base.Deleted);
+                this._Deleted = Convert.ToByte(base.Deleted);
             }
         }
     }

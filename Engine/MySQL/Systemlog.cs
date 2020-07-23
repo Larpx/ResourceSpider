@@ -7,12 +7,22 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///</summary>
     public class systemlog : BaseModel.SystemLog
     {
+        private string _GUID;
+        private string _ManagerGUID;
+        private long _IP;
+        private DateTime _Date;
+        private string _Message;
+        private string _Module;
+        private string _Action;
+        private string _Result;
+        private byte _Deleted;
+
         public systemlog()
         {
 
-            this.IP = Convert.ToInt64("0");
-            this.Date = DateTime.Now;
-            this.Deleted = Convert.ToByte("0");
+            this._IP = Convert.ToInt64("0");
+            this._Date = DateTime.Now;
+            this._Deleted = Convert.ToByte("0");
 
         }
 
@@ -25,12 +35,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.GUID;
+                return this._GUID;
             }
 
             set
             {
-                this.GUID = base.GUID.ToString();
+                this._GUID = base.GUID.ToString();
             }
         }
 
@@ -43,12 +53,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.ManagerGUID;
+                return this._ManagerGUID;
             }
 
             set
             {
-                this.ManagerGUID = base.ManagerGUID.ToString();
+                this._ManagerGUID = base.ManagerGUID.ToString();
             }
         }
 
@@ -61,12 +71,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.IP;
+                return this._IP;
             }
 
             set
             {
-                this.IP = base.IP;
+                this._IP = base.IP;
             }
         }
 
@@ -79,12 +89,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Date;
+                return this._Date;
             }
 
             set
             {
-                this.Date = base.Date;
+                this._Date = base.Date;
             }
         }
 
@@ -97,12 +107,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Message;
+                return this._Message;
             }
 
             set
             {
-                this.Message = base.Message;
+                this._Message = base.Message;
             }
         }
 
@@ -115,12 +125,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Module;
+                return this._Module;
             }
 
             set
             {
-                this.Module = base.Module;
+                this._Module = base.Module;
             }
         }
 
@@ -133,12 +143,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Action;
+                return this._Action;
             }
 
             set
             {
-                this.Action = base.Action;
+                this._Action = base.Action;
             }
         }
 
@@ -151,12 +161,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Result;
+                return this._Result;
             }
 
             set
             {
-                this.Result = base.Result;
+                this._Result = base.Result;
             }
         }
 
@@ -169,12 +179,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Deleted;
+                return this._Deleted;
             }
 
             set
             {
-                this.Deleted = Convert.ToByte(base.Deleted);
+                this._Deleted = Convert.ToByte(base.Deleted);
             }
         }
     }

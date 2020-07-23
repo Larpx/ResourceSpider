@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                var website = new Engine.BaseModel.Website();
+                Engine.BaseModel.Website website = new Engine.MySQL.website();
                 website.Name = "悠悠MP4-MP4电影下载-uump4-久久MP4-99mp4-悠悠鸟影视论坛-电影天堂";
                 website.NameChs = website.Name;
                 website.URL = "https://www.uump4.net";

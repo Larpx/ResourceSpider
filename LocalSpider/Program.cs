@@ -30,7 +30,7 @@ namespace Larpx.ResourceSpider.LocalSpider
                     sUU = "fe1213ba1c94e4a42b72bda9840af83c";
                 //string s= GenerateRandomNumber();
                 //Console.WriteLine(s);
-                UUMP4Spider uUMP4Spider = new UUMP4Spider(true);
+                UUMP4Spider uUMP4Spider = new UUMP4Spider(Guid.Empty, DatabaseType.MySql, sUU, true);
                 oArr.Add("ID", sUU);
                 oArr.Add("DatabaseType", DatabaseType.MySql);
                 uUMP4Spider.DoExce(oArr);

@@ -7,12 +7,22 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///</summary>
     public class manager : BaseModel.Manager
     {
+        private string _GUID;
+        private string _UserName;
+        private string _Password;
+        private byte _Type;
+        private byte _Status;
+        private string _Name;
+        private string _Mail;
+        private string _Mobile;
+        private byte _Deleted;
+
         public manager()
         {
 
-            this.Type = Convert.ToByte("0");
-            this.Status = Convert.ToByte("0");
-            this.Deleted = Convert.ToByte("0");
+            this._Type = Convert.ToByte("0");
+            this._Status = Convert.ToByte("0");
+            this._Deleted = Convert.ToByte("0");
 
         }
 
@@ -25,12 +35,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.GUID;
+                return this._GUID;
             }
 
             set
             {
-                this.GUID = base.GUID.ToString();
+                this._GUID = base.GUID.ToString();
             }
         }
 
@@ -43,12 +53,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.UserName;
+                return this._UserName;
             }
 
             set
             {
-                this.UserName = base.UserName;
+                this._UserName = base.UserName;
             }
         }
 
@@ -61,12 +71,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Password;
+                return this._Password;
             }
 
             set
             {
-                this.Password = base.Password;
+                this._Password = base.Password;
             }
         }
 
@@ -79,12 +89,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Type;
+                return this._Type;
             }
 
             set
             {
-                this.Type = base.Type;
+                this._Type = base.Type;
             }
         }
 
@@ -97,12 +107,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Status;
+                return this._Status;
             }
 
             set
             {
-                this.Status = base.Status;
+                this._Status = base.Status;
             }
         }
 
@@ -115,12 +125,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Name;
+                return this._Name;
             }
 
             set
             {
-                this.Name = base.Name;
+                this._Name = base.Name;
             }
         }
 
@@ -133,12 +143,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Mail;
+                return this._Mail;
             }
 
             set
             {
-                this.Mail = base.Mail;
+                this._Mail = base.Mail;
             }
         }
 
@@ -151,12 +161,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Mobile;
+                return this._Mobile;
             }
 
             set
             {
-                this.Mobile = base.Mobile;
+                this._Mobile = base.Mobile;
             }
         }
 
@@ -169,12 +179,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Deleted;
+                return this._Deleted;
             }
 
             set
             {
-                this.Deleted = Convert.ToByte(base.Deleted);
+                this._Deleted = Convert.ToByte(base.Deleted);
             }
         }
     }

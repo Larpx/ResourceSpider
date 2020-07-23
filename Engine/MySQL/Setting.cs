@@ -7,10 +7,15 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///</summary>
     public class setting : BaseModel.Setting
     {
+        private string _GUID;
+        private byte _Deleted;
+        private string _Value;
+        private string _Key;
+
         public setting()
         {
 
-            this.Deleted = Convert.ToByte("0");
+            this._Deleted = Convert.ToByte("0");
 
         }
 
@@ -23,12 +28,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.GUID;
+                return this._GUID;
             }
 
             set
             {
-                this.GUID = base.GUID.ToString();
+                this._GUID = base.GUID.ToString();
             }
         }
 
@@ -41,12 +46,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Key;
+                return this._Key;
             }
 
             set
             {
-                this.Key = base.Key;
+                this._Key = base.Key;
             }
         }
 
@@ -59,12 +64,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Value;
+                return this._Value;
             }
 
             set
             {
-                this.Value = base.Value;
+                this._Value = base.Value;
             }
         }
 
@@ -77,12 +82,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Deleted;
+                return this._Deleted;
             }
 
             set
             {
-                this.Deleted = Convert.ToByte(base.Deleted);
+                this._Deleted = Convert.ToByte(base.Deleted);
             }
         }
     }

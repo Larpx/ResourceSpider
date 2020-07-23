@@ -7,11 +7,22 @@ namespace Larpx.ResourceSpider.Engine.MySQL
     ///</summary>
     public class propertydetail : BaseModel.PropertyDetail
     {
+        private string _GUID;
+        private string _LinkGUID;
+        private string _PropertyKeyGUID;
+        private string _KeyText;
+        private string _PropertyValueGUID;
+        private string _ValueText;
+        private byte _Deleted;
+        private string _WebsiteGUID;
+        private string _CategoryGUID;
+        private DateTime _Date;
+
         public propertydetail()
         {
 
-            this.Deleted = Convert.ToByte("0");
-            this.Date = DateTime.Now;
+            this._Deleted = Convert.ToByte("0");
+            this._Date = DateTime.Now;
 
         }
 
@@ -24,12 +35,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.GUID;
+                return this._GUID;
             }
 
             set
             {
-                this.GUID = base.GUID.ToString();
+                this._GUID = base.GUID.ToString();
             }
         }
 
@@ -42,12 +53,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.LinkGUID;
+                return this._LinkGUID;
             }
 
             set
             {
-                this.LinkGUID = base.LinkGUID.ToString();
+                this._LinkGUID = base.LinkGUID.ToString();
             }
         }
 
@@ -60,12 +71,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.PropertyKeyGUID;
+                return this._PropertyKeyGUID;
             }
 
             set
             {
-                this.PropertyKeyGUID = base.PropertyKeyGUID.ToString();
+                this._PropertyKeyGUID = base.PropertyKeyGUID.ToString();
             }
         }
 
@@ -78,12 +89,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.KeyText;
+                return this._KeyText;
             }
 
             set
             {
-                this.KeyText = base.KeyText;
+                this._KeyText = base.KeyText;
             }
         }
 
@@ -96,12 +107,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.PropertyValueGUID;
+                return this._PropertyValueGUID;
             }
 
             set
             {
-                this.PropertyValueGUID = base.PropertyValueGUID.ToString();
+                this._PropertyValueGUID = base.PropertyValueGUID.ToString();
             }
         }
 
@@ -114,12 +125,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.ValueText;
+                return this._ValueText;
             }
 
             set
             {
-                this.ValueText = base.ValueText;
+                this._ValueText = base.ValueText;
             }
         }
 
@@ -132,12 +143,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Deleted;
+                return this._Deleted;
             }
 
             set
             {
-                this.Deleted = Convert.ToByte(base.Deleted);
+                this._Deleted = Convert.ToByte(base.Deleted);
             }
         }
 
@@ -150,12 +161,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.WebsiteGUID;
+                return this._WebsiteGUID;
             }
 
             set
             {
-                this.WebsiteGUID = base.WebsiteGUID.ToString();
+                this._WebsiteGUID = base.WebsiteGUID.ToString();
             }
         }
 
@@ -168,12 +179,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.CategoryGUID;
+                return this._CategoryGUID;
             }
 
             set
             {
-                this.CategoryGUID = base.CategoryGUID.ToString();
+                this._CategoryGUID = base.CategoryGUID.ToString();
             }
         }
 
@@ -186,12 +197,12 @@ namespace Larpx.ResourceSpider.Engine.MySQL
         {
             get
             {
-                return this.Date;
+                return this._Date;
             }
 
             set
             {
-                this.Date = base.Date;
+                this._Date = base.Date;
             }
         }
     }
