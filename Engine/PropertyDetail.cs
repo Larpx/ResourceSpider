@@ -1,32 +1,34 @@
-﻿using SqlSugar;
-using System;
+﻿using System;
+using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine.BaseModel
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class MetaData
+    public partial class PropertyDetail
     {
-        public MetaData()
+        public PropertyDetail()
         {
+
             this.GUID = Guid.NewGuid();
-            this.Date = DateTime.Now;
-            this.Type = Convert.ToByte("0");
             this.Deleted = false;
+            this.Date = DateTime.Now;
+
         }
+
 
         /// <summary>
         /// Desc:
         /// Default:newid()
         /// Nullable:False
         /// </summary>       
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public Guid GUID { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:DateTime.Now
+        /// Default:
         /// Nullable:False
         /// </summary>           
         public Guid WebsiteGUID { get; set; }
@@ -34,16 +36,9 @@ namespace Larpx.ResourceSpider.Engine.BaseModel
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:False
+        /// Nullable:True
         /// </summary>           
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Content { get; set; }
+        public Guid? CategoryGUID { get; set; }
 
         /// <summary>
         /// Desc:
@@ -54,10 +49,38 @@ namespace Larpx.ResourceSpider.Engine.BaseModel
 
         /// <summary>
         /// Desc:
-        /// Default:0
+        /// Default:
         /// Nullable:False
         /// </summary>           
-        public byte Type { get; set; }
+        public Guid LinkGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public Guid PropertyKeyGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string KeyText { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public Guid? PropertyValueGUID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string ValueText { get; set; }
 
         /// <summary>
         /// Desc:

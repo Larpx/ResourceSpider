@@ -1,22 +1,22 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine.SQLServer
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Category : BaseModel.Category
+    public partial class ResourceData
     {
-        public Category()
+        public ResourceData()
         {
+
             this.GUID = Guid.NewGuid();
             this.Date = DateTime.Now;
+            this.ResourceType = Convert.ToByte("0");
             this.Status = Convert.ToByte("0");
-            this.Priority = Convert.ToByte("0");
+            this.Size = Convert.ToInt64("0");
             this.Processed = Convert.ToByte("0");
-            this.UpdateTime = DateTime.Now;
-            this.UpdateTimes = Convert.ToInt32("0");
             this.Deleted = false;
 
         }
@@ -26,7 +26,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// Default:newid()
         /// Nullable:False
         /// </summary>       
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public Guid GUID { get; set; }
 
         /// <summary>
@@ -41,21 +41,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string NameChs { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string URL { get; set; }
+        public Guid ObjectGUID { get; set; }
 
         /// <summary>
         /// Desc:
@@ -66,6 +52,48 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
 
         /// <summary>
         /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string URL { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Original { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string File { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public byte URLType { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public byte ResourceType { get; set; }
+
+        /// <summary>
+        /// Desc:
         /// Default:0
         /// Nullable:False
         /// </summary>           
@@ -73,10 +101,31 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
 
         /// <summary>
         /// Desc:
-        /// Default:0
-        /// Nullable:False
+        /// Default:
+        /// Nullable:True
         /// </summary>           
-        public byte Priority { get; set; }
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:0
+        /// Nullable:True
+        /// </summary>           
+        public long? Size { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Md5 { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public string Hash { get; set; }
 
         /// <summary>
         /// Desc:
@@ -87,17 +136,10 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
 
         /// <summary>
         /// Desc:
-        /// Default:DateTime.Now
-        /// Nullable:False
+        /// Default:
+        /// Nullable:True
         /// </summary>           
-        public DateTime UpdateTime { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:0
-        /// Nullable:False
-        /// </summary>           
-        public int UpdateTimes { get; set; }
+        public string Memo { get; set; }
 
         /// <summary>
         /// Desc:

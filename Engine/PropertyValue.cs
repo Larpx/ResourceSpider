@@ -1,20 +1,20 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine.SQLServer
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class Resource:BaseModel.Resource
+    public partial class PropertyValue
     {
-        public Resource()
+        public PropertyValue()
         {
 
             this.GUID = Guid.NewGuid();
-            this.Date = DateTime.Now;
             this.Type = Convert.ToByte("0");
             this.Deleted = false;
+            this.Date = DateTime.Now;
 
         }
 
@@ -23,7 +23,7 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// Default:newid()
         /// Nullable:False
         /// </summary>       
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public Guid GUID { get; set; }
 
         /// <summary>
@@ -36,23 +36,9 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public Guid PageGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
         /// Nullable:True
         /// </summary>           
-        public string URL { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Original { get; set; }
+        public Guid? CategoryGUID { get; set; }
 
         /// <summary>
         /// Desc:
@@ -60,6 +46,13 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// Nullable:False
         /// </summary>           
         public DateTime Date { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public Guid KeyGUID { get; set; }
 
         /// <summary>
         /// Desc:
@@ -73,21 +66,14 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string Path { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string FileName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Hash { get; set; }
+        public string NameChs { get; set; }
 
         /// <summary>
         /// Desc:

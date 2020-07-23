@@ -1,21 +1,19 @@
-﻿using System;
-using SqlSugar;
+﻿using SqlSugar;
+using System;
 
-namespace Larpx.ResourceSpider.Engine.BaseModel
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class PropertyKey
+    public partial class MetaData
     {
-        public PropertyKey()
+        public MetaData()
         {
-
             this.GUID = Guid.NewGuid();
+            this.Date = DateTime.Now;
             this.Type = Convert.ToByte("0");
             this.Deleted = false;
-            this.Date = DateTime.Now;
-
         }
 
         /// <summary>
@@ -23,12 +21,12 @@ namespace Larpx.ResourceSpider.Engine.BaseModel
         /// Default:newid()
         /// Nullable:False
         /// </summary>       
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public Guid GUID { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:
+        /// Default:DateTime.Now
         /// Nullable:False
         /// </summary>           
         public Guid WebsiteGUID { get; set; }
@@ -36,9 +34,16 @@ namespace Larpx.ResourceSpider.Engine.BaseModel
         /// <summary>
         /// Desc:
         /// Default:
-        /// Nullable:True
+        /// Nullable:False
         /// </summary>           
-        public Guid? CategoryGUID { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Content { get; set; }
 
         /// <summary>
         /// Desc:
@@ -53,20 +58,6 @@ namespace Larpx.ResourceSpider.Engine.BaseModel
         /// Nullable:False
         /// </summary>           
         public byte Type { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string NameChs { get; set; }
 
         /// <summary>
         /// Desc:

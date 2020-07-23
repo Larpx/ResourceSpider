@@ -1,6 +1,5 @@
-﻿using Larpx.ResourceSpider.Engine.BaseModel;
+﻿using Larpx.ResourceSpider.Engine;
 using System.Collections.Generic;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {

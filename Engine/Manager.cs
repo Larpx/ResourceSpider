@@ -1,19 +1,19 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine.BaseModel
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class SystemLog
+    public partial class Manager
     {
-        public SystemLog()
+        public Manager()
         {
 
             this.GUID = Guid.NewGuid();
-            this.IP = Convert.ToInt64("0");
-            this.Date = DateTime.Now;
+            this.Type = Convert.ToByte("0");
+            this.Status = Convert.ToByte("0");
             this.Deleted = false;
 
         }
@@ -24,7 +24,7 @@ namespace Larpx.ResourceSpider.Engine.BaseModel
         /// Default:newid()
         /// Nullable:False
         /// </summary>       
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public Guid GUID { get; set; }
 
         /// <summary>
@@ -32,49 +32,49 @@ namespace Larpx.ResourceSpider.Engine.BaseModel
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid ManagerGUID { get; set; }
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Password { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:0
         /// Nullable:False
         /// </summary>           
-        public long IP { get; set; }
+        public byte Type { get; set; }
 
         /// <summary>
         /// Desc:
-        /// Default:DateTime.Now
+        /// Default:0
         /// Nullable:False
         /// </summary>           
-        public DateTime Date { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public string Message { get; set; }
+        public byte Status { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Module { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Action { get; set; }
+        public string Mail { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string Result { get; set; }
+        public string Mobile { get; set; }
 
         /// <summary>
         /// Desc:

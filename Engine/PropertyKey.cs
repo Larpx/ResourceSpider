@@ -1,29 +1,29 @@
 ﻿using System;
 using SqlSugar;
 
-namespace Larpx.ResourceSpider.Engine.SQLServer
+namespace Larpx.ResourceSpider.Engine
 {
     ///<summary>
     ///
     ///</summary>
-    public partial class PropertyDetail:BaseModel.PropertyDetail
+    public partial class PropertyKey
     {
-        public PropertyDetail()
+        public PropertyKey()
         {
 
             this.GUID = Guid.NewGuid();
+            this.Type = Convert.ToByte("0");
             this.Deleted = false;
             this.Date = DateTime.Now;
 
         }
-
 
         /// <summary>
         /// Desc:
         /// Default:newid()
         /// Nullable:False
         /// </summary>       
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public Guid GUID { get; set; }
 
         /// <summary>
@@ -49,38 +49,24 @@ namespace Larpx.ResourceSpider.Engine.SQLServer
 
         /// <summary>
         /// Desc:
+        /// Default:0
+        /// Nullable:False
+        /// </summary>           
+        public byte Type { get; set; }
+
+        /// <summary>
+        /// Desc:
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public Guid LinkGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        public Guid PropertyKeyGUID { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Desc:
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public string KeyText { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public Guid? PropertyValueGUID { get; set; }
-
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string ValueText { get; set; }
+        public string NameChs { get; set; }
 
         /// <summary>
         /// Desc:
