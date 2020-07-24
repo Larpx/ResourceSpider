@@ -575,6 +575,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     //Link
 
                                     Link oLink = new Link();
+                                    oLink.GUID = Guid.NewGuid();
                                     oLink.CategoryGUID = oCategory.GUID;
                                     oLink.WebsiteGUID = oCategory.WebsiteGUID;
                                     oLink.URL = oWebs.URL + "/" + itemA.Attribute("href").AttributeValue;
@@ -589,10 +590,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     {
                                         oSQLSugarHelper.LinkDb.Insert(oLink);
 
-                                        var oLinkGUID = oSQLSugarHelper.LinkDb.GetSingle(it => it.ID == oLink.ID).GUID;
+                                        //var oLinkGUID = oSQLSugarHelper.LinkDb.GetSingle(it => it.ID == oLink.ID);
                                         foreach (var itemPro in propertyDetails)
                                         {
-                                            itemPro.LinkGUID = oLinkGUID;
+                                            itemPro.LinkGUID = oLink.GUID;
                                             oSQLSugarHelper.PropertyDetailDb.Insert(itemPro);
                                         }
                                     }

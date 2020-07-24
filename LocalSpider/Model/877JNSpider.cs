@@ -422,6 +422,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         foreach (var item in oCategoryEnmuar)
                         {
                             Link oLink = new Link();
+                            oLink.GUID = Guid.NewGuid();
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
@@ -453,6 +454,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 continue;
 
                             Link oLink = new Link();
+                            oLink.GUID = Guid.NewGuid();
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
