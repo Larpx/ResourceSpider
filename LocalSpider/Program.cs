@@ -25,7 +25,7 @@ namespace Larpx.ResourceSpider.LocalSpider
                 ThreadPool.SetMaxThreads(32, 32);
                 ThreadPool.SetMinThreads(8, 8);
 
-                //ThreadPool.UnsafeQueueUserWorkItem(DoExce1, args);
+                ThreadPool.UnsafeQueueUserWorkItem(DoExce1, args);
                 ThreadPool.UnsafeQueueUserWorkItem(DoExce2, args);
 
                 Console.WriteLine("Task is End,Running times 99999999+ ms");
