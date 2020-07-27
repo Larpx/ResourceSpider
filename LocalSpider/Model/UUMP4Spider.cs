@@ -418,6 +418,13 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// <returns></returns>
         public override List<Link> GetLinkList(Category oCategory)
         {
+            int nReCount = 0;
+
+            bool bFirst = true;
+            int iEndPageNum = 0;
+            int iThisPageNum = 1;
+            string sGetUrl = "";
+
             try
             {
                 //列表页集合
@@ -428,13 +435,6 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 string sTotlaPageNum = ".my-3 ul li a";
                 //下一页地址
                 string sNextURL = ".my-3 ul li a";
-
-                int nReCount = 0;
-
-                bool bFirst = true;
-                int iEndPageNum = 0;
-                int iThisPageNum = 1;
-                string sGetUrl = "";
 
                 string sHTML = "";
                 bool bGetCookie = false;
@@ -543,8 +543,14 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     }
 
                     //判断重复
-                    if (nReCount>= m_oRepeatCount)
+                    if (nReCount >= m_oRepeatCount)
+                    {
+                        Console.WriteLine("本页重复数据量为：" + iThisPageNum + "，触发阈值，需跳过。");
+                        Console.WriteLine("当前任务页码：" + iThisPageNum);
+                        Console.WriteLine("总任务页码：" + iEndPageNum);
+                        Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
                         goto GetUrl;
+                    }
 
                     //解析页面
                     if (oPageDocument.Exists(sLinkColllration))
@@ -636,6 +642,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Console.WriteLine("当前任务页码：" + iThisPageNum);
+                Console.WriteLine("总任务页码：" + iEndPageNum);
+                Console.WriteLine("当前任务分类名称为：" + oCategory.Name);
+#if DEBUG
+                Console.ReadLine();
+#endif
                 throw ex;
             }
         }
@@ -747,6 +759,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Console.WriteLine("当前任务名称为：" + oResult.Name);
+#if DEBUG
+                Console.ReadLine();
+#endif
                 throw ex;
             }
         }
