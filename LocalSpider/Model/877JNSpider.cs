@@ -15,6 +15,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 {
     public class _877JNSpider : BaseSpider
     {
+        private const int m_oRepeatCount = 8;
         private string sWebSiteID = "d9e5780840f6766c7fcbac7cab9538f2";
 
         public _877JNSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
@@ -326,6 +327,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 int iThisPageNum = 1;
                 string sGetUrl = "";
 
+                int nReCount = 0;
+
                 string sHTML = "";
                 bool bGetCookie = false;
                 Random oRand = new Random();
@@ -415,7 +418,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     else
                         iThisPageNum++;
 
-                    //解析页面 83
+                    //判断重复
+                    if (nReCount >= m_oRepeatCount)
+                        goto GetUrl;
+
+                    //解析页面
                     if (oPageDocument.Exists(".box.list.channel ul li a"))
                     {
                         var oCategoryEnmuar = oPageDocument.Find(".box.list.channel ul li a");
@@ -470,7 +477,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID))
                                 oSQLSugarHelper.LinkDb.Insert(oLink);
                             else
+                            {
+                                nReCount++;
                                 continue;
+                            }
                         }
                     }
                     else

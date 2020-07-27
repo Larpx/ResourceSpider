@@ -17,6 +17,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 {
     public class UUMP4Spider : BaseSpider
     {
+        private const int m_oRepeatCount = 8;
         private string sWebSiteID = "fe1213ba1c94e4a42b72bda9840af83c";
 
         /// <summary>
@@ -428,6 +429,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //下一页地址
                 string sNextURL = ".my-3 ul li a";
 
+                int nReCount = 0;
+
                 bool bFirst = true;
                 int iEndPageNum = 0;
                 int iThisPageNum = 1;
@@ -539,6 +542,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 4) + "-" + (iThisPageNum + 1) + ".htm?orderby=lastpid&digest=0";
                     }
 
+                    //判断重复
+                    if (nReCount>= m_oRepeatCount)
+                        goto GetUrl;
+
                     //解析页面
                     if (oPageDocument.Exists(sLinkColllration))
                     {
@@ -598,7 +605,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                         }
                                     }
                                     else
+                                    {
+                                        nReCount++;
                                         continue;
+                                    }
                                 }
                             }
                         }

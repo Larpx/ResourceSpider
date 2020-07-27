@@ -1,13 +1,9 @@
 ﻿using Larpx.Logs;
-using Larpx.ResourceSpider.Engine;
 using Larpx.ResourceSpider.LocalSpider.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider
@@ -56,10 +52,10 @@ namespace Larpx.ResourceSpider.LocalSpider
         {
             Dictionary<string, object> oArr = new Dictionary<string, object>();
             string sUU = "d9e5780840f6766c7fcbac7cab9538f2";
-            _877JNSpider uUMP4Spider = new _877JNSpider(Guid.Empty, DatabaseType.MySql, sUU, bDebug, sLoggerPath, m_oLogger);
+            _877JNSpider _o877JNSpider = new _877JNSpider(Guid.Empty, DatabaseType.MySql, sUU, bDebug, sLoggerPath, m_oLogger);
             oArr.Add("ID", sUU);
             oArr.Add("DatabaseType", DatabaseType.MySql);
-            uUMP4Spider.DoExce(oArr);
+            _o877JNSpider.DoExce(oArr);
         }
     }
 }
