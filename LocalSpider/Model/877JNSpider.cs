@@ -79,6 +79,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 throw ex;
             }
         }
@@ -98,6 +99,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 throw ex;
             }
         }
@@ -310,6 +312,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 throw ex;
             }
         }
@@ -354,6 +357,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 GetUrl:
+                nReCount = 0;
 
                 //请求页面
                 using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sGetUrl, oCookies))
@@ -501,7 +505,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     Console.WriteLine("当前任务页码：" + iThisPageNum);
                     Console.WriteLine("总任务页码：" + iEndPageNum);
                     Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
-                    if (iThisPageNum != iEndPageNum)
+                    if (iThisPageNum < iEndPageNum)
                         goto GetUrl;
                 }
                 else
@@ -516,6 +520,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 Console.WriteLine("当前任务页码：" + iThisPageNum);
                 Console.WriteLine("总任务页码：" + iEndPageNum);
                 Console.WriteLine("当前任务分类名称为：" + oCategory.Name);
@@ -633,6 +638,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 Console.WriteLine("当前任务名称为：" + oResult.Name);
 #if DEBUG
                 Console.ReadLine();

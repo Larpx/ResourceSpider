@@ -74,6 +74,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 throw ex;
             }
         }
@@ -93,6 +94,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 throw ex;
             }
         }
@@ -408,6 +410,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 throw ex;
             }
         }
@@ -761,6 +764,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 Console.WriteLine("当前任务名称为：" + oResult.Name);
 #if DEBUG
                 Console.ReadLine();
