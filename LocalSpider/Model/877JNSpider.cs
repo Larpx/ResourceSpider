@@ -422,22 +422,22 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     else
                         iThisPageNum++;
 
-                    //判断重复
-                    if (nReCount >= m_oRepeatCount)
-                    {
-                        Console.WriteLine("本页重复数据量为：" + iThisPageNum + "，触发阈值，需跳过。");
-                        Console.WriteLine("当前任务页码：" + iThisPageNum);
-                        Console.WriteLine("总任务页码：" + iEndPageNum);
-                        Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
-                        goto GetUrl;
-                    }
-
                     //解析页面
                     if (oPageDocument.Exists(".box.list.channel ul li a"))
                     {
                         var oCategoryEnmuar = oPageDocument.Find(".box.list.channel ul li a");
                         foreach (var item in oCategoryEnmuar)
                         {
+                            //判断重复
+                            if (nReCount >= m_oRepeatCount)
+                            {
+                                Console.WriteLine("本页重复数据量为：" + iThisPageNum + "，触发阈值，需跳过。");
+                                Console.WriteLine("当前任务页码：" + iThisPageNum);
+                                Console.WriteLine("总任务页码：" + iEndPageNum);
+                                Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
+                                goto GetUrl;
+                            }
+
                             Link oLink = new Link();
                             oLink.GUID = Guid.NewGuid();
                             oLink.CategoryGUID = oCategory.GUID;
@@ -453,7 +453,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID))
                                 oSQLSugarHelper.LinkDb.Insert(oLink);
                             else
+                            {
+                                nReCount++;
                                 continue;
+                            }
                         }
                     }
                     else if (oPageDocument.Exists(".box.movie_list ul li a"))

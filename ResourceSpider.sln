@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpHelper", "HttpHelper\Ht
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppeteerSharpSpider", "PuppeteerSharpSpider\PuppeteerSharpSpider.csproj", "{D6448628-4F12-400C-9C5E-E4F429AE6F26}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "DHTSpider", "DHTSpider\DHTSpider.pyproj", "{3DC932D2-9635-4659-B756-0B8778873A3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,8 @@ Global
 		{D6448628-4F12-400C-9C5E-E4F429AE6F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6448628-4F12-400C-9C5E-E4F429AE6F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6448628-4F12-400C-9C5E-E4F429AE6F26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DC932D2-9635-4659-B756-0B8778873A3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DC932D2-9635-4659-B756-0B8778873A3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +80,7 @@ Global
 		{AB904EF4-A208-41B0-A84E-3569C10D769F} = {D2556F06-129F-49F2-A69E-A849C31AF4FD}
 		{177812A2-5EAB-46DF-A7D5-D2EB19B295E7} = {D2556F06-129F-49F2-A69E-A849C31AF4FD}
 		{D6448628-4F12-400C-9C5E-E4F429AE6F26} = {0470F611-6CC2-4CAB-86EE-A086252213A3}
+		{3DC932D2-9635-4659-B756-0B8778873A3E} = {0470F611-6CC2-4CAB-86EE-A086252213A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CA0C91B-9CBA-4BEC-B33C-8735861D0714}

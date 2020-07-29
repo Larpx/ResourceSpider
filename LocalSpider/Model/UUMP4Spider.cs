@@ -546,7 +546,6 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 4) + "-" + (iThisPageNum + 1) + ".htm?orderby=lastpid&digest=0";
                     }
 
-
                     //解析页面
                     if (oPageDocument.Exists(sLinkColllration))
                     {
@@ -563,64 +562,33 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 goto GetUrl;
                             }
 
-                            List<PropertyDetail> propertyDetails = new List<PropertyDetail>();
-                            var oAList = item.Find("a");
-
-                            foreach (var itemA in oAList)
+                            var itemA = item.FindLast("a");
+                            if (itemA != null && itemA.Attribute("class") == null && itemA.Attribute("class").AttributeValue != "threadtags")
                             {
-                                if (itemA.Attribute("class") != null && itemA.Attribute("class").AttributeValue == "threadtags")
-                                {
-                                    //标签
-                                    var oPropertyVal = oSQLSugarHelper.PropertyValueDb.GetSingle(it => it.Name == itemA.InnerText().Trim().TrimStart('[').TrimEnd(']')
-                                      && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID);
+                                //Link
+                                Link oLink = new Link();
+                                oLink.GUID = Guid.NewGuid();
+                                oLink.CategoryGUID = oCategory.GUID;
+                                oLink.WebsiteGUID = oCategory.WebsiteGUID;
+                                oLink.URL = oWebs.URL + "/" + itemA.Attribute("href").AttributeValue;
+                                oLink.SN = GenerateNonceStr();
+                                oLink.ID = MD5.GetBufferHash(oLink.URL);
+                                oLink.Name = itemA.InnerText();
+                                oLink.NameChs = itemA.InnerText();
+                                //0 视频，1图片，2文字 ，3其他
+                                oLink.Type = 0;
 
-                                    if (oPropertyVal != null)
-                                    {
-                                        var oPropertyKey = oSQLSugarHelper.PropertyKeyDb.GetById(oPropertyVal.KeyGUID);
-
-                                        PropertyDetail propertyDetail = new PropertyDetail();
-                                        propertyDetail.CategoryGUID = oCategory.GUID;
-                                        propertyDetail.WebsiteGUID = oWebs.GUID;
-                                        propertyDetail.KeyText = oPropertyKey.Name;
-                                        propertyDetail.PropertyKeyGUID = oPropertyKey.GUID;
-                                        propertyDetail.ValueText = oPropertyVal.Name;
-                                        propertyDetail.PropertyValueGUID = oPropertyVal.GUID;
-                                        propertyDetails.Add(propertyDetail);
-                                    }
-                                }
+                                if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID))
+                                    oSQLSugarHelper.LinkDb.Insert(oLink);
                                 else
                                 {
-                                    //Link
-
-                                    Link oLink = new Link();
-                                    oLink.GUID = Guid.NewGuid();
-                                    oLink.CategoryGUID = oCategory.GUID;
-                                    oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                                    oLink.URL = oWebs.URL + "/" + itemA.Attribute("href").AttributeValue;
-                                    oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
-                                    oLink.ID = MD5.GetBufferHash(oLink.URL);
-                                    oLink.Name = itemA.InnerText();
-                                    oLink.NameChs = itemA.InnerText();
-                                    //0 视频，1图片，2文字 ，3其他
-                                    oLink.Type = 0;
-
-                                    if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID))
-                                    {
-                                        oSQLSugarHelper.LinkDb.Insert(oLink);
-
-                                        //var oLinkGUID = oSQLSugarHelper.LinkDb.GetSingle(it => it.ID == oLink.ID);
-                                        foreach (var itemPro in propertyDetails)
-                                        {
-                                            itemPro.LinkGUID = oLink.GUID;
-                                            oSQLSugarHelper.PropertyDetailDb.Insert(itemPro);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        nReCount++;
-                                        continue;
-                                    }
+                                    nReCount++;
+                                    continue;
                                 }
+                            }
+                            else
+                            {
+
                             }
                         }
                     }
