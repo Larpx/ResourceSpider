@@ -555,7 +555,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             //判断重复
                             if (nReCount >= m_oRepeatCount)
                             {
-                                Console.WriteLine("本页重复数据量为：" + iThisPageNum + "，触发阈值，跳过本页，处理下一页。");
+                                Console.WriteLine("本页重复数据量为：" + nReCount + "，触发阈值，跳过本页，处理下一页。");
                                 Console.WriteLine("当前任务页码：" + iThisPageNum);
                                 Console.WriteLine("总任务页码：" + iEndPageNum);
                                 Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
@@ -563,7 +563,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             }
 
                             var itemA = item.FindLast("a");
-                            if (itemA != null && itemA.Attribute("class") == null && itemA.Attribute("class").AttributeValue != "threadtags")
+                            if (itemA != null && itemA.Attribute("class") == null)
                             {
                                 //Link
                                 Link oLink = new Link();
