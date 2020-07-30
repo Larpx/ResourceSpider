@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>DHTSpider</Name>
     <RootNamespace>DHTSpider</RootNamespace>
+    <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
