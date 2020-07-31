@@ -36,20 +36,8 @@ namespace Larpx.ResourceSpider.BaseLibrary.Cache
         /// </summary>
         public StackExchangeRedisHelper()
         {
-            if (string.IsNullOrEmpty(ConnectionString))
-                throw new Exception("链接字符串为空");
-
             _connection = ConnectionMultiplexer.Connect(ConnectionString);
             _db = GetDatabase();
-        }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        public StackExchangeRedisHelper(string sConnectionString,int? db)
-        {
-            _connection = ConnectionMultiplexer.Connect(sConnectionString);
-            _db = GetDatabase(db);
         }
 
         /// <summary>
@@ -58,9 +46,6 @@ namespace Larpx.ResourceSpider.BaseLibrary.Cache
         /// <param name="db"></param>
         public StackExchangeRedisHelper(int? db)
         {
-            if (string.IsNullOrEmpty(ConnectionString))
-                throw new Exception("链接字符串为空");
-
             _connection = ConnectionMultiplexer.Connect(ConnectionString);
             _db = GetDatabase(db);
         }
@@ -73,6 +58,56 @@ namespace Larpx.ResourceSpider.BaseLibrary.Cache
         public IDatabase GetDatabase(int? db = null)
         {
             return GetConnection().GetDatabase(db ?? -1);
+        }
+
+        /// <summary>
+        /// 设置缓存键值到集合中
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="data">值</param>
+        public virtual void SetAdd(string key, object data)
+        {
+            if (data == null)
+            {
+                return;
+            }
+            var entryBytes = Serialize(data);
+
+            _db.SetAdd(key, entryBytes);
+        }
+
+        /// <summary>
+        /// 随即返回集合中一个值，并将该值删除
+        /// </summary>
+        /// <param name="key">键</param>
+        public virtual string SetPop(string key)
+        {
+            return _db.SetPop(key);
+        }
+
+        /// <summary>
+        /// 返回集合长度
+        /// </summary>
+        /// <param name="key">键</param>
+        public virtual long SetLen(string key)
+        {
+            return _db.SetLength(key);
+        }
+
+        /// <summary>
+        /// 设置
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="data">值</param>
+        public virtual void Set(string key, object data)
+        {
+            if (data == null)
+            {
+                return;
+            }
+            var entryBytes = Serialize(data);
+
+            _db.StringSet(key, entryBytes);
         }
 
         /// <summary>
@@ -91,22 +126,6 @@ namespace Larpx.ResourceSpider.BaseLibrary.Cache
             var expiresIn = TimeSpan.FromMinutes(cacheTime);
 
             _db.StringSet(key, entryBytes, expiresIn);
-        }
-
-        /// <summary>
-        /// 设置
-        /// </summary>
-        /// <param name="key">键</param>
-        /// <param name="data">值</param>
-        public virtual void Set(string key, object data)
-        {
-            if (data == null)
-            {
-                return;
-            }
-            var entryBytes = Serialize(data);
-
-            _db.StringSet(key, entryBytes);
         }
 
         /// <summary>
