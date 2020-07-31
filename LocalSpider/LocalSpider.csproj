@@ -85,6 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\877JNSpider.cs" />
+    <Compile Include="Model\BigManrSpider.cs" />
+    <Compile Include="Model\AVmooSpider.cs" />
     <Compile Include="Model\JavBusSpider.cs" />
     <Compile Include="Model\SpiderInterface.cs" />
     <Compile Include="Model\BaseSpider.cs" />
@@ -130,6 +132,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Brotli.NET">
+      <Version>2.0.4.2</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
     </PackageReference>

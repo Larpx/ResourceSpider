@@ -13,17 +13,16 @@ using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
-    public class JavBusSpider : BaseSpider
+    public class BigManrSpider : BaseSpider
     {
         private const int m_oRepeatCount = 8;
-        private string sWebSiteID = "511f88db164b46662eb442c342d5649a,be0f73a5590307e6dfe06015adbaa8a8";
+        private string sWebSiteID = "d9e5780840f6766c7fcbac7cab9538f2";
 
-        public JavBusSpider(Guid oWebGUID, CommonHelper.CommonHelper.DatabaseType oDatabaseType = CommonHelper.CommonHelper.DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger oLogger = null, bool bDeepClone = false, List<Website> _ListWebsites = null, List<Category> _ListCategory = null, List<Link> _ListLink = null) :
-            base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, oLogger, bDeepClone, _ListWebsites, _ListCategory, _ListLink)
+        public BigManrSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
+            base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
         {
-            //https://avmoo.host/cn
+            //http://www.877jn.com
         }
-
 
         /// <summary>
         /// 执行操作
@@ -62,33 +61,18 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
 
                 Website website = new Website();
-                website.Name = "JavBus - AV磁力連結分享 - 日本成人影片資料庫";
-                website.URL = "https://www.javbus.com";
+                website.Name = "877jn";
+                website.URL = "http://www.877jn.com";
                 website.Status = 1;
                 website.Deleted = false;
-                website.IsCookies = true;
+                website.IsCookies = false;
                 website.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
 
                 //查重
                 if (!oWebsites.IsAny(it => it.ID == website.ID))
                 {
                     oWebsites.Insert(website);
-                    sWebSiteID = website.ID + ",";
-                }
-
-                Website websiteOther = new Website();
-                websiteOther.Name = "AVMOO - 你的线上日本成人影片情报站。管理你的影片并分享你的想法。";
-                websiteOther.URL = "https://avmoo.host/cn";
-                websiteOther.Status = 1;
-                websiteOther.Deleted = false;
-                websiteOther.IsCookies = true;
-                websiteOther.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
-
-                //查重
-                if (!oWebsites.IsAny(it => it.ID == websiteOther.ID))
-                {
-                    oWebsites.Insert(websiteOther);
-                    sWebSiteID += websiteOther.ID;
+                    sWebSiteID = website.ID;
                 }
 
                 return 1;

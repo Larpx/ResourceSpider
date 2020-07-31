@@ -588,7 +588,8 @@ namespace Larpx.ResourceSpider.CommonHelper
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 
-                request.AllowAutoRedirect = true;
+                ServicePointManager.Expect100Continue = false;
+                ServicePointManager.MaxServicePointIdleTime = 2000;
 
                 //获取Cookie，从Redis
                 if (oRedisCookie.IsSet(sRdsKey))
@@ -608,16 +609,20 @@ namespace Larpx.ResourceSpider.CommonHelper
                     request.UserAgent = sUserAgent;
                 else
                     request.UserAgent = GetRandomUserAgent();
+
                 request.Timeout = 20 * 1000;
-                request.Headers.Add(HttpRequestHeader.CacheControl, @"no-cache");
-                request.Headers.Add("upgrade-insecure-requests", "1");
-                request.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
-                request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
-                request.Headers.Add("sec-fetch-dest", "document");
-                request.Headers.Add("sec-fetch-mode", "navigate");
-                request.Headers.Add("sec-fetch-user", "?1");
-                request.Headers.Add("sec-fetch-site", "none");
-                request.Referer = new Uri(url).Host.ToString();
+                request.AllowAutoRedirect = true;
+                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+                request.ContentType = @"application/json";
+                request.UserAgent = GetRandomUserAgent();
+                request.Host = new Uri(url).Host;
+                request.Method = "GET";
+                request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate br");
+                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"en-US,en;q=0.5");
+                request.Headers.Add(HttpRequestHeader.CacheControl, @"max-age=0");
+                request.Headers.Add("Upgrade-Insecure-Requests", "1");
+                request.Headers.Add("X-Requested-With", "XMLHttpRequest");
+
 
                 //sleep
                 int nRand = oRand.Next(2, 80);
@@ -703,25 +708,26 @@ namespace Larpx.ResourceSpider.CommonHelper
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 
-                request.AllowAutoRedirect = true;
-
                 //获取Cookie
                 if (request.CookieContainer == null)
                     request.CookieContainer = new CookieContainer();
                 request.CookieContainer.Add(oCookieCollection);
 
-                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-                request.UserAgent = GetRandomUserAgent();
+                System.Net.ServicePointManager.Expect100Continue = false;
+                ServicePointManager.MaxServicePointIdleTime = 2000;
+
                 request.Timeout = 20 * 1000;
-                request.Headers.Add(HttpRequestHeader.CacheControl, @"no-cache");
-                request.Headers.Add("upgrade-insecure-requests", "1");
-                request.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
-                request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
-                request.Headers.Add("sec-fetch-dest", "document");
-                request.Headers.Add("sec-fetch-mode", "navigate");
-                request.Headers.Add("sec-fetch-user", "?1");
-                request.Headers.Add("sec-fetch-site", "none");
-                request.Referer = new Uri(url).Host.ToString();
+                request.AllowAutoRedirect = true;
+                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+                request.ContentType = @"application/json";
+                request.UserAgent = GetRandomUserAgent();
+                request.Host = new Uri(url).Host;
+                request.Method = "GET";
+                request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate br");
+                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"en-US,en;q=0.5");
+                request.Headers.Add(HttpRequestHeader.CacheControl, @"max-age=0");
+                request.Headers.Add("Upgrade-Insecure-Requests", "1");
+                request.Headers.Add("X-Requested-With", "XMLHttpRequest");
 
                 //sleep
                 int nRand = oRand.Next(2, 80);
@@ -893,15 +899,21 @@ namespace Larpx.ResourceSpider.CommonHelper
                             new RemoteCertificateValidationCallback(CheckValidationResult);
                 }
 
+                System.Net.ServicePointManager.Expect100Continue = false;
+                ServicePointManager.MaxServicePointIdleTime = 2000;
+
+                request.Timeout = 20 * 1000;
                 request.AllowAutoRedirect = true;
-                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-                request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate, br");
-                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"zh-CN,zh;q=0.9,en;q=0.8");
-                request.Headers.Add(HttpRequestHeader.CacheControl, @"max-age=0");
-                request.Headers.Add("DNT", "1");
-                request.Headers.Add("Upgrade-Insecure-Requests", "1");
-                request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
+                request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+                request.ContentType = @"application/json";
+                request.UserAgent = GetRandomUserAgent();
                 request.Host = new Uri(url).Host;
+                request.Method = "GET";
+                request.Headers.Add(HttpRequestHeader.AcceptEncoding, @"gzip, deflate br");
+                request.Headers.Add(HttpRequestHeader.AcceptLanguage, @"en-US,en;q=0.5");
+                request.Headers.Add(HttpRequestHeader.CacheControl, @"max-age=0");
+                request.Headers.Add("Upgrade-Insecure-Requests", "1");
+                request.Headers.Add("X-Requested-With", "XMLHttpRequest");
 
                 using (HttpWebResponse oHttpWebResponse = (HttpWebResponse)request.GetResponse())
                 {
@@ -1432,3 +1444,78 @@ namespace Larpx.ResourceSpider.CommonHelper
         }
     }
 }
+
+namespace Larpx.ResourceSpider.CommonHelper
+{
+    public class SmsWebClient : WebClient
+    {
+        public SmsWebClient(CookieContainer container, Dictionary<string, string> Headers)
+        : this(container)
+        {
+            foreach (var keyVal in Headers)
+            {
+                this.Headers[keyVal.Key] = keyVal.Value;
+            }
+        }
+
+        public SmsWebClient(bool flgAddContentType = true)
+        : this(new CookieContainer(), flgAddContentType)
+        {
+
+        }
+
+        public SmsWebClient(CookieContainer container, bool flgAddContentType = true)
+        {
+            this.Encoding = Encoding.UTF8;
+            System.Net.ServicePointManager.Expect100Continue = false;
+            ServicePointManager.MaxServicePointIdleTime = 2000;
+            this.container = container;
+            if (flgAddContentType)
+                this.Headers["Content-Type"] = "application/json";//"application/x-www-form-urlencoded";
+            this.Headers["Accept"] = "application/json, text/javascript, */*; q=0.01";//"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+            //this.Headers["Accept-Encoding"] ="gzip, deflate";
+            this.Headers["Accept-Language"] = "en-US,en;q=0.5";
+            this.Headers["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; rv:23.0) Gecko/20100101 Firefox/23.0";
+            this.Headers["X-Requested-With"] = "XMLHttpRequest";
+            //this.Headers["Connection"] ="keep-alive";
+        }
+
+        private readonly CookieContainer container = new CookieContainer();
+        protected override WebRequest GetWebRequest(Uri address)
+        {
+            WebRequest r = base.GetWebRequest(address);
+            var request = r as HttpWebRequest;
+            if (request != null)
+            {
+                request.CookieContainer = container;
+                request.Timeout = 3600000;//20 * 60 * 1000
+            }
+            return r;
+        }
+
+        protected override WebResponse GetWebResponse(WebRequest request, IAsyncResult result)
+        {
+            WebResponse response = base.GetWebResponse(request, result);
+            ReadCookies(response);
+            return response;
+        }
+
+        protected override WebResponse GetWebResponse(WebRequest request)
+        {
+            WebResponse response = base.GetWebResponse(request);
+            ReadCookies(response);
+            return response;
+        }
+
+        private void ReadCookies(WebResponse r)
+        {
+            var response = r as HttpWebResponse;
+            if (response != null)
+            {
+                CookieCollection cookies = response.Cookies;
+                container.Add(cookies);
+            }
+        }
+    }
+}
+

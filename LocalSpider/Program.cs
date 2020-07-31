@@ -21,8 +21,8 @@ namespace Larpx.ResourceSpider.LocalSpider
                 ThreadPool.SetMaxThreads(32, 32);
                 ThreadPool.SetMinThreads(8, 8);
 
-                ThreadPool.UnsafeQueueUserWorkItem(DoExce1, args);
-                ThreadPool.UnsafeQueueUserWorkItem(DoExce2, args);
+                ThreadPool.UnsafeQueueUserWorkItem(DoExce3, args);
+                //ThreadPool.UnsafeQueueUserWorkItem(DoExce2, args);
 
                 Console.WriteLine("Task is End,Running times 99999999+ ms");
                 Console.ReadLine();
@@ -56,7 +56,7 @@ namespace Larpx.ResourceSpider.LocalSpider
                 throw ex;
             }
         }
-
+        
         private static void DoExce2(object obj)
         {
             try
@@ -64,6 +64,24 @@ namespace Larpx.ResourceSpider.LocalSpider
                 Dictionary<string, object> oArr = new Dictionary<string, object>();
                 string sUU = "d9e5780840f6766c7fcbac7cab9538f2";
                 _877JNSpider _o877JNSpider = new _877JNSpider(Guid.Empty, DatabaseType.MySql, sUU, bDebug, sLoggerPath, m_oLogger);
+                oArr.Add("ID", sUU);
+                oArr.Add("DatabaseType", DatabaseType.MySql);
+                _o877JNSpider.DoExce(oArr);
+            }
+            catch (Exception ex)
+            {
+                m_oLogger.LogException(ex);
+                throw ex;
+            }
+        }
+
+        private static void DoExce3(object obj)
+        {
+            try
+            {
+                Dictionary<string, object> oArr = new Dictionary<string, object>();
+                string sUU = "511f88db164b46662eb442c342d5649a";
+                AVmooSpider _o877JNSpider = new AVmooSpider(Guid.Empty, DatabaseType.MySql, sUU, bDebug, sLoggerPath, m_oLogger);
                 oArr.Add("ID", sUU);
                 oArr.Add("DatabaseType", DatabaseType.MySql);
                 _o877JNSpider.DoExce(oArr);
