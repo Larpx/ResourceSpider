@@ -137,48 +137,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         var oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
 
                         //请求页面
-                        using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(oWebsite.URL, oCookies))
-                        {
-                            if (oResponse == null)
-                                return null;
-
-                            //页面解码
-                            if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
-                            {
-                                switch (oResponse.ContentEncoding.ToLower())
-                                {
-                                    case "gzip":
-                                        using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                        {
-                                            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                            {
-                                                sHTML = reader.ReadToEnd();
-                                                oPageDocument = new JumonyParser().Parse(sHTML);
-                                            }
-                                        }
-                                        break;
-                                    case "deflate":
-                                        using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                        {
-                                            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                            {
-                                                sHTML = reader.ReadToEnd();
-                                                oPageDocument = new JumonyParser().Parse(sHTML);
-                                            }
-                                        }
-                                        break;
-                                    default:
-                                        //未被压缩,直接解析
-                                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                //未被压缩,直接解析
-                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                            }
-                        }
+                        if (oWebsite.IsCookies)
+                            oPageDocument = ReadDataEncodeHTML(oWebsite.URL, ref sHTML, oCookies);
+                        else
+                            oPageDocument = ReadDataEncodeHTML(oWebsite.URL, ref sHTML);
 
                         //解析页面
                         if (oPageDocument != null)
@@ -360,48 +322,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 nReCount = 0;
 
                 //请求页面
-                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sGetUrl, oCookies))
-                {
-                    if (oResponse == null)
-                        return null;
-
-                    //页面解码
-                    if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
-                    {
-                        switch (oResponse.ContentEncoding.ToLower())
-                        {
-                            case "gzip":
-                                using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            case "deflate":
-                                using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            default:
-                                //未被压缩,直接解析
-                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        //未被压缩,直接解析
-                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                    }
-                }
+                if (bGetCookie)
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML, oCookies);
+                else
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML);
 
                 //解析页面
                 if (oPageDocument != null)
@@ -580,48 +504,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 //请求页面
-                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sGetUrl, oCookies))
-                {
-                    if (oResponse == null)
-                        return;
-
-                    //页面解码
-                    if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
-                    {
-                        switch (oResponse.ContentEncoding.ToLower())
-                        {
-                            case "gzip":
-                                using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            case "deflate":
-                                using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            default:
-                                //未被压缩,直接解析
-                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        //未被压缩,直接解析
-                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                    }
-                }
+                if (bGetCookie)
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML, oCookies);
+                else
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML);
 
                 //解析页面
                 if (oPageDocument != null)

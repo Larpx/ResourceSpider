@@ -1,8 +1,14 @@
-﻿using Larpx.Logs;
+﻿using Brotli;
+using Ivony.Html;
+using Ivony.Html.Parser;
+using Larpx.Logs;
 using Larpx.ResourceSpider.Engine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Text;
 using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
@@ -271,6 +277,101 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 throw ex;
             }
         }
+
+        #region 工具类
+
+        /// <summary>
+        /// 对页面数据进行解码
+        /// </summary>
+        /// <param name="sHTML">页面返回的HTML数据</param>
+        /// <param name="oEncoding">Http响应体</param>
+        /// <returns>解析节点对象</returns>
+        public virtual IHtmlDocument EncodeHTML(ref string sHTML, HttpWebResponse oResponse)
+        {
+            try
+            {
+                if (oResponse == null)
+                    throw new ArgumentNullException();
+
+                if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
+                {
+                    switch (oResponse.ContentEncoding.ToLower())
+                    {
+                        case "gzip":
+                            using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                            {
+                                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                {
+                                    sHTML = reader.ReadToEnd();
+                                    return new JumonyParser().Parse(sHTML);
+                                }
+                            }
+                        case "deflate":
+                            using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                            {
+                                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                {
+                                    sHTML = reader.ReadToEnd();
+                                    return new JumonyParser().Parse(sHTML);
+                                }
+                            }
+                        case "br":
+                            using (BrotliStream stream = new BrotliStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
+                            {
+                                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                                {
+                                    sHTML = reader.ReadToEnd();
+                                    return new JumonyParser().Parse(sHTML);
+                                }
+                            }
+                        default:
+                            //未被压缩,直接解析
+                            return new JumonyParser().LoadDocument(oResponse);
+                    }
+                }
+                else
+                {
+                    //未被压缩,直接解析
+                    return new JumonyParser().LoadDocument(oResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 请求页面数据后对页面数据进行解码
+        /// </summary>
+        /// <param name="sURL">请求的URL地址</param>
+        /// <param name="sHTML">页面返回的HTML数据</param>
+        /// <param name="oCookies">请求页面时所需要的Cookie信息</param>
+        /// <returns>解析节点对象</returns>
+        public virtual IHtmlDocument ReadDataEncodeHTML(string sURL, ref string sHTML, CookieCollection oCookies = null)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(sURL))
+                    throw new ArgumentNullException();
+
+                //请求页面
+                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sURL, oCookies))
+                {
+                    if (oResponse == null)
+                        return null;
+
+                    //页面解码
+                    return EncodeHTML(ref sHTML, oResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #endregion
 
         #region 采集任务方法
 

@@ -75,22 +75,6 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     oWebsites.Insert(website);
                     sWebSiteID = website.ID + ",";
                 }
-
-                Website websiteOther = new Website();
-                websiteOther.Name = "AVMOO - 你的线上日本成人影片情报站。管理你的影片并分享你的想法。";
-                websiteOther.URL = "https://avmoo.host/cn";
-                websiteOther.Status = 1;
-                websiteOther.Deleted = false;
-                websiteOther.IsCookies = true;
-                websiteOther.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
-
-                //查重
-                if (!oWebsites.IsAny(it => it.ID == websiteOther.ID))
-                {
-                    oWebsites.Insert(websiteOther);
-                    sWebSiteID += websiteOther.ID;
-                }
-
                 return 1;
             }
             catch (Exception ex)
