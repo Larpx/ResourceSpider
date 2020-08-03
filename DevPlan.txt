@@ -1,0 +1,23 @@
+1.LocalSpider:
+	(1)877JN DetailPage
+	(2)UUMP4 DetailPage
+	(3)AVMoo Link、DetailPage
+	(4)JavBus Link、DetailPage
+	(5)BigManr Category、Link、DetailPage
+	(6)magnet转种子
+	(7)WebSocket支持
+	(8)动态脚本*
+
+2.DHTSpider：
+	(1)精简代码，将代码拼接成一个模块
+	(2)添加数据导入MySQL功能
+	(3)将模块封装为DLL形式
+
+3.Web、WebAPI：
+	前端框架选型：（Hui+asp.net core、Vue）
+	添加JWT支持
+	添加队列功能(rabbitMQ)
+	研究任务分配功能(?)
+	WebSocket支持
+
+4.Winform版本爬虫(后期再说)

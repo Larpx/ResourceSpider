@@ -18,6 +18,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
     public class UUMP4Spider : BaseSpider
     {
         private const int m_oRepeatCount = 8;
+        private const int m_oSumRepeatCount = 5;
         private string sWebSiteID = "fe1213ba1c94e4a42b72bda9840af83c";
 
         /// <summary>
@@ -348,6 +349,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// <returns></returns>
         public override List<Link> GetLinkList(Category oCategory)
         {
+            int nReSUM = 0;
             int nReCount = 0;
 
             bool bFirst = true;
@@ -448,6 +450,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 Console.WriteLine("当前任务页码：" + iThisPageNum);
                                 Console.WriteLine("总任务页码：" + iEndPageNum);
                                 Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
+                                nReSUM++;
                                 goto GetUrl;
                             }
 
@@ -532,7 +535,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //截图 [1]
                 string sScreenShot = ".message.break-all img";
                 //资源链接
-                string sResourceLinks = ".message.break-all p";
+                string sResourceLinks = "strong";
                 //种子
                 string sTorrent = ".fieldset ul li a";
 
@@ -581,6 +584,9 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 oResult.Processed = 2;
                 oSQLSugarHelper.LinkDb.Update(oResult);
+                Console.WriteLine("当前任务已完成。");
+                Console.WriteLine("当前任务链接：" + oResult.URL);
+                Console.WriteLine("当前任务名称：" + oResult.Name);
             }
             catch (Exception ex)
             {
