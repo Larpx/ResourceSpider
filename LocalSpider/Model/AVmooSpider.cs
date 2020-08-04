@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.UI.WebControls;
+using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
@@ -575,7 +576,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 {
                     if (!oPageDocument.Exists(sTitle))
                     {
-                        oResult.Processed = 3;
+                        oResult.Processed = (byte)ProcessedType.Fail;
                         oSQLSugarHelper.LinkDb.Update(oResult);
                         return;
                     }
@@ -723,7 +724,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     //解析页面失败
                 }
 
-                oResult.Processed = 2;
+                oResult.Processed = (byte)ProcessedType.Success;
                 oSQLSugarHelper.LinkDb.Update(oResult);
             }
             catch (Exception ex)

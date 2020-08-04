@@ -57,7 +57,7 @@ namespace Larpx.ResourceSpider.Engine
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public string? URL { get; set; }
+        public string URL { get; set; }
 
         /// <summary>
         /// Desc:

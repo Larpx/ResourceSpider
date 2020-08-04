@@ -1,16 +1,13 @@
 ﻿using Ivony.Html;
 using Ivony.Html.ExpandedAPI;
-using Ivony.Html.Parser;
 using Larpx.Logs;
 using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Text;
 using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
@@ -19,6 +16,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
     {
         private const int m_oRepeatCount = 8;
         private const int m_oSumRepeatCount = 5;
+        private const string m_oBaseURL = "https://www.uump4.net";
         private string sWebSiteID = "fe1213ba1c94e4a42b72bda9840af83c";
 
         /// <summary>
@@ -58,11 +56,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                 website.Name = "悠悠MP4-MP4电影下载-uump4-久久MP4-99mp4-悠悠鸟影视论坛-电影天堂";
                 website.NameChs = website.Name;
-                website.URL = "https://www.uump4.net";
+                website.URL = m_oBaseURL;
                 website.Status = 1;
                 website.Deleted = false;
                 website.IsCookies = true;
-                website.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
+                website.ID = MD5.GetBufferHash(website.URL).ToLower();
 
                 //查重
                 if (!oWebsites.IsAny(it => it.ID == website.ID))
@@ -110,7 +108,9 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             {
                 string sHTML = "";
                 string sTagURL = "";
+                //分类合集
                 string sCategoryCollection = ".navbar-nav.mr-auto .nav-item a";
+                //meta信息
                 string sMetaData = "meta";
                 Random oRand = new Random();
                 IHtmlDocument oPageDocument = null;
@@ -121,7 +121,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 {
                     //处理不规范URL
                     oWebsite.URL = "http://" + oWebsite.URL;
-                    oWebsite.ID = CommonHelper.MD5.GetBufferHash(oWebsite.URL).ToLower();
+                    oWebsite.ID = MD5.GetBufferHash(oWebsite.URL).ToLower();
                     sWebSiteID = oWebsite.ID;
                     oSQLSugarHelper.WebsiteDb.Update(oWebsite);
                 }
@@ -133,7 +133,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         CookieCollection oCookies = null;
 
                         if (oWebsite.IsCookies)
-                            oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
+                            oCookies = EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
 
                         //请求页面
                         if (oWebsite.IsCookies)
@@ -170,6 +170,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             else
                             {
                                 //未找到分类标签
+                                Console.WriteLine("当前任务未找到‘" + sCategoryCollection + "’元素");
                             }
 
                             //MetaData
@@ -258,6 +259,11 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     oSQLSugarHelper.MetaDataDb.Insert(metaData);
                                 }
                             }
+                            else
+                            {
+                                //未找到分类标签
+                                Console.WriteLine("当前任务未找到‘" + sMetaData + "’元素");
+                            }
 
                             //category
                             var oListCate = oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false);
@@ -300,6 +306,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                                 var oList = oSQLSugarHelper.PropertyKeyDb.GetList(it => it.Name == propertyKey.Name && it.WebsiteGUID == propertyKey.WebsiteGUID && it.CategoryGUID == propertyKey.CategoryGUID);
                                                 oGUID = oList[0].GUID;
                                             }
+                                            else
+                                                Console.WriteLine("当前任务未找到‘.text-nowrap’元素");
 
                                             if (item.Exists("td a"))
                                             {
@@ -317,16 +325,25 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                                         oSQLSugarHelper.PropertyValueDb.Insert(propertyValue);
                                                 }
                                             }
+                                            else
+                                                Console.WriteLine("当前任务未找到‘td a’元素");
                                         }
                                     }
+                                    else
+                                        Console.WriteLine("当前任务未找到‘" + sTag + "’元素");
+
                                 }
+                                else
+                                    Console.WriteLine("页面解析失败");
                             }
                         }
                         else
                         {
                             //解析页面失败
+                            Console.WriteLine("页面解析失败");
                         }
-                        oWebsite.Processed = 1;
+
+                        oWebsite.Processed = (byte)ProcessedType.Success;
                         oSQLSugarHelper.WebsiteDb.Update(oWebsite);
 
                         return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false);
@@ -395,6 +412,13 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 GetUrl:
                 nReCount = 0;
 
+                //判断重复页面数量,触发阈值直接结束
+                if (m_oSumRepeatCount <= nReSUM)
+                {
+                    Console.WriteLine("当前分类任务重复页面数为：" + nReSUM + ",已触发阈值,结束采集任务.");
+                    goto MainEnds;
+                }
+
                 //请求页面
                 if (bGetCookie)
                     oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML, oCookies);
@@ -433,9 +457,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         sGetUrl = (oWebs.URL.EndsWith("/") ? oWebs.URL : oWebs.URL + "/") + sNextStr;
                     }
                     else
-                    {
                         sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 4) + "-" + (iThisPageNum + 1) + ".htm?orderby=lastpid&digest=0";
-                    }
 
                     //解析页面
                     if (oPageDocument.Exists(sLinkColllration))
@@ -468,7 +490,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 oLink.Name = itemA.InnerText();
                                 oLink.NameChs = itemA.InnerText();
                                 //0 视频，1图片，2文字 ，3其他
-                                oLink.Type = 0;
+                                oLink.Type = (byte)ResourceDataType.Vedio;
 
                                 if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID && it.WebsiteGUID == oCategory.WebsiteGUID && it.CategoryGUID == oCategory.GUID))
                                     oSQLSugarHelper.LinkDb.Insert(oLink);
@@ -486,7 +508,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     }
                     else
                     {
-
+                        Console.WriteLine("当前任务未找到‘" + sLinkColllration + "’元素");
                     }
 
                     Console.WriteLine("当前任务页码：" + iThisPageNum);
@@ -498,10 +520,14 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 else
                 {
                     //解析页面失败
+                    Console.WriteLine("页面解析失败");
                 }
 
-                oCategory.Processed = 2;
+                oCategory.Processed = (byte)ProcessedType.Success;
                 oSQLSugarHelper.CategoryDb.Update(oCategory);
+
+            MainEnds:
+                Console.WriteLine("当前任务：" + oCategory.Name + "采集完成.");
 
                 return oSQLSugarHelper.LinkDb.GetList(it => it.CategoryGUID == oCategory.GUID && it.Deleted == false);
             }
@@ -531,7 +557,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //海报 [0]
                 string sBannerImages = ".message.break-all img";
                 //简介
-                string sDetail = ".message.break-all p";
+                string sDetail = ".message.break-all";
                 //截图 [1]
                 string sScreenShot = ".message.break-all img";
                 //资源链接
@@ -572,17 +598,162 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //解析页面
                 if (oPageDocument != null)
                 {
+                    if (!oPageDocument.Exists(sTitle))
+                    {
+                        oResult.Processed = (byte)ProcessedType.Fail;
+                        oSQLSugarHelper.LinkDb.Update(oResult);
+                        return;
+                    }
 
+                    oResult.Title = oPageDocument.FindFirst(sTitle).InnerText();
+                    //简介
+                    oResult.Detail = oPageDocument.FindFirstOrDefault(sDetail)?.InnerText();
+                    oResult.DetailChs = oPageDocument.FindFirstOrDefault(sDetail)?.InnerHtml();
 
+                    //Banner图
+                    Resource oResource = new Resource();
+                    if (oPageDocument.Exists(sBannerImages))
+                    {
+                        int nBannerImages = 0, nReBannerImages = 0;
+                        var oImgEle = oPageDocument.FindFirst(sBannerImages);
+                        oResource.WebsiteGUID = oResult.WebsiteGUID;
+                        oResource.PageGUID = oResult.GUID;
+                        oResource.URL = oImgEle.Attribute("src").AttributeValue;
+                        oResource.Original = Path.GetFileName(oResource.URL);
+                        oResource.Path = oResource.Original;
+                        oResource.FileName = oResource.Path;
+                        oResource.Type = (byte)ResourceType.Banner;
+                        if (!oSQLSugarHelper.ResourceDb.IsAny(it => it.URL == oResource.URL))
+                        {
+                            oSQLSugarHelper.ResourceDb.Insert(oResource);
+                            nBannerImages++;
+                        }
+                        else
+                            nReBannerImages++;
+                        Console.WriteLine("当前任务添加Banner图：" + nBannerImages + "张，重复图" + nReBannerImages + "张");
+                    }
+                    else
+                        Console.WriteLine("当前任务未找到‘" + sBannerImages + "’元素");
 
+                    //截图
+                    if (oPageDocument.Exists(sScreenShot))
+                    {
+                        int nScreenShot = 0, nResScreenShot = 0;
+                        var oImgList = oPageDocument.Find(sScreenShot);
+                        foreach (var item in oImgList)
+                        {
+                            if (item.Attribute("src").AttributeValue == oResource.URL)
+                                continue;
+                            if (item.Attribute("src").AttributeValue.Contains("thinkphp.php"))
+                                continue;
 
+                            Resource oResourceTmp = new Resource();
+                            oResourceTmp.WebsiteGUID = oResult.WebsiteGUID;
+                            oResourceTmp.PageGUID = oResult.GUID;
+                            oResourceTmp.URL = item.Attribute("src").AttributeValue;
+                            oResourceTmp.Original = Path.GetFileName(oResource.URL);
+                            oResourceTmp.Path = oResourceTmp.Original;
+                            oResourceTmp.FileName = oResourceTmp.Path;
+                            oResourceTmp.Type = (byte)ResourceType.Detail;
+                            if (!oSQLSugarHelper.ResourceDb.IsAny(it => it.URL == oResourceTmp.URL))
+                            {
+                                oSQLSugarHelper.ResourceDb.Insert(oResourceTmp);
+                                nScreenShot++;
+                            }
+                            else
+                                nResScreenShot++;
+
+                        }
+                        Console.WriteLine("当前任务添加内容图：" + nScreenShot + "张，重复图" + nResScreenShot + "张");
+                    }
+                    else
+                        Console.WriteLine("当前任务未找到‘" + sScreenShot + "’元素");
+
+                    //资源
+                    if (oPageDocument.Exists(sResourceLinks))
+                    {
+                        int nStrong = 0, nReStrong = 0;
+                        var oStrongList = oPageDocument.Find(sResourceLinks);
+                        foreach (var item in oStrongList)
+                        {
+                            if (item.InnerText().Trim().Contains("http") || item.InnerText().Trim().Contains("ed2k") ||
+                                item.InnerText().Trim().Contains("magnet"))
+                            {
+                                var oTmpArr = item.InnerText().Trim().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                                foreach (var oArrItem in oTmpArr)
+                                {
+                                    if (!oArrItem.StartsWith("http") && !oArrItem.StartsWith("ed2k") &&
+                                        !oArrItem.StartsWith("magnet"))
+                                        continue;
+
+                                    ResourceData oResourceData = new ResourceData();
+                                    oResourceData.WebsiteGUID = oResult.WebsiteGUID;
+                                    oResourceData.ObjectGUID = oResult.GUID;
+                                    oResourceData.URL = item.Attribute("href").AttributeValue;
+                                    oResourceData.Original = item.InnerText().Trim();
+                                    oResourceData.Name = oResourceData.Original;
+                                    oResourceData.File = oResourceData.Original;
+                                    oResourceData.URLType = (byte)URLType.URL;
+                                    oResourceData.ResourceType = (byte)ResourceDataType.Vedio;
+                                    oResourceData.Status = (byte)ResourceDataStatus.Normal;
+                                    oResourceData.Processed = (byte)ProcessedType.Pending;
+                                    if (!oSQLSugarHelper.ResourceDataDb.IsAny(it => it.URL == oResourceData.URL))
+                                    {
+                                        oSQLSugarHelper.ResourceDataDb.Insert(oResourceData);
+                                        nStrong++;
+                                    }
+                                    else
+                                        nReStrong++;
+                                }
+                            }
+                        }
+                        Console.WriteLine("当前任务添加资源链接：" + nStrong + "个，重复" + nReStrong + "个");
+                    }
+                    else
+                        Console.WriteLine("当前任务未找到‘" + sResourceLinks + "’元素");
+
+                    //种子
+                    if (oPageDocument.Exists(sTorrent))
+                    {
+                        int nStrong = 0, nReStrong = 0;
+                        var oTorrentList = oPageDocument.Find(sTorrent);
+                        foreach (var item in oTorrentList)
+                        {
+                            if (item.Attribute("src").AttributeValue == oResource.URL)
+                                continue;
+                            if (item.Attribute("src").AttributeValue.Contains("thinkphp.php"))
+                                continue;
+
+                            ResourceData oResourceData = new ResourceData();
+                            oResourceData.WebsiteGUID = oResult.WebsiteGUID;
+                            oResourceData.ObjectGUID = oResult.GUID;
+                            oResourceData.URL = item.Attribute("href").AttributeValue;
+                            oResourceData.Original = item.InnerText().Trim();
+                            oResourceData.Name = oResourceData.Original;
+                            oResourceData.File = oResourceData.Original;
+                            oResourceData.URLType = (byte)URLType.URL;
+                            oResourceData.ResourceType = (byte)ResourceDataType.Vedio;
+                            oResourceData.Status = (byte)ResourceDataStatus.Normal;
+                            oResourceData.Processed = (byte)ProcessedType.Pending;
+                            if (!oSQLSugarHelper.ResourceDataDb.IsAny(it => it.URL == oResourceData.URL))
+                            {
+                                oSQLSugarHelper.ResourceDataDb.Insert(oResourceData);
+                                nStrong++;
+                            }
+                            else
+                                nReStrong++;
+                        }
+                        Console.WriteLine("当前任务添加资源链接：" + nStrong + "个，重复" + nReStrong + "个");
+                    }
+                    else
+                        Console.WriteLine("当前任务未找到‘" + sTorrent + "’元素");
                 }
                 else
                 {
                     //解析页面失败
                 }
 
-                oResult.Processed = 2;
+                oResult.Processed = (byte)ProcessedType.Success;
                 oSQLSugarHelper.LinkDb.Update(oResult);
                 Console.WriteLine("当前任务已完成。");
                 Console.WriteLine("当前任务链接：" + oResult.URL);

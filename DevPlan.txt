@@ -1,12 +1,13 @@
 1.LocalSpider:
 	(1)877JN DetailPage
-	(2)UUMP4 DetailPage
-	(3)AVMoo Link、DetailPage
+	*(2)UUMP4 DetailPage
+	*(3)AVMoo Link、DetailPage
 	(4)JavBus Link、DetailPage
 	(5)BigManr Category、Link、DetailPage
 	(6)magnet转种子
 	(7)WebSocket支持
 	(8)动态脚本*
+	(25%)(9)整理已完成代码，增强程序健壮性
 
 2.DHTSpider：
 	(1)精简代码，将代码拼接成一个模块
