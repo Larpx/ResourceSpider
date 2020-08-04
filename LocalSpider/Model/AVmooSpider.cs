@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.UI.WebControls;
@@ -374,10 +375,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// <returns></returns>
         public override List<Link> GetLinkList(Category oCategory)
         {
-            bool bFirst = true;
-            int iEndPageNum = 0;
-            int iThisPageNum = 1;
+            int iSumCount = 0;
+            int sThisPageNum = 1;
             string sGetUrl = "";
+
+            const string sGetItems = ".movie-box";
+            const string sGetNextURL = "[name=nextpage]";
 
             try
             {
@@ -419,94 +422,61 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //解析页面
                 if (oPageDocument != null)
                 {
-                    //获取总页码
-                    if (bFirst)
-                    {
-                        bFirst = false;
-                        if (oPageDocument.Exists(".page .end"))
-                            iEndPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .end").InnerText());
-                        else
-                            iEndPageNum = 1;
-                    }
-
-                    //获取本页页码
-                    if (oPageDocument.Exists(".page .current"))
-                        iThisPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .current").InnerText());
-                    else
-                        iThisPageNum++;
-
                     //解析页面
-                    if (oPageDocument.Exists(".box.list.channel ul li a"))
+                    if (oPageDocument.Exists(sGetItems))
                     {
-                        var oCategoryEnmuar = oPageDocument.Find(".box.list.channel ul li a");
+                        var oCategoryEnmuar = oPageDocument.Find(sGetItems);
                         foreach (var item in oCategoryEnmuar)
                         {
                             //判断重复
                             if (nReCount >= m_oRepeatCount)
                             {
-                                Console.WriteLine("本页重复数据量为：" + iThisPageNum + "，触发阈值，需跳过。");
-                                Console.WriteLine("当前任务页码：" + iThisPageNum);
-                                Console.WriteLine("总任务页码：" + iEndPageNum);
-                                Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
+                                Console.WriteLine("本页重复数据量为：" + nReCount + "，触发阈值，需跳过。");
+                                Console.WriteLine("该分类完成总量：" + iSumCount);
+                                Console.WriteLine("当前任务页码：" + sThisPageNum);
+                                Console.WriteLine("当前任务地址：" + sGetUrl);
                                 goto GetUrl;
                             }
 
+                            //查找番号
+                            if (!item.Exists("item"))
+                                continue;
+
+                            //获取番号并查重
+                            string sSerialNumber = item.FindFirst("date").InnerText().Trim();
+                            if (oSQLSugarHelper.LinkDb.IsAny(it => it.SN == sSerialNumber))
+                            {
+                                nReCount++;
+                                continue;
+                            }
+
                             Link oLink = new Link();
                             oLink.GUID = Guid.NewGuid();
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                            oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
+                            oLink.URL = item.Attribute("href").AttributeValue;
                             oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
+                            oLink.Date = Convert.ToDateTime(item.FindLast("date").InnerText().Trim() + " 00:00:01");
                             oLink.Name = item.InnerText();
                             oLink.NameChs = item.InnerText();
                             //0 视频，1图片，2文字 ，3其他
-                            oLink.Type = 1;
-
-                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID))
-                                oSQLSugarHelper.LinkDb.Insert(oLink);
-                            else
-                            {
-                                nReCount++;
-                                continue;
-                            }
-                        }
-                    }
-                    else if (oPageDocument.Exists(".box.movie_list ul li a"))
-                    {
-                        //未找到分类标签 box movie_list
-                        var oCategoryEnmuar = oPageDocument.Find(".box.movie_list ul li a");
-                        foreach (var item in oCategoryEnmuar)
-                        {
-                            if (item.Exists("h3"))
-                            {
-                                if (string.IsNullOrEmpty(item.FindFirst("h3").InnerText()))
-                                    continue;
-                            }
-                            else
-                                continue;
-
-                            Link oLink = new Link();
-                            oLink.GUID = Guid.NewGuid();
-                            oLink.CategoryGUID = oCategory.GUID;
-                            oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                            oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
-                            oLink.ID = MD5.GetBufferHash(oLink.URL);
-                            oLink.Name = item.InnerText();
-                            if (oLink.Name.StartsWith("(v)"))
-                                oLink.Name = oLink.Name.Remove(0, 3).Trim();
-                            oLink.NameChs = oLink.Name;
-                            //0 视频，1图片，2文字 ，3其他
                             oLink.Type = 0;
 
-                            if (!oSQLSugarHelper.LinkDb.IsAny(it => it.ID == oLink.ID))
-                                oSQLSugarHelper.LinkDb.Insert(oLink);
-                            else
-                            {
-                                nReCount++;
-                                continue;
-                            }
+                            oSQLSugarHelper.LinkDb.Insert(oLink);
+                            iSumCount++;
+
+                            //标题图
+                            Resource oResource = new Resource();
+                            oResource.WebsiteGUID = oLink.WebsiteGUID;
+                            oResource.PageGUID = oLink.GUID;
+                            oResource.URL = item.FindFirst("img").Attribute("src").AttributeValue;
+                            oResource.Original = Path.GetFileName(oResource.URL);
+                            oResource.Path = oResource.Original;
+                            oResource.FileName = oResource.Path;
+                            oResource.Type = (byte)CommonHelper.CommonHelper.ResourceType.Title;
+                            oSQLSugarHelper.ResourceDb.Insert(oResource);
+
                         }
                     }
                     else
@@ -514,21 +484,25 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                     }
 
-                    //组合下一页地址
-                    sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 5) + "-" + (iThisPageNum + 1) +
-                        oCategory.URL.Substring(oCategory.URL.Length - 5, 5);
+                    Console.WriteLine("该分类完成总量：" + iSumCount);
+                    Console.WriteLine("当前任务页码：" + sThisPageNum);
+                    Console.WriteLine("当前任务地址：" + sGetUrl);
 
-                    Console.WriteLine("当前任务页码：" + iThisPageNum);
-                    Console.WriteLine("总任务页码：" + iEndPageNum);
-                    Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
-                    if (iThisPageNum < iEndPageNum)
+                    //获取下页地址
+                    if (oPageDocument.Exists(sGetNextURL))
+                    {
+                        sGetUrl = oPageDocument.FindFirst(sGetNextURL).Attribute("href").AttributeValue;
                         goto GetUrl;
+                    }
+                    else
+                        goto End;
                 }
                 else
                 {
                     //解析页面失败
                 }
 
+            End:
                 oCategory.Processed = 2;
                 oSQLSugarHelper.CategoryDb.Update(oCategory);
 
@@ -537,8 +511,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             catch (Exception ex)
             {
                 Logger.LogException(ex);
-                Console.WriteLine("当前任务页码：" + iThisPageNum);
-                Console.WriteLine("总任务页码：" + iEndPageNum);
+                Console.WriteLine("当前任务页码：" + sThisPageNum);
+                Console.WriteLine("总任务页码：" + iSumCount);
                 Console.WriteLine("当前任务分类名称为：" + oCategory.Name);
 #if DEBUG
                 Console.ReadLine();
@@ -555,18 +529,16 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         {
             try
             {
-                //标题
-                string sTitle = ".media-body .break-all";
-                //海报 [0]
-                string sBannerImages = ".message.break-all img";
+                //标题 innerText
+                string sTitle = "h3";
+                //海报 href
+                string sBannerImages = ".bigImage";
                 //简介
-                string sDetail = ".message.break-all p";
-                //截图 [1]
-                string sScreenShot = ".message.break-all img";
-                //资源链接
-                string sResourceLinks = ".message.break-all p";
-                //种子
-                string sTorrent = ".fieldset ul li a";
+                string sDetail = ".info p";
+                //演员 
+                string sAvatar = ".avatar-box";
+                //详情图
+                string sResourceLinks = ".sample-box";
 
                 string sGetUrl = "";
                 string sHTML = "";
@@ -601,10 +573,150 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //解析页面
                 if (oPageDocument != null)
                 {
+                    if (!oPageDocument.Exists(sTitle))
+                    {
+                        oResult.Processed = 3;
+                        oSQLSugarHelper.LinkDb.Update(oResult);
+                        return;
+                    }
 
+                    //标题
+                    oResult.Title = oPageDocument.FindFirst(sTitle).InnerText().Trim();
 
+                    //Banner图
+                    Resource oResource = new Resource();
+                    oResource.WebsiteGUID = oResult.WebsiteGUID;
+                    oResource.PageGUID = oResult.GUID;
+                    oResource.URL = oPageDocument.FindFirst(sBannerImages).Attribute("href").AttributeValue;
+                    oResource.Original = Path.GetFileName(oResource.URL);
+                    oResource.Path = oResource.Original;
+                    oResource.FileName = oResource.Path;
+                    oResource.Type = (byte)CommonHelper.CommonHelper.ResourceType.Banner;
+                    oSQLSugarHelper.ResourceDb.Insert(oResource);
 
+                    //演员
+                    if (oPageDocument.Exists(sAvatar))
+                    {
+                        int nAvatarCount = 0;
+                        var oAvatarList = oPageDocument.Find(sAvatar);
+                        foreach (var item in oAvatarList)
+                        {
+                            string sName = item.InnerText().Trim();
+                            Tag oTag = new Tag();
+                            oTag.LinkGUID = oResult.GUID;
+                            oTag.Name = "演员";
+                            oTag.Value = sName;
+                            oTag.URL = item.Attribute("href").AttributeValue;
 
+                            if (oSQLSugarHelper.PropertyValueDb.IsAny(it => it.Name == sName && it.WebsiteGUID == oResult.WebsiteGUID))
+                                oTag.ObjectGUID = oSQLSugarHelper.PropertyValueDb.GetList(it => it.Name == sName && it.WebsiteGUID == oResult.WebsiteGUID)[0].GUID;
+                            else
+                            {
+                                PropertyValue propertyValue = new PropertyValue();
+                                propertyValue.GUID = Guid.NewGuid();
+                                propertyValue.KeyGUID = oSQLSugarHelper.PropertyKeyDb.GetList(it => it.Name == "演员" && it.WebsiteGUID == oResult.WebsiteGUID)[0].GUID;
+                                propertyValue.Name = sName;
+                                propertyValue.WebsiteGUID = oResult.WebsiteGUID;
+                                oSQLSugarHelper.PropertyValueDb.Insert(propertyValue);
+
+                                oTag.ObjectGUID = propertyValue.GUID;
+                            }
+                            oSQLSugarHelper.TagDb.Insert(oTag);
+                            nAvatarCount++;
+                        }
+                        Console.WriteLine("插入演员信息：" + nAvatarCount + "个");
+                    }
+
+                    //详情图
+                    if (oPageDocument.Exists(sResourceLinks))
+                    {
+                        int nDetailCount = 0;
+                        int nDetailReCount = 0;
+                        var oDetailList = oPageDocument.Find(sResourceLinks);
+                        foreach (var item in oDetailList)
+                        {
+                            oResource = new Resource();
+                            oResource.WebsiteGUID = oResult.WebsiteGUID;
+                            oResource.PageGUID = oResult.GUID;
+                            oResource.URL = item.Attribute("href").AttributeValue;
+                            oResource.Original = Path.GetFileName(oResource.URL);
+                            oResource.Path = oResource.Original;
+                            oResource.FileName = oResource.Path;
+                            oResource.Type = (byte)CommonHelper.CommonHelper.ResourceType.Banner;
+                            if (!oSQLSugarHelper.ResourceDb.IsAny(it => it.FileName == oResource.FileName && it.WebsiteGUID == oResult.WebsiteGUID))
+                            {
+                                oSQLSugarHelper.ResourceDb.Insert(oResource);
+                                nDetailCount++;
+                            }
+                            else
+                                nDetailReCount++;
+                        }
+                        Console.WriteLine("插入详情图：" + nDetailCount + "个，已有" + nDetailReCount + "个");
+                    }
+
+                    //详情
+                    if (oPageDocument.Exists(sDetail))
+                    {
+                        int nDetailCount = 0;
+                        var oDetailList = oPageDocument.Find(sDetail);
+                        Tag oTag = new Tag();
+
+                        foreach (var item in oDetailList)
+                        {
+                            if (item.Attribute("class") == null)
+                            {
+                                if (item.Find("a").Count() == 1 && item.Find("span").Count() == 1)
+                                {
+                                    oTag = new Tag();
+                                    oTag.LinkGUID = oResult.GUID;
+                                    oTag.Name = item.FindFirst("span").InnerText().Trim();
+                                    oTag.Value = item.FindFirst("a").InnerText().Trim();
+                                    oTag.URL = item.FindFirst("a").Attribute("href").AttributeValue;
+                                    oSQLSugarHelper.TagDb.Insert(oTag);
+                                    nDetailCount++;
+                                }
+                                else if (item.Find("a").Count() == 0 && item.Find("span").Count() <= 2)
+                                {
+                                    oTag = new Tag();
+                                    oTag.LinkGUID = oResult.GUID;
+                                    oTag.Name = item.FindFirst("span").InnerText().Trim();
+                                    if (item.Find("span").Count() == 2)
+                                        oTag.Value = item.FindLast("span").InnerText().Trim();
+                                    else
+                                        oTag.Value = item.InnerText().Trim().Replace(oTag.Name, "").Trim();
+                                    oSQLSugarHelper.TagDb.Insert(oTag);
+                                    nDetailCount++;
+                                }
+                                else if (item.Find("a").Count() == 1 && item.Find("span").Count() == 0)
+                                {
+                                    oTag.URL = item.FindFirst("a").Attribute("href").AttributeValue;
+                                    oTag.Value = item.FindFirst("a").InnerText().Trim();
+                                    oSQLSugarHelper.TagDb.Insert(oTag);
+                                    nDetailCount++;
+                                }
+                                else if (item.Find("span").Count() > 2)
+                                {
+                                    foreach (var itemValue in item.Find("span"))
+                                    {
+                                        var oTags = new Tag();
+                                        oTags.LinkGUID = oResult.GUID;
+                                        oTags.Name = oTag.Name;
+                                        oTags.Value = item.FindFirst("a").InnerText().Trim();
+                                        oTags.URL = item.FindFirst("a").Attribute("href").AttributeValue;
+                                        oSQLSugarHelper.TagDb.Insert(oTags);
+                                        nDetailCount++;
+                                    }
+                                }
+                            }
+                            else if (item.Attribute("class") != null)
+                            {
+                                oTag = new Tag();
+                                oTag.LinkGUID = oResult.GUID;
+                                oTag.Name = item.InnerText().Trim();
+                            }
+                        }
+                        Console.WriteLine("插入详细信息：" + nDetailCount + "条");
+                    }
                 }
                 else
                 {

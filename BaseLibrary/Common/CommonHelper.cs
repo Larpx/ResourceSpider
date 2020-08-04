@@ -40,6 +40,16 @@ namespace Larpx.ResourceSpider.CommonHelper
         }
 
         /// <summary>
+        /// 数据库类型
+        /// </summary>
+        public enum ResourceType
+        {
+            Title = 0,
+            Banner = 1,
+            Detail = 2
+        }
+
+        /// <summary>
         /// 生成随机序列
         /// </summary>
         /// <param name="Length"></param>
