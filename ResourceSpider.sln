@@ -32,6 +32,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevPlan", "DevPlan", "{4091
 		DevPlan.txt = DevPlan.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "platform", "platform", "{740A27F1-585A-490B-8659-30A0F2F8B012}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiderPlatform", "SpiderPlatform\SpiderPlatform.csproj", "{68968D1E-FB36-446F-8EB4-3FBA6309267C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +76,10 @@ Global
 		{D6448628-4F12-400C-9C5E-E4F429AE6F26}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3DC932D2-9635-4659-B756-0B8778873A3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3DC932D2-9635-4659-B756-0B8778873A3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68968D1E-FB36-446F-8EB4-3FBA6309267C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68968D1E-FB36-446F-8EB4-3FBA6309267C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68968D1E-FB36-446F-8EB4-3FBA6309267C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68968D1E-FB36-446F-8EB4-3FBA6309267C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +94,7 @@ Global
 		{177812A2-5EAB-46DF-A7D5-D2EB19B295E7} = {D2556F06-129F-49F2-A69E-A849C31AF4FD}
 		{D6448628-4F12-400C-9C5E-E4F429AE6F26} = {0470F611-6CC2-4CAB-86EE-A086252213A3}
 		{3DC932D2-9635-4659-B756-0B8778873A3E} = {0470F611-6CC2-4CAB-86EE-A086252213A3}
+		{68968D1E-FB36-446F-8EB4-3FBA6309267C} = {740A27F1-585A-490B-8659-30A0F2F8B012}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CA0C91B-9CBA-4BEC-B33C-8735861D0714}

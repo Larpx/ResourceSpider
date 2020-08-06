@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Larpx.ResourceSpider.SpiderPlatform</AssemblyName>
+    <RootNamespace>Larpx.ResourceSpider.SpiderPlatform</RootNamespace>
+    <Copyright>Copyright © by Larpx</Copyright>
+    <PackageProjectUrl>https://larpx.cn</PackageProjectUrl>
+    <Description>简单高效的爬虫框架</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.24" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="sqlSugarCore" Version="5.0.0.15" />
+  </ItemGroup>
+
+</Project>
