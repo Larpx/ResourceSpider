@@ -1,17 +1,12 @@
-﻿using Brotli;
-using Ivony.Html;
-using Ivony.Html.Parser;
+﻿using Ivony.Html;
 using Larpx.Logs;
 using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Web.UI.WebControls;
 using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
