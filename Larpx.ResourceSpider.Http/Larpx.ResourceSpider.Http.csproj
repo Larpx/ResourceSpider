@@ -12,8 +12,4 @@
     <ProjectReference Include="..\BaseLibrary\Larpx.ResourceSpider.BaseLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Downloader\" />
-  </ItemGroup>
-
 </Project>
