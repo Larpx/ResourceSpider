@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Data
 {
-    public class ClassData
+    public class BaseClassData
     {
         /// <summary>
         /// Http请求参考类

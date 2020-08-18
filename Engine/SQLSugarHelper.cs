@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
+using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.Engine
 {

@@ -1,10 +1,10 @@
 ﻿using HtmlAgilityPack;
-using Larpx.ResourceSpider.BaseLibrary.Helper;
+using Larpx.ResourceSpider.BaseLibrary.Helpers;
 using Larpx.ResourceSpider.Selector.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
+using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.Selector.Selectables
 {

@@ -11,9 +11,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static Larpx.ResourceSpider.BaseLibrary.Data.ClassData;
+using static Larpx.ResourceSpider.BaseLibrary.Data.BaseClassData;
 
-namespace Larpx.ResourceSpider.CommonHelper
+namespace Larpx.ResourceSpider.Helpers.Web
 {
     /// <summary>
     /// Http连接操作帮助类

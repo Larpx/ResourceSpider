@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Larpx.ResourceSpider.Helpers.Encode;
+using Larpx.ResourceSpider.Helpers.Web;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -7,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
 
-namespace Larpx.ResourceSpider.CommonHelper
+namespace Larpx.ResourceSpider.Helpers
 {
     public class TransHelper
     {

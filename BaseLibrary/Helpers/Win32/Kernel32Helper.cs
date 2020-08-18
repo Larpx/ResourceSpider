@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Larpx.ResourceSpider.BaseLibrary.Win32
+namespace Larpx.ResourceSpider.BaseLibrary.Helpers.Win32
 {
     /// <summary>
     /// kernel32.dll API
     /// </summary>
-    public static class Kernel32
+    public static class Kernel32Helper
     {
         /// <summary>
         /// 内存复制

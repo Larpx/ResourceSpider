@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Larpx.ResourceSpider.BaseLibrary.Helper
+namespace Larpx.ResourceSpider.BaseLibrary.Helpers
 {
     public static class SystemInfoHelper
     {

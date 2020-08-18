@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
+using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.Selector
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Larpx.ResourceSpider.BaseLibrary.Helper
+namespace Larpx.ResourceSpider.BaseLibrary.Helpers
 {
     /// <summary>
     /// 参数合法性检查类

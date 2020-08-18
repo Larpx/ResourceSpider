@@ -92,9 +92,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine\Engine.csproj">
+    <ProjectReference Include="..\Engine\Larpx.ResourceSpider.Engine.csproj">
       <Project>{ab904ef4-a208-41b0-a84e-3569c10d769f}</Project>
-      <Name>Engine</Name>
+      <Name>Larpx.ResourceSpider.Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

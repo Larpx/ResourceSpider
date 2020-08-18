@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Larpx.ResourceSpider.CommonHelper
+namespace Larpx.ResourceSpider.Helpers.Web
 {
     public class ProxyHelper
     {

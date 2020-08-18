@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Larpx.ResourceSpider.CommonHelper
+namespace Larpx.ResourceSpider.Helpers.Web
 {
     /// <summary>
     /// Cookie 助手

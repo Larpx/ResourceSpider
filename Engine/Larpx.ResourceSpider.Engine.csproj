@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj" />
+    <ProjectReference Include="..\BaseLibrary\Larpx.ResourceSpider.BaseLibrary.csproj" />
   </ItemGroup>
 
 </Project>

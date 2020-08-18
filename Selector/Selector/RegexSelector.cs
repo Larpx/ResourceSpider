@@ -1,4 +1,4 @@
-﻿using Larpx.ResourceSpider.BaseLibrary.Helper;
+﻿using Larpx.ResourceSpider.BaseLibrary.Helpers;
 using Larpx.ResourceSpider.Selector.Selectables;
 using System.Collections.Generic;
 using System.Linq;

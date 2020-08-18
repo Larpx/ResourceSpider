@@ -110,13 +110,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
+    <ProjectReference Include="..\BaseLibrary\Larpx.ResourceSpider.BaseLibrary.csproj">
       <Project>{1bfefaa8-8dd6-4f5b-bdbd-481ff7e5c6d9}</Project>
-      <Name>BaseLibrary</Name>
+      <Name>Larpx.ResourceSpider.BaseLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\Engine.csproj">
+    <ProjectReference Include="..\Engine\Larpx.ResourceSpider.Engine.csproj">
       <Project>{ab904ef4-a208-41b0-a84e-3569c10d769f}</Project>
-      <Name>Engine</Name>
+      <Name>Larpx.ResourceSpider.Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

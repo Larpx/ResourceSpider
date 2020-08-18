@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace Larpx.ResourceSpider.BaseLibrary.Helper
+namespace Larpx.ResourceSpider.BaseLibrary.Helpers
 {
     public class ParameterBuilder : DataDictionary
     {
