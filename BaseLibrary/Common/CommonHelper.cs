@@ -91,6 +91,16 @@ namespace Larpx.ResourceSpider.CommonHelper
         }
 
         /// <summary>
+        /// 选择器类型
+        /// </summary>
+        public enum SelectableType
+        {
+            Text,
+            Html,
+            Json
+        }
+
+        /// <summary>
         /// 生成随机序列
         /// </summary>
         /// <param name="Length"></param>
