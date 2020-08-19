@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Larpx.ResourceSpider.Http
+namespace Larpx.ResourceSpider.Http.Content
 {
     [Serializable]
     public class ResponseContent

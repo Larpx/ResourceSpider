@@ -1,5 +1,6 @@
 ﻿using Larpx.ResourceSpider.BaseLibrary.Helpers;
 using Larpx.ResourceSpider.Helpers.Encode;
+using Larpx.ResourceSpider.Http.Content;
 using MessagePack;
 using System;
 using System.Collections.Generic;
@@ -85,6 +86,13 @@ namespace Larpx.ResourceSpider.Http
         public RequestPolicy Policy { get; set; }
 
         public string Proxy { get; set; }
+
+        [IgnoreMember]
+        public string RedialRegExp
+        {
+            get => GetProperty(Consts.RedialRegexExpression);
+            set => SetProperty(Consts.RedialRegexExpression, value);
+        }
 
         /// <summary>
         /// User-Agent

@@ -2,7 +2,7 @@
 using MessagePack;
 using System.Collections.Generic;
 
-namespace Larpx.ResourceSpider.Http
+namespace Larpx.ResourceSpider.Http.Content
 {
     public abstract class RequestContent
     {

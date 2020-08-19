@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Larpx.ResourceSpider.Http.Content;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;

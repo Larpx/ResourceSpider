@@ -72,6 +72,27 @@
         public const string WWWAuthenticate = "WWW-Authenticate";
     }
 
+    public static class Consts
+    {
+        public const string ProxyPrefix = "PROXY_";
+        public const string RedialRegexExpression = "REDIAL_REGEXP";
+        public const string ResponseBytes = "RESPONSE_BYTES";
+    }
+
+    public class PPPoEOptions
+    {
+        /// <summary>
+        /// 节点类型
+        /// ADSL 和普通型不能混合部署
+        /// </summary>
+        public string ADSLAccount { get; set; }
+        public string ADSLPassword { get; set; }
+        /// <summary>
+        /// ADSL 网络接口
+        /// </summary>
+        public string ADSLInterface { get; set; }
+    }
+
     public enum RequestPolicy
     {
         /// <summary>
