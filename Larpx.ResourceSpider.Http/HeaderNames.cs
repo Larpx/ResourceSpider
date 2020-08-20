@@ -93,6 +93,9 @@
         public string ADSLInterface { get; set; }
     }
 
+    /// <summary>
+    /// 下载策略
+    /// </summary>
     public enum RequestPolicy
     {
         /// <summary>
@@ -104,5 +107,37 @@
         /// 链式
         /// </summary>
         Chained
+    }
+
+    /// <summary>
+    /// 下载类型
+    /// </summary>
+    public enum DownloaderTypeNames
+    {
+        /// <summary>
+        /// 使用HttpClient
+        /// </summary>
+        HttpClient,
+
+        /// <summary>
+        /// 使用HttpClient并启用ADSL拨号
+        /// </summary>
+        HttpClientWithADSL,
+
+        /// <summary>
+        /// 使用Puppeteer模拟浏览器
+        /// </summary>
+        Puppeteer,
+
+        /// <summary>
+        /// 使用Puppeteer模拟浏览器并启用ADSL拨号
+        /// </summary>
+        PuppeteerWithADSL,
+
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        File
+
     }
 }

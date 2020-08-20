@@ -43,7 +43,7 @@ namespace Larpx.ResourceSpider.Http
         /// <summary>
         /// 下载代理类型
         /// </summary>
-        public string DownloaderType { get; set; } = "HttpClient";
+        public DownloaderTypeNames DownloaderType { get; set; } = DownloaderTypeNames.HttpClient;
 
         /// <summary>
         /// 链接的深度
@@ -253,6 +253,10 @@ namespace Larpx.ResourceSpider.Http
             }
         }
 
+        /// <summary>
+        /// 计算Hash
+        /// </summary>
+        /// <returns></returns>
         public virtual string ComputeHash()
         {
             // Agent 不需要添加的原因是，每当 Request 再次添加到 Scheduler 前 Requested +1 已经导致 Hash 变化
@@ -273,6 +277,10 @@ namespace Larpx.ResourceSpider.Http
             return $"Method: {Method} URL: {RequestUri}, Requested: {RequestedTimes}";
         }
 
+        /// <summary>
+        /// 深复制
+        /// </summary>
+        /// <returns></returns>
         public Request Clone()
         {
             var request = new Request
