@@ -23,4 +23,10 @@
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System.Management">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Management.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

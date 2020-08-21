@@ -92,10 +92,10 @@
         /// </summary>
         public string ADSLInterface { get; set; }
     }
-
-    /// <summary>
-    /// 下载策略
-    /// </summary>
+    
+        /// <summary>
+        /// 下载策略
+        /// </summary>
     public enum RequestPolicy
     {
         /// <summary>

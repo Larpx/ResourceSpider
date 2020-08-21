@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Runtime.InteropServices;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Helpers
@@ -24,6 +25,22 @@ namespace Larpx.ResourceSpider.BaseLibrary.Helpers
                     .Select(line => line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Take(2).ToList())
                     .ToDictionary(items => items[0], items => long.Parse(items[1]));
                 TotalMemory = (int)(infoDict["MemTotal:"] / 1024);
+            }
+        }
+
+        /// <summary> 
+        /// 判断当前系统是否为64位系统
+        /// </summary> 
+        /// <returns>64位返回true，32位false</returns> 
+        public static bool Is64bit()
+        {
+            try
+            {
+                return IntPtr.Size == 8;
+            }
+            catch
+            {
+                return false;
             }
         }
 
