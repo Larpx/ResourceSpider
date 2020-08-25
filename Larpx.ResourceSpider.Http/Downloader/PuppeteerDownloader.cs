@@ -95,5 +95,10 @@ namespace Larpx.ResourceSpider.Http.Downloader
                 throw ex;
             }
         }
+
+        public Task<string> DownloadStringAsync(Request request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

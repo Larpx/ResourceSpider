@@ -100,6 +100,46 @@ namespace Larpx.ResourceSpider.Http.Downloader
             }
         }
 
+        public async Task<string> DownloadStringAsync(Request request)
+        {
+            try
+            {
+                string sPppoeErroeMessage = "";
+                var stopwatch = new Stopwatch();
+                var clientName = string.IsNullOrWhiteSpace(request.Proxy)
+                    ? request.RequestUri.Host
+                    : $"{Consts.ProxyPrefix}{request.Proxy}";
+
+                //创建HttpClient，创建请求对象
+                var httpClient = _httpClientFactory.CreateClient(clientName);
+                var httpRequest = GenerateHttpRequestMessage(request);
+
+                //执行网络请求
+                stopwatch.Start();
+                var httpResponseMessage = await httpClient.SendAsync(httpRequest);
+                stopwatch.Stop();
+
+                //是否使用PPPOE
+                if (request.DownloaderType == DownloaderTypeNames.HttpClientWithADSL && request.DownloaderType == DownloaderTypeNames.PuppeteerWithADSL)
+                {
+                    var oResponse = _pppoeService.DetectAsync(request, out sPppoeErroeMessage);
+                    if (oResponse != null)
+                    {
+                        _logger.LogError($"{request.RequestUri} 下载失败，ADSL拨号时出现问题，错误信息：{sPppoeErroeMessage}");
+                        return null;
+                    }
+                }
+
+                //处理返回信息
+                return httpResponseMessage.Content.ReadAsStringAsync().Result;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{request.RequestUri} 下载失败，错误信息: {e}");
+                return null;
+            }
+        }
+
         private HttpRequestMessage GenerateHttpRequestMessage(Request request)
         {
             try
