@@ -4,6 +4,8 @@ namespace Larpx.ResourceSpider.Http.Downloader
 {
     public interface IDownloader
     {
-        Task<Response> DownloadAsync(Request request);
+        Task<Response> DownloadResponseAsync(Request request);
+
+        Task<string> DownloadStringAsync(Request request);
     }
 }

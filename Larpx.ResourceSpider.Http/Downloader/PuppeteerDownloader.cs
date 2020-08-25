@@ -17,8 +17,10 @@ namespace Larpx.ResourceSpider.Http.Downloader
         private const string BackupDownloadHost = @"https://mirrors.huaweicloud.com/";
         private const string DefaultDownloadHost = "https://storage.googleapis.com";
 
-        public PuppeteerDownloader()
+        public PuppeteerDownloader(ILogger<PuppeteerDownloader> logger, PPPoEService pppoeService)
         {
+            _logger = logger;
+            _pppoeService = pppoeService;
             Init();
         }
 
@@ -29,7 +31,10 @@ namespace Larpx.ResourceSpider.Http.Downloader
         {
             try
             {
+                string sHost = "";
                 Platform oPlatform = Platform.Unknown;
+
+                //测试平台
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
                     oPlatform = Platform.Linux;
@@ -46,14 +51,16 @@ namespace Larpx.ResourceSpider.Http.Downloader
                     oPlatform = Platform.MacOS;
                 }
 
-                CommonHelper.PingIp(DefaultDownloadHost);
+                //测试下载地址
+                if (Helpers.CommonHelper.PingIp(DefaultDownloadHost))
+                    sHost = DefaultDownloadHost;
+                else if (Helpers.CommonHelper.PingIp(BackupDownloadHost))
+                    sHost = BackupDownloadHost;
 
                 new BrowserFetcher(new BrowserFetcherOptions()
                 {
-                    Host = "",
+                    Host = sHost,
                     Platform = oPlatform
-
-
                 }).DownloadAsync(ChromiumRevision).Wait();
             }
             catch (Exception ex)
@@ -62,17 +69,26 @@ namespace Larpx.ResourceSpider.Http.Downloader
             }
         }
 
-        public PuppeteerDownloader(ILogger logger, PPPoEService pppoeService)
-        {
-            _logger = logger;
-            _pppoeService = pppoeService;
-        }
-
-        public Task<Response> DownloadAsync(Request request)
+        public async Task<Response> DownloadResponseAsync(Request request)
         {
             try
             {
-
+                //Starting headless browser
+                using (Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
+                {
+                    Headless = true,
+                    IgnoreHTTPSErrors = true,
+                    IgnoreDefaultArgs = true
+                }))
+                {
+                    var pages = await browser.PagesAsync();
+                    using (var firstPage = pages.Length > 0 ? pages[0] : await browser.NewPageAsync())
+                    {
+                        await firstPage.SetCookieAsync(new CookieParam());
+                        await firstPage.GoToAsync(request.RequestUri.ToString());
+                        var htmlString = await firstPage.GetContentAsync();
+                    }
+                }
             }
             catch (Exception ex)
             {

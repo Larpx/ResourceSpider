@@ -33,7 +33,7 @@ namespace Larpx.ResourceSpider.Http.Downloader
                 _pppoeService = pppoeService;
         }
 
-        public async Task<Response> DownloadAsync(Request request)
+        public async Task<Response> DownloadResponseAsync(Request request)
         {
             try
             {
