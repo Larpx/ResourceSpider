@@ -18,12 +18,13 @@ namespace Larpx.ResourceSpider.Helpers
         /// </summary>
         /// <param name="strIP"></param>
         /// <returns></returns>
-        public bool PingIp(string strIP)
+        public static bool PingIp(string strIP)
         {
             bool bRet = false;
             try
             {
                 Ping pingSend = new Ping();
+                strIP = strIP.Replace("https://", "").Replace("http://", "").Replace("/", "").Trim();
                 PingReply reply = pingSend.Send(strIP, 1000);
                 if (reply.Status == IPStatus.Success)
                     bRet = true;

@@ -46,7 +46,7 @@ namespace Larpx.ResourceSpider.Http.Downloader
                     oPlatform = Platform.MacOS;
                 }
 
-                CommonHelper
+                CommonHelper.PingIp(DefaultDownloadHost);
 
                 new BrowserFetcher(new BrowserFetcherOptions()
                 {
