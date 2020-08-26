@@ -1,4 +1,6 @@
-﻿namespace Larpx.ResourceSpider.Http
+﻿using Newtonsoft.Json;
+
+namespace Larpx.ResourceSpider.Http
 {
     public static class HeaderNames
     {
@@ -92,10 +94,10 @@
         /// </summary>
         public string ADSLInterface { get; set; }
     }
-    
-        /// <summary>
-        /// 下载策略
-        /// </summary>
+
+    /// <summary>
+    /// 下载策略
+    /// </summary>
     public enum RequestPolicy
     {
         /// <summary>
@@ -139,5 +141,103 @@
         /// </summary>
         File
 
+    }
+
+    /// <summary>
+    /// Puppeteer中Cookie中的SameSite值
+    /// </summary>
+    public enum SameSite
+    {
+        /// <summary>
+        /// 无
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// 严格的
+        /// </summary>
+        Strict = 1,
+        /// <summary>
+        /// 松懈
+        /// </summary>
+        Lax = 2,
+        /// <summary>
+        /// 扩展
+        /// </summary>
+        Extended = 3
+    }
+
+    /// <summary>
+    /// Cookies信息
+    /// </summary>
+    public class CookieItem : PuppeteerSharp.CookieParam
+    {
+        public CookieItem()
+        {
+
+        }
+
+        ///// <summary>
+        ///// Cookies名
+        ///// </summary>
+        //public string Name { get; set; }
+
+        ///// <summary>
+        ///// Cookie值
+        ///// </summary>
+        //public string Value { get; set; }
+
+        ///// <summary>
+        ///// Cookie作用域
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public string Domain { get; set; }
+
+        ///// <summary>
+        ///// 限定URL
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public string Url { get; set; }
+
+        ///// <summary>
+        ///// 路径
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public string Path { get; set; }
+
+        ///// <summary>
+        ///// 获取或设置过期时间。Unix时间（秒）
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public double? Expires { get; set; }
+
+        ///// <summary>
+        ///// 尺寸
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public int? Size { get; set; }
+
+        ///// <summary>
+        ///// 是否是HttpOnly
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public bool? HttpOnly { get; set; }
+
+        ///// <summary>
+        ///// 是否是安全的
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public bool? Secure { get; set; }
+
+        ///// <summary>
+        ///// 是否仅用作Session
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public bool? Session { get; set; }
+
+        ///// <summary>
+        ///// samesite值
+        ///// </summary>
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public SameSite? SameSite { get; set; }
     }
 }
