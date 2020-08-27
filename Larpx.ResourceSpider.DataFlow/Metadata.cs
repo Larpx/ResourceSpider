@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Larpx.ResourceSpider.DataFlow.Storage
+namespace Larpx.ResourceSpider.DataFlow
 {
     /// <summary>
     /// 表元数据
@@ -196,5 +196,36 @@ namespace Larpx.ResourceSpider.DataFlow.Storage
         /// 表名的后缀为当月 {name}_201712
         /// </summary>
         Month
+    }
+
+    /// <summary>
+    /// 查询器类型
+    /// </summary>
+    public enum SelectorType
+    {
+        /// <summary>
+        /// XPath
+        /// </summary>
+        XPath,
+
+        /// <summary>
+        /// Regex
+        /// </summary>
+        Regex,
+
+        /// <summary>
+        /// Css
+        /// </summary>
+        Css,
+
+        /// <summary>
+        /// JsonPath
+        /// </summary>
+        JsonPath,
+
+        /// <summary>
+        /// Environment
+        /// </summary>
+        Environment
     }
 }
