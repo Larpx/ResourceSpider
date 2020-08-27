@@ -34,9 +34,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "platform", "platform", "{74
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiderPlatform", "SpiderPlatform\SpiderPlatform.csproj", "{68968D1E-FB36-446F-8EB4-3FBA6309267C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Larpx.ResourceSpider.Selector", "Selector\Larpx.ResourceSpider.Selector.csproj", "{8F9BA217-68CC-49E0-8AE1-16C40AD2BB34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Larpx.ResourceSpider.Selector", "Selector\Larpx.ResourceSpider.Selector.csproj", "{8F9BA217-68CC-49E0-8AE1-16C40AD2BB34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Larpx.ResourceSpider.Http", "Larpx.ResourceSpider.Http\Larpx.ResourceSpider.Http.csproj", "{0081B39A-2E43-4862-8E8D-5C66C300B287}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Larpx.ResourceSpider.Http", "Larpx.ResourceSpider.Http\Larpx.ResourceSpider.Http.csproj", "{0081B39A-2E43-4862-8E8D-5C66C300B287}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Larpx.ResourceSpider.DataFlow", "Larpx.ResourceSpider.DataFlow\Larpx.ResourceSpider.DataFlow.csproj", "{FC51301C-C362-4068-A703-EA1BA04E5532}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,10 @@ Global
 		{0081B39A-2E43-4862-8E8D-5C66C300B287}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0081B39A-2E43-4862-8E8D-5C66C300B287}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0081B39A-2E43-4862-8E8D-5C66C300B287}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC51301C-C362-4068-A703-EA1BA04E5532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC51301C-C362-4068-A703-EA1BA04E5532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC51301C-C362-4068-A703-EA1BA04E5532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC51301C-C362-4068-A703-EA1BA04E5532}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{68968D1E-FB36-446F-8EB4-3FBA6309267C} = {740A27F1-585A-490B-8659-30A0F2F8B012}
 		{8F9BA217-68CC-49E0-8AE1-16C40AD2BB34} = {D2556F06-129F-49F2-A69E-A849C31AF4FD}
 		{0081B39A-2E43-4862-8E8D-5C66C300B287} = {D2556F06-129F-49F2-A69E-A849C31AF4FD}
+		{FC51301C-C362-4068-A703-EA1BA04E5532} = {D2556F06-129F-49F2-A69E-A849C31AF4FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CA0C91B-9CBA-4BEC-B33C-8735861D0714}

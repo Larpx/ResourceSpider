@@ -2,17 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>Larpx.ResourceSpider.Engine</AssemblyName>
-    <RootNamespace>Larpx.ResourceSpider.Engine</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.35" />
-    <PackageReference Include="sqlSugarCore" Version="5.0.0.15" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\Larpx.ResourceSpider.BaseLibrary.csproj" />
+    <ProjectReference Include="..\Larpx.ResourceSpider.Http\Larpx.ResourceSpider.Http.csproj" />
+    <ProjectReference Include="..\Selector\Larpx.ResourceSpider.Selector.csproj" />
   </ItemGroup>
 
 </Project>

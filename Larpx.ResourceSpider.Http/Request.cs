@@ -62,7 +62,7 @@ namespace Larpx.ResourceSpider.Http
         /// <summary>
         /// 已经重试的次数
         /// </summary>
-        public int RequestedTimes { get; internal set; }
+        public int RequestedTimes { get; set; }
 
         /// <summary>
         /// 请求的方法
