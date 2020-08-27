@@ -98,6 +98,8 @@ namespace Larpx.ResourceSpider.Http.Downloader
         {
             try
             {
+                //PPPOE服务返回信息
+                string sPppoeErroeMessage = "";
                 //计时器
                 var stopwatch = new Stopwatch();
                 //Starting headless browser
@@ -118,6 +120,17 @@ namespace Larpx.ResourceSpider.Http.Downloader
                         stopwatch.Start();
                         var oPuppeteerResponse = await firstPage.GoToAsync(request.RequestUri.ToString());
                         stopwatch.Stop();
+
+                        //是否使用PPPOE
+                        if (request.DownloaderType == DownloaderTypeNames.HttpClientWithADSL && request.DownloaderType == DownloaderTypeNames.PuppeteerWithADSL)
+                        {
+                            var oResponse = _pppoeService.DetectAsync(request, out sPppoeErroeMessage);
+                            if (oResponse != null)
+                            {
+                                _logger.LogError($"{request.RequestUri} 下载失败，ADSL拨号时出现问题，错误信息：{sPppoeErroeMessage}");
+                                return null;
+                            }
+                        }
 
                         //处理返回的响应信息
                         Response = new Response
@@ -154,6 +167,8 @@ namespace Larpx.ResourceSpider.Http.Downloader
         {
             try
             {
+                //PPPOE服务返回信息
+                string sPppoeErroeMessage = "";
                 //计时器
                 var stopwatch = new Stopwatch();
                 //Starting headless browser
@@ -174,6 +189,17 @@ namespace Larpx.ResourceSpider.Http.Downloader
                         stopwatch.Start();
                         var oPuppeteerResponse = await firstPage.GoToAsync(request.RequestUri.ToString());
                         stopwatch.Stop();
+
+                        //是否使用PPPOE
+                        if (request.DownloaderType == DownloaderTypeNames.HttpClientWithADSL && request.DownloaderType == DownloaderTypeNames.PuppeteerWithADSL)
+                        {
+                            var oResponse = _pppoeService.DetectAsync(request, out sPppoeErroeMessage);
+                            if (oResponse != null)
+                            {
+                                _logger.LogError($"{request.RequestUri} 下载失败，ADSL拨号时出现问题，错误信息：{sPppoeErroeMessage}");
+                                return null;
+                            }
+                        }
 
                         //处理返回的响应信息
                         Response = new Response

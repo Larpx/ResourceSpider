@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Larpx.ResourceSpider.Http.Downloader
 {
@@ -17,7 +15,11 @@ namespace Larpx.ResourceSpider.Http.Downloader
             _dict = new ConcurrentDictionary<string, IDownloader>();
         }
 
-
+        /// <summary>
+        /// 创建下载器
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public IDownloader Create(string type)
         {
             var downloader = _dict.GetOrAdd(type, t =>
