@@ -2,10 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Larpx.ResourceSpider.DataFlow
 {
+    /// <summary>
+    /// SQL 语句
+    /// </summary>
+    public class SqlStatements
+    {
+        /// <summary>
+        /// 数据库名称 SQL
+        /// </summary>
+        public string DatabaseSql { get; set; }
+
+        /// <summary>
+        /// 创建表的 SQL 语句
+        /// </summary>
+        public string CreateTableSql { get; set; }
+
+        /// <summary>
+        /// 创建数据库的 SQL 语句
+        /// </summary>
+        public string CreateDatabaseSql { get; set; }
+
+        /// <summary>
+        /// 插入的 SQL 语句
+        /// </summary>
+        public string InsertSql { get; set; }
+
+        /// <summary>
+        /// 插入并且忽略重复数据的 SQL 语句
+        /// </summary>
+        public string InsertIgnoreDuplicateSql { get; set; }
+
+        /// <summary>
+        /// 更新的 SQL 语句
+        /// </summary>
+        public string UpdateSql { get; set; }
+
+        /// <summary>
+        /// 插入新的或者更新旧的数据 SQL 语句
+        /// </summary>
+        public string InsertAndUpdateSql { get; set; }
+    }
+
     /// <summary>
     /// 表元数据
     /// </summary>
@@ -171,6 +211,7 @@ namespace Larpx.ResourceSpider.DataFlow
         public PropertyInfo PropertyInfo { get; set; }
     }
 
+    #region enum
 
     /// <summary>
     /// 表名后缀
@@ -196,6 +237,32 @@ namespace Larpx.ResourceSpider.DataFlow
         /// 表名的后缀为当月 {name}_201712
         /// </summary>
         Month
+    }
+
+    /// <summary>
+    /// 存储器类型
+    /// </summary>
+    public enum StorageMode
+    {
+        /// <summary>
+        /// 直接执行插入
+        /// </summary>
+        Insert,
+
+        /// <summary>
+        /// 插入不重复数据
+        /// </summary>
+        InsertIgnoreDuplicate,
+
+        /// <summary>
+        /// 如果主键不存在则插入, 如果存在则更新
+        /// </summary>
+        InsertAndUpdate,
+
+        /// <summary>
+        /// 直接更新
+        /// </summary>
+        Update
     }
 
     /// <summary>
@@ -228,4 +295,6 @@ namespace Larpx.ResourceSpider.DataFlow
         /// </summary>
         Environment
     }
+
+    #endregion
 }
