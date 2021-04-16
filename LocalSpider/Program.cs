@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
+using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.LocalSpider
 {

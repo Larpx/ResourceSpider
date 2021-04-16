@@ -3,13 +3,14 @@ using Ivony.Html;
 using Ivony.Html.Parser;
 using Larpx.Logs;
 using Larpx.ResourceSpider.Engine;
+using Larpx.ResourceSpider.Helpers.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
+using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
@@ -70,7 +71,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     foreach (var item in value)
                     {
                         //深拷贝
-                        this._ListWebsites.Add(CommonHelper.CommonHelper.Clone<Website>(item));
+                        this._ListWebsites.Add(Helpers.CommonHelper.Clone<Website>(item));
                     }
                 }
                 else
@@ -87,7 +88,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     foreach (var item in value)
                     {
                         //深拷贝
-                        this._ListCategory.Add(CommonHelper.CommonHelper.Clone<Category>(item));
+                        this._ListCategory.Add(Helpers.CommonHelper.Clone<Category>(item));
                     }
                 }
                 else
@@ -104,7 +105,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     foreach (var item in value)
                     {
                         //深拷贝
-                        this._ListLink.Add(CommonHelper.CommonHelper.Clone<Link>(item));
+                        this._ListLink.Add(Helpers.CommonHelper.Clone<Link>(item));
                     }
                 }
                 else
@@ -142,7 +143,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     foreach (var item in _ListWebsites)
                     {
                         //深拷贝
-                        this._ListWebsites.Add(CommonHelper.CommonHelper.Clone<Website>(item));
+                        this._ListWebsites.Add(Helpers.CommonHelper.Clone<Website>(item));
                     }
                 }
                 else
@@ -158,7 +159,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     foreach (var item in _ListCategory)
                     {
                         //深拷贝
-                        this._ListCategory.Add(CommonHelper.CommonHelper.Clone<Category>(item));
+                        this._ListCategory.Add(Helpers.CommonHelper.Clone<Category>(item));
                     }
                 }
                 else
@@ -174,7 +175,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     foreach (var item in _ListLink)
                     {
                         //深拷贝
-                        this._ListLink.Add(CommonHelper.CommonHelper.Clone<Link>(item));
+                        this._ListLink.Add(Helpers.CommonHelper.Clone<Link>(item));
                     }
                 }
                 else
@@ -356,7 +357,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     throw new ArgumentNullException();
 
                 //请求页面
-                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sURL, oCookies))
+                using (var oResponse =EasyHttpHelper.ReadData(sURL, oCookies))
                 {
                     if (oResponse == null)
                         return null;

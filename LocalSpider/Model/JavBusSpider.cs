@@ -1,13 +1,14 @@
 ﻿using Ivony.Html;
 using Larpx.Logs;
-using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
+using Larpx.ResourceSpider.Helpers.Encode;
+using Larpx.ResourceSpider.Helpers.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
+using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
@@ -15,7 +16,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
     {
         private const int m_oRepeatCount = 8;
         private string sWebSiteID = "be0f73a5590307e6dfe06015adbaa8a8";
-        public JavBusSpider(Guid oWebGUID, CommonHelper.CommonHelper.DatabaseType oDatabaseType = CommonHelper.CommonHelper.DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger oLogger = null, bool bDeepClone = false, List<Website> _ListWebsites = null, List<Category> _ListCategory = null, List<Link> _ListLink = null) :
+        public JavBusSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger oLogger = null, bool bDeepClone = false, List<Website> _ListWebsites = null, List<Category> _ListCategory = null, List<Link> _ListLink = null) :
             base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, oLogger, bDeepClone, _ListWebsites, _ListCategory, _ListLink)
         {
             //https://avmoo.host/cn
@@ -63,7 +64,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 websiteOther.Status = 1;
                 websiteOther.Deleted = false;
                 websiteOther.IsCookies = true;
-                websiteOther.ID = CommonHelper.MD5.GetBufferHash(websiteOther.URL).ToLower();
+                websiteOther.ID = MD5.GetBufferHash(websiteOther.URL).ToLower();
 
                 //查重
                 if (!oWebsites.IsAny(it => it.ID == websiteOther.ID))
@@ -126,7 +127,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 {
                     case 0:
                         //获取Cookies
-                        var oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
+                        var oCookies = EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
 
                         sURL += sCategoryURL;
 
@@ -188,7 +189,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     {
                                         metaData.Name = "charset";
                                         metaData.Content = item.Attribute("charset").AttributeValue;
-                                        metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Charset;
+                                        metaData.Type = (byte)MetaType.Charset;
                                     }
                                     else if (item.Attribute("name") != null)
                                     {
@@ -198,31 +199,31 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                                 metaData.Name = "viewport";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Viewport;
+                                                metaData.Type = (byte)MetaType.Viewport;
                                                 break;
                                             case "keywords":
                                                 metaData.Name = "keywords";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Keywords;
+                                                metaData.Type = (byte)MetaType.Keywords;
                                                 break;
                                             case "description":
                                                 metaData.Name = "description";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Description;
+                                                metaData.Type = (byte)MetaType.Description;
                                                 break;
                                             case "renderer":
                                                 metaData.Name = "renderer";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Renderer;
+                                                metaData.Type = (byte)MetaType.Renderer;
                                                 break;
                                             default:
                                                 metaData.Name = "other";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Other;
+                                                metaData.Type = (byte)MetaType.Other;
                                                 break;
                                         }
                                     }
@@ -234,19 +235,19 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                                 metaData.Name = "X-UA-Compatible";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.X_UA_Compatible;
+                                                metaData.Type = (byte)MetaType.X_UA_Compatible;
                                                 break;
                                             case "cache-control":
                                                 metaData.Name = "Cache-Control";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Cache_Control;
+                                                metaData.Type = (byte)MetaType.Cache_Control;
                                                 break;
                                             default:
                                                 metaData.Name = "other";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Other;
+                                                metaData.Type = (byte)MetaType.Other;
                                                 break;
                                         }
                                     }
@@ -281,7 +282,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 Console.WriteLine("当前任务地址：" + sURL);
 
                                 //请求页面
-                                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sURL, oCookies))
+                                using (var oResponse = EasyHttpHelper.ReadData(sURL, oCookies))
                                 {
                                     if (oResponse == null)
                                         return null;
@@ -403,7 +404,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 var oCookies = new CookieCollection();
 
                 if (bGetCookie)
-                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+                    oCookies = EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 GetUrl:
                 nReCount = 0;
@@ -450,7 +451,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = item.Attribute("href").AttributeValue;
-                            oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
+                            oLink.SN =Helpers.CommonHelper. GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Date = Convert.ToDateTime(item.FindLast("date").InnerText().Trim() + " 00:00:01");
                             oLink.Name = item.InnerText();
@@ -469,7 +470,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oResource.Original = Path.GetFileName(oResource.URL);
                             oResource.Path = oResource.Original;
                             oResource.FileName = oResource.Path;
-                            oResource.Type = (byte)CommonHelper.CommonHelper.ResourceType.Title;
+                            oResource.Type = (byte)ResourceType.Title;
                             oSQLSugarHelper.ResourceDb.Insert(oResource);
 
                         }
@@ -557,7 +558,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 var oCookies = new CookieCollection();
 
                 if (bGetCookie)
-                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+                    oCookies = EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 //请求页面
                 if (bGetCookie)
@@ -586,7 +587,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     oResource.Original = Path.GetFileName(oResource.URL);
                     oResource.Path = oResource.Original;
                     oResource.FileName = oResource.Path;
-                    oResource.Type = (byte)CommonHelper.CommonHelper.ResourceType.Banner;
+                    oResource.Type = (byte)ResourceType.Banner;
                     oSQLSugarHelper.ResourceDb.Insert(oResource);
 
                     //演员
@@ -637,7 +638,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oResource.Original = Path.GetFileName(oResource.URL);
                             oResource.Path = oResource.Original;
                             oResource.FileName = oResource.Path;
-                            oResource.Type = (byte)CommonHelper.CommonHelper.ResourceType.Banner;
+                            oResource.Type = (byte)ResourceType.Banner;
                             if (!oSQLSugarHelper.ResourceDb.IsAny(it => it.FileName == oResource.FileName && it.WebsiteGUID == oResult.WebsiteGUID))
                             {
                                 oSQLSugarHelper.ResourceDb.Insert(oResource);

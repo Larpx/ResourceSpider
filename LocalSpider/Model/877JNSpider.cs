@@ -63,7 +63,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 website.Status = 1;
                 website.Deleted = false;
                 website.IsCookies = false;
-                website.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
+                website.ID = MD5.GetBufferHash(website.URL).ToLower();
 
                 //查重
                 if (!oWebsites.IsAny(it => it.ID == website.ID))
@@ -313,7 +313,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 var oCookies = new CookieCollection();
 
                 if (bGetCookie)
-                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+                    oCookies = EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 GetUrl:
                 nReCount = 0;
@@ -364,7 +364,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            oLink.SN = GenerateNonceStr();
+                            oLink.SN = Helpers.CommonHelper.GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Name = item.InnerText();
                             oLink.NameChs = item.InnerText();
@@ -399,7 +399,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            oLink.SN = GenerateNonceStr();
+                            oLink.SN = Helpers.CommonHelper.GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Name = item.InnerText();
                             if (oLink.Name.StartsWith("(v)"))
@@ -498,7 +498,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 var oCookies = new CookieCollection();
 
                 if (bGetCookie)
-                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+                    oCookies = EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 //请求页面
                 if (bGetCookie)

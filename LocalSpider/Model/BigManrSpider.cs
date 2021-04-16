@@ -1,15 +1,16 @@
 ﻿using Ivony.Html;
 using Ivony.Html.Parser;
 using Larpx.Logs;
-using Larpx.ResourceSpider.CommonHelper;
 using Larpx.ResourceSpider.Engine;
+using Larpx.ResourceSpider.Helpers.Encode;
+using Larpx.ResourceSpider.Helpers.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
-using static Larpx.ResourceSpider.CommonHelper.CommonHelper;
+using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
@@ -66,7 +67,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 website.Status = 1;
                 website.Deleted = false;
                 website.IsCookies = false;
-                website.ID = CommonHelper.MD5.GetBufferHash(website.URL).ToLower();
+                website.ID = MD5.GetBufferHash(website.URL).ToLower();
 
                 //查重
                 if (!oWebsites.IsAny(it => it.ID == website.ID))
@@ -125,7 +126,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 {
                     //处理不规范URL
                     oWebsite.URL = "http://" + oWebsite.URL;
-                    oWebsite.ID = CommonHelper.MD5.GetBufferHash(oWebsite.URL).ToLower();
+                    oWebsite.ID = MD5.GetBufferHash(oWebsite.URL).ToLower();
                     sWebSiteID = oWebsite.ID;
                     oSQLSugarHelper.WebsiteDb.Update(oWebsite);
                 }
@@ -134,10 +135,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 {
                     case 0:
                         //获取Cookies
-                        var oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
+                        var oCookies = EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
 
                         //请求页面
-                        using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(oWebsite.URL, oCookies))
+                        using (var oResponse = EasyHttpHelper.ReadData(oWebsite.URL, oCookies))
                         {
                             if (oResponse == null)
                                 return null;
@@ -231,7 +232,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                     {
                                         metaData.Name = "charset";
                                         metaData.Content = item.Attribute("charset").AttributeValue;
-                                        metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Charset;
+                                        metaData.Type = (byte)MetaType.Charset;
                                     }
                                     else if (item.Attribute("name") != null)
                                     {
@@ -241,31 +242,31 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                                 metaData.Name = "viewport";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Viewport;
+                                                metaData.Type = (byte)MetaType.Viewport;
                                                 break;
                                             case "keywords":
                                                 metaData.Name = "keywords";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Keywords;
+                                                metaData.Type = (byte)MetaType.Keywords;
                                                 break;
                                             case "description":
                                                 metaData.Name = "description";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Description;
+                                                metaData.Type = (byte)MetaType.Description;
                                                 break;
                                             case "renderer":
                                                 metaData.Name = "renderer";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Renderer;
+                                                metaData.Type = (byte)MetaType.Renderer;
                                                 break;
                                             default:
                                                 metaData.Name = "other";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Other;
+                                                metaData.Type = (byte)MetaType.Other;
                                                 break;
                                         }
                                     }
@@ -277,19 +278,19 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                                 metaData.Name = "X-UA-Compatible";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.X_UA_Compatible;
+                                                metaData.Type = (byte)MetaType.X_UA_Compatible;
                                                 break;
                                             case "cache-control":
                                                 metaData.Name = "Cache-Control";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Cache_Control;
+                                                metaData.Type = (byte)MetaType.Cache_Control;
                                                 break;
                                             default:
                                                 metaData.Name = "other";
                                                 if (item.Attribute("content") != null)
                                                     metaData.Content = item.Attribute("content").AttributeValue;
-                                                metaData.Type = (byte)CommonHelper.CommonHelper.MetaType.Other;
+                                                metaData.Type = (byte)MetaType.Other;
                                                 break;
                                         }
                                     }
@@ -354,13 +355,13 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 var oCookies = new CookieCollection();
 
                 if (bGetCookie)
-                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+                    oCookies = EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 GetUrl:
                 nReCount = 0;
 
                 //请求页面
-                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sGetUrl, oCookies))
+                using (var oResponse = EasyHttpHelper.ReadData(sGetUrl, oCookies))
                 {
                     if (oResponse == null)
                         return null;
@@ -443,7 +444,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
+                            oLink.SN =Helpers.CommonHelper. GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Name = item.InnerText();
                             oLink.NameChs = item.InnerText();
@@ -478,7 +479,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            oLink.SN = CommonHelper.CommonHelper.GenerateNonceStr();
+                            oLink.SN = Helpers.CommonHelper.GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Name = item.InnerText();
                             if (oLink.Name.StartsWith("(v)"))
@@ -577,10 +578,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 var oCookies = new CookieCollection();
 
                 if (bGetCookie)
-                    oCookies = CommonHelper.EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
+                    oCookies = EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 //请求页面
-                using (var oResponse = CommonHelper.EasyHttpHelper.ReadData(sGetUrl, oCookies))
+                using (var oResponse = EasyHttpHelper.ReadData(sGetUrl, oCookies))
                 {
                     if (oResponse == null)
                         return;
