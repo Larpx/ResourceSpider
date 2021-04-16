@@ -12,20 +12,19 @@ using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
-    public class _877JNSpider : BaseSpider
+    public class F4SSpider : BaseSpider
     {
         private const int m_oRepeatCount = 8;
-        private const string m_sNorListPage = ".list-group .a-list";
-        private const string m_sMovieListPage = ".card-link";
-        private const string m_sThisPage = ".page-item.active";
-        private const string m_sDetailImg = "#content img";
-        private const string m_sXSDetail = "#content";
-        private string sWebSiteID = "efec65b622aea9d13d68aac07fc61c6a";
+        private const string m_sEndPages = ".pagination .hidden-xs";
+        private const string m_sThisPage = ".pagination strong";
+        private const string m_sListPage = ".box.list.channel ul li a";
+        private const string m_sMoviePage = ".box.movie_list ul li a";
+        private string sWebSiteID = "fabed58122c576d92c4eb81b9c32a7e6";
 
-        public _877JNSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
+        public F4SSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
             base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
         {
-            //http://8468.xyz
+
         }
 
         /// <summary>
@@ -65,8 +64,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
 
                 Website website = new Website();
-                website.Name = "8468.xyz";
-                website.URL = "http://8468.xyz";
+                website.Name = "四色AV-sise,四色AV官网,四色AV最新网址ＷＷＷ．Ｄ８ＣＥＤ１Ｃ７６４８９Ｃ２ＥＢ．ＣＯＭＷＷＷ．Ｄ８ＣＥＤ１Ｃ７６４８９Ｃ２ＥＢ．ＣＯＭ";
+                website.URL = "https://www.d8ced1c76489c2eb.com";
                 website.Status = 1;
                 website.Deleted = false;
                 website.IsCookies = false;
@@ -117,7 +116,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 string sMetaData = "meta";
-                string sCategoryCollection = ".dropdown-menu a";
+                string sCategoryCollection = "#section-menu ul li a";
 
                 string sHTML = "";
                 Random oRand = new Random();
@@ -335,14 +334,14 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 if (oPageDocument != null)
                 {
                     //获取总页码
-                    //if (bFirst)
-                    //{
-                    //    bFirst = false;
-                    //    if (oPageDocument.Exists(".page .end"))
-                    //        iEndPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .end").InnerText());
-                    //    else
-                    //        iEndPageNum = 1;
-                    //}
+                    if (bFirst)
+                    {
+                        bFirst = false;
+                        if (oPageDocument.Exists(m_sEndPages))
+                            iEndPageNum = Convert.ToInt32(oPageDocument.FindFirst(m_sEndPages).InnerText());
+                        else
+                            iEndPageNum = 1;
+                    }
 
                     //获取本页页码
                     if (oPageDocument.Exists(m_sThisPage))
@@ -351,9 +350,9 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         iThisPageNum++;
 
                     //解析页面
-                    if (oPageDocument.Exists(m_sNorListPage))
+                    if (oPageDocument.Exists(m_sListPage))
                     {
-                        var oCategoryEnmuar = oPageDocument.Find(m_sNorListPage);
+                        var oCategoryEnmuar = oPageDocument.Find(m_sListPage);
                         foreach (var item in oCategoryEnmuar)
                         {
                             //判断重复
@@ -387,23 +386,30 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             }
                         }
                     }
-                    else if (oPageDocument.Exists(m_sMovieListPage))
+                    else if (oPageDocument.Exists(m_sMoviePage))
                     {
                         //未找到分类标签 box movie_list
-                        var oCategoryEnmuar = oPageDocument.Find(m_sMovieListPage);
+                        var oCategoryEnmuar = oPageDocument.Find(m_sMoviePage);
                         foreach (var item in oCategoryEnmuar)
                         {
+                            if (item.Exists("h3"))
+                            {
+                                if (string.IsNullOrEmpty(item.FindFirst("h3").InnerText()))
+                                    continue;
+                            }
+                            else
+                                continue;
+
                             Link oLink = new Link();
                             oLink.GUID = Guid.NewGuid();
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                            if (!item.Attribute("href").AttributeValue.StartsWith("http"))
-                                oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            else
-                                oLink.URL = item.Attribute("href").AttributeValue;
+                            oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
                             oLink.SN = Helpers.CommonHelper.GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Name = item.InnerText();
+                            if (oLink.Name.StartsWith("(v)"))
+                                oLink.Name = oLink.Name.Remove(0, 3).Trim();
                             oLink.NameChs = oLink.Name;
                             //0 视频，1图片，2文字 ，3其他
                             oLink.Type = 0;
@@ -422,18 +428,14 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                     }
 
-                    var oNextPage = oPageDocument.FindLast(".page-item a");
-
-
                     //组合下一页地址
-                    sGetUrl = oNextPage.Attribute("href").AttributeValue;
-                    if (!sGetUrl.StartsWith("http"))
-                        sGetUrl = oWebs.URL + sGetUrl;
+                    sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 5) + "-" + (iThisPageNum + 1) +
+                        oCategory.URL.Substring(oCategory.URL.Length - 5, 5);
 
                     Console.WriteLine("当前任务页码：" + iThisPageNum);
                     Console.WriteLine("总任务页码：" + iEndPageNum);
                     Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
-                    if (oNextPage.InnerText().Trim() == "〉")
+                    if (iThisPageNum < iEndPageNum)
                         goto GetUrl;
                 }
                 else
@@ -480,6 +482,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 //种子
                 string sTorrent = ".fieldset ul li a";
 
+
+                string sImgContext = "#main-container .content img";
+                string sVedioContext = "#main-container .downlist input";
+                string sXSContext = "#main-container .content p";
+                string sLYContext = "#main-container video source";
+
                 string sGetUrl = "";
                 string sHTML = "";
                 bool bGetCookie = false;
@@ -514,18 +522,18 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 if (oPageDocument != null)
                 {
                     int nSum = 0;
-                    if (oPageDocument.Exists(m_sDetailImg))
+                    if (oPageDocument.Exists(sImgContext))
                     {
                         //图片
-                        var list = oPageDocument.Find(m_sDetailImg);
+                        var list = oPageDocument.Find(sImgContext);
                         foreach (var item in list)
                         {
-                            if (item.Attribute("src") != null && !string.IsNullOrWhiteSpace(item.Attribute("src").AttributeValue))
+                            if (item.Attribute("data-original") != null && !string.IsNullOrWhiteSpace(item.Attribute("data-original").AttributeValue))
                             {
                                 Resource resource = new Resource();
                                 resource.WebsiteGUID = oResult.WebsiteGUID;
                                 resource.PageGUID = oResult.GUID;
-                                resource.URL = item.Attribute("src").AttributeValue;
+                                resource.URL = item.Attribute("data-original").AttributeValue;
                                 resource.Original = Path.GetFileName(resource.URL);
                                 resource.Type = 1;
                                 resource.Path = resource.URL;
@@ -544,49 +552,19 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 Console.WriteLine($"资源链接：获取失败。");
                         }
                         Console.WriteLine($"资源页面共存储{nSum}条数据。");
-                        goto End;
                     }
-                    else if (oPageDocument.Exists("#content .lightbox"))
+                    else if (oPageDocument.Exists(sVedioContext))
                     {
-                        //图片
-                        var list = oPageDocument.Find("#content .lightbox");
+                        //视频
+                        var list = oPageDocument.Find(sVedioContext);
                         foreach (var item in list)
                         {
-                            if (item.Attribute("src") != null && !string.IsNullOrWhiteSpace(item.Attribute("src").AttributeValue))
-                            {
-                                Resource resource = new Resource();
-                                resource.WebsiteGUID = oResult.WebsiteGUID;
-                                resource.PageGUID = oResult.GUID;
-                                resource.URL = item.Attribute("src").AttributeValue;
-                                resource.Original = Path.GetFileName(resource.URL);
-                                resource.Type = 1;
-                                resource.Path = resource.URL;
-                                resource.FileName = resource.Original;
-
-                                var bResult = oSQLSugarHelper.ResourceDb.Insert(resource);
-                                if (bResult)
-                                {
-                                    Console.WriteLine($"资源链接：{resource.URL} 存储成功！");
-                                    nSum++;
-                                }
-                                else
-                                    Console.WriteLine($"资源链接：{resource.URL} 存储失败！");
-                            }
-                            else
-                                Console.WriteLine($"资源链接：获取失败。");
-                        }
-                        Console.WriteLine($"资源页面共存储{nSum}条数据。");
-
-                        //视频
-                        var list2 = oPageDocument.Find("#content");
-                        foreach (var item in list2)
-                        {
-                            if (!string.IsNullOrWhiteSpace(item.InnerText()))
+                            if (item.Attribute("data-clipboard-text") != null && !string.IsNullOrWhiteSpace(item.Attribute("data-clipboard-text").AttributeValue))
                             {
                                 ResourceData resource = new ResourceData();
                                 resource.WebsiteGUID = oResult.WebsiteGUID;
                                 resource.ObjectGUID = oResult.GUID;
-                                resource.URL = item.InnerText();
+                                resource.URL = item.Attribute("data-clipboard-text").AttributeValue;
                                 if (resource.URL.StartsWith("http"))
                                 {
                                     resource.Original = Path.GetFileName(resource.URL);
@@ -630,14 +608,12 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 Console.WriteLine($"资源链接：获取失败。");
                         }
                         Console.WriteLine($"资源页面共存储{nSum}条数据。");
-
-                        goto End;
                     }
-                    else if (oPageDocument.Exists(m_sXSDetail))
+                    else if (oPageDocument.Exists(sXSContext))
                     {
                         //小说
                         StringBuilder stringBuilder = new StringBuilder();
-                        var list = oPageDocument.Find(m_sXSDetail);
+                        var list = oPageDocument.Find(sXSContext);
                         foreach (var item in list)
                         {
                             if (!string.IsNullOrWhiteSpace(item.InnerText()))
@@ -648,6 +624,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 Console.WriteLine($"资源链接：获取失败。");
                         }
 
+
                         Resource resource = new Resource();
                         resource.WebsiteGUID = oResult.WebsiteGUID;
                         resource.PageGUID = oResult.GUID;
@@ -655,7 +632,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         resource.Original = oPageDocument.FindFirst("title").InnerText();
                         //小说
                         resource.Type = 3;
-                        resource.Path = stringBuilder.ToString();
+                        resource.Path = stringBuilder.ToString() ;
                         resource.FileName = resource.Original;
 
                         var bResult = oSQLSugarHelper.ResourceDb.Insert(resource);
@@ -668,7 +645,37 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             Console.WriteLine($"小说资源：{resource.URL} 存储失败！");
 
                         Console.WriteLine($"小说资源页面共存储完成。");
-                        goto End;
+                    }
+                    else if (oPageDocument.Exists(sLYContext))
+                    {
+                        //语音
+                        var list = oPageDocument.Find(sLYContext);
+                        foreach (var item in list)
+                        {
+                            if (item.Attribute("src") != null && !string.IsNullOrWhiteSpace(item.Attribute("src").AttributeValue))
+                            {
+                                Resource resource = new Resource();
+                                resource.WebsiteGUID = oResult.WebsiteGUID;
+                                resource.PageGUID = oResult.GUID;
+                                resource.URL = item.Attribute("src").AttributeValue;
+                                resource.Original = Path.GetFileName(resource.URL);
+                                resource.Type = 4;
+                                resource.Path = resource.URL;
+                                resource.FileName = resource.Original;
+
+                                var bResult = oSQLSugarHelper.ResourceDb.Insert(resource);
+                                if (bResult)
+                                {
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储成功！");
+                                    nSum++;
+                                }
+                                else
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储失败！");
+                            }
+                            else
+                                Console.WriteLine($"资源链接：获取失败。");
+                        }
+                        Console.WriteLine($"资源页面共存储{nSum}条数据。");
                     }
                 }
                 else
@@ -676,7 +683,6 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     //解析页面失败
                 }
 
-            End:
                 oResult.Processed = 2;
                 oSQLSugarHelper.LinkDb.Update(oResult);
             }

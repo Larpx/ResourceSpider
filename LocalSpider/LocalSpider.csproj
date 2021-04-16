@@ -81,15 +81,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\4SSpider.cs" />
     <Compile Include="Model\877JNSpider.cs" />
     <Compile Include="Model\BigManrSpider.cs" />
     <Compile Include="Model\AVmooSpider.cs" />
     <Compile Include="Model\JavBusSpider.cs" />
-    <Compile Include="Model\SpiderInterface.cs" />
     <Compile Include="Model\BaseSpider.cs" />
+    <Compile Include="Model\SpiderInterface.cs" />
     <Compile Include="Model\UUMP4Spider.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="MSScriptControl">
@@ -104,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\Larpx.ResourceSpider.BaseLibrary.csproj">
@@ -135,6 +134,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

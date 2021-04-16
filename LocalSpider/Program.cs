@@ -92,5 +92,23 @@ namespace Larpx.ResourceSpider.LocalSpider
                 throw ex;
             }
         }
+
+        private static void DoExce4(object obj)
+        {
+            try
+            {
+                Dictionary<string, object> oArr = new Dictionary<string, object>();
+                string sUU = "fabed58122c576d92c4eb81b9c32a7e6";
+                F4SSpider _o877JNSpider = new F4SSpider(Guid.Empty, DatabaseType.MySql, sUU, bDebug, sLoggerPath, m_oLogger);
+                oArr.Add("ID", sUU);
+                oArr.Add("DatabaseType", DatabaseType.MySql);
+                _o877JNSpider.DoExce(oArr);
+            }
+            catch (Exception ex)
+            {
+                m_oLogger.LogException(ex);
+                throw ex;
+            }
+        }
     }
 }
