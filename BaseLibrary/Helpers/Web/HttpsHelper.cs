@@ -711,7 +711,8 @@ namespace Larpx.ResourceSpider.Helpers.Web
                 //获取Cookie
                 if (request.CookieContainer == null)
                     request.CookieContainer = new CookieContainer();
-                request.CookieContainer.Add(oCookieCollection);
+                if (oCookieCollection != null)
+                    request.CookieContainer.Add(oCookieCollection);
 
                 System.Net.ServicePointManager.Expect100Continue = false;
                 ServicePointManager.MaxServicePointIdleTime = 2000;

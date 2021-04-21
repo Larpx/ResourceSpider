@@ -4,6 +4,7 @@ using Larpx.Logs;
 using Larpx.ResourceSpider.Engine;
 using Larpx.ResourceSpider.Helpers.Encode;
 using Larpx.ResourceSpider.Helpers.Web;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +34,54 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
         {
             //https://www.uump4.net/
+        }
+
+        public void TestExce(Dictionary<string, object> arr)
+        {
+            try
+            {
+                bool bLooper = true;
+                var ow = GetWebsiteList(sWebSiteID);
+                List<Category> oCategoryList = new List<Category>();
+                List<Link> oLinkList = new List<Link>();
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+                foreach (var item in ow)
+                {
+                    oCategoryList.AddRange(GetCategoryList(item));
+                }
+
+                while (bLooper)
+                {
+                    if (oSQLSugarHelper.LinkDb.Count(it => it.WebsiteGUID == oCategoryList[0].WebsiteGUID && it.Processed != 2 && it.Deleted == false) <= 0)
+                        break;
+
+                    foreach (var item in oCategoryList)
+                    {
+
+
+                        var c = oSQLSugarHelper.Db
+                            .Queryable<Link>()
+                            .Take(1000)
+                            .Where(it => it.CategoryGUID == item.GUID && it.Processed != 2 && it.Deleted == false)
+                            .OrderBy(it => it.GUID, OrderByType.Asc)
+                            .ToList();
+
+                        oLinkList.AddRange(c);
+                    }
+
+                    foreach (var item in oLinkList)
+                    {
+                        GetLinkDetail(item);
+                    }
+
+                    Console.WriteLine($"网站uump4采集完成");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+                throw ex;
+            }
         }
 
         public new int DoExce(Dictionary<string, object> arr)
@@ -486,7 +535,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                                 oLink.CategoryGUID = oCategory.GUID;
                                 oLink.WebsiteGUID = oCategory.WebsiteGUID;
                                 oLink.URL = oWebs.URL + "/" + itemA.Attribute("href").AttributeValue;
-                                oLink.SN =Helpers.CommonHelper. GenerateNonceStr();
+                                oLink.SN = Helpers.CommonHelper.GenerateNonceStr();
                                 oLink.ID = MD5.GetBufferHash(oLink.URL);
                                 oLink.Name = itemA.InnerText();
                                 oLink.NameChs = itemA.InnerText();
@@ -643,9 +692,9 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         var oImgList = oPageDocument.Find(sScreenShot);
                         foreach (var item in oImgList)
                         {
-                            if (item.Attribute("src").AttributeValue == oResource.URL)
+                            if (item.Attribute("src") != null && item.Attribute("src").AttributeValue == oResource.URL)
                                 continue;
-                            if (item.Attribute("src").AttributeValue.Contains("thinkphp.php"))
+                            if (item.Attribute("src") != null && item.Attribute("src").AttributeValue.Contains("thinkphp.php"))
                                 continue;
 
                             Resource oResourceTmp = new Resource();
@@ -720,9 +769,9 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         var oTorrentList = oPageDocument.Find(sTorrent);
                         foreach (var item in oTorrentList)
                         {
-                            if (item.Attribute("src").AttributeValue == oResource.URL)
+                            if (item.Attribute("src") != null && item.Attribute("src").AttributeValue == oResource.URL)
                                 continue;
-                            if (item.Attribute("src").AttributeValue.Contains("thinkphp.php"))
+                            if (item.Attribute("src") != null && item.Attribute("src").AttributeValue.Contains("thinkphp.php"))
                                 continue;
 
                             ResourceData oResourceData = new ResourceData();

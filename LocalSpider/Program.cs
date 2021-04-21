@@ -21,9 +21,9 @@ namespace Larpx.ResourceSpider.LocalSpider
                 ThreadPool.SetMaxThreads(32, 32);
                 ThreadPool.SetMinThreads(8, 8);
 
-                ThreadPool.UnsafeQueueUserWorkItem(DoExce3, args);
-                //ThreadPool.UnsafeQueueUserWorkItem(DoExce2, args);
-
+                ThreadPool.UnsafeQueueUserWorkItem(DoExce1, args);
+                ThreadPool.UnsafeQueueUserWorkItem(DoExce11, args);
+                //DoExce1(args);
                 Console.WriteLine("Task is End,Running times 99999999+ ms");
                 Console.ReadLine();
             }
@@ -48,6 +48,28 @@ namespace Larpx.ResourceSpider.LocalSpider
                 UUMP4Spider uUMP4Spider = new UUMP4Spider(Guid.Empty, DatabaseType.MySql, sUU, bDebug, sLoggerPath, m_oLogger);
                 oArr.Add("ID", sUU);
                 oArr.Add("DatabaseType", DatabaseType.MySql);
+                uUMP4Spider.TestExce(oArr);
+            }
+            catch (Exception ex)
+            {
+                m_oLogger.LogException(ex);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// UUMP4
+        /// </summary>
+        /// <param name="obj"></param>
+        private static void DoExce11(object obj)
+        {
+            try
+            {
+                Dictionary<string, object> oArr = new Dictionary<string, object>();
+                string sUU = "fe1213ba1c94e4a42b72bda9840af83c";
+                UUMP4Spider uUMP4Spider = new UUMP4Spider(Guid.Empty, DatabaseType.MySql, sUU, bDebug, sLoggerPath, m_oLogger);
+                oArr.Add("ID", sUU);
+                oArr.Add("DatabaseType", DatabaseType.MySql);
                 uUMP4Spider.DoExce(oArr);
             }
             catch (Exception ex)
@@ -56,7 +78,7 @@ namespace Larpx.ResourceSpider.LocalSpider
                 throw ex;
             }
         }
-        
+
         private static void DoExce2(object obj)
         {
             try
