@@ -30,8 +30,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// <param name="debug"></param>
         /// <param name="LoggerPath"></param>
         /// <param name="Logger"></param>
-        public UUMP4Spider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
-            base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
+        public UUMP4Spider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, bool bFirst = true, string LoggerPath = null, Logger Logger = null) :
+            base(oWebGUID, oDatabaseType, sWebID, debug,bFirst, LoggerPath, Logger)
         {
             //https://www.uump4.net/
         }

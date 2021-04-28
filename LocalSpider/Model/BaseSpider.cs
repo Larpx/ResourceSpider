@@ -57,10 +57,15 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         #region 属性
 
         public string WebID { get => _WebID; set => _WebID = value; }
+
         public DatabaseType DatabaseType { get => _DatabaseType; set => _DatabaseType = value; }
+
         public bool Debug { get => bDebug; set => bDebug = value; }
+
         public Guid WebGUID { get => _WebGUID; set => _WebGUID = value; }
+
         public Logger Logger { get => m_oLogger; set => m_oLogger = value; }
+
         public List<Website> ListWebsites
         {
             get => _ListWebsites;
@@ -78,6 +83,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     _ListWebsites = value;
             }
         }
+
         public List<Category> ListCategory
         {
             get => _ListCategory;
@@ -95,6 +101,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     _ListCategory = value;
             }
         }
+
         public List<Link> ListLink
         {
             get => _ListLink;
@@ -115,7 +122,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
         #endregion
 
-        public BaseSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger oLogger = null, bool bDeepClone = false,
+        public BaseSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, bool bFirst = true,
+            string LoggerPath = null, Logger oLogger = null, bool bDeepClone = false,
             List<Website> _ListWebsites = null, List<Category> _ListCategory = null, List<Link> _ListLink = null)
         {
             if (oWebGUID == Guid.Empty && string.IsNullOrEmpty(sWebID))
@@ -357,7 +365,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     throw new ArgumentNullException();
 
                 //请求页面
-                using (var oResponse =EasyHttpHelper.ReadData(sURL, oCookies))
+                using (var oResponse = EasyHttpHelper.ReadData(sURL, oCookies))
                 {
                     if (oResponse == null)
                         return null;
@@ -566,6 +574,39 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// </summary>
         /// <param name="oResult"></param>
         public virtual void GetLinkDetail(Link oResult)
+        {
+            try
+            {
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 测试类
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        public int TestExce(Dictionary<string, object> arr)
+        {
+            try
+            {
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 更新操作
+        /// </summary>
+        /// <param name="arr"></param>
+        public void UpdateExce(Dictionary<string, object> arr)
         {
             try
             {
