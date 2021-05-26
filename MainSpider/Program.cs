@@ -1,25 +1,21 @@
-﻿using Larpx.Logs;
+﻿using AngleSharp;
 using System;
-using System.IO;
 
-namespace Larpx.ResourceSpider.MainSpider
+namespace MainSpider
 {
     class Program
     {
-        static string sLoggerPath = "../Logs";
-        static Logger m_oLogger = new ConsoleLogger() + new TextFileLogger(new DirectoryInfo(sLoggerPath));
-
-        public static void Main(string[] args)
+        public static async void Main(string[] args)
         {
-            try
-            {
-                //m_oLogger.LogInfo("Test");
-                //throw new Exception("66");
-            }
-            catch (Exception ex)
-            {
-                m_oLogger.LogException(ex);
-            }
+            var config = Configuration.Default.WithDefaultLoader();
+            var address = "https://www.cnblogs.com";
+            var context = BrowsingContext.New(config);
+            var document = await context.OpenAsync(address);
+
+
+
+
+            Console.WriteLine("Hello World!");
         }
     }
 }
