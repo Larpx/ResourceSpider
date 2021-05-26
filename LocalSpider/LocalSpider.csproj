@@ -82,12 +82,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\4SSpider.cs" />
-    <Compile Include="Model\877JNSpider.cs" />
-    <Compile Include="Model\BigManrSpider.cs" />
+    <Compile Include="Model\DNPPSpider.cs" />
     <Compile Include="Model\AVmooSpider.cs" />
-    <Compile Include="Model\JavBusSpider.cs" />
     <Compile Include="Model\BaseSpider.cs" />
-    <Compile Include="Model\SpiderInterface.cs" />
+    <Compile Include="SpiderInterface.cs" />
     <Compile Include="Model\UUMP4Spider.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

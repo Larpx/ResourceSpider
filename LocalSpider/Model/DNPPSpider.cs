@@ -1,5 +1,4 @@
 ﻿using Ivony.Html;
-using Ivony.Html.Parser;
 using Larpx.Logs;
 using Larpx.ResourceSpider.Engine;
 using Larpx.ResourceSpider.Helpers.Encode;
@@ -7,22 +6,128 @@ using Larpx.ResourceSpider.Helpers.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Larpx.ResourceSpider.BaseLibrary.Data.EnumData;
 
 namespace Larpx.ResourceSpider.LocalSpider.Model
 {
-    public class BigManrSpider : BaseSpider
+    public class DNPPSpider : BaseSpider
     {
-        private const int m_oRepeatCount = 8;
-        private string sWebSiteID = "d9e5780840f6766c7fcbac7cab9538f2";
+        private bool bFirst = true;
+        private const int m_oRepeatCount = 5;
+        private const string m_sNorListPage = ".list-group .a-list";
+        private const string m_sMovieListPage = ".card-link";
+        private const string m_sThisPage = ".page-item.active";
+        private const string m_sDetailImg = "#content img";
+        private const string m_sXSDetail = "#content";
+        private string sWebSiteID = "efec65b622aea9d13d68aac07fc61c6a";
 
-        public BigManrSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
-            base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
+        public DNPPSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, bool bFirst = true, string LoggerPath = null, Logger Logger = null) :
+            base(oWebGUID, oDatabaseType, sWebID, debug, bFirst, LoggerPath, Logger)
         {
-            //http://www.877jn.com
+            this.bFirst = bFirst;
+        }
+
+        /// <summary>
+        /// 执行操作
+        /// Done
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        public new void TestExce(Dictionary<string, object> arr)
+        {
+            try
+            {
+                var ow = GetWebsiteList(sWebSiteID);
+                List<Category> oCategoryList = new List<Category>();
+                List<Link> oLinkList = new List<Link>();
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+                foreach (var item in ow)
+                {
+                    oCategoryList.AddRange(GetCategoryList(item));
+                }
+
+                foreach (var item in oCategoryList)
+                {
+                    GetLinkList(item);
+                }
+
+
+                //while (bLooper)
+                //{
+                //    if (oSQLSugarHelper.LinkDb.Count(it => it.WebsiteGUID == oCategoryList[0].WebsiteGUID && it.Processed != 2 && it.Deleted == false) <= 0)
+                //        break;
+
+                //    foreach (var item in oCategoryList)
+                //    {
+                //        var c = oSQLSugarHelper.Db
+                //            .Queryable<Link>()
+                //            .Take(1000)
+                //            //.Where(it => it.CategoryGUID == item.GUID && it.Processed != 2 && it.Deleted == false)
+                //            //小说
+                //            .Where(it => it.CategoryGUID == new Guid("1a250f05-4a4a-4233-9f6c-9815cb9806db"))
+                //            //视频
+                //            //.Where(it => it.GUID == new Guid("1a250f05-4a4a-4233-9f6c-9815cb9806db"))
+                //            .OrderBy(it => it.GUID, OrderByType.Asc)
+                //            .ToList();
+
+                //        oLinkList.AddRange(c);
+                //    }
+
+                //    foreach (var item in oLinkList)
+                //    {
+                //        GetLinkDetail(item);
+                //    }
+
+                //    Console.WriteLine($"网站{sWebSiteID}采集完成");
+                //}
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 执行操作
+        /// Done
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        public new void UpdateExce(Dictionary<string, object> arr)
+        {
+            try
+            {
+                var ow = GetWebsiteList(sWebSiteID);
+                List<Category> oCategoryList = new List<Category>();
+                List<Link> oLinkList = new List<Link>();
+                SQLSugarHelper oSQLSugarHelper = new SQLSugarHelper(DatabaseType, Debug);
+
+                foreach (var item in ow)
+                {
+                    oCategoryList.AddRange(
+                        oSQLSugarHelper
+                        .CategoryDb
+                        .GetList(it =>
+                                it.WebsiteGUID == item.GUID &&
+                                it.Status == 1 &&
+                                it.Deleted == false &&
+                                it.Processed == 2));
+                }
+
+                foreach (var item in oCategoryList)
+                {
+                    GetLinkList(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -62,8 +167,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
 
                 Website website = new Website();
-                website.Name = "877jn";
-                website.URL = "http://www.877jn.com";
+                website.Name = "8468.xyz";
+                website.URL = "http://8468.xyz";
                 website.Status = 1;
                 website.Deleted = false;
                 website.IsCookies = false;
@@ -96,7 +201,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 SQLSugarHelper<Website> oWebsites = new SQLSugarHelper<Website>(DatabaseType, Debug);
-                return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
+                if (bFirst)
+                    return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed != 2);
+                else
+                    return oWebsites.GetList(it => it.ID == sID && it.Deleted == false && it.Status == 1 && it.Processed == 2);
             }
             catch (Exception ex)
             {
@@ -114,7 +222,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
             try
             {
                 string sMetaData = "meta";
-                string sCategoryCollection = "#header_box ul li a";
+                string sCategoryCollection = ".dropdown-menu a";
 
                 string sHTML = "";
                 Random oRand = new Random();
@@ -138,48 +246,10 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         var oCookies = EasyHttpHelper.GetCookie(new Uri(oWebsite.URL), false);
 
                         //请求页面
-                        using (var oResponse = EasyHttpHelper.ReadData(oWebsite.URL, oCookies))
-                        {
-                            if (oResponse == null)
-                                return null;
-
-                            //页面解码
-                            if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
-                            {
-                                switch (oResponse.ContentEncoding.ToLower())
-                                {
-                                    case "gzip":
-                                        using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                        {
-                                            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                            {
-                                                sHTML = reader.ReadToEnd();
-                                                oPageDocument = new JumonyParser().Parse(sHTML);
-                                            }
-                                        }
-                                        break;
-                                    case "deflate":
-                                        using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                        {
-                                            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                            {
-                                                sHTML = reader.ReadToEnd();
-                                                oPageDocument = new JumonyParser().Parse(sHTML);
-                                            }
-                                        }
-                                        break;
-                                    default:
-                                        //未被压缩,直接解析
-                                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                //未被压缩,直接解析
-                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                            }
-                        }
+                        if (oWebsite.IsCookies)
+                            oPageDocument = ReadDataEncodeHTML(oWebsite.URL, ref sHTML, oCookies);
+                        else
+                            oPageDocument = ReadDataEncodeHTML(oWebsite.URL, ref sHTML);
 
                         //解析页面
                         if (oPageDocument != null)
@@ -304,11 +374,14 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             //解析页面失败
                         }
 
-                        return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false);
+                        return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Processed != 2 && it.Status == 1 && it.Deleted == false);
 
                     case 1:
                     default:
-                        return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false && it.Processed != 2);
+                        if(this.bFirst)
+                            return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false && it.Processed != 2);
+                        else
+                            return oSQLSugarHelper.CategoryDb.GetList(it => it.WebsiteGUID == oWebsite.GUID && it.Status == 1 && it.Deleted == false && it.Processed == 2);
                 }
             }
             catch (Exception ex)
@@ -324,13 +397,13 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// <returns></returns>
         public override List<Link> GetLinkList(Category oCategory)
         {
-            bool bFirst = true;
             int iEndPageNum = 0;
             int iThisPageNum = 1;
             string sGetUrl = "";
 
             try
             {
+                int nSumReCount = 0;
                 int nReCount = 0;
 
                 string sHTML = "";
@@ -361,72 +434,41 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                 nReCount = 0;
 
                 //请求页面
-                using (var oResponse = EasyHttpHelper.ReadData(sGetUrl, oCookies))
-                {
-                    if (oResponse == null)
-                        return null;
-
-                    //页面解码
-                    if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
-                    {
-                        switch (oResponse.ContentEncoding.ToLower())
-                        {
-                            case "gzip":
-                                using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            case "deflate":
-                                using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            default:
-                                //未被压缩,直接解析
-                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        //未被压缩,直接解析
-                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                    }
-                }
+                if (bGetCookie)
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML, oCookies);
+                else
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML);
 
                 //解析页面
                 if (oPageDocument != null)
                 {
-                    //获取总页码
-                    if (bFirst)
-                    {
-                        bFirst = false;
-                        if (oPageDocument.Exists(".page .end"))
-                            iEndPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .end").InnerText());
-                        else
-                            iEndPageNum = 1;
-                    }
+                    var oNextPage = oPageDocument.FindLast(".page-item a");
+
+                    //组合下一页地址
+                    sGetUrl = oNextPage.Attribute("href").AttributeValue;
+                    if (!sGetUrl.StartsWith("http"))
+                        sGetUrl = oWebs.URL + sGetUrl;
 
                     //获取本页页码
-                    if (oPageDocument.Exists(".page .current"))
-                        iThisPageNum = Convert.ToInt32(oPageDocument.FindFirst(".page .current").InnerText());
+                    if (oPageDocument.Exists(m_sThisPage))
+                        iThisPageNum = Convert.ToInt32(oPageDocument.FindFirst(m_sThisPage).InnerText());
                     else
                         iThisPageNum++;
 
-                    //解析页面
-                    if (oPageDocument.Exists(".box.list.channel ul li a"))
+                    //判断重复
+                    if (nSumReCount >= 24)
                     {
-                        var oCategoryEnmuar = oPageDocument.Find(".box.list.channel ul li a");
+                        oCategory.UpdateTime = DateTime.Now;
+                        oCategory.UpdateTimes += 1;
+                        oSQLSugarHelper.CategoryDb.Update(oCategory);
+                        Console.WriteLine("更新完成。");
+                        return oListLink;
+                    }
+
+                    //解析页面
+                    if (oPageDocument.Exists(m_sNorListPage))
+                    {
+                        var oCategoryEnmuar = oPageDocument.Find(m_sNorListPage);
                         foreach (var item in oCategoryEnmuar)
                         {
                             //判断重复
@@ -444,7 +486,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
                             oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
-                            oLink.SN =Helpers.CommonHelper. GenerateNonceStr();
+                            oLink.SN = Helpers.CommonHelper.GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Name = item.InnerText();
                             oLink.NameChs = item.InnerText();
@@ -456,34 +498,38 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             else
                             {
                                 nReCount++;
+                                nSumReCount += nReCount;
                                 continue;
                             }
                         }
                     }
-                    else if (oPageDocument.Exists(".box.movie_list ul li a"))
+                    else if (oPageDocument.Exists(m_sMovieListPage))
                     {
                         //未找到分类标签 box movie_list
-                        var oCategoryEnmuar = oPageDocument.Find(".box.movie_list ul li a");
+                        var oCategoryEnmuar = oPageDocument.Find(m_sMovieListPage);
                         foreach (var item in oCategoryEnmuar)
                         {
-                            if (item.Exists("h3"))
+                            //判断重复
+                            if (nReCount >= m_oRepeatCount)
                             {
-                                if (string.IsNullOrEmpty(item.FindFirst("h3").InnerText()))
-                                    continue;
+                                Console.WriteLine("本页重复数据量为：" + iThisPageNum + "，触发阈值，需跳过。");
+                                Console.WriteLine("当前任务页码：" + iThisPageNum);
+                                Console.WriteLine("总任务页码：" + iEndPageNum);
+                                Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
+                                goto GetUrl;
                             }
-                            else
-                                continue;
 
                             Link oLink = new Link();
                             oLink.GUID = Guid.NewGuid();
                             oLink.CategoryGUID = oCategory.GUID;
                             oLink.WebsiteGUID = oCategory.WebsiteGUID;
-                            oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
+                            if (!item.Attribute("href").AttributeValue.StartsWith("http"))
+                                oLink.URL = oWebs.URL + item.Attribute("href").AttributeValue;
+                            else
+                                oLink.URL = item.Attribute("href").AttributeValue;
                             oLink.SN = Helpers.CommonHelper.GenerateNonceStr();
                             oLink.ID = MD5.GetBufferHash(oLink.URL);
                             oLink.Name = item.InnerText();
-                            if (oLink.Name.StartsWith("(v)"))
-                                oLink.Name = oLink.Name.Remove(0, 3).Trim();
                             oLink.NameChs = oLink.Name;
                             //0 视频，1图片，2文字 ，3其他
                             oLink.Type = 0;
@@ -493,6 +539,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                             else
                             {
                                 nReCount++;
+                                nSumReCount += nReCount;
                                 continue;
                             }
                         }
@@ -502,22 +549,20 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
 
                     }
 
-                    //组合下一页地址
-                    sGetUrl = oCategory.URL.Substring(0, oCategory.URL.Length - 5) + "-" + (iThisPageNum + 1) +
-                        oCategory.URL.Substring(oCategory.URL.Length - 5, 5);
-
                     Console.WriteLine("当前任务页码：" + iThisPageNum);
                     Console.WriteLine("总任务页码：" + iEndPageNum);
                     Console.WriteLine("当前任务剩余页面数：" + (iEndPageNum - iThisPageNum));
-                    if (iThisPageNum < iEndPageNum)
+                    if (oNextPage.InnerText().Trim() == "〉")
                         goto GetUrl;
                 }
                 else
                 {
-                    //解析页面失败
+                    Console.WriteLine($"页面解析失败，当前地址为{sGetUrl}");
                 }
 
                 oCategory.Processed = 2;
+                oCategory.UpdateTime = DateTime.Now;
+                oCategory.UpdateTimes += 1;
                 oSQLSugarHelper.CategoryDb.Update(oCategory);
 
                 return oSQLSugarHelper.LinkDb.GetList(it => it.CategoryGUID == oCategory.GUID && it.Deleted == false);
@@ -581,64 +626,197 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                     oCookies = EasyHttpHelper.GetCookie(new Uri(sGetUrl), false);
 
                 //请求页面
-                using (var oResponse = EasyHttpHelper.ReadData(sGetUrl, oCookies))
-                {
-                    if (oResponse == null)
-                        return;
-
-                    //页面解码
-                    if (!string.IsNullOrEmpty(oResponse.ContentEncoding))
-                    {
-                        switch (oResponse.ContentEncoding.ToLower())
-                        {
-                            case "gzip":
-                                using (GZipStream stream = new GZipStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            case "deflate":
-                                using (DeflateStream stream = new DeflateStream(oResponse.GetResponseStream(), CompressionMode.Decompress))
-                                {
-                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        sHTML = reader.ReadToEnd();
-                                        oPageDocument = new JumonyParser().Parse(sHTML);
-                                    }
-                                }
-                                break;
-                            default:
-                                //未被压缩,直接解析
-                                oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        //未被压缩,直接解析
-                        oPageDocument = new JumonyParser().LoadDocument(oResponse);
-                    }
-                }
+                if (bGetCookie)
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML, oCookies);
+                else
+                    oPageDocument = ReadDataEncodeHTML(sGetUrl, ref sHTML);
 
                 //解析页面
                 if (oPageDocument != null)
                 {
+                    int nSum = 0;
 
+                    if (oPageDocument.Exists("#content") && oPageDocument.FindFirst("#content").InnerText().Contains("magnet:?"))
+                    {
+                        //图片
+                        var list = oPageDocument.Find("#content img");
+                        foreach (var item in list)
+                        {
+                            if (item.Attribute("src") != null && !string.IsNullOrWhiteSpace(item.Attribute("src").AttributeValue))
+                            {
+                                Resource resource = new Resource();
+                                resource.WebsiteGUID = oResult.WebsiteGUID;
+                                resource.PageGUID = oResult.GUID;
+                                resource.URL = item.Attribute("src").AttributeValue;
+                                resource.Original = Path.GetFileName(resource.URL);
+                                resource.Type = 1;
+                                resource.Path = resource.URL;
+                                resource.FileName = resource.Original;
 
+                                var bResult = oSQLSugarHelper.ResourceDb.Insert(resource);
+                                if (bResult)
+                                {
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储成功！");
+                                    nSum++;
+                                }
+                                else
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储失败！");
+                            }
+                            else
+                                Console.WriteLine($"资源链接：获取失败。");
+                        }
+                        Console.WriteLine($"资源页面共存储{nSum}条数据。");
 
+                        //视频
+                        var list2 = oPageDocument.Find("#content");
+                        foreach (var item in list2)
+                        {
+                            if (!string.IsNullOrWhiteSpace(item.InnerText()))
+                            {
+                                ResourceData resource = new ResourceData();
+                                resource.WebsiteGUID = oResult.WebsiteGUID;
+                                resource.ObjectGUID = oResult.GUID;
+                                resource.URL = item.InnerText();
 
+                                if (resource.URL.Contains("http") && !resource.URL.Contains("magnet:?xt=urn:btih:"))
+                                {
+                                    resource.Original = Path.GetFileName(resource.URL);
+                                    resource.URLType = 0;
+                                    resource.ResourceType = 1;
+
+                                }
+                                else if (resource.URL.Contains("thunder") &&
+                                    (Regex.IsMatch(resource.URL, @"thunder://[a-za-z0-9]*")))
+                                {
+                                    resource.Original = Regex.Match(resource.URL, @"thunder://[a-za-z0-9]*").Value;
+                                    resource.URLType = 0;
+                                    //迅雷链接
+                                    resource.ResourceType = 3;
+                                }
+                                else if (resource.URL.Contains("magnet") &&
+                                    (Regex.IsMatch(resource.URL, @"(magnet:\?xt=urn:btih:)[\w]+")))
+                                {
+                                    resource.Original = Regex.Match(resource.URL, @"(magnet:\?xt=urn:btih:)[\w]+").Value;
+                                    resource.URLType = 0;
+                                    //magnet:?
+                                    resource.ResourceType = 2;
+                                }
+                                else if (resource.URL.Contains("ed2k") &&
+                                    (Regex.IsMatch(resource.URL, @"^ed2k:\/\/\|file\|.+\|\/$")))
+                                {
+                                    resource.Original = Regex.Match(resource.URL, @"^ed2k:\/\/\|file\|.+\|\/$").Value;
+                                    resource.URLType = 0;
+                                    //magnet:?
+                                    resource.ResourceType = 5;
+                                }
+                                else
+                                {
+                                    resource.Original = item.Attribute("id").AttributeValue;
+                                    resource.URLType = 0;
+                                    resource.ResourceType = 4;
+                                }
+                                resource.Status = 1;
+                                resource.Name = oPageDocument.FindFirst("title").InnerText().Trim();
+                                if (resource.Name.EndsWith("抖內啪啪"))
+                                    resource.Name = resource.Name.Replace("抖內啪啪", "");
+                                resource.File = resource.Name;
+                                resource.Processed = 0;
+
+                                var bResult = oSQLSugarHelper.ResourceDataDb.Insert(resource);
+                                if (bResult)
+                                {
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储成功！");
+                                    nSum++;
+                                }
+                                else
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储失败！");
+                            }
+                            else
+                                Console.WriteLine($"资源链接：获取失败。");
+                        }
+                        Console.WriteLine($"资源页面共存储{nSum}条数据。");
+
+                        goto End;
+                    }
+                    else if (oPageDocument.Exists(m_sDetailImg))
+                    {
+                        //图片
+                        var list = oPageDocument.Find(m_sDetailImg);
+                        foreach (var item in list)
+                        {
+                            if (item.Attribute("src") != null && !string.IsNullOrWhiteSpace(item.Attribute("src").AttributeValue))
+                            {
+                                Resource resource = new Resource();
+                                resource.WebsiteGUID = oResult.WebsiteGUID;
+                                resource.PageGUID = oResult.GUID;
+                                resource.URL = item.Attribute("src").AttributeValue;
+                                resource.Original = Path.GetFileName(resource.URL);
+                                resource.Type = 1;
+                                resource.Path = resource.URL;
+                                resource.FileName = resource.Original;
+
+                                var bResult = oSQLSugarHelper.ResourceDb.Insert(resource);
+                                if (bResult)
+                                {
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储成功！");
+                                    nSum++;
+                                }
+                                else
+                                    Console.WriteLine($"资源链接：{resource.URL} 存储失败！");
+                            }
+                            else
+                                Console.WriteLine($"资源链接：获取失败。");
+                        }
+                        Console.WriteLine($"资源页面共存储{nSum}条数据。");
+                        goto End;
+                    }
+                    else if (oPageDocument.Exists(m_sXSDetail))
+                    {
+                        //小说
+                        StringBuilder stringBuilder = new StringBuilder();
+                        var list = oPageDocument.Find(m_sXSDetail);
+                        foreach (var item in list)
+                        {
+                            if (!string.IsNullOrWhiteSpace(item.InnerText()))
+                            {
+                                stringBuilder.Append(item.InnerText());
+                            }
+                            else
+                                Console.WriteLine($"资源链接：获取失败。");
+                        }
+
+                        Resource resource = new Resource();
+                        resource.WebsiteGUID = oResult.WebsiteGUID;
+                        resource.PageGUID = oResult.GUID;
+                        resource.URL = sGetUrl;
+                        resource.Original = oPageDocument.FindFirst("title").InnerText();
+                        //小说
+                        resource.Type = 3;
+                        resource.Path = stringBuilder.ToString();
+                        resource.FileName = resource.Original;
+
+                        var bResult = oSQLSugarHelper.ResourceDb.Insert(resource);
+                        if (bResult)
+                        {
+                            Console.WriteLine($"小说资源：{resource.URL} 存储成功！");
+                            nSum++;
+                        }
+                        else
+                            Console.WriteLine($"小说资源：{resource.URL} 存储失败！");
+
+                        Console.WriteLine($"小说资源页面共存储完成。");
+                        goto End;
+                    }
                 }
                 else
                 {
                     //解析页面失败
                 }
 
+            End:
                 oResult.Processed = 2;
                 oSQLSugarHelper.LinkDb.Update(oResult);
+                Console.WriteLine($"资源 {oResult.Name} 采集完毕。");
             }
             catch (Exception ex)
             {

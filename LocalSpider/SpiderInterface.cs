@@ -9,7 +9,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// 获取抓取网站地址
         /// </summary>
         /// <returns></returns>
-        List<Website> GetWebsiteList(string sID);
+        List<Website> GetWebsiteList(string sID, bool bFirst);
 
         /// <summary>
         /// 采集分类链接
@@ -42,5 +42,19 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         /// <param name="arr"></param>
         /// <returns></returns>
         int PerExce(Dictionary<string, object> arr);
+
+        /// <summary>
+        /// 预操作
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        int TestExce(Dictionary<string, object> arr);
+
+        /// <summary>
+        /// 预操作
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        void UpdateExce(Dictionary<string, object> arr);
     }
 }

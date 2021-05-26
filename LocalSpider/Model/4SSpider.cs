@@ -21,8 +21,8 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
         private const string m_sMoviePage = ".box.movie_list ul li a";
         private string sWebSiteID = "fabed58122c576d92c4eb81b9c32a7e6";
 
-        public F4SSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, string LoggerPath = null, Logger Logger = null) :
-            base(oWebGUID, oDatabaseType, sWebID, debug, LoggerPath, Logger)
+        public F4SSpider(Guid oWebGUID, DatabaseType oDatabaseType = DatabaseType.SqlServer, string sWebID = null, bool debug = true, bool bFirst = true, string LoggerPath = null, Logger Logger = null) :
+            base(oWebGUID, oDatabaseType, sWebID, debug,bFirst, LoggerPath, Logger)
         {
 
         }
@@ -632,7 +632,7 @@ namespace Larpx.ResourceSpider.LocalSpider.Model
                         resource.Original = oPageDocument.FindFirst("title").InnerText();
                         //小说
                         resource.Type = 3;
-                        resource.Path = stringBuilder.ToString() ;
+                        resource.Path = stringBuilder.ToString();
                         resource.FileName = resource.Original;
 
                         var bResult = oSQLSugarHelper.ResourceDb.Insert(resource);
