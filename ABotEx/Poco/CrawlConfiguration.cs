@@ -24,7 +24,7 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
         #region crawlBehavior
 
         /// <summary>
-        /// Max concurrent threads to use for http requests
+        /// 用于HTTP请求的最大并发线程
         /// </summary>
         public int MaxConcurrentThreads { get; set; }
 

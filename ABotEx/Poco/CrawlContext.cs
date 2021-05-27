@@ -22,67 +22,67 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
         }
 
         /// <summary>
-        /// The root of the crawl
+        /// 采集的根URL
         /// </summary>
         public Uri RootUri { get; set; }
 
         /// <summary>
-        /// The root of the crawl specified in the configuration. If the root URI was redirected to another URI,
-        /// it will be set in RootUri.
+        /// 配置中指定的爬网的根。如果根URI被重定向到另一个URI，则将在rooturi中设置。
         /// </summary>
         public Uri OriginalRootUri { get; set; }
 
         /// <summary>
-        /// total number of pages that have been crawled
+        /// 已爬网的总页数
         /// </summary>
         public int CrawledCount = 0;
+
         /// <summary>
-        /// The datetime of the last unsuccessful http status (non 200) was requested
+        /// 请求上次不成功HTTP状态（非200）的日期时间
         /// </summary>
         public DateTime CrawlStartDate { get; set; }
-        
+
         /// <summary>
-        /// Threadsafe dictionary of domains and how many pages were crawled in that domain
+        /// 线程安全的域字典以及在该域中爬行了多少页
         /// </summary>
         public ConcurrentDictionary<string, int> CrawlCountByDomain { get; set; }
 
         /// <summary>
-        /// Configuration values used to determine crawl settings
+        /// 用于确定爬网设置的配置值
         /// </summary>
         public CrawlConfiguration CrawlConfiguration { get; set; }
 
         /// <summary>
-        /// The scheduler that is being used
+        /// 正在使用的调度器
         /// </summary>
         public IScheduler Scheduler { get; set; }
 
         /// <summary>
-        /// Random dynamic values
+        /// 采集的数据值，动态类型
         /// </summary>
         public dynamic CrawlBag { get; set; }
 
         /// <summary>
-        /// Whether a request to stop the crawl has happened. Will clear all scheduled pages but will allow any threads that are currently crawling to complete.
+        /// 是否发生了停止抓取的请求。将清除所有计划的页面，但将允许当前正在爬行完成的任何线程。
         /// </summary>
         public bool IsCrawlStopRequested { get; set; }
 
         /// <summary>
-        /// Whether a request to hard stop the crawl has happened. Will clear all scheduled pages and cancel any threads that are currently crawling.
+        ///是否已发生硬停止抓取的请求。将清除所有计划的页面并取消当前正在爬行的任何线程。
         /// </summary>
         public bool IsCrawlHardStopRequested { get; set; }
 
         /// <summary>
-        /// The memory usage in mb at the start of the crawl
+        /// 采集开始时的内存使用量(以mb为单位)
         /// </summary>
         public int MemoryUsageBeforeCrawlInMb { get; set; }
 
         /// <summary>
-        /// The memory usage in mb at the end of the crawl
+        /// 采集结束时的内存使用量(以mb为单位)
         /// </summary>
         public int MemoryUsageAfterCrawlInMb { get; set; }
 
         /// <summary>
-        /// Cancellation token used to hard stop the crawl. Will clear all scheduled pages and abort any threads that are currently crawling.
+        /// 用于硬停止抓取的取消令牌。将清除所有计划的页面并中止当前正在爬行的任何线程。
         /// </summary>
         public CancellationTokenSource CancellationTokenSource { get; set; }
     }

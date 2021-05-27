@@ -40,26 +40,26 @@ namespace Larpx.ResourceSpider.ABotEx.Core
         public virtual CrawlDecision ShouldCrawlPage(PageToCrawl pageToCrawl, CrawlContext crawlContext)
         {
             if (pageToCrawl == null)
-                return new CrawlDecision { Allow = false, Reason = "Null page to crawl" };
+                return new CrawlDecision { Allow = false, Reason = "要采集的页面为空" };
 
             if (crawlContext == null)
-                return new CrawlDecision { Allow = false, Reason = "Null crawl context" };
+                return new CrawlDecision { Allow = false, Reason = "要采集的上下文为空" };
 
             if (pageToCrawl.RedirectedFrom != null && pageToCrawl.RedirectPosition > crawlContext.CrawlConfiguration.HttpRequestMaxAutoRedirects)
-                return new CrawlDecision { Allow = false, Reason = string.Format("HttpRequestMaxAutoRedirects limit of [{0}] has been reached", crawlContext.CrawlConfiguration.HttpRequestMaxAutoRedirects) };
+                return new CrawlDecision { Allow = false, Reason = string.Format("已达到HttpRequestMaxAutoRedirects限定的最大值 [{0}]", crawlContext.CrawlConfiguration.HttpRequestMaxAutoRedirects) };
 
             if (pageToCrawl.CrawlDepth > crawlContext.CrawlConfiguration.MaxCrawlDepth)
-                return new CrawlDecision { Allow = false, Reason = "Crawl depth is above max" };
+                return new CrawlDecision { Allow = false, Reason = "采集深度超过最大值" };
 
             if (!pageToCrawl.Uri.Scheme.StartsWith("http"))
-                return new CrawlDecision { Allow = false, Reason = "Scheme does not begin with http" };
+                return new CrawlDecision { Allow = false, Reason = "采集地址不是以Http开头" };
 
             //TODO Do we want to ignore redirect chains (ie.. do not treat them as separate page crawls)?
             if (!pageToCrawl.IsRetry &&
                 crawlContext.CrawlConfiguration.MaxPagesToCrawl > 0 &&
                 crawlContext.CrawledCount + crawlContext.Scheduler.Count + 1 > crawlContext.CrawlConfiguration.MaxPagesToCrawl)
             {
-                return new CrawlDecision { Allow = false, Reason = string.Format("MaxPagesToCrawl limit of [{0}] has been reached", crawlContext.CrawlConfiguration.MaxPagesToCrawl) };
+                return new CrawlDecision { Allow = false, Reason = string.Format("已到达MaxPagesToCrawl限定的最大值 [{0}]", crawlContext.CrawlConfiguration.MaxPagesToCrawl) };
             }
 
             var pagesCrawledInThisDomain = 0;
@@ -69,11 +69,11 @@ namespace Larpx.ResourceSpider.ABotEx.Core
                 pagesCrawledInThisDomain > 0)
             {
                 if (pagesCrawledInThisDomain >= crawlContext.CrawlConfiguration.MaxPagesToCrawlPerDomain)
-                    return new CrawlDecision { Allow = false, Reason = string.Format("MaxPagesToCrawlPerDomain limit of [{0}] has been reached for domain [{1}]", crawlContext.CrawlConfiguration.MaxPagesToCrawlPerDomain, pageToCrawl.Uri.Authority) };
+                    return new CrawlDecision { Allow = false, Reason = string.Format("域名 [{1}] 已到达MaxPagesToCrawlPerDomain限定的最大值 [{0}]", crawlContext.CrawlConfiguration.MaxPagesToCrawlPerDomain, pageToCrawl.Uri.Authority) };
             }
 
             if (!crawlContext.CrawlConfiguration.IsExternalPageCrawlingEnabled && !pageToCrawl.IsInternal)
-                return new CrawlDecision { Allow = false, Reason = "Link is external" };
+                return new CrawlDecision { Allow = false, Reason = "链接是外部的" };
 
             return new CrawlDecision { Allow = true };
         }
@@ -81,19 +81,19 @@ namespace Larpx.ResourceSpider.ABotEx.Core
         public virtual CrawlDecision ShouldCrawlPageLinks(CrawledPage crawledPage, CrawlContext crawlContext)
         {
             if (crawledPage == null)
-                return new CrawlDecision { Allow = false, Reason = "Null crawled page" };
+                return new CrawlDecision { Allow = false, Reason = "要采集的页面为空" };
 
             if (crawlContext == null)
-                return new CrawlDecision { Allow = false, Reason = "Null crawl context" };
+                return new CrawlDecision { Allow = false, Reason = "要采集页的上下文为空" };
 
             if (string.IsNullOrWhiteSpace(crawledPage.Content.Text))
-                return new CrawlDecision { Allow = false, Reason = "Page has no content" };
+                return new CrawlDecision { Allow = false, Reason = "采集的页面无内容" };
 
             if (!crawlContext.CrawlConfiguration.IsExternalPageLinksCrawlingEnabled && !crawledPage.IsInternal)
-                return new CrawlDecision { Allow = false, Reason = "Link is external" };
+                return new CrawlDecision { Allow = false, Reason = "链接是外部的" };
 
             if (crawledPage.CrawlDepth >= crawlContext.CrawlConfiguration.MaxCrawlDepth)
-                return new CrawlDecision { Allow = false, Reason = "Crawl depth is above max" };
+                return new CrawlDecision { Allow = false, Reason = "采集深度超过最大值" };
 
             return new CrawlDecision { Allow = true };
         }
@@ -101,16 +101,16 @@ namespace Larpx.ResourceSpider.ABotEx.Core
         public virtual CrawlDecision ShouldDownloadPageContent(CrawledPage crawledPage, CrawlContext crawlContext)
         {
             if (crawledPage == null)
-                return new CrawlDecision { Allow = false, Reason = "Null crawled page" };
+                return new CrawlDecision { Allow = false, Reason = "要采集的页面为空" };
 
             if (crawlContext == null)
-                return new CrawlDecision { Allow = false, Reason = "Null crawl context" };
+                return new CrawlDecision { Allow = false, Reason = "要采集页的上下文为空" };
 
             if (crawledPage.HttpResponseMessage == null)
-                return new CrawlDecision { Allow = false, Reason = "Null HttpWebResponse" };
+                return new CrawlDecision { Allow = false, Reason = "HttpWebResponse无返回内容" };
 
             if (crawledPage.HttpResponseMessage.StatusCode != HttpStatusCode.OK)
-                return new CrawlDecision { Allow = false, Reason = "HttpStatusCode is not 200" };
+                return new CrawlDecision { Allow = false, Reason = "HttpCode不是200" };
 
             var pageContentType = crawledPage.HttpResponseMessage.Content.Headers.ContentType.ToString().ToLower().Trim();
             var isDownloadable = false;
@@ -129,10 +129,10 @@ namespace Larpx.ResourceSpider.ABotEx.Core
                 }
             }
             if (!isDownloadable)
-                return new CrawlDecision { Allow = false, Reason = "Content type is not any of the following: " + string.Join(",", cleanDownloadableContentTypes) };
+                return new CrawlDecision { Allow = false, Reason = "内容类型不是以下任何一种: " + string.Join(",", cleanDownloadableContentTypes) };
 
             if (crawlContext.CrawlConfiguration.MaxPageSizeInBytes > 0 && crawledPage.HttpResponseMessage.Content.Headers.ContentLength > crawlContext.CrawlConfiguration.MaxPageSizeInBytes)
-                return new CrawlDecision { Allow = false, Reason = string.Format("Page size of [{0}] bytes is above the max allowable of [{1}] bytes", crawledPage.HttpResponseMessage.Content.Headers.ContentLength, crawlContext.CrawlConfiguration.MaxPageSizeInBytes) };
+                return new CrawlDecision { Allow = false, Reason = string.Format("页面大小为 [{0}] 字节，高于最大允许的 [{1}] 字节", crawledPage.HttpResponseMessage.Content.Headers.ContentLength, crawlContext.CrawlConfiguration.MaxPageSizeInBytes) };
 
             return new CrawlDecision { Allow = true };
         }
@@ -140,19 +140,19 @@ namespace Larpx.ResourceSpider.ABotEx.Core
         public virtual CrawlDecision ShouldRecrawlPage(CrawledPage crawledPage, CrawlContext crawlContext)
         {
             if (crawledPage == null)
-                return new CrawlDecision { Allow = false, Reason = "Null crawled page" };
+                return new CrawlDecision { Allow = false, Reason = "要采集的页面为空" };
 
             if (crawlContext == null)
-                return new CrawlDecision { Allow = false, Reason = "Null crawl context" };
+                return new CrawlDecision { Allow = false, Reason = "要采集页的上下文为空" };
 
             if (crawledPage.HttpRequestException == null)
-                return new CrawlDecision { Allow = false, Reason = "WebException did not occur" };
+                return new CrawlDecision { Allow = false, Reason = "未发生WebException" };
 
             if (crawlContext.CrawlConfiguration.MaxRetryCount < 1)
-                return new CrawlDecision { Allow = false, Reason = "MaxRetryCount is less than 1" };
+                return new CrawlDecision { Allow = false, Reason = "MaxRetryCount小于1" };
 
             if (crawledPage.RetryCount >= crawlContext.CrawlConfiguration.MaxRetryCount)
-                return new CrawlDecision { Allow = false, Reason = "MaxRetryCount has been reached" };
+                return new CrawlDecision { Allow = false, Reason = "已达到MaxRetryCount" };
 
             return new CrawlDecision { Allow = true };
         }
