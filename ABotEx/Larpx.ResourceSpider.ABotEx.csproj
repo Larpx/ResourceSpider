@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Poco\" />
-    <Folder Include="Crawler\" />
-    <Folder Include="Core\" />
+    <ProjectReference Include="..\BaseLibrary\Larpx.ResourceSpider.BaseLibrary.csproj" />
   </ItemGroup>
 
 </Project>
