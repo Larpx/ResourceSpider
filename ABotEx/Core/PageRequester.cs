@@ -173,7 +173,7 @@ namespace Larpx.ResourceSpider.ABotEx.Core
             };
 
             if (_config.IsHttpRequestAutomaticDecompressionEnabled)
-                httpClientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                httpClientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli;
 
             if (_config.HttpRequestMaxAutoRedirects > 0)
                 httpClientHandler.AllowAutoRedirect = _config.IsHttpRequestAutoRedirectsEnabled;

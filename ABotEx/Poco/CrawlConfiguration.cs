@@ -29,136 +29,138 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
         public int MaxConcurrentThreads { get; set; }
 
         /// <summary>
-        /// Maximum number of pages to crawl. 
-        /// If zero, this setting has no effect
+        /// 要爬网的最大页数。如果为零，则此设置无效
         /// </summary>
         public int MaxPagesToCrawl { get; set; }
 
         /// <summary>
-        /// Maximum number of pages to crawl per domain
-        /// If zero, this setting has no effect.
+        /// 每个域要爬网的最大页数
+        /// 如果为零，则此设置无效
         /// </summary>
         public int MaxPagesToCrawlPerDomain { get; set; }
 
         /// <summary>
-        /// Maximum size of page. If the page size is above this value, it will not be downloaded or processed
-        /// If zero, this setting has no effect.
+        /// 页面的最大大小。如果页面大小大于此值，则不会下载或处理
+        /// 如果为零，则此设置无效
         /// </summary>
         public int MaxPageSizeInBytes { get; set; }
 
         /// <summary>
-        /// The user agent string to use for http requests
+        /// UA
         /// </summary>
         public string UserAgentString { get; set; }
 
         /// <summary>
-        /// The http protocol version number to use during http requests. Currently supporting values "1.1" and "1.0". 
+        /// HTTP协议版本号在HTTP请求期间使用。目前支持值“1.1”和“1.0”。
         /// </summary>
         public HttpProtocolVersion HttpProtocolVersion { get; set; }
 
         /// <summary>
-        /// Maximum seconds before the crawl times out and stops. 
-        /// If zero, this setting has no effect.
+        /// 采集超时和停止前的最大秒数。
+        /// 如果为零，则此设置无效
         /// </summary>
         public int CrawlTimeoutSeconds { get; set; }
 
         /// <summary>
-        /// Dictionary that stores additional key-value pairs that can be accessed through the crawl pipeline
+        /// 可通过管道访问的键值对字典
         /// </summary>
         public Dictionary<string, string> ConfigurationExtensions { get; set; }
 
         /// <summary>
-        /// Whether Uris should be crawled more than once. This is not common and should be false for most scenarios
+        /// 是否应该多次爬行uri。这并不常见，在大多数情况下应该是False
         /// </summary>
         public bool IsUriRecrawlingEnabled { get; set; }
 
         /// <summary>
-        /// Whether pages external to the root uri should be crawled
+        /// 是否应该抓取根uri外部的页面
         /// </summary>
         public bool IsExternalPageCrawlingEnabled { get; set; }
 
         /// <summary>
-        /// Whether pages external to the root uri should have their links crawled. NOTE: IsExternalPageCrawlEnabled must be true for this setting to have any effect
+        /// 根uri外部的页面是否应该对其链接进行采集。注意：IsExternalPageCrawlEnabled必须为true，此设置才能生效
         /// </summary>
         public bool IsExternalPageLinksCrawlingEnabled { get; set; }
 
         /// <summary>
-        /// Whether or not url named anchors or hashbangs are considered part of the url. If false, they will be ignored. If true, they will be considered part of the url.
+        /// 命名锚或散列标是否被视为URL的一部分。
+        /// 如果为假，它们将被忽略。如果为真，它们将被视为url的一部分
         /// </summary>
         public bool IsRespectUrlNamedAnchorOrHashbangEnabled { get; set; }
 
         /// <summary>
-        /// A comma separated string that has content types that should have their page content downloaded. For each page, the content type is checked to see if it contains any of the values defined here.
+        /// 一个逗号分隔的字符串，
+        /// 它的内容类型应该有其页面内容被下载。对于每个页面，将检查内容类型，以查看它是否包含这里定义的任何值。
         /// </summary>
         public string DownloadableContentTypes { get; set; }
 
         /// <summary>
-        /// Gets or sets the maximum number of concurrent connections allowed by a System.Net.ServicePoint. The system default is 2. This means that only 2 concurrent http connections can be open to the same host.
-        /// If zero, this setting has no effect.
+        /// 获取或设置System.Net.ServicePoint允许的最大并发连接数。系统默认值为2。这意味着同一个主机只能打开两个并发的http连接。
+        /// 如果为零，则此设置无效
         /// </summary>
         public int HttpServicePointConnectionLimit { get; set; }
 
         /// <summary>
-        /// Gets or sets the time-out value in seconds for the System.Net.HttpWebRequest.GetResponse() and System.Net.HttpWebRequest.GetRequestStream() methods.
-        /// If zero, this setting has no effect.
+        ///获取或设置System.Net.HttpWebRequest.GetResponse()和System.Net.HttpWebRequest.GetRequestStream()方法的超时值，以秒为单位。
+        /// 如果为零，则此设置无效
         /// </summary>
         public int HttpRequestTimeoutInSeconds { get; set; }
 
         /// <summary>
-        /// Gets or sets the maximum number of redirects that the request follows.
-        /// If zero, this setting has no effect.
+        /// 获取或设置请求遵循的最大重定向数。
+        /// 如果为零，则此设置无效
         /// </summary>
         public int HttpRequestMaxAutoRedirects { get; set; }
 
         /// <summary>
-        /// Gets or sets a value that indicates whether the request should follow redirection
+        ///获取或设置一个值，该值指示请求是否应遵循重定向
         /// </summary>
         public bool IsHttpRequestAutoRedirectsEnabled { get; set; }
 
         /// <summary>
-        /// Gets or sets a value that indicates gzip and deflate will be automatically accepted and decompressed
+        /// 获取或设置一个值，该值指示gzip、Brotli和deflate将被自动接受和解压缩
         /// </summary>
         public bool IsHttpRequestAutomaticDecompressionEnabled { get; set; }
 
         /// <summary>
-        /// Whether the cookies should be set and resent with every request
+        /// 是否应设置cookie并随每个请求一起重新发送
         /// </summary>
         public bool IsSendingCookiesEnabled { get; set; }
 
         /// <summary>
-        /// Whether or not to validate the server SSL certificate. If true, the default validation will be made.
-        /// If false, the certificate validation is bypassed. This setting is useful to crawl sites with an
-        /// invalid or expired SSL certificate.
+        /// 是否验证服务器SSL证书。如果为true，将进行默认验证。
+        /// 如果为false，则绕过证书验证。此设置对于抓取SSL证书无效或过期的站点非常有用
         /// </summary>
         public bool IsSslCertificateValidationEnabled { get; set; }
 
         /// <summary>
-        /// Uses closest multiple of 16 to the value set. If there is not at least this much memory available before starting a crawl, throws InsufficientMemoryException.
-        /// If zero, this setting has no effect.
+        /// 使用16的倍数集。如果在开始采集之前没有这么多可用内存，则抛出InsufficientMemoryException。
+        /// 如果为零，则此设置无效
         /// </summary>
         /// <exception cref="http://msdn.microsoft.com/en-us/library/system.insufficientmemoryexception.aspx">InsufficientMemoryException</exception>
         public int MinAvailableMemoryRequiredInMb { get; set; }
 
         /// <summary>
-        /// The max amount of memory to allow the process to use. If this limit is exceeded the crawler will stop prematurely.
-        /// If zero, this setting has no effect.
+        /// 允许进程使用的最大内存量。如果超过这个限制，爬虫将提前停止。
+        /// 如果为零，则此设置无效
         /// </summary>
         public int MaxMemoryUsageInMb { get; set; }
 
         /// <summary>
-        /// The max amount of time before refreshing the value used to determine the amount of memory being used by the process that hosts the crawler instance.
-        /// This value has no effect if MaxMemoryUsageInMb is zero.
+        /// 刷新用于确定承载爬虫实例的进程正在使用的内存量的值之前的最长时间。
+        /// 如果MaxMemoryUsageInMb为零，则此值无效。
         /// </summary>
         public int MaxMemoryUsageCacheTimeInSeconds { get; set; }
 
         /// <summary>
-        /// Maximum levels below root page to crawl. If value is 0, the homepage will be crawled but none of its links will be crawled. If the level is 1, the homepage and its links will be crawled but none of the links links will be crawled.
+        /// 在根页面下爬行的最大级别。
+        /// 如果为0，则会对主页进行抓取，但不会对其链接进行抓取。
+        /// 如果为1，则对主页及其链接进行抓取，但对所有链接都不进行抓取。
         /// </summary>
         public int MaxCrawlDepth { get; set; }
 
         /// <summary>
-        /// Maximum links to crawl per page.
-        /// If value is zero, this setting has no effect.
+        /// 每页爬网的最大链接。
+        /// 如果值为零，则此设置无效。
         /// </summary>
         public int MaxLinksPerPage { get; set; }
 
@@ -236,12 +238,12 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
         /// </summary>
         public string LoginUser { get; set; }
         /// <summary>
-        /// The password to be used for authorization
+        /// 
         /// </summary>
         public string LoginPassword { get; set; }
 
         /// <summary>
-        /// Specifies whether to use default credentials.
+        /// 是否使用默认凭据。
         /// </summary>
         public bool UseDefaultCredentials { get; set; }
 
