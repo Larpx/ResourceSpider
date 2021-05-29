@@ -2,24 +2,30 @@
 
 namespace Larpx.ResourceSpider.ABotEx.Poco
 {
+    /// <summary>
+    /// 采集结果
+    /// </summary>
     public class CrawlResult
     {
+        /// <summary>
+        /// 采集结果
+        /// </summary>
         public CrawlResult()
         {
         }
 
         /// <summary>
-        /// The root of the crawl
+        /// 采集的根URL
         /// </summary>
         public Uri RootUri { get; set; }
 
         /// <summary>
-        /// The amount of time that elapsed before the crawl completed
+        /// 采集耗时
         /// </summary>
         public TimeSpan Elapsed { get; set; }
 
         /// <summary>
-        /// Whether or not an error occurred during the crawl that caused it to end prematurely
+        /// 采集过程中是否发生导致其过早结束的错误
         /// </summary>
         public bool ErrorOccurred 
         {
@@ -30,12 +36,12 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
         }
 
         /// <summary>
-        /// The exception that caused the crawl to end prematurely
+        /// 导致爬网过早结束的异常
         /// </summary>
         public Exception ErrorException { get; set; }
 
         /// <summary>
-        /// The context of the crawl
+        /// 爬网的上下文
         /// </summary>
         public CrawlContext CrawlContext { get; set; }
     }

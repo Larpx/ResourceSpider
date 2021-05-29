@@ -7,6 +7,9 @@ using Serilog;
 
 namespace Larpx.ResourceSpider.ABotEx.Poco
 {
+    /// <summary>
+    /// 采集的页面
+    /// </summary>
     public class CrawledPage : PageToCrawl
     {
         HtmlParser _angleSharpHtmlParser;
@@ -22,82 +25,87 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
         }
 
         /// <summary>
-        /// Lazy loaded AngleSharp IHtmlDocument (https://github.com/AngleSharp/AngleSharp) that can be used to retrieve/modify html elements on the crawled page.
+        /// 延迟加载的IHtmlDocument(https://github.com/AngleSharp/AngleSharp)
+        /// 可用于检索/修改已爬网页面上的html元素的。
         /// </summary>
         public virtual IHtmlDocument AngleSharpHtmlDocument => _angleSharpHtmlDocument.Value;
 
         /// <summary>
-        /// Web request sent to the server.
+        ///发送到服务器的Web请求。
         /// </summary>
         public HttpRequestMessage HttpRequestMessage { get; set; }
 
         /// <summary>
-        /// Web response from the server.
+        /// 来自服务器的Web响应。
         /// </summary>
         public HttpResponseMessage HttpResponseMessage { get; set; }
 
         /// <summary>
-        /// The request exception that occurred during the request
+        /// 请求期间发生的请求异常
         /// </summary>
         public HttpRequestException HttpRequestException { get; set; }
 
         /// <summary>
-        /// The HttpClientHandler that was used to make the request to server
+        /// 用于向服务器发出请求的HttpClientHandler
         /// </summary>
         public HttpClientHandler HttpClientHandler { get; set; }
-        
+
         public override string ToString()
         {
-            if(HttpResponseMessage == null)
+            if (HttpResponseMessage == null)
                 return Uri.AbsoluteUri;
-         
+
             return $"{Uri.AbsoluteUri}[{Convert.ToInt32(HttpResponseMessage.StatusCode)}]";
         }
 
         /// <summary>
-        /// Links parsed from page. This value is set by the WebCrawler.SchedulePageLinks() method only If the "ShouldCrawlPageLinks" rules return true or if the IsForcedLinkParsingEnabled config value is set to true.
+        /// 从页面解析的链接。
+        /// 仅当“ShouldCrawlPageLinks”规则返回true或IsForcedLinkParsingEnabled配置值设置为true时，
+        /// 此值才由WebCrawler.SchedulePageLinks()方法设置。
         /// </summary>
         public IEnumerable<HyperLink> ParsedLinks { get; set; }
 
         /// <summary>
-        /// The content of page request
+        /// 页面请求的内容
         /// </summary>
         public PageContent Content { get; set; }
 
         /// <summary>
-        /// A datetime of when the http request started
+        /// http请求开始的日期时间
         /// </summary>
         public DateTime RequestStarted { get; set; }
 
         /// <summary>
-        /// A datetime of when the http request completed
+        /// http请求完成的日期时间
         /// </summary>
         public DateTime RequestCompleted { get; set; }
 
         /// <summary>
-        /// A datetime of when the page content download started, this may be null if downloading the content was disallowed by the CrawlDecisionMaker or the inline delegate ShouldDownloadPageContent
+        /// 页面内容下载开始的日期时间，
+        /// 如果CrawlDecisionMaker不允许下载内容或内联委托ShouldDownloadPageContent，则此值可能为空
         /// </summary>
         public DateTime? DownloadContentStarted { get; set; }
 
         /// <summary>
-        /// A datetime of when the page content download completed, this may be null if downloading the content was disallowed by the CrawlDecisionMaker or the inline delegate ShouldDownloadPageContent
+        /// 页面内容下载完成的日期时间。
+        /// 如果CrawlDecisionMaker不允许下载内容或内联委托ShouldDownloadPageContent，则此值可能为空
         /// </summary>
         public DateTime? DownloadContentCompleted { get; set; }
 
         /// <summary>
-        /// The page that this pagee was redirected to
+        /// 此页面被重定向到的页面
         /// </summary>
         public PageToCrawl RedirectedTo { get; set; }
 
         /// <summary>
-        /// Time it took from RequestStarted to RequestCompleted in milliseconds
+        /// 从RequestStarted到RequestCompleted所用的时间（毫秒）
         /// </summary>
         public double Elapsed => (RequestCompleted - RequestStarted).TotalMilliseconds;
 
 
         private IHtmlDocument InitializeAngleSharpHtmlParser()
         {
-            if(_angleSharpHtmlParser == null)
+            if (_angleSharpHtmlParser == null)
                 _angleSharpHtmlParser = new HtmlParser();
 
             IHtmlDocument document;
@@ -109,7 +117,7 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
             {
                 document = _angleSharpHtmlParser.ParseDocument("");
 
-                Log.Error("Error occurred while loading AngularSharp object for Url [{0}] {@Exception}", Uri, e);
+                Log.Error("加载Url [{0}] 的AngularSharp对象时出错 {@Exception}", Uri, e);
             }
 
             return document;

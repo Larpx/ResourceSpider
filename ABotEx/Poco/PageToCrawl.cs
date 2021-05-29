@@ -4,19 +4,19 @@ using System.Dynamic;
 namespace Larpx.ResourceSpider.ABotEx.Poco
 {
     /// <summary>
-    /// 要采集的页面
+    /// 页面采集类
     /// </summary>
     public class PageToCrawl
     {
         /// <summary>
-        /// 要采集的页面，序列化用
+        /// 页面采集类，序列化用
         /// </summary>
         public PageToCrawl()
         {
         }
 
         /// <summary>
-        /// 要采集的页面，初始化用
+        /// 页面采集类，初始化用
         /// </summary>
         /// <param name="uri"></param>
         public PageToCrawl(Uri uri)

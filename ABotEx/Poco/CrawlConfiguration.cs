@@ -2,8 +2,14 @@
 
 namespace Larpx.ResourceSpider.ABotEx.Poco
 {
-    public class CrawlConfiguration 
+    /// <summary>
+    /// 采集程序配置
+    /// </summary>
+    public class CrawlConfiguration
     {
+        /// <summary>
+        /// 采集程序配置
+        /// </summary>
         public CrawlConfiguration()
         {
             MaxConcurrentThreads = 10;
@@ -21,7 +27,7 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
             IsSslCertificateValidationEnabled = false;
         }
 
-        #region crawlBehavior
+        #region crawlBehavior(采集行为)
 
         /// <summary>
         /// 用于HTTP请求的最大并发线程
@@ -165,80 +171,83 @@ namespace Larpx.ResourceSpider.ABotEx.Poco
         public int MaxLinksPerPage { get; set; }
 
         /// <summary>
-        /// Gets or sets a value that indicates whether the crawler should parse the page's links even if a CrawlDecision (like CrawlDecisionMaker.ShouldCrawlPageLinks()) determines that those links will not be crawled.
+        /// 获取或设置一个值，该值指示爬网程序是否应分析页的链接，
+        /// 即使爬网决策（如CrawlDecisionMaker.shouldScrawlPageLinks（））确定这些链接不会被爬网。
         /// </summary>
         public bool IsForcedLinkParsingEnabled { get; set; }
 
         /// <summary>
-        /// The max number of retries for a url if a web exception is encountered. If the value is 0, no retries will be made
+        /// 遇到web异常时url的最大重试次数。如果值为0，则不会重试
         /// </summary>
         public int MaxRetryCount { get; set; }
 
         /// <summary>
-        /// The minimum delay between a failed http request and the next retry
+        /// 失败的http请求与下一次重试之间的最小延迟
         /// </summary>
         public int MinRetryDelayInMilliseconds { get; set; }
 
         #endregion
 
-        #region politeness
+        #region politeness(礼貌行为)
 
         /// <summary>
-        /// Whether the crawler should retrieve and respect the robots.txt file.
+        /// 是否应该检索并尊重robots.txt文件。
         /// </summary>
         public bool IsRespectRobotsDotTextEnabled { get; set; }
 
         /// <summary>
-        /// Whether the crawler should ignore links on pages that have a <meta name="robots" content="nofollow" /> tag
+        /// 爬虫程序是否应该忽略带有 <meta name="robots" content="nofollow"/> 标记的页面上的链接
         /// </summary>
         public bool IsRespectMetaRobotsNoFollowEnabled { get; set; }
 
         /// <summary>
-        /// Whether the crawler should ignore links on pages that have an http X-Robots-Tag header of nofollow
+        /// 爬虫程序是否应该忽略具有nofollow的httpx-Robots-Tag头的页面上的链接
         /// </summary>
         public bool IsRespectHttpXRobotsTagHeaderNoFollowEnabled { get; set; }
 
         /// <summary>
-        /// Whether the crawler should ignore links that have a <a href="whatever" rel="nofollow" />...
+        /// 爬虫程序是否应该忽略具有 <a href="whatever" rel="nofollow" />的链接
         /// </summary>
         public bool IsRespectAnchorRelNoFollowEnabled { get; set; }
 
         /// <summary>
-        /// If true, will ignore the robots.txt file if it disallows crawling the root uri.
+        ///如果为true，则将忽略robots.txt文件（如果它不允许爬网根uri）。
         /// </summary>
         public bool IsIgnoreRobotsDotTextIfRootDisallowedEnabled { get; set; }
 
         /// <summary>
-        /// The user agent string to use when checking robots.txt file for specific directives.  Some examples of other crawler's user agent values are "googlebot", "slurp" etc...
+        /// 检查robots.txt文件中的特定指令时要使用的用户代理字符串。其他爬虫的用户代理值的一些例子有“googlebot”、“slurp”等。。。
         /// </summary>
         public string RobotsDotTextUserAgentString { get; set; }
 
         /// <summary>
-        /// The number of milliseconds to wait in between http requests to the same domain.
+        /// 对同一域的http请求之间等待的毫秒数。
         /// </summary>
         public int MinCrawlDelayPerDomainMilliSeconds { get; set; }
 
         /// <summary>
-        /// The maximum numer of seconds to respect in the robots.txt "Crawl-delay: X" directive. 
-        /// IsRespectRobotsDotTextEnabled must be true for this value to be used.
-        /// If zero, will use whatever the robots.txt crawl delay requests no matter how high the value is.
+        /// robots.txt“Crawl delay:X”指令中需要遵守的最大秒数。
+        /// IsRespectRobotsDotTextEnabled必须为true才能使用此值。
+        /// 如果为零，将使用robots.txt爬网延迟请求的任何值，无论该值有多高。
         /// </summary>
         public int MaxRobotsDotTextCrawlDelayInSeconds { get; set; }
 
         #endregion
 
-        #region Authorization
+        #region Authorization(授权)
 
         /// <summary>
-        /// Defines whether each request should be authorized via login
+        /// 定义是否应通过登录来授权每个请求
         /// </summary>
         public bool IsAlwaysLogin { get; set; }
+
         /// <summary>
-        /// The user name to be used for authorization
+        /// 授权用户名
         /// </summary>
         public string LoginUser { get; set; }
+
         /// <summary>
-        /// 
+        /// 授权用户密码
         /// </summary>
         public string LoginPassword { get; set; }
 
