@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>Larpx.ResourceSpider.Engine</AssemblyName>
     <RootNamespace>Larpx.ResourceSpider.Engine</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.35" />
-    <PackageReference Include="sqlSugarCore" Version="5.0.0.15" />
+    <PackageReference Include="sqlSugarCore" Version="5.0.3.7" />
   </ItemGroup>
 
   <ItemGroup>

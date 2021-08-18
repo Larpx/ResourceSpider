@@ -300,20 +300,21 @@ namespace Larpx.ResourceSpider.Engine
         }
 
         //注意：不能写成静态的
-        public SqlSugarClient Db;//用来处理事务多表查询和复杂的操作
+        //用来处理事务多表查询和复杂的操作
+        public SqlSugarClient Db;
 
-        public SimpleClient<Setting> SettingDb { get { return new SimpleClient<Setting>(Db); } }//用来处理Setting表的常用操作
-        public SimpleClient<Manager> ManagerDb { get { return new SimpleClient<Manager>(Db); } }//用来处理Manager表的常用操作
-        public SimpleClient<SystemLog> SystemLogDb { get { return new SimpleClient<SystemLog>(Db); } }//用来处理SystemLog表的常用操作
-        public SimpleClient<Website> WebsiteDb { get { return new SimpleClient<Website>(Db); } }//用来处理Website表的常用操作
-        public SimpleClient<Category> CategoryDb { get { return new SimpleClient<Category>(Db); } }//用来处理Category表的常用操作
+        public SimpleClient<Setting> SettingDb => new SimpleClient<Setting>(Db); //用来处理Setting表的常用操作
+        public SimpleClient<Manager> ManagerDb => new SimpleClient<Manager>(Db); //用来处理Manager表的常用操作
+        public SimpleClient<SystemLog> SystemLogDb => new SimpleClient<SystemLog>(Db); //用来处理SystemLog表的常用操作
+        public SimpleClient<Website> WebsiteDb => new SimpleClient<Website>(Db); //用来处理Website表的常用操作
+        public SimpleClient<Category> CategoryDb => new SimpleClient<Category>(Db); //用来处理Category表的常用操作
         public SimpleClient<Link> LinkDb { get { return new SimpleClient<Link>(Db); } }//用来处理Link表的常用操作
-        public SimpleClient<PropertyKey> PropertyKeyDb { get { return new SimpleClient<PropertyKey>(Db); } }//用来处理PropertyKey表的常用操作
-        public SimpleClient<PropertyValue> PropertyValueDb { get { return new SimpleClient<PropertyValue>(Db); } }//用来处理PropertyValue表的常用操作
-        public SimpleClient<PropertyDetail> PropertyDetailDb { get { return new SimpleClient<PropertyDetail>(Db); } }//用来处理PropertyDetail表的常用操作
-        public SimpleClient<ResourceData> ResourceDataDb { get { return new SimpleClient<ResourceData>(Db); } }//用来处理ResourceData表的常用操作
-        public SimpleClient<Resource> ResourceDb { get { return new SimpleClient<Resource>(Db); } }//用来处理Resource表的常用操作
-        public SimpleClient<MetaData> MetaDataDb { get { return new SimpleClient<MetaData>(Db); } }//用来处理Resource表的常用操作
-        public SimpleClient<Tag> TagDb { get { return new SimpleClient<Tag>(Db); } }//用来处理Tag表的常用操作
+        public SimpleClient<PropertyKey> PropertyKeyDb => new SimpleClient<PropertyKey>(Db); //用来处理PropertyKey表的常用操作
+        public SimpleClient<PropertyValue> PropertyValueDb => new SimpleClient<PropertyValue>(Db); //用来处理PropertyValue表的常用操作
+        public SimpleClient<PropertyDetail> PropertyDetailDb => new SimpleClient<PropertyDetail>(Db); //用来处理PropertyDetail表的常用操作
+        public SimpleClient<ResourceData> ResourceDataDb => new SimpleClient<ResourceData>(Db); //用来处理ResourceData表的常用操作
+        public SimpleClient<Resource> ResourceDb => new SimpleClient<Resource>(Db); //用来处理Resource表的常用操作
+        public SimpleClient<MetaData> MetaDataDb => new SimpleClient<MetaData>(Db); //用来处理Resource表的常用操作
+        public SimpleClient<Tag> TagDb => new SimpleClient<Tag>(Db); //用来处理Tag表的常用操作
     }
 }
