@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalSpider", "LocalSpider\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainSpider", "MainSpider\MainSpider.csproj", "{1894E753-2C02-4174-BD84-BED683A7182C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Larpx.ResourceSpider.CommonLibrary", "Larpx.ResourceSpider.CommonLibrary\Larpx.ResourceSpider.CommonLibrary.csproj", "{7FEEECC2-A44D-485F-97DA-D6A18F415615}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{1894E753-2C02-4174-BD84-BED683A7182C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1894E753-2C02-4174-BD84-BED683A7182C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1894E753-2C02-4174-BD84-BED683A7182C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FEEECC2-A44D-485F-97DA-D6A18F415615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FEEECC2-A44D-485F-97DA-D6A18F415615}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FEEECC2-A44D-485F-97DA-D6A18F415615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FEEECC2-A44D-485F-97DA-D6A18F415615}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{3DC932D2-9635-4659-B756-0B8778873A3E} = {0470F611-6CC2-4CAB-86EE-A086252213A3}
 		{A2F0C1F2-41C2-424A-A15B-1B58B548472E} = {0470F611-6CC2-4CAB-86EE-A086252213A3}
 		{1894E753-2C02-4174-BD84-BED683A7182C} = {0470F611-6CC2-4CAB-86EE-A086252213A3}
+		{7FEEECC2-A44D-485F-97DA-D6A18F415615} = {D2556F06-129F-49F2-A69E-A849C31AF4FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CA0C91B-9CBA-4BEC-B33C-8735861D0714}
