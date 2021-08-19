@@ -2,6 +2,8 @@ namespace DotnetSpider.Http
 {
     public static class HeaderNames
     {
+        public const string ContentCharset = "Charset";
+
         public const string Accept = "Accept";
         public const string AcceptCharset = "Accept-Charset";
         public const string AcceptEncoding = "Accept-Encoding";

@@ -10,7 +10,7 @@ namespace DotnetSpider.Http
 			get => GetHeader(HeaderNames.AcceptRanges);
 			set => this[HeaderNames.AcceptRanges] = value;
 		}
-
+		
 		public string ETag
 		{
 			get => GetHeader(HeaderNames.ETag);
@@ -116,6 +116,9 @@ namespace DotnetSpider.Http
 
 		public bool? ConnectionClose => Connection?.ToLower().Contains("close");
 
+		/// <summary>
+		/// 获取或设置一个值，该值指示HTTP响应的传输编码标头是否包含分块。
+		/// </summary>
 		public bool? TransferEncodingChunked { get; set; }
 
 		private dynamic GetHeader(string name)

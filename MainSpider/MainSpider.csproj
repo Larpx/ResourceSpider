@@ -5,6 +5,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>Larpx.ResourceSpider.MainSpider</AssemblyName>
     <RootNamespace>Larpx.ResourceSpider.MainSpider</RootNamespace>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

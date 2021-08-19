@@ -95,7 +95,7 @@ namespace DotnetSpider.Http
 				{
 					null => null,
 					IHttpContent _ => value,
-					_ => throw new ArgumentException("Content must be a IHttpContent")
+					_ => throw new ArgumentException("上下文对象必须实现IHttpContent接口")
 				};
 		}
 
@@ -186,6 +186,10 @@ namespace DotnetSpider.Http
 			}
 		}
 
+		/// <summary>
+		/// 将Request转换为HttpRequestMessage
+		/// </summary>
+		/// <returns></returns>
 		public HttpRequestMessage ToHttpRequestMessage()
 		{
 			var httpRequestMessage =
@@ -222,7 +226,7 @@ namespace DotnetSpider.Http
 				else
 				{
 					throw new NotSupportedException(
-						$"Not supported http content: {Content.GetType().FullName}");
+						$"不支持的Http内容类型: {Content.GetType().FullName}");
 				}
 
 				if (Content is IHttpContent requestContent)

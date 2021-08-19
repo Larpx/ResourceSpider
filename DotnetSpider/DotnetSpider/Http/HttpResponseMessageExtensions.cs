@@ -4,31 +4,45 @@ using System.Threading.Tasks;
 
 namespace DotnetSpider.Http
 {
-	public static class HttpResponseMessageExtensions
-	{
-		public static async Task<Response> ToResponseAsync(this HttpResponseMessage httpResponseMessage)
-		{
-			var response = new Response {StatusCode = httpResponseMessage.StatusCode};
+    public static class HttpResponseMessageExtensions
+    {
+        /// <summary>
+        /// 将HttpResponseMessgae转换为Response
+        /// </summary>
+        /// <param name="httpResponseMessage"></param>
+        /// <returns></returns>
+        public static async Task<Response> ToResponseAsync(this HttpResponseMessage httpResponseMessage)
+        {
+            var response = new Response
+            {
+                StatusCode = httpResponseMessage.StatusCode
+            };
 
-			foreach (var header in httpResponseMessage.Headers)
-			{
-				response.Headers.Add(header.Key, header.Value?.ToString());
-			}
+            foreach (var header in httpResponseMessage.Headers)
+            {
+                response.Headers.Add(header.Key, header.Value?.ToString());
+            }
 
-			response.Version = httpResponseMessage.Version == null
-				? HttpVersion.Version11
-				: httpResponseMessage.Version;
+            response.Version = httpResponseMessage.Version == null
+                ? HttpVersion.Version11
+                : httpResponseMessage.Version;
 
-			response.Headers.TransferEncodingChunked = httpResponseMessage.Headers.TransferEncodingChunked;
+            ///Http内容体编码
+            response.Content.Headers.Add(HeaderNames.ContentCharset, httpResponseMessage.Content.Headers.ContentType.CharSet);
 
-			response.Content = new ByteArrayContent(await httpResponseMessage.Content.ReadAsByteArrayAsync());
+            ///http内容是否分段
+            response.Headers.TransferEncodingChunked = httpResponseMessage.Headers.TransferEncodingChunked;
 
-			foreach (var header in httpResponseMessage.Content.Headers)
-			{
-				response.Content.Headers.Add(header.Key, header.Value?.ToString());
-			}
+            ///http内容
+            response.Content = new ByteArrayContent(await httpResponseMessage.Content.ReadAsByteArrayAsync());
 
-			return response;
-		}
-	}
+            ///解析头信息
+            foreach (var header in httpResponseMessage.Content.Headers)
+            {
+                response.Content.Headers.Add(header.Key, header.Value?.ToString());
+            }
+
+            return response;
+        }
+    }
 }

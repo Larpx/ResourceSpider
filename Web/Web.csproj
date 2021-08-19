@@ -5,6 +5,7 @@
     <AssemblyName>Larpx.ResourceSpider.Web</AssemblyName>
     <RootNamespace>Larpx.ResourceSpider.Web</RootNamespace>
     <UserSecretsId>666ca354-3186-46a0-971e-66aa3376f42e</UserSecretsId>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

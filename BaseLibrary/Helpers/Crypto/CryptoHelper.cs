@@ -22,11 +22,7 @@ namespace Larpx.ResourceSpider.Helpers.Encode
 
         public static string ToMd5(this byte[] byBuffer)
         {
-#if !NETSTANDARD
-            System.Security.Cryptography.MD5 mD = new MD5CryptoServiceProvider();
-#else
             var md5 = System.Security.Cryptography.MD5.Create();
-#endif
             byte[] value = md5.ComputeHash(byBuffer);
             return BitConverter.ToString(value).Replace("-", "");
         }
