@@ -21,7 +21,7 @@ namespace MainSpider
 {
     class Program
     {
-        public static async void Main(string[] args)
+        static void Main(string[] args)
         {
             //http://www.ichemistry.cn/weixianpin/
 
@@ -39,7 +39,7 @@ namespace MainSpider
                 .WriteTo.Console().WriteTo.File("logs/spider.log")
                 .CreateLogger();
 
-            await ChemistrySpider.RunAsync();
+            ChemistrySpider.RunAsync().GetAwaiter().GetResult();
 
 
             Console.WriteLine("Hello World!");
