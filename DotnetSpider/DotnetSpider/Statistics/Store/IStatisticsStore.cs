@@ -3,6 +3,9 @@ using DotnetSpider.Infrastructure;
 
 namespace DotnetSpider.Statistics.Store
 {
+	/// <summary>
+	/// 爬虫统计数据
+	/// </summary>
 	public interface IStatisticsStore
 	{
 		/// <summary>

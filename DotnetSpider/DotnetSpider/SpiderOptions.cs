@@ -18,7 +18,7 @@ namespace DotnetSpider
 		public int RetriedTimes { get; set; } = 3;
 
 		/// <summary>
-		/// 当队列中无链接超时后退出爬虫
+		/// 当队列中无链接，超时多少秒后退出爬虫
 		/// </summary>
 		public int EmptySleepTime { get; set; } = 60;
 

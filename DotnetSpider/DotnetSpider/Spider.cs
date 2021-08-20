@@ -15,15 +15,12 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace DotnetSpider
 {
-    public abstract class Spider :
-        BackgroundService
+    public abstract class Spider : BackgroundService
     {
         private readonly IList<IDataFlow> _dataFlows;
         private readonly IList<IRequestSupplier> _requestSuppliers;
@@ -75,7 +72,7 @@ namespace DotnetSpider
 
             if (Options.Speed > 500)
             {
-                throw new SpiderException("Speed should not large than 500");
+                throw new SpiderException("采集速度不能大于 500");
             }
 
             _services = services;
@@ -117,6 +114,11 @@ namespace DotnetSpider
             return StorageUtilities.CreateStorage(Options.StorageType, _services.Configuration);
         }
 
+        /// <summary>
+        /// 停止
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             _consumer?.Close();
@@ -505,6 +507,10 @@ namespace DotnetSpider
             }
         }
 
+        /// <summary>
+        /// 异步处理超时请求
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> HandleTimeoutRequestAsync()
         {
             var timeoutRequests = _requestedQueue.GetAllTimeoutList();
@@ -526,12 +532,20 @@ namespace DotnetSpider
             return true;
         }
 
+        /// <summary>
+        /// 继续等待
+        /// </summary>
+        /// <param name="sleepTime"></param>
+        /// <param name="sleepTimeLimit"></param>
+        /// <param name="totalSeconds"></param>
+        /// <param name="waitMessage"></param>
+        /// <returns></returns>
         private async Task<bool> WaitForContinueAsync(int sleepTime, int sleepTimeLimit, double totalSeconds,
             string waitMessage = null)
         {
             if (sleepTime > sleepTimeLimit)
             {
-                Logger.LogInformation($"Exit: {(int)totalSeconds} seconds");
+                Logger.LogInformation($"退出: {(int)totalSeconds} 秒");
                 return false;
             }
             else
@@ -546,6 +560,10 @@ namespace DotnetSpider
             }
         }
 
+        /// <summary>
+        /// 打印统计数据
+        /// </summary>
+        /// <param name="stoppingToken"></param>
         private void PrintStatistics(CancellationToken stoppingToken)
         {
             if (!IsDistributed)
@@ -561,12 +579,21 @@ namespace DotnetSpider
             }
         }
 
+        /// <summary>
+        /// 退出
+        /// </summary>
+        /// <returns></returns>
         private async Task ExitAsync()
         {
             await _services.StatisticsClient.ExitAsync(SpiderId.Id);
             _services.ApplicationLifetime.StopApplication();
         }
 
+        /// <summary>
+        /// 创建令牌桶
+        /// </summary>
+        /// <param name="speed"></param>
+        /// <returns></returns>
         private static FixedTokenBucket CreateBucket(double speed)
         {
             if (speed >= 1)
@@ -581,6 +608,11 @@ namespace DotnetSpider
             }
         }
 
+        /// <summary>
+        /// 发布请求消息
+        /// </summary>
+        /// <param name="requests"></param>
+        /// <returns></returns>
         private async Task<bool> PublishRequestMessagesAsync(params Request[] requests)
         {
             if (requests.Length > 0)
@@ -614,7 +646,7 @@ namespace DotnetSpider
                                 }
                             default:
                                 {
-                                    throw new ApplicationException($"Not supported policy: {request.Policy}");
+                                    throw new ApplicationException($"未知下载策略 : {request.Policy}");
                                 }
                         }
                     }
@@ -626,7 +658,7 @@ namespace DotnetSpider
                     else
                     {
                         Logger.LogWarning(
-                            $"{SpiderId} enqueue request: {request.RequestUri}, {request.Hash} failed");
+                            $"{SpiderId} 排队请求: {request.RequestUri}, {request.Hash} 失败");
                     }
                 }
             }
@@ -634,26 +666,15 @@ namespace DotnetSpider
             return true;
         }
 
-        protected async Task LoadRequestFromSuppliers(CancellationToken stoppingToken)
-        {
-            // 通过供应接口添加请求
-            foreach (var requestSupplier in _requestSuppliers)
-            {
-                foreach (var request in await requestSupplier.GetAllListAsync(stoppingToken))
-                {
-                    await AddRequestsAsync(request);
-                }
-
-                Logger.LogInformation(
-                    $"{SpiderId} load request from {requestSupplier.GetType().Name} {_requestSuppliers.IndexOf(requestSupplier)}/{_requestSuppliers.Count}");
-            }
-        }
-
+        /// <summary>
+        /// 异步初始化流处理器
+        /// </summary>
+        /// <returns></returns>
         private async Task InitializeDataFlowsAsync()
         {
             if (_dataFlows.Count == 0)
             {
-                Logger.LogWarning($"{SpiderId} there is no any dataFlow");
+                Logger.LogWarning($"{SpiderId} 中未配置流处理器。");
             }
             else
             {
@@ -673,13 +694,36 @@ namespace DotnetSpider
                     catch (Exception e)
                     {
                         Logger.LogError(
-                            $"{SpiderId} initialize dataFlow {dataFlow.GetType().Name} failed: {e}");
+                            $"{SpiderId} 初始化流处理器 {dataFlow.GetType().Name} 失败: {e}");
                         _services.ApplicationLifetime.StopApplication();
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// 从供应接口中添加请求源
+        /// </summary>
+        /// <param name="stoppingToken"></param>
+        /// <returns></returns>
+        protected async Task LoadRequestFromSuppliers(CancellationToken stoppingToken)
+        {
+            // 通过供应接口添加请求
+            foreach (var requestSupplier in _requestSuppliers)
+            {
+                foreach (var request in await requestSupplier.GetAllListAsync(stoppingToken))
+                {
+                    await AddRequestsAsync(request);
+                }
+
+                Logger.LogInformation(
+                    $"{SpiderId} 从 {requestSupplier.GetType().Name} {_requestSuppliers.IndexOf(requestSupplier)}/{_requestSuppliers.Count} 中加载请求");
+            }
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
         public override void Dispose()
         {
             ObjectUtilities.DisposeSafely(Logger, _requestedQueue);

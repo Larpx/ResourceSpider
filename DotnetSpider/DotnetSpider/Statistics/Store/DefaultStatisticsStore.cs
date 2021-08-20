@@ -5,6 +5,9 @@ using DotnetSpider.Infrastructure;
 
 namespace DotnetSpider.Statistics.Store
 {
+	/// <summary>
+	/// 默认统计数据存储
+	/// </summary>
 	public class DefaultStatisticsStore : IStatisticsStore
 	{
 		private readonly Dictionary<string, dynamic> _dict =

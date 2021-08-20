@@ -14,6 +14,7 @@ using ServiceProvider = DotnetSpider.Portal.Common.ServiceProvider;
 
 namespace DotnetSpider.Portal.BackgroundService
 {
+	[DisallowConcurrentExecution]
 	public class QuartzJob : IJob
 	{
 		public async Task Execute(IJobExecutionContext context)

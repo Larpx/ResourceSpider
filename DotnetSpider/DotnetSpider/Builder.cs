@@ -23,6 +23,9 @@ namespace DotnetSpider
 	/// </summary>
 	public class Builder : HostBuilder
 	{
+		/// <summary>
+		/// 单机爬虫构建器
+		/// </summary>
 		private Builder()
 		{
 		}
@@ -30,7 +33,7 @@ namespace DotnetSpider
 		public IConfiguration Configuration { get; private set; }
 
 		/// <summary>
-		/// Create a spider builder only contains spider background service
+		/// 创建一个仅包含spider后台服务的spider builder
 		/// </summary>
 		/// <param name="configureDelegate"></param>
 		/// <typeparam name="T"></typeparam>
@@ -41,6 +44,12 @@ namespace DotnetSpider
 			return CreateBuilder<T>(null, configureDelegate);
 		}
 
+		/// <summary>
+		/// 创建一个默认spider的 builder
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="configureDelegate"></param>
+		/// <returns></returns>
 		public static Builder CreateDefaultBuilder<T>(Action<SpiderOptions> configureDelegate = null)
 			where T : Spider
 		{
@@ -48,7 +57,7 @@ namespace DotnetSpider
 		}
 
 		/// <summary>
-		/// Create a spider builder only contains spider background service
+		/// 创建一个仅包含spider后台服务的spider builder
 		/// </summary>
 		/// <param name="args"></param>
 		/// <param name="configureDelegate"></param>
@@ -60,12 +69,26 @@ namespace DotnetSpider
 			return CreateBuilder(typeof(T), args, configureDelegate);
 		}
 
+		/// <summary>
+		/// 创建一个默认spider的 builder
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="args"></param>
+		/// <param name="configureDelegate"></param>
+		/// <returns></returns>
 		public static Builder CreateDefaultBuilder<T>(string[] args, Action<SpiderOptions> configureDelegate = null)
 			where T : Spider
 		{
 			return CreateDefaultBuilder(typeof(T), args, configureDelegate);
 		}
 
+		/// <summary>
+		/// 创建一个仅包含spider后台服务的spider builder
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="args"></param>
+		/// <param name="configureDelegate"></param>
+		/// <returns></returns>
 		public static Builder CreateBuilder(Type type,
 			string[] args = null, Action<SpiderOptions> configureDelegate = null)
 		{
@@ -79,6 +102,13 @@ namespace DotnetSpider
 			return builder;
 		}
 
+		/// <summary>
+		/// 创建一个默认spider的 builder
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="args"></param>
+		/// <param name="configure"></param>
+		/// <returns></returns>
 		public static Builder CreateDefaultBuilder(Type type, string[] args = null,
 			Action<SpiderOptions> configure = null)
 		{
@@ -93,6 +123,12 @@ namespace DotnetSpider
 			return builder;
 		}
 
+		/// <summary>
+		/// 创建一个仅包含spider后台服务的spider builder
+		/// </summary>
+		/// <param name="builder"></param>
+		/// <param name="args"></param>
+		/// <param name="configureDelegate"></param>
 		public static void ConfigureBuilder(HostBuilder builder, string[] args = null,
 			Action<SpiderOptions> configureDelegate = null)
 		{

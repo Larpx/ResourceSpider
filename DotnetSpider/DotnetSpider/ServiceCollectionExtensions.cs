@@ -7,63 +7,89 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotnetSpider
 {
-	public static class ServiceCollectionExtensions
-	{
+    public static class ServiceCollectionExtensions
+    {
+        /// <summary>
+        /// MD5哈希算法服务
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static Builder UseMD5HashAlgorithmService(this Builder builder)
+        {
+            builder.ConfigureServices(x =>
+            {
+                x.AddSingleton<IHashAlgorithmService, MD5HashAlgorithmService>();
+            });
+            return builder;
+        }
 
+        /// <summary>
+        /// 使用自定义请求的哈希计算器接口
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static Builder UseRequestHasher(this Builder builder)
+        {
+            builder.ConfigureServices(x =>
+            {
+                x.AddSingleton<IRequestHasher, RequestHasher>();
+            });
+            return builder;
+        }
 
-		// ReSharper disable once InconsistentNaming
-		public static Builder UseMD5HashAlgorithmService(this Builder builder)
-		{
-			builder.ConfigureServices(x =>
-			{
-				x.AddSingleton<IHashAlgorithmService, MD5HashAlgorithmService>();
-			});
-			return builder;
-		}
-		public static Builder UseRequestHasher(this Builder builder)
-		{
-			builder.ConfigureServices(x =>
-			{
-				x.AddSingleton<IRequestHasher, RequestHasher>();
-			});
-			return builder;
-		}
-		public static Builder UseRequestHasher<TRequestHasher>(this Builder builder)where TRequestHasher : class, IRequestHasher
-		{
-			builder.ConfigureServices(x =>
-			{
-				x.AddSingleton<IRequestHasher, TRequestHasher>();
-			});
-			return builder;
-		}
-		public static Builder IgnoreServerCertificateError(this Builder builder)
-		{
-			builder.Properties[Const.IgnoreSslError] = "true";
-			return builder;
-		}
-		
-		/// <summary>
-		/// 使用 ADSL 拨号服务
-		/// </summary>
-		/// <param name="serviceCollection"></param>
-		/// <param name="configure"></param>
-		/// <returns></returns>
-		public static IServiceCollection AddPPPoE(this IServiceCollection serviceCollection,
-			Action<PPPoEOptions> configure)
-		{
-			serviceCollection.TryAddSingleton<PPPoEService>();
-			if (configure != null)
-			{
-				serviceCollection.Configure(configure);
-			}
+        /// <summary>
+        /// 使用自定义请求的哈希计算器接口
+        /// </summary>
+        /// <typeparam name="TRequestHasher"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static Builder UseRequestHasher<TRequestHasher>(this Builder builder) where TRequestHasher : class, IRequestHasher
+        {
+            builder.ConfigureServices(x =>
+            {
+                x.AddSingleton<IRequestHasher, TRequestHasher>();
+            });
+            return builder;
+        }
 
-			return serviceCollection;
-		}
+        /// <summary>
+        /// 忽略服务器证书错误
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static Builder IgnoreServerCertificateError(this Builder builder)
+        {
+            builder.Properties[Const.IgnoreSslError] = "true";
+            return builder;
+        }
 
-		public static IHostBuilder UseDockerLifetime(this IHostBuilder builder)
-		{
-			builder.ConfigureServices(x => { x.AddSingleton<IHostLifetime, DockerLifeTime>(); });
-			return builder;
-		}
-	}
+        /// <summary>
+        /// 使用 ADSL 拨号服务
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddPPPoE(this IServiceCollection serviceCollection,
+            Action<PPPoEOptions> configure)
+        {
+            serviceCollection.TryAddSingleton<PPPoEService>();
+            if (configure != null)
+            {
+                serviceCollection.Configure(configure);
+            }
+
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// 使用docker服务
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IHostBuilder UseDockerLifetime(this IHostBuilder builder)
+        {
+            builder.ConfigureServices(x => { x.AddSingleton<IHostLifetime, DockerLifeTime>(); });
+            return builder;
+        }
+    }
 }
