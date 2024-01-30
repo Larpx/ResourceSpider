@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
-using System.Configuration;
 using System.Text;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Cache
@@ -14,7 +13,7 @@ namespace Larpx.ResourceSpider.BaseLibrary.Cache
         /// <summary>
         /// 连接字符串
         /// </summary>
-        private static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["RedisConnectionString"].ConnectionString;
+        private static readonly string ConnectionString = "";
 
         /// <summary>
         /// 锁

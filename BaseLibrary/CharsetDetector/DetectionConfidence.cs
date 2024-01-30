@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector
+﻿namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector
 {
     /// <summary>
     /// Indicate how confident the detection module about the return result.

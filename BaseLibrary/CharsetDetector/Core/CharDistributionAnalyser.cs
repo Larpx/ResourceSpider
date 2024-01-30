@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Core
+﻿namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Core
 {
     /// <summary>
     /// Base class for the Character Distribution Method, used for 

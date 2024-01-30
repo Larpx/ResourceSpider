@@ -1,14 +1,9 @@
-﻿using Larpx.ResourceSpider.Helpers.Web;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Larpx.ResourceSpider.Helpers
+namespace Larpx.ResourceSpider.BaseLibrary.Helpers
 {
     public class CommonHelper
     {
@@ -25,7 +20,7 @@ namespace Larpx.ResourceSpider.Helpers
                 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
                 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
             };
-            System.Text.StringBuilder newRandom = new System.Text.StringBuilder(62);
+            StringBuilder newRandom = new StringBuilder(62);
             Random rd = new Random();
             for (int i = 0; i < Length; i++)
             {
@@ -72,7 +67,7 @@ namespace Larpx.ResourceSpider.Helpers
         public static string UrlEncode(string str)
         {
             StringBuilder oSb = new StringBuilder();
-            byte[] byStr = System.Text.Encoding.UTF8.GetBytes(str);
+            byte[] byStr = Encoding.UTF8.GetBytes(str);
             for (int i = 0; i < byStr.Length; i++)
             {
                 oSb.Append(@"%" + Convert.ToString(byStr[i], 16));
@@ -87,16 +82,16 @@ namespace Larpx.ResourceSpider.Helpers
         /// <typeparam name="T"></typeparam>
         /// <param name="RealObject"></param>
         /// <returns></returns>
-        public static T Clone<T>(T RealObject)
-        {
-            using (Stream objectStream = new MemoryStream())
-            {
-                IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(objectStream, RealObject);
-                objectStream.Seek(0, SeekOrigin.Begin);
-                return (T)formatter.Deserialize(objectStream);
-            }
-        }
+        //public static T Clone<T>(T RealObject)
+        //{
+        //    using (Stream objectStream = new MemoryStream())
+        //    {
+        //        IFormatter formatter = new BinaryFormatter();
+        //        formatter.Serialize(objectStream, RealObject);
+        //        objectStream.Seek(0, SeekOrigin.Begin);
+        //        return (T)formatter.Deserialize(objectStream);
+        //    }
+        //}
 
         /// <summary>
         /// 将List随机排序
@@ -129,72 +124,6 @@ namespace Larpx.ResourceSpider.Helpers
                 outputList.Add(remove);
             }
             return outputList;
-        }
-
-        /// <summary>
-        /// 云打码
-        /// </summary>
-        /// <param name="sURL">验证码图片</param>
-        /// <param name="sResult">结果</param>
-        /// <returns>大于零表示打码成功</returns>
-        public static int EasyDecodeByBytes(string sURL, out string sResult)
-        {
-            sResult = "";
-            string username, password, lpAppKey;
-            int nCodeType, nCaptchaId, nAppId, nTimeOut;
-            StringBuilder pCodeResult = new StringBuilder(new string(' ', 30)); // 分配30个字节存放识别结果
-
-            // 一键版本无需调用 YDM_SetAppInfo 和 YDM_Login，但需传入软件ID密钥等4个参数
-            //username = "DLarpx";
-            //password = "50zx31cvb";
-            //nAppId = 6472;
-            //lpAppKey = "3f0e944ec851d6984bf572d821edf0b2";
-
-            username = ConfigurationManager.AppSettings["UserName"];
-            password = ConfigurationManager.AppSettings["Pdw"];
-            nAppId = Convert.ToInt32(ConfigurationManager.AppSettings["AppID"]);
-            lpAppKey = ConfigurationManager.AppSettings["AppKey"];
-
-            // 例：1004表示4位字母数字，不同类型收费不同。请准确填写，否则影响识别率。在此查询所有类型 http://www.yundama.com/price.html
-            nCodeType = 3006;
-
-            // 超时时间，单位：秒
-            nTimeOut = 60;
-
-            int nBalance = YDMWrapper.YDM_EasyGetBalance(username, password, nAppId, lpAppKey);
-
-            if (nBalance > 0)
-            {
-                using (var oResponsePic = EasyHttpHelper.ReadData(sURL, 0))
-                {
-                    using (Stream oPic = oResponsePic.GetResponseStream())
-                    {
-
-                        byte[] data = new byte[1024];
-                        int length = 0;
-                        using (MemoryStream ms = new MemoryStream())
-                        {
-                            while ((length = oPic.Read(data, 0, data.Length)) > 0)
-                            {
-                                ms.Write(data, 0, length);
-                            }
-                            ms.Seek(0, SeekOrigin.Begin);
-                            byte[] buffer = ms.ToArray();
-
-                            // 返回验证码ID，大于零为识别成功，返回其他错误代码请查询 http://www.yundama.com/apidoc/YDM_ErrorCode.html
-                            nCaptchaId = YDMWrapper.YDM_EasyDecodeByBytes(username, password, nAppId, lpAppKey, buffer, (int)buffer.Length, nCodeType, nTimeOut, pCodeResult);
-                        }
-                    }
-                }
-
-                sResult = pCodeResult.ToString();
-                return nCaptchaId;
-            }
-            else
-            {
-                Console.WriteLine("账户已欠费");
-                return -1;
-            }
         }
 
         /// <summary>

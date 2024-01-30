@@ -1,5 +1,4 @@
 using Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Core;
-using System;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Prober
 {
@@ -9,12 +8,12 @@ namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Prober
         private CodingStateMachine codingSM;
         private BIG5DistributionAnalyser distributionAnalyser;
         private byte[] lastChar = new byte[2];
-        
+
         public Big5Prober()
         {
             this.codingSM = new CodingStateMachine(new BIG5SMModel());
             this.distributionAnalyser = new BIG5DistributionAnalyser();
-            this.Reset();        
+            this.Reset();
         }
 
         public override ProbingState HandleData(byte[] buf, int offset, int len)
@@ -22,23 +21,30 @@ namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Prober
             int codingState = 0;
             int max = offset + len;
 
-            for (int i = offset; i < max; i++) {
+            for (int i = offset; i < max; i++)
+            {
                 codingState = codingSM.NextState(buf[i]);
-                if (codingState == SMModel.ERROR) {
+                if (codingState == SMModel.ERROR)
+                {
                     state = ProbingState.NotMe;
                     break;
                 }
-                if (codingState == SMModel.ITSME) {
+                if (codingState == SMModel.ITSME)
+                {
                     state = ProbingState.FoundIt;
                     break;
                 }
-                if (codingState == SMModel.START) {
+                if (codingState == SMModel.START)
+                {
                     int charLen = codingSM.CurrentCharLen;
-                    if (i == offset) {
+                    if (i == offset)
+                    {
                         lastChar[1] = buf[offset];
                         distributionAnalyser.HandleOneChar(lastChar, 0, charLen);
-                    } else {
-                        distributionAnalyser.HandleOneChar(buf, i-1, charLen);        
+                    }
+                    else
+                    {
+                        distributionAnalyser.HandleOneChar(buf, i-1, charLen);
                     }
                 }
             }
@@ -49,23 +55,23 @@ namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Prober
                     state = ProbingState.FoundIt;
             return state;
         }
-        
+
         public override void Reset()
         {
-            codingSM.Reset(); 
+            codingSM.Reset();
             state = ProbingState.Detecting;
             distributionAnalyser.Reset();
         }
-            
+
         public override string GetCharsetName()
         {
-            return "Big-5";        
+            return "Big-5";
         }
-        
+
         public override float GetConfidence()
         {
             return distributionAnalyser.GetConfidence();
         }
-        
+
     }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Larpx.ResourceSpider.Helpers.Web
+namespace Larpx.ResourceSpider.BaseLibrary.Helpers.Web
 {
     public class JavaScriptHelper
     {

@@ -4,33 +4,33 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Larpx.ResourceSpider.Helpers.Encode
+namespace Larpx.ResourceSpider.BaseLibrary.Helpers.Crypto
 {
-    public static class MD5
+    public static class MD5Helper
     {
+        private static MD5 hash = MD5.Create();
+
         public static string GetBufferHash(string sBuffer)
         {
             UTF8Encoding uTF8Encoding = new UTF8Encoding();
-            return MD5.GetBufferHash(uTF8Encoding.GetBytes(sBuffer));
+            return GetBufferHash(uTF8Encoding.GetBytes(sBuffer));
         }
 
         public static string ToMd5(this string sBuffer)
         {
             UTF8Encoding uTF8Encoding = new UTF8Encoding();
-            return MD5.GetBufferHash(uTF8Encoding.GetBytes(sBuffer));
+            return GetBufferHash(uTF8Encoding.GetBytes(sBuffer));
         }
 
         public static string ToMd5(this byte[] byBuffer)
         {
-            var md5 = System.Security.Cryptography.MD5.Create();
-            byte[] value = md5.ComputeHash(byBuffer);
+            byte[] value = hash.ComputeHash(byBuffer);
             return BitConverter.ToString(value).Replace("-", "");
         }
 
         public static string GetBufferHash(byte[] byBuffer)
         {
-            System.Security.Cryptography.MD5 mD = new MD5CryptoServiceProvider();
-            byte[] value = mD.ComputeHash(byBuffer);
+            byte[] value = hash.ComputeHash(byBuffer);
             return BitConverter.ToString(value).Replace("-", "");
         }
 
@@ -41,11 +41,10 @@ namespace Larpx.ResourceSpider.Helpers.Encode
                 return string.Empty;
             }
             string result = string.Empty;
-            System.Security.Cryptography.MD5 mD = new MD5CryptoServiceProvider();
             try
             {
                 FileStream fileStream = new FileStream(sFileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                byte[] value = mD.ComputeHash(fileStream);
+                byte[] value = hash.ComputeHash(fileStream);
                 fileStream.Close();
                 result = BitConverter.ToString(value).Replace("-", "");
             }
@@ -58,7 +57,7 @@ namespace Larpx.ResourceSpider.Helpers.Encode
 
         public static bool Verify(string sBuffer, string sHash)
         {
-            string bufferHash = MD5.GetBufferHash(sBuffer);
+            string bufferHash = GetBufferHash(sBuffer);
             StringComparer ordinalIgnoreCase = StringComparer.OrdinalIgnoreCase;
             return ordinalIgnoreCase.Compare(bufferHash, sHash) == 0;
         }
@@ -89,7 +88,7 @@ namespace Larpx.ResourceSpider.Helpers.Encode
 
         public string Decrypt(string sString)
         {
-            if (String.IsNullOrEmpty(sString) || sString.Length < 8)
+            if (string.IsNullOrEmpty(sString) || sString.Length < 8)
             {
                 throw new Exception("Invalid Parameter.");
             }
@@ -150,26 +149,26 @@ namespace Larpx.ResourceSpider.Helpers.Encode
             int num2 = num - 8;
             for (i = NextI(sData, i, num2); i < num2; i = NextI(sData, i, num2))
             {
-                byte b = dTable[(int)sData[i++]];
+                byte b = dTable[sData[i++]];
                 i = NextI(sData, i, num2);
-                byte b2 = dTable[(int)sData[i++]];
+                byte b2 = dTable[sData[i++]];
                 i = NextI(sData, i, num2);
-                byte b3 = dTable[(int)sData[i++]];
+                byte b3 = dTable[sData[i++]];
                 i = NextI(sData, i, num2);
-                byte b4 = dTable[(int)sData[i++]];
+                byte b4 = dTable[sData[i++]];
                 i = NextI(sData, i, num2);
-                byte b5 = dTable[(int)sData[i++]];
+                byte b5 = dTable[sData[i++]];
                 i = NextI(sData, i, num2);
-                byte b6 = dTable[(int)sData[i++]];
+                byte b6 = dTable[sData[i++]];
                 i = NextI(sData, i, num2);
-                byte b7 = dTable[(int)sData[i++]];
+                byte b7 = dTable[sData[i++]];
                 i = NextI(sData, i, num2);
-                byte b8 = dTable[(int)sData[i++]];
-                list.Add((byte)((int)b << 3 | b2 >> 2));
-                list.Add((byte)((int)b2 << 6 | (int)b3 << 1 | b4 >> 4));
-                list.Add((byte)((int)b4 << 4 | b5 >> 1));
-                list.Add((byte)((int)b5 << 7 | (int)b6 << 2 | b7 >> 3));
-                list.Add((byte)((int)b7 << 5 | (int)b8));
+                byte b8 = dTable[sData[i++]];
+                list.Add((byte)(b << 3 | b2 >> 2));
+                list.Add((byte)(b2 << 6 | b3 << 1 | b4 >> 4));
+                list.Add((byte)(b4 << 4 | b5 >> 1));
+                list.Add((byte)(b5 << 7 | b6 << 2 | b7 >> 3));
+                list.Add((byte)(b7 << 5 | b8));
             }
             DecodeLastBlock(list, sData[num - 8], sData[num - 7], sData[num - 6], sData[num - 5], sData[num - 4], sData[num - 3], sData[num - 2], sData[num - 1]);
             return list.ToArray();
@@ -179,61 +178,61 @@ namespace Larpx.ResourceSpider.Helpers.Encode
         {
             if (c3 == cPadding)
             {
-                byte b = dTable[(int)c1];
-                byte b2 = dTable[(int)c2];
-                byOutStream.Add((byte)((int)b << 3 | b2 >> 2));
+                byte b = dTable[c1];
+                byte b2 = dTable[c2];
+                byOutStream.Add((byte)(b << 3 | b2 >> 2));
                 return 1;
             }
             if (c5 == cPadding)
             {
-                byte b3 = dTable[(int)c1];
-                byte b4 = dTable[(int)c2];
-                byte b5 = dTable[(int)c3];
-                byte b6 = dTable[(int)c4];
-                byOutStream.Add((byte)((int)b3 << 3 | b4 >> 2));
-                byOutStream.Add((byte)((int)b4 << 6 | (int)b5 << 1 | b6 >> 4));
+                byte b3 = dTable[c1];
+                byte b4 = dTable[c2];
+                byte b5 = dTable[c3];
+                byte b6 = dTable[c4];
+                byOutStream.Add((byte)(b3 << 3 | b4 >> 2));
+                byOutStream.Add((byte)(b4 << 6 | b5 << 1 | b6 >> 4));
                 return 2;
             }
             if (c6 == cPadding)
             {
-                byte b7 = dTable[(int)c1];
-                byte b8 = dTable[(int)c2];
-                byte b9 = dTable[(int)c3];
-                byte b10 = dTable[(int)c4];
-                byte b11 = dTable[(int)c5];
-                byOutStream.Add((byte)((int)b7 << 3 | b8 >> 2));
-                byOutStream.Add((byte)((int)b8 << 6 | (int)b9 << 1 | b10 >> 4));
-                byOutStream.Add((byte)((int)b10 << 4 | b11 >> 1));
+                byte b7 = dTable[c1];
+                byte b8 = dTable[c2];
+                byte b9 = dTable[c3];
+                byte b10 = dTable[c4];
+                byte b11 = dTable[c5];
+                byOutStream.Add((byte)(b7 << 3 | b8 >> 2));
+                byOutStream.Add((byte)(b8 << 6 | b9 << 1 | b10 >> 4));
+                byOutStream.Add((byte)(b10 << 4 | b11 >> 1));
                 return 3;
             }
             if (c8 == cPadding)
             {
-                byte b12 = dTable[(int)c1];
-                byte b13 = dTable[(int)c2];
-                byte b14 = dTable[(int)c3];
-                byte b15 = dTable[(int)c4];
-                byte b16 = dTable[(int)c5];
-                byte b17 = dTable[(int)c6];
-                byte b18 = dTable[(int)c7];
-                byOutStream.Add((byte)((int)b12 << 3 | b13 >> 2));
-                byOutStream.Add((byte)((int)b13 << 6 | (int)b14 << 1 | b15 >> 4));
-                byOutStream.Add((byte)((int)b15 << 4 | b16 >> 1));
-                byOutStream.Add((byte)((int)b16 << 7 | (int)b17 << 2 | b18 >> 3));
+                byte b12 = dTable[c1];
+                byte b13 = dTable[c2];
+                byte b14 = dTable[c3];
+                byte b15 = dTable[c4];
+                byte b16 = dTable[c5];
+                byte b17 = dTable[c6];
+                byte b18 = dTable[c7];
+                byOutStream.Add((byte)(b12 << 3 | b13 >> 2));
+                byOutStream.Add((byte)(b13 << 6 | b14 << 1 | b15 >> 4));
+                byOutStream.Add((byte)(b15 << 4 | b16 >> 1));
+                byOutStream.Add((byte)(b16 << 7 | b17 << 2 | b18 >> 3));
                 return 4;
             }
-            byte b19 = dTable[(int)c1];
-            byte b20 = dTable[(int)c2];
-            byte b21 = dTable[(int)c3];
-            byte b22 = dTable[(int)c4];
-            byte b23 = dTable[(int)c5];
-            byte b24 = dTable[(int)c6];
-            byte b25 = dTable[(int)c7];
-            byte b26 = dTable[(int)c8];
-            byOutStream.Add((byte)((int)b19 << 3 | b20 >> 2));
-            byOutStream.Add((byte)((int)b20 << 6 | (int)b21 << 1 | b22 >> 4));
-            byOutStream.Add((byte)((int)b22 << 4 | b23 >> 1));
-            byOutStream.Add((byte)((int)b23 << 7 | (int)b24 << 2 | b25 >> 3));
-            byOutStream.Add((byte)((int)b25 << 5 | (int)b26));
+            byte b19 = dTable[c1];
+            byte b20 = dTable[c2];
+            byte b21 = dTable[c3];
+            byte b22 = dTable[c4];
+            byte b23 = dTable[c5];
+            byte b24 = dTable[c6];
+            byte b25 = dTable[c7];
+            byte b26 = dTable[c8];
+            byOutStream.Add((byte)(b19 << 3 | b20 >> 2));
+            byOutStream.Add((byte)(b20 << 6 | b21 << 1 | b22 >> 4));
+            byOutStream.Add((byte)(b22 << 4 | b23 >> 1));
+            byOutStream.Add((byte)(b23 << 7 | b24 << 2 | b25 >> 3));
+            byOutStream.Add((byte)(b25 << 5 | b26));
             return 5;
         }
 
@@ -244,11 +243,11 @@ namespace Larpx.ResourceSpider.Helpers.Encode
             int num2 = byInput.Length - num;
             for (int i = 0; i < num2; i += 5)
             {
-                int num3 = (int)(byInput[i] & 255);
-                int num4 = (int)(byInput[i + 1] & 255);
-                int num5 = (int)(byInput[i + 2] & 255);
-                int num6 = (int)(byInput[i + 3] & 255);
-                int num7 = (int)(byInput[i + 4] & 255);
+                int num3 = byInput[i] & 255;
+                int num4 = byInput[i + 1] & 255;
+                int num5 = byInput[i + 2] & 255;
+                int num6 = byInput[i + 3] & 255;
+                int num7 = byInput[i + 4] & 255;
                 stringBuilder.Append(eTable[num3 >> 3 & 31]);
                 stringBuilder.Append(eTable[(num3 << 2 | num4 >> 6) & 31]);
                 stringBuilder.Append(eTable[num4 >> 1 & 31]);
@@ -262,7 +261,7 @@ namespace Larpx.ResourceSpider.Helpers.Encode
             {
                 case 1:
                     {
-                        int num8 = (int)(byInput[num2] & 255);
+                        int num8 = byInput[num2] & 255;
                         stringBuilder.Append(eTable[num8 >> 3 & 31]);
                         stringBuilder.Append(eTable[num8 << 2 & 31]);
                         stringBuilder.Append(cPadding).Append(cPadding).Append(cPadding).Append(cPadding).Append(cPadding).Append(cPadding);
@@ -270,8 +269,8 @@ namespace Larpx.ResourceSpider.Helpers.Encode
                     }
                 case 2:
                     {
-                        int num9 = (int)(byInput[num2] & 255);
-                        int num10 = (int)(byInput[num2 + 1] & 255);
+                        int num9 = byInput[num2] & 255;
+                        int num10 = byInput[num2 + 1] & 255;
                         stringBuilder.Append(eTable[num9 >> 3 & 31]);
                         stringBuilder.Append(eTable[(num9 << 2 | num10 >> 6) & 31]);
                         stringBuilder.Append(eTable[num10 >> 1 & 31]);
@@ -281,9 +280,9 @@ namespace Larpx.ResourceSpider.Helpers.Encode
                     }
                 case 3:
                     {
-                        int num11 = (int)(byInput[num2] & 255);
-                        int num12 = (int)(byInput[num2 + 1] & 255);
-                        int num13 = (int)(byInput[num2 + 2] & 255);
+                        int num11 = byInput[num2] & 255;
+                        int num12 = byInput[num2 + 1] & 255;
+                        int num13 = byInput[num2 + 2] & 255;
                         stringBuilder.Append(eTable[num11 >> 3 & 31]);
                         stringBuilder.Append(eTable[(num11 << 2 | num12 >> 6) & 31]);
                         stringBuilder.Append(eTable[num12 >> 1 & 31]);
@@ -294,10 +293,10 @@ namespace Larpx.ResourceSpider.Helpers.Encode
                     }
                 case 4:
                     {
-                        int num14 = (int)(byInput[num2] & 255);
-                        int num15 = (int)(byInput[num2 + 1] & 255);
-                        int num16 = (int)(byInput[num2 + 2] & 255);
-                        int num17 = (int)(byInput[num2 + 3] & 255);
+                        int num14 = byInput[num2] & 255;
+                        int num15 = byInput[num2 + 1] & 255;
+                        int num16 = byInput[num2 + 2] & 255;
+                        int num17 = byInput[num2 + 3] & 255;
                         stringBuilder.Append(eTable[num14 >> 3 & 31]);
                         stringBuilder.Append(eTable[(num14 << 2 | num15 >> 6) & 31]);
                         stringBuilder.Append(eTable[num15 >> 1 & 31]);
@@ -321,7 +320,7 @@ namespace Larpx.ResourceSpider.Helpers.Encode
         {
             for (int i = 0; i < eTable.Length; i++)
             {
-                dTable[(int)eTable[i]] = (byte)i;
+                dTable[eTable[i]] = (byte)i;
             }
         }
 
@@ -353,8 +352,8 @@ namespace Larpx.ResourceSpider.Helpers.Encode
 
         public override byte[] Decode(string sData)
         {
-            int num = Convert.ToInt32(Math.Floor((double)sData.Length / 1.6));
-            int totalWidth = 8 * Convert.ToInt32(Math.Ceiling((double)num / 5.0));
+            int num = Convert.ToInt32(Math.Floor(sData.Length / 1.6));
+            int totalWidth = 8 * Convert.ToInt32(Math.Ceiling(num / 5.0));
             string sData2 = sData.PadRight(totalWidth, '=').ToLower();
             return base.Decode(sData2);
         }
@@ -386,7 +385,7 @@ namespace Larpx.ResourceSpider.Helpers.Encode
             uint num = 4294967295u;
             for (int i = 0; i < byBuffer.Length; i++)
             {
-                num = ((num >> 8 & 16777215u) ^ CRCTable[(int)((UIntPtr)((num ^ (uint)byBuffer[i]) & 255u))]);
+                num = num >> 8 & 16777215u ^ CRCTable[(int)(nuint)((num ^ byBuffer[i]) & 255u)];
             }
             num ^= 4294967295u;
             return BitConverter.ToString(BitConverter.GetBytes(num)).Replace("-", "");
@@ -394,13 +393,13 @@ namespace Larpx.ResourceSpider.Helpers.Encode
 
         public string GetFileHash(string sFileName)
         {
-            if (!System.IO.File.Exists(sFileName))
+            if (!File.Exists(sFileName))
             {
                 return string.Empty;
             }
             byte[] array = new byte[1024];
             uint num = 4294967295u;
-            using (System.IO.FileStream fileStream = System.IO.File.OpenRead(sFileName))
+            using (FileStream fileStream = File.OpenRead(sFileName))
             {
                 while (true)
                 {
@@ -411,7 +410,7 @@ namespace Larpx.ResourceSpider.Helpers.Encode
                     }
                     for (int i = 0; i < num2; i++)
                     {
-                        num = ((num >> 8 & 16777215u) ^ CRCTable[(int)((UIntPtr)((num ^ (uint)array[i]) & 255u))]);
+                        num = num >> 8 & 16777215u ^ CRCTable[(int)(nuint)((num ^ array[i]) & 255u)];
                     }
                 }
             }

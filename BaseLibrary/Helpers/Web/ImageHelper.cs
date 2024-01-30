@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Helpers.Web
@@ -25,26 +23,24 @@ namespace Larpx.ResourceSpider.BaseLibrary.Helpers.Web
                 if (File.Exists(savePath))
                     File.Delete(savePath);
 
-                ImageFormat sType = ImageFormat.Jpeg;
-                if (base64Str.Contains("data:image/png;base64,"))
-                    sType = ImageFormat.Png;
-                else if (base64Str.Contains("data:image/jgp;base64,") || base64Str.Contains("data:image/jpg;base64,") || base64Str.Contains("data:image/jpeg;base64,"))
-                    sType = ImageFormat.Jpeg;
-                else if (base64Str.Contains("data:image/gif;base64,"))
-                    sType = ImageFormat.Gif;
-                else
-                    sType = ImageFormat.Png;
+                //string sType = "png";
+                //if (base64Str.Contains("data:image/png;base64,"))
+                //    sType =  "png";
+                //else if (base64Str.Contains("data:image/jgp;base64,") || base64Str.Contains("data:image/jpg;base64,") || base64Str.Contains("data:image/jpeg;base64,"))
+                //    sType =  "jpg";
+                //else if (base64Str.Contains("data:image/gif;base64,"))
+                //    sType = "gif";
+                //else
+                //    sType = "png";
 
-                base64Str = base64Str.Replace("data:image/png;base64,", "").Replace("data:image/jgp;base64,", "")
-                .Replace("data:image/jpg;base64,", "").Replace("data:image/jpeg;base64,", "");
+                //base64Str = base64Str.Replace("data:image/png;base64,", "").Replace("data:image/jgp;base64,", "")
+                //.Replace("data:image/jpg;base64,", "").Replace("data:image/jpeg;base64,", "");
 
                 byte[] arr = Convert.FromBase64String(base64Str);
-                using (MemoryStream ms = new MemoryStream(arr))
+
+                using (FileStream fileStream = new FileStream(savePath, FileMode.Create))
                 {
-                    using (Bitmap bmp = new Bitmap(ms))
-                    {
-                        bmp.Save(savePath, sType);
-                    }
+                    fileStream.Write(arr, 0, arr.Length);
                 }
             }
             catch (Exception ex)

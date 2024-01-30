@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Timers;
-using Serilog;
 
 namespace Larpx.ResourceSpider.BaseLibrary.Util
 {

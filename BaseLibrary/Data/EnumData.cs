@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Larpx.ResourceSpider.BaseLibrary.Data
+﻿namespace Larpx.ResourceSpider.BaseLibrary.Data
 {
     public class EnumData
     {

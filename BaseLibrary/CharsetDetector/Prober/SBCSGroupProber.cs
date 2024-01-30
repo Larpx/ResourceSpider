@@ -1,7 +1,5 @@
 ﻿using Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Core;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Larpx.ResourceSpider.BaseLibrary.CharsetDetector.Prober
 {
