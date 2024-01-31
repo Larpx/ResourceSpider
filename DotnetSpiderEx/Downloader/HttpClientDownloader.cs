@@ -21,13 +21,13 @@ namespace Larpx.ResourceSpider.DotnetSpiderEx.Downloader
             HttpClientFactory = httpClientFactory;
             Logger = logger;
             _proxyService = proxyService;
-            UseProxy = !(_proxyService is EmptyProxyService);
+            UseProxy = _proxyService is not EmptyProxyService;
         }
 
         public async Task<Response> DownloadAsync(Request request)
         {
-            HttpResponseMessage httpResponseMessage = null;
-            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage? httpResponseMessage = null;
+            HttpRequestMessage? httpRequestMessage = null;
             try
             {
                 httpRequestMessage = request.ToHttpRequestMessage();
@@ -59,7 +59,7 @@ namespace Larpx.ResourceSpider.DotnetSpiderEx.Downloader
             }
             catch (Exception e)
             {
-                Logger.LogError($"{request.RequestUri} download failed: {e}");
+                Logger.LogError($"{request.RequestUri} 下载失败,异常原因: {e}");
                 return new Response
                 {
                     RequestHash = request.Hash,
@@ -70,7 +70,8 @@ namespace Larpx.ResourceSpider.DotnetSpiderEx.Downloader
             }
             finally
             {
-                ObjectUtilities.DisposeSafely(Logger, httpResponseMessage, httpRequestMessage);
+                if (httpResponseMessage != null && httpRequestMessage != null)
+                    ObjectUtilities.DisposeSafely(Logger, httpResponseMessage, httpRequestMessage);
             }
         }
 
@@ -101,9 +102,9 @@ namespace Larpx.ResourceSpider.DotnetSpiderEx.Downloader
             return HttpClientFactory.CreateClient(name);
         }
 
-        protected virtual Task<Response> HandleAsync(Request request, HttpResponseMessage responseMessage)
+        protected virtual Task<Response?> HandleAsync(Request request, HttpResponseMessage responseMessage)
         {
-            return Task.FromResult((Response)null);
+            return Task.FromResult((Response?)null);
         }
 
         public virtual string Name => UseProxy ? Downloaders.ProxyHttpClient : Downloaders.HttpClient;

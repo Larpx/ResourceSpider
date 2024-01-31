@@ -5,6 +5,9 @@ using ByteArrayContent = Larpx.ResourceSpider.DotnetSpiderEx.Http.ByteArrayConte
 
 namespace Larpx.ResourceSpider.DotnetSpiderEx.Downloader
 {
+    /// <summary>
+    /// ÎÄ¼şÏÂÔØÆ÷
+    /// </summary>
     public class FileDownloader : IDownloader
     {
         public Task<Response> DownloadAsync(Request request)

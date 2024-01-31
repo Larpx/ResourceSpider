@@ -7,7 +7,7 @@ using ByteArrayContent = Larpx.ResourceSpider.DotnetSpiderEx.Http.ByteArrayConte
 namespace Larpx.ResourceSpider.DotnetSpiderEx.Downloader
 {
     /// <summary>
-    /// Puppeteer下载器
+    /// Puppeteer下载器（待开发）
     /// </summary>
     public class PuppeteerDownloader : IDownloader
     {

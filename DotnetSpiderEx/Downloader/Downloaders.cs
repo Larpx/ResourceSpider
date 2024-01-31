@@ -2,13 +2,24 @@ namespace Larpx.ResourceSpider.DotnetSpiderEx.Downloader
 {
     public static class Downloaders
     {
-        public const string HttpClient = "DotnetSpider_HttpClient_Downloader";
-        public const string ProxyHttpClient = "DotnetSpider_Proxy_HttpClient_Downloader";
-        public const string FakeHttpClient = "DotnetSpider_Fake_HttpClient_Downloader";
-        public const string FakeProxyHttpClient = "DotnetSpider_Fake_Proxy_HttpClient_Downloader";
+        /// <summary>
+        /// 纯http下载器
+        /// </summary>
+        public const string HttpClient = "DotnetSpiderEx_HttpClient_Downloader";
 
-        public const string Puppeteer = "DotnetSpider_Puppeteer_Downloader";
-        public const string File = "DotnetSpider_File_Downloader";
-        public const string Empty = "DotnetSpider_Empty_Downloader";
+        /// <summary>
+        /// 代理Http下载器
+        /// </summary>
+        public const string ProxyHttpClient = "DotnetSpiderEx_Proxy_HttpClient_Downloader";
+
+        /// <summary>
+        /// Puppeteer下载器
+        /// </summary>
+        public const string Puppeteer = "DotnetSpiderEx_Puppeteer_Downloader";
+
+        /// <summary>
+        /// 文件下载器ID
+        /// </summary>
+        public const string File = "DotnetSpiderEx_File_Downloader";
     }
 }
