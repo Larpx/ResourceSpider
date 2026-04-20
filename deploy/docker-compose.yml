@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: resource-spider-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ResourceSpider
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - resource-spider-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: resource-spider-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      retries: 5
+    networks:
+      - resource-spider-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: resource-spider-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      timeout: 30s
+      retries: 5
+    networks:
+      - resource-spider-network
+
+  server:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.Server
+    container_name: resource-spider-server
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=mysql;Database=ResourceSpider;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD:-root};
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Secret=${JWT_SECRET:-your-super-secret-key-at-least-32-characters-long}
+      - MessageQueue__Type=${MESSAGE_QUEUE_TYPE:-InMemory}
+    ports:
+      - "5000:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - resource-spider-network
+
+  agent:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.Agent
+    container_name: resource-spider-agent
+    environment:
+      - Agent__Mode=Online
+      - Agent__ServerConfig__ServerUrl=http://server
+      - Agent__ServerConfig__AgentId=${AGENT_ID:-agent-001}
+      - Agent__ServerConfig__AgentName=${AGENT_NAME:-Agent 001}
+      - Agent__ServerConfig__HeartbeatInterval=30
+    depends_on:
+      - server
+    networks:
+      - resource-spider-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  rabbitmq_data:
+
+networks:
+  resource-spider-network:
+    driver: bridge
