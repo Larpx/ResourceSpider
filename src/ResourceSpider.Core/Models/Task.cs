@@ -1,8 +1,7 @@
 using ResourceSpider.Core.Enums;
+using TaskStatusEnum = ResourceSpider.Core.Enums.TaskStatus;
 
 namespace ResourceSpider.Core.Models;
-
-using TaskStatusEnum = ResourceSpider.Core.Enums.TaskStatus;
 
 public class SpiderTask
 {
@@ -41,4 +40,8 @@ public class SpiderTask
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public string? ExpressionId { get; set; }
+
+    public ExpressionConfig? ExpressionConfig { get; set; }
 }

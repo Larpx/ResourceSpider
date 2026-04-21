@@ -41,6 +41,7 @@ public class TaskService : ITaskService
             RequestConfig = request.RequestConfig ?? "{}",
             ScheduleConfig = request.ScheduleConfig,
             RetryPolicy = request.RetryPolicy,
+            ExpressionId = request.ExpressionId,
             CreatedBy = createdBy
         };
 
@@ -121,7 +122,8 @@ public class TaskService : ITaskService
             StartTime: entity.StartTime,
             EndTime: entity.EndTime,
             CreatedBy: entity.CreatedBy,
-            CreatedAt: entity.CreatedAt
+            CreatedAt: entity.CreatedAt,
+            ExpressionId: entity.ExpressionId
         );
     }
 }

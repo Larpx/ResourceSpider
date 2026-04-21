@@ -1,6 +1,7 @@
 using ResourceSpider.Core.Interfaces;
 using ResourceSpider.Core.Models;
 using ResourceSpider.Infrastructure.Downloader;
+using ResourceSpider.Infrastructure.Parser;
 
 namespace ResourceSpider.Agent.Services;
 
@@ -33,6 +34,7 @@ public class TaskExecutor : ITaskExecutor
         var result = new ExecutionResult
         {
             TaskId = task.TaskId,
+            ExpressionId = task.ExpressionId,
             StartTime = DateTime.UtcNow
         };
 
@@ -48,7 +50,16 @@ public class TaskExecutor : ITaskExecutor
             }
 
             var requestsToProcess = await _scheduler.GetRequestsAsync(requests.Count, ct);
-            
+
+            IParser? expressionParser = null;
+            if (task.ExpressionConfig != null)
+            {
+                expressionParser = _parserFactory.CreateFromExpressionConfig(task.ExpressionConfig);
+                _logger.LogInformation(
+                    "Task {TaskId} using expression {ExpressionId} with {FieldCount} fields",
+                    task.TaskId, task.ExpressionConfig.ExpressionId, task.ExpressionConfig.Fields.Count);
+            }
+
             foreach (var request in requestsToProcess)
             {
                 if (ct.IsCancellationRequested) break;
@@ -59,7 +70,7 @@ public class TaskExecutor : ITaskExecutor
                 if (response.Status == Core.Enums.RequestStatus.Success)
                 {
                     result.SuccessRequests++;
-                    
+
                     var dataContext = new DataContext
                     {
                         Response = response,
@@ -67,8 +78,29 @@ public class TaskExecutor : ITaskExecutor
                         RequestId = request.RequestId
                     };
 
-                    var parser = _parserFactory.CreateParser(ParserType.JsonPath);
-                    await parser.HandleAsync(dataContext, ct);
+                    if (expressionParser != null)
+                    {
+                        await expressionParser.HandleAsync(dataContext, ct);
+
+                        foreach (var record in dataContext.DataRecords)
+                        {
+                            record.ExpressionId = task.ExpressionId;
+                            record.AgentId = task.AssignedAgentId;
+
+                            if (task.ExpressionConfig != null)
+                            {
+                                record.FieldExpressionMap = task.ExpressionConfig.Fields
+                                    .Where(f => record.Fields.ContainsKey(f.FieldName))
+                                    .ToDictionary(f => f.FieldName, f => f.Expression);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var parser = _parserFactory.CreateParser(ParserType.JsonPath);
+                        await parser.HandleAsync(dataContext, ct);
+                    }
+
                     result.DataRecords.AddRange(dataContext.DataRecords);
                 }
                 else
@@ -77,7 +109,9 @@ public class TaskExecutor : ITaskExecutor
                     result.Errors.Add($"{request.Url}: {response.Error}");
                 }
 
-                result.Progress = (decimal)(result.TotalRequests) / requests.Count * 100;
+                result.Progress = requests.Count > 0
+                    ? (decimal)result.TotalRequests / requests.Count * 100
+                    : 0;
             }
 
             result.Status = "Success";
@@ -97,7 +131,7 @@ public class TaskExecutor : ITaskExecutor
     private static List<Request> ExtractRequestsFromTask(Core.Models.SpiderTask task)
     {
         var requests = new List<Request>();
-        
+
         if (task.RequestConfig.TryGetValue("Urls", out var urlsObj) && urlsObj is System.Text.Json.JsonElement urlsElement)
         {
             foreach (var url in urlsElement.EnumerateArray())
@@ -105,19 +139,19 @@ public class TaskExecutor : ITaskExecutor
                 requests.Add(new Request
                 {
                     Url = url.GetString() ?? string.Empty,
-                    Method = task.RequestConfig.TryGetValue("Method", out var methodObj) 
-                        ? methodObj?.ToString() ?? "GET" 
+                    Method = task.RequestConfig.TryGetValue("Method", out var methodObj)
+                        ? methodObj?.ToString() ?? "GET"
                         : "GET"
                 });
             }
         }
-        
+
         if (!requests.Any())
         {
             requests.Add(new Request
             {
-                Url = task.RequestConfig.TryGetValue("Url", out var urlObj) 
-                    ? urlObj?.ToString() ?? string.Empty 
+                Url = task.RequestConfig.TryGetValue("Url", out var urlObj)
+                    ? urlObj?.ToString() ?? string.Empty
                     : string.Empty
             });
         }
@@ -129,6 +163,7 @@ public class TaskExecutor : ITaskExecutor
 public class ExecutionResult
 {
     public string TaskId { get; set; } = string.Empty;
+    public string? ExpressionId { get; set; }
     public string Status { get; set; } = string.Empty;
     public int TotalRequests { get; set; }
     public int SuccessRequests { get; set; }

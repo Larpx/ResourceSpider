@@ -42,7 +42,7 @@ public class ResultReporter : IResultReporter
         try
         {
             var status = result.Status == "Success" ? 2 : 3;
-            await _serverApiClient.ReportTaskAsync(new Services.ReportTaskRequest(
+            await _serverApiClient.ReportTaskAsync(new ReportTaskRequest(
                 AgentId: _agentId,
                 AgentToken: _agentToken,
                 TaskId: result.TaskId,
@@ -50,8 +50,30 @@ public class ResultReporter : IResultReporter
                 DataCount: result.DataRecords.Count,
                 Duration: result.Duration
             ));
-            
-            _logger.LogInformation("Reported task {TaskId} result", result.TaskId);
+
+            if (result.DataRecords.Count > 0)
+            {
+                var storeRequest = new StoreResultsRequest
+                {
+                    AgentId = _agentId,
+                    AgentToken = _agentToken,
+                    TaskId = result.TaskId,
+                    ExpressionId = result.ExpressionId,
+                    Results = result.DataRecords.Select(r => new ResultItemDto
+                    {
+                        ResultId = r.RecordId,
+                        SourceUrl = r.SourceUrl,
+                        Fields = r.Fields,
+                        FieldExpressionMap = r.FieldExpressionMap,
+                        CollectedAt = r.CreatedAt
+                    }).ToList()
+                };
+
+                await _serverApiClient.StoreResultsAsync(storeRequest);
+            }
+
+            _logger.LogInformation("Reported task {TaskId} result with {Count} records",
+                result.TaskId, result.DataRecords.Count);
         }
         catch (Exception ex)
         {
@@ -76,7 +98,7 @@ public class ResultReporter : IResultReporter
             };
 
             await _storage.HandleAsync(context, ct);
-            _logger.LogInformation("Stored {Count} records locally for task {TaskId}", 
+            _logger.LogInformation("Stored {Count} records locally for task {TaskId}",
                 result.DataRecords.Count, result.TaskId);
         }
         catch (Exception ex)

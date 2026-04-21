@@ -97,6 +97,10 @@ builder.Services.AddScoped<IAgentRepository, AgentRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProxyRepository, ProxyRepository>();
 builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
+builder.Services.AddScoped<IExpressionRepository, ExpressionRepository>();
+builder.Services.AddScoped<IExpressionFieldRepository, ExpressionFieldRepository>();
+builder.Services.AddScoped<ICollectionResultRepository, CollectionResultRepository>();
+builder.Services.AddScoped<IExpressionAvailabilityRepository, ExpressionAvailabilityRepository>();
 
 // Services
 builder.Services.AddScoped<IAgentRegisterService, AgentRegisterService>();
@@ -104,6 +108,8 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskDispatchService, TaskDispatchService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 builder.Services.AddScoped<IProxyService, ProxyService>();
+builder.Services.AddScoped<IExpressionService, ExpressionService>();
+builder.Services.AddScoped<ICollectionResultService, CollectionResultService>();
 
 // Infrastructure
 builder.Services.AddSingleton<IDuplicateRemover, HashSetDuplicateRemover>();
@@ -142,7 +148,11 @@ using (var scope = app.Services.CreateScope())
         typeof(TaskEntity),
         typeof(TaskRequestEntity),
         typeof(ProxyEntity),
-        typeof(StatisticEntity)
+        typeof(StatisticEntity),
+        typeof(ExpressionEntity),
+        typeof(ExpressionFieldEntity),
+        typeof(CollectionResultEntity),
+        typeof(ExpressionAvailabilityEntity)
     );
 }
 

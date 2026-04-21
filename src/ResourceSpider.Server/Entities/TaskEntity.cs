@@ -33,6 +33,9 @@ public class TaskEntity
     [SugarColumn(Length = 64, IsNullable = true)]
     public string? AssignedAgentId { get; set; }
 
+    [SugarColumn(Length = 64, IsNullable = true)]
+    public string? ExpressionId { get; set; }
+
     public decimal Progress { get; set; }
 
     public int TotalRequests { get; set; }

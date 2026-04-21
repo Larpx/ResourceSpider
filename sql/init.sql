@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     ScheduleConfig JSON COMMENT '调度配置',
     RetryPolicy JSON COMMENT '重试策略',
     AssignedAgentId VARCHAR(64) COMMENT '分配的Agent',
+    ExpressionId VARCHAR(64) COMMENT '关联的表达式ID',
     Progress DECIMAL(5,2) DEFAULT 0 COMMENT '完成进度百分比',
     TotalRequests INT DEFAULT 0 COMMENT '总请求数',
     CompletedRequests INT DEFAULT 0 COMMENT '已完成请求数',
@@ -47,6 +48,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_status (Status),
     INDEX idx_assigned_agent (AssignedAgentId),
+    INDEX idx_expression_id (ExpressionId),
     INDEX idx_created_at (CreatedAt)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务表';
 
@@ -78,6 +80,85 @@ CREATE TABLE IF NOT EXISTS task_requests (
     INDEX idx_status (Status),
     INDEX idx_agent (AssignedAgentId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务请求表';
+
+-- Expression Table (表达式配置表)
+CREATE TABLE IF NOT EXISTS expressions (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ExpressionId VARCHAR(64) UNIQUE NOT NULL COMMENT '表达式唯一标识',
+    Name VARCHAR(128) NOT NULL COMMENT '表达式名称',
+    Description VARCHAR(512) COMMENT '表达式描述',
+    SelectorType VARCHAR(32) NOT NULL DEFAULT 'XPath' COMMENT '选择器类型: XPath/Css/JsonPath/Regex/Environment',
+    ContainerExpression VARCHAR(1024) COMMENT '容器选择表达式(如EntitySelector)',
+    Status TINYINT DEFAULT 1 COMMENT '状态: 1-可用, 2-失效, 3-废弃, 4-测试中',
+    SuccessCount INT DEFAULT 0 COMMENT '成功次数',
+    FailureCount INT DEFAULT 0 COMMENT '失败次数',
+    ConsecutiveFailures INT DEFAULT 0 COMMENT '连续失败次数',
+    LastValidatedAt DATETIME COMMENT '最后验证时间',
+    LastUsedAt DATETIME COMMENT '最后使用时间',
+    ExpiredAt DATETIME COMMENT '失效时间',
+    CreatedBy VARCHAR(64) COMMENT '创建者',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (Status),
+    INDEX idx_selector_type (SelectorType),
+    INDEX idx_consecutive_failures (ConsecutiveFailures)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表达式配置表';
+
+-- Expression Field Table (表达式字段表)
+CREATE TABLE IF NOT EXISTS expression_fields (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    FieldId VARCHAR(64) NOT NULL COMMENT '字段唯一标识',
+    ExpressionId VARCHAR(64) NOT NULL COMMENT '所属表达式ID',
+    FieldName VARCHAR(128) NOT NULL COMMENT '字段名称',
+    SelectorType VARCHAR(32) NOT NULL DEFAULT 'XPath' COMMENT '选择器类型',
+    Expression VARCHAR(1024) NOT NULL COMMENT '选择表达式',
+    AttributeName VARCHAR(128) COMMENT 'HTML属性名(如href/src)',
+    IsRequired TINYINT DEFAULT 0 COMMENT '是否必填',
+    DefaultValue VARCHAR(256) COMMENT '默认值',
+    Formatter VARCHAR(64) COMMENT '格式化器名称',
+    FormatterArgs VARCHAR(512) COMMENT '格式化器参数',
+    SortOrder INT DEFAULT 0 COMMENT '排序顺序',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_expression_id (ExpressionId),
+    INDEX idx_field_name (FieldName)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表达式字段表';
+
+-- Collection Result Table (采集结果表)
+CREATE TABLE IF NOT EXISTS collection_results (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ResultId VARCHAR(64) NOT NULL COMMENT '结果唯一标识',
+    TaskId VARCHAR(64) NOT NULL COMMENT '任务ID',
+    ExpressionId VARCHAR(64) COMMENT '使用的表达式ID',
+    AgentId VARCHAR(64) COMMENT '采集Agent ID',
+    SourceUrl VARCHAR(2048) COMMENT '来源URL',
+    Fields JSON NOT NULL COMMENT '采集字段数据',
+    FieldExpressionMap JSON COMMENT '字段与表达式的映射',
+    CollectedAt DATETIME COMMENT '采集时间',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_task_id (TaskId),
+    INDEX idx_expression_id (ExpressionId),
+    INDEX idx_agent_id (AgentId),
+    INDEX idx_collected_at (CollectedAt)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采集结果表';
+
+-- Expression Availability Table (表达式可用性表)
+CREATE TABLE IF NOT EXISTS expression_availability (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ExpressionId VARCHAR(64) NOT NULL COMMENT '表达式ID',
+    AgentId VARCHAR(64) NOT NULL COMMENT 'Agent ID',
+    IsAvailable TINYINT DEFAULT 1 COMMENT '是否可用: 0-不可用, 1-可用',
+    FailureReason VARCHAR(1024) COMMENT '失败原因',
+    LastCheckedAt DATETIME COMMENT '最后检查时间',
+    LastSuccessAt DATETIME COMMENT '最后成功时间',
+    LastFailureAt DATETIME COMMENT '最后失败时间',
+    ConsecutiveFailures INT DEFAULT 0 COMMENT '连续失败次数',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_expression_agent (ExpressionId, AgentId),
+    INDEX idx_is_available (IsAvailable),
+    INDEX idx_agent_id (AgentId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表达式可用性表';
 
 -- Proxy Table
 CREATE TABLE IF NOT EXISTS proxies (

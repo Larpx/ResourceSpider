@@ -8,7 +8,8 @@ public record CreateTaskRequest(
     [Range(1, 10)] int Priority = 5,
     string? RequestConfig = null,
     string? ScheduleConfig = null,
-    string? RetryPolicy = null
+    string? RetryPolicy = null,
+    string? ExpressionId = null
 );
 
 public record UpdateTaskRequest(
@@ -36,7 +37,9 @@ public record TaskDto(
     DateTime? StartTime,
     DateTime? EndTime,
     string? CreatedBy,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    string? ExpressionId = null,
+    ExpressionConfigDto? ExpressionConfig = null
 );
 
 public record TaskListResponse(

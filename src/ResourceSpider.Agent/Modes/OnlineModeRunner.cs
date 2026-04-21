@@ -1,6 +1,7 @@
 using ResourceSpider.Agent.Config;
 using ResourceSpider.Agent.Services;
 using ResourceSpider.Core.Interfaces;
+using ResourceSpider.Core.Models;
 using ResourceSpider.Infrastructure.Downloader;
 
 namespace ResourceSpider.Agent.Modes;
@@ -14,9 +15,12 @@ public class OnlineModeRunner : IHostedService, IDisposable
     private readonly ILogger<OnlineModeRunner> _logger;
     private Timer? _heartbeatTimer;
     private Timer? _taskPullTimer;
+    private Timer? _expressionSyncTimer;
     private string _agentToken = string.Empty;
     private bool _disposed;
     private bool _isRegistered;
+    private readonly Dictionary<string, ExpressionConfigDto> _expressionCache = new();
+    private readonly object _cacheLock = new();
 
     public OnlineModeRunner(
         OnlineModeOptions options,
@@ -35,9 +39,9 @@ public class OnlineModeRunner : IHostedService, IDisposable
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting Online Mode Agent");
-        
+
         await RegisterAsync(cancellationToken);
-        
+
         if (!_isRegistered)
         {
             _logger.LogError("Failed to register agent with server");
@@ -53,6 +57,11 @@ public class OnlineModeRunner : IHostedService, IDisposable
             PullAndExecuteTasks, null,
             TimeSpan.FromSeconds(5),
             TimeSpan.FromSeconds(30));
+
+        _expressionSyncTimer = new Timer(
+            SyncExpressions, null,
+            TimeSpan.FromSeconds(10),
+            TimeSpan.FromMinutes(5));
     }
 
     private async Task RegisterAsync(CancellationToken ct)
@@ -69,8 +78,8 @@ public class OnlineModeRunner : IHostedService, IDisposable
             var response = await _serverApi.RegisterAsync(request);
             _agentToken = response.AgentToken;
             _isRegistered = true;
-            
-            _logger.LogInformation("Agent registered with token: {Token}", 
+
+            _logger.LogInformation("Agent registered with token: {Token}",
                 _agentToken.Substring(0, Math.Min(8, _agentToken.Length)));
         }
         catch (Exception ex)
@@ -99,6 +108,29 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
     }
 
+    private async void SyncExpressions(object? state)
+    {
+        try
+        {
+            var expressions = await _serverApi.PullActiveExpressionsAsync();
+
+            lock (_cacheLock)
+            {
+                _expressionCache.Clear();
+                foreach (var expr in expressions)
+                {
+                    _expressionCache[expr.ExpressionId] = expr;
+                }
+            }
+
+            _logger.LogInformation("Synced {Count} active expressions from server", expressions.Count);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to sync expressions");
+        }
+    }
+
     private async void PullAndExecuteTasks(object? state)
     {
         try
@@ -120,18 +152,87 @@ public class OnlineModeRunner : IHostedService, IDisposable
                     RequestConfig = new Dictionary<string, object?>
                     {
                         ["Url"] = taskDto.RequestConfig
-                    }
+                    },
+                    ExpressionId = taskDto.ExpressionId
                 };
+
+                if (taskDto.ExpressionConfig != null)
+                {
+                    task.ExpressionConfig = MapExpressionConfig(taskDto.ExpressionConfig);
+                }
+                else if (!string.IsNullOrEmpty(taskDto.ExpressionId))
+                {
+                    ExpressionConfigDto? cachedExpr;
+                    lock (_cacheLock)
+                    {
+                        _expressionCache.TryGetValue(taskDto.ExpressionId, out cachedExpr);
+                    }
+
+                    if (cachedExpr == null)
+                    {
+                        cachedExpr = await _serverApi.PullExpressionAsync(taskDto.ExpressionId);
+                    }
+
+                    if (cachedExpr != null)
+                    {
+                        task.ExpressionConfig = MapExpressionConfig(cachedExpr);
+                    }
+                }
 
                 _logger.LogInformation("Executing task: {TaskName}", task.TaskName);
                 var result = await _taskExecutor.ExecuteAsync(task);
                 await _resultReporter.ReportAsync(result);
+
+                if (!string.IsNullOrEmpty(result.ExpressionId))
+                {
+                    var isAvailable = result.Status == "Success" && result.DataRecords.Count > 0;
+                    var failureReason = isAvailable ? null : string.Join("; ", result.Errors.Take(3));
+
+                    await _serverApi.ReportExpressionAvailabilityAsync(
+                        new ReportAvailabilityRequest
+                        {
+                            AgentId = _options.AgentId,
+                            AgentToken = _agentToken,
+                            ExpressionId = result.ExpressionId,
+                            IsAvailable = isAvailable,
+                            FailureReason = failureReason
+                        });
+                }
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to pull and execute tasks");
         }
+    }
+
+    private static Core.Models.ExpressionConfig? MapExpressionConfig(ExpressionConfigDto? dto)
+    {
+        if (dto == null) return null;
+
+        return new Core.Models.ExpressionConfig
+        {
+            ExpressionId = dto.ExpressionId,
+            Name = dto.Name,
+            SelectorType = Enum.TryParse<Core.Enums.ExpressionType>(dto.SelectorType, out var t)
+                ? t : Core.Enums.ExpressionType.XPath,
+            ContainerExpression = dto.ContainerExpression,
+            Fields = dto.Fields.Select(f => new Core.Models.ExpressionField
+            {
+                FieldId = Guid.NewGuid().ToString("N"),
+                ExpressionId = dto.ExpressionId,
+                FieldName = f.FieldName,
+                SelectorType = Enum.TryParse<Core.Enums.ExpressionType>(f.SelectorType, out var ft)
+                    ? ft : Core.Enums.ExpressionType.XPath,
+                Expression = f.Expression,
+                AttributeName = f.AttributeName,
+                IsRequired = f.IsRequired,
+                DefaultValue = f.DefaultValue,
+                Formatter = f.Formatter,
+                FormatterArgs = f.FormatterArgs,
+                Order = f.Order
+            }).ToList()
+        };
     }
 
     private static string GetLocalIpAddress()
@@ -152,6 +253,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
         _logger.LogInformation("Stopping Online Mode Agent");
         _heartbeatTimer?.Change(Timeout.Infinite, 0);
         _taskPullTimer?.Change(Timeout.Infinite, 0);
+        _expressionSyncTimer?.Change(Timeout.Infinite, 0);
 
         if (_isRegistered)
         {
@@ -181,6 +283,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
         if (_disposed) return;
         _heartbeatTimer?.Dispose();
         _taskPullTimer?.Dispose();
+        _expressionSyncTimer?.Dispose();
         _disposed = true;
     }
 }
