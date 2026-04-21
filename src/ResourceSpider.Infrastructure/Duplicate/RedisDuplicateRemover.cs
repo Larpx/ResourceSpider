@@ -8,7 +8,7 @@ public class RedisDuplicateRemover : IDuplicateRemover, IDisposable
 {
     private readonly IDatabase _database;
     private readonly string _keyPrefix;
-    private readonly ILogger<RedisDuplicateRemover> _logger;
+    private readonly ILogger<RedisDuplicateRemover>? _logger;
     private bool _disposed;
 
     public RedisDuplicateRemover(

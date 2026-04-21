@@ -1,4 +1,3 @@
-using BCrypt.Net;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Entities;
 using ResourceSpider.Server.Repositories;
@@ -34,7 +33,7 @@ public class AgentRegisterService : IAgentRegisterService
         var existing = await _agentRepository.GetByIdAsync(request.AgentId);
         
         var token = GenerateToken(request.AgentId);
-        var hashedToken = BCrypt.HashPassword(token);
+        var hashedToken = BCrypt.Net.BCrypt.HashPassword(token);
 
         if (existing != null)
         {
@@ -85,7 +84,7 @@ public class AgentRegisterService : IAgentRegisterService
             return new HeartbeatResponse(Ack: false, NewTasks: null, ConfigUpdate: null);
         }
 
-        if (!BCrypt.Verify(request.AgentToken, agent.AgentToken))
+        if (!BCrypt.Net.BCrypt.Verify(request.AgentToken, agent.AgentToken))
         {
             return new HeartbeatResponse(Ack: false, NewTasks: null, ConfigUpdate: null);
         }
@@ -107,7 +106,7 @@ public class AgentRegisterService : IAgentRegisterService
     public async Task UnregisterAsync(UnregisterAgentRequest request)
     {
         var agent = await _agentRepository.GetByIdAsync(request.AgentId);
-        if (agent != null && BCrypt.Verify(request.AgentToken, agent.AgentToken))
+        if (agent != null && BCrypt.Net.BCrypt.Verify(request.AgentToken, agent.AgentToken))
         {
             agent.Status = 0;
             await _agentRepository.UpdateAsync(agent);
@@ -120,7 +119,7 @@ public class AgentRegisterService : IAgentRegisterService
     {
         var agent = await _agentRepository.GetByIdAsync(agentId);
         if (agent == null) return false;
-        return BCrypt.Verify(token, agent.AgentToken);
+        return BCrypt.Net.BCrypt.Verify(token, agent.AgentToken);
     }
 
     private string GenerateToken(string agentId)

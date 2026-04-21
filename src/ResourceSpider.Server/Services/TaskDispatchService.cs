@@ -6,8 +6,8 @@ namespace ResourceSpider.Server.Services;
 
 public interface ITaskDispatchService
 {
-    Task<List<TaskDto>> PullTasksAsync(string agentId, string agentToken, int maxCount);
-    Task<bool> ReportTaskAsync(string agentId, string taskId, int status, int dataCount, int duration);
+    Task<(bool IsValid, List<TaskDto> Tasks)> PullTasksAsync(string agentId, string agentToken, int maxCount);
+    Task<bool> ReportTaskAsync(string agentId, string agentToken, string taskId, int status, int dataCount, int duration);
 }
 
 public class TaskDispatchService : ITaskDispatchService
@@ -26,13 +26,13 @@ public class TaskDispatchService : ITaskDispatchService
         _logger = logger;
     }
 
-    public async Task<List<TaskDto>> PullTasksAsync(string agentId, string agentToken, int maxCount)
+    public async Task<(bool IsValid, List<TaskDto> Tasks)> PullTasksAsync(string agentId, string agentToken, int maxCount)
     {
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
         if (!isValid)
         {
             _logger.LogWarning("Invalid token for agent {AgentId}", agentId);
-            return new List<TaskDto>();
+            return (false, new List<TaskDto>());
         }
 
         var tasks = await _taskRepository.GetPendingTasksAsync(maxCount);
@@ -47,12 +47,12 @@ public class TaskDispatchService : ITaskDispatchService
         }
 
         _logger.LogInformation("Agent {AgentId} pulled {Count} tasks", agentId, result.Count);
-        return result;
+        return (true, result);
     }
 
-    public async Task<bool> ReportTaskAsync(string agentId, string taskId, int status, int dataCount, int duration)
+    public async Task<bool> ReportTaskAsync(string agentId, string agentToken, string taskId, int status, int dataCount, int duration)
     {
-        var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, "");
+        var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
         if (!isValid)
         {
             _logger.LogWarning("Invalid token for agent {AgentId}", agentId);

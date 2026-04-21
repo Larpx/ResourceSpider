@@ -19,6 +19,7 @@ public interface IServerApiClient
     Task<HeartbeatResponse> HeartbeatAsync(HeartbeatRequest request);
     Task<PullTasksResponse> PullTasksAsync(PullTasksRequest request);
     Task<ReportResponse> ReportTaskAsync(ReportTaskRequest request);
+    Task UnregisterAsync(UnregisterAgentRequest request);
 }
 
 public class ServerApiClient : IServerApiClient
@@ -72,6 +73,12 @@ public class ServerApiClient : IServerApiClient
         response.EnsureSuccessStatusCode();
         return new ReportResponse { Ack = true };
     }
+
+    public async Task UnregisterAsync(UnregisterAgentRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/api/agent/unregister", request);
+        response.EnsureSuccessStatusCode();
+    }
 }
 
 public class ApiResponse<T>
@@ -88,5 +95,6 @@ public record HeartbeatResponse(bool Ack, List<PullTaskDto>? NewTasks, Dictionar
 public record PullTasksRequest(string AgentId, string AgentToken, int MaxCount);
 public record PullTasksResponse { public List<PullTaskDto> Tasks { get; set; } = new(); public DateTime ServerTime { get; set; } }
 public record PullTaskDto(string TaskId, string TaskName, string TaskType, string RequestConfig);
-public record ReportTaskRequest(string AgentId, string TaskId, int Status, int DataCount, int Duration);
+public record ReportTaskRequest(string AgentId, string AgentToken, string TaskId, int Status, int DataCount, int Duration);
 public record ReportResponse { public bool Ack { get; set; } public string? NextAction { get; set; } }
+public record UnregisterAgentRequest(string AgentId, string AgentToken, string? Reason);

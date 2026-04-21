@@ -14,15 +14,21 @@ public class ResultReporter : IResultReporter
     private readonly IServerApiClient? _serverApiClient;
     private readonly IStorage _storage;
     private readonly ILogger<ResultReporter> _logger;
+    private readonly string _agentId;
+    private readonly string _agentToken;
 
     public ResultReporter(
         IServerApiClient? serverApiClient,
         IStorage storage,
-        ILogger<ResultReporter> logger)
+        ILogger<ResultReporter> logger,
+        Agent.Config.LocalModeOptions? localConfig = null,
+        Agent.Config.OnlineModeOptions? serverConfig = null)
     {
         _serverApiClient = serverApiClient;
         _storage = storage;
         _logger = logger;
+        _agentId = serverConfig?.AgentId ?? localConfig?.TaskFilePath ?? "local-agent";
+        _agentToken = serverConfig?.AgentToken ?? string.Empty;
     }
 
     public async Task ReportAsync(ExecutionResult result, CancellationToken ct = default)
@@ -37,7 +43,8 @@ public class ResultReporter : IResultReporter
         {
             var status = result.Status == "Success" ? 2 : 3;
             await _serverApiClient.ReportTaskAsync(new Services.ReportTaskRequest(
-                AgentId: string.Empty,
+                AgentId: _agentId,
+                AgentToken: _agentToken,
                 TaskId: result.TaskId,
                 Status: status,
                 DataCount: result.DataRecords.Count,

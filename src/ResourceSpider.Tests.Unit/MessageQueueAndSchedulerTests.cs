@@ -1,5 +1,5 @@
 using Xunit;
-using FluentAssertions;
+using Shouldly;
 using ResourceSpider.Infrastructure.Duplicate;
 using ResourceSpider.Infrastructure.MessageQueue;
 
@@ -16,9 +16,9 @@ public class MessageQueueTests
         await queue.EnqueueAsync(message);
         var result = await queue.DequeueAsync<TestMessage>();
         
-        result.Should().NotBeNull();
-        result!.Id.Should().Be(1);
-        result.Name.Should().Be("test");
+        result.ShouldNotBeNull();
+        result!.Id.ShouldBe(1);
+        result.Name.ShouldBe("test");
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class MessageQueueTests
         
         var result = await queue.TryEnqueueAsync(message);
         
-        result.Should().BeTrue();
+        result.ShouldBeTrue();
     }
 }
 
@@ -50,7 +50,7 @@ public class DuplicateRemoverTests
         await remover.AddAsync(fingerprint);
         var isDuplicate = await remover.IsDuplicateAsync(fingerprint);
         
-        isDuplicate.Should().BeTrue();
+        isDuplicate.ShouldBeTrue();
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class DuplicateRemoverTests
         
         var isDuplicate = await remover.IsDuplicateAsync("non-existent");
         
-        isDuplicate.Should().BeFalse();
+        isDuplicate.ShouldBeFalse();
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class DuplicateRemoverTests
         await remover.AddAsync("fp2");
         var count = await remover.GetCountAsync();
         
-        count.Should().Be(2);
+        count.ShouldBe(2);
     }
 }
 
@@ -91,7 +91,7 @@ public class SchedulerTests
         await scheduler.AddRequestAsync(request2);
         
         var isDuplicate = await scheduler.IsDuplicateAsync(request2);
-        isDuplicate.Should().BeTrue();
+        isDuplicate.ShouldBeTrue();
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class SchedulerTests
         await scheduler.AddRequestAsync(request2);
         var requests = await scheduler.GetRequestsAsync(2);
         
-        requests.Should().HaveCount(2);
+        requests.Count().ShouldBe(2);
     }
 }
 
@@ -122,7 +122,7 @@ public class RequestFingerprinterTests
         var fp1 = Infrastructure.Utils.RequestFingerprinter.GenerateFingerprint(request1);
         var fp2 = Infrastructure.Utils.RequestFingerprinter.GenerateFingerprint(request2);
         
-        fp1.Should().Be(fp2);
+        fp1.ShouldBe(fp2);
     }
 
     [Fact]
@@ -134,6 +134,6 @@ public class RequestFingerprinterTests
         var fp1 = Infrastructure.Utils.RequestFingerprinter.GenerateFingerprint(request1);
         var fp2 = Infrastructure.Utils.RequestFingerprinter.GenerateFingerprint(request2);
         
-        fp1.Should().NotBe(fp2);
+        fp1.ShouldNotBe(fp2);
     }
 }

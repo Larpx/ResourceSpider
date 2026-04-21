@@ -11,7 +11,11 @@ public class FileStorageOptions
     public string OutputPath { get; set; } = "./results";
     public string Format { get; set; } = "csv";
     public string AgentId { get; set; } = string.Empty;
+    public string AgentName { get; set; } = string.Empty;
+    public string HostName { get; set; } = string.Empty;
+    public string Mode { get; set; } = "Local";
     public string TaskId { get; set; } = string.Empty;
+    public string TaskName { get; set; } = string.Empty;
 }
 
 public class FileStorage : IStorage
@@ -76,22 +80,27 @@ public class FileStorage : IStorage
         
         var headers = new List<string> 
         { 
-            "RecordId", "TaskId", "RequestId", "SourceUrl", "CreatedAt" 
+            "AgentId", "AgentName", "HostName", "CollectTime", "TaskId", "TaskName", "Url", "Status"
         };
         headers.AddRange(allFields);
 
         var sb = new StringBuilder();
         sb.AppendLine(string.Join(",", headers));
 
+        var collectTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+
         foreach (var record in records)
         {
             var line = new List<string>
             {
-                EscapeCsv(record.RecordId),
-                EscapeCsv(record.TaskId ?? string.Empty),
-                EscapeCsv(record.RequestId ?? string.Empty),
+                EscapeCsv(_options.AgentId),
+                EscapeCsv(_options.AgentName),
+                EscapeCsv(_options.HostName),
+                collectTime,
+                EscapeCsv(_options.TaskId),
+                EscapeCsv(_options.TaskName),
                 EscapeCsv(record.SourceUrl ?? string.Empty),
-                record.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")
+                "Success"
             };
 
             foreach (var field in allFields)
@@ -111,15 +120,26 @@ public class FileStorage : IStorage
         var filePath = Path.Combine(_outputDirectory, $"{fileName}.txt");
         var sb = new StringBuilder();
 
+        var collectTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+
+        sb.AppendLine("[Agent Info]");
+        sb.AppendLine($"AgentId: {_options.AgentId}");
+        sb.AppendLine($"AgentName: {_options.AgentName}");
+        sb.AppendLine($"HostName: {_options.HostName}");
+        sb.AppendLine($"Mode: {_options.Mode}");
+        sb.AppendLine($"CollectTime: {collectTime}");
+        sb.AppendLine();
+
+        sb.AppendLine("[Task Info]");
+        sb.AppendLine($"TaskId: {_options.TaskId}");
+        sb.AppendLine($"TaskName: {_options.TaskName}");
+        sb.AppendLine($"Url: {(records.FirstOrDefault()?.SourceUrl ?? string.Empty)}");
+        sb.AppendLine($"Status: Success");
+        sb.AppendLine();
+
+        sb.AppendLine("[Data]");
         foreach (var record in records)
         {
-            sb.AppendLine($"[Record] {record.RecordId}");
-            sb.AppendLine($"TaskId: {record.TaskId}");
-            sb.AppendLine($"RequestId: {record.RequestId}");
-            sb.AppendLine($"SourceUrl: {record.SourceUrl}");
-            sb.AppendLine($"CreatedAt: {record.CreatedAt:yyyy-MM-dd HH:mm:ss}");
-            sb.AppendLine();
-
             foreach (var field in record.Fields)
             {
                 sb.AppendLine($"{field.Key}: {field.Value}");
@@ -133,17 +153,34 @@ public class FileStorage : IStorage
     private async Task SaveAsJsonAsync(List<DataRecord> records, string fileName, CancellationToken ct)
     {
         var filePath = Path.Combine(_outputDirectory, $"{fileName}.json");
-        var jsonRecords = records.Select(r => new
-        {
-            r.RecordId,
-            r.TaskId,
-            r.RequestId,
-            r.SourceUrl,
-            r.CreatedAt,
-            Fields = r.Fields
-        }).ToList();
+        var collectTime = DateTime.UtcNow;
 
-        var json = System.Text.Json.JsonSerializer.Serialize(jsonRecords, new System.Text.Json.JsonSerializerOptions
+        var jsonObject = new
+        {
+            AgentInfo = new
+            {
+                AgentId = _options.AgentId,
+                AgentName = _options.AgentName,
+                HostName = _options.HostName,
+                Mode = _options.Mode,
+                CollectTime = collectTime.ToString("yyyy-MM-dd HH:mm:ss")
+            },
+            TaskInfo = new
+            {
+                TaskId = _options.TaskId,
+                TaskName = _options.TaskName,
+                Url = records.FirstOrDefault()?.SourceUrl ?? string.Empty,
+                Status = "Success"
+            },
+            Data = records.Select(r => new
+            {
+                r.RecordId,
+                r.SourceUrl,
+                Fields = r.Fields
+            }).ToList()
+        };
+
+        var json = System.Text.Json.JsonSerializer.Serialize(jsonObject, new System.Text.Json.JsonSerializerOptions
         {
             WriteIndented = true
         });

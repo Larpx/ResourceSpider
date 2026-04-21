@@ -147,12 +147,33 @@ public class OnlineModeRunner : IHostedService, IDisposable
         return "127.0.0.1";
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Stopping Online Mode Agent");
         _heartbeatTimer?.Change(Timeout.Infinite, 0);
         _taskPullTimer?.Change(Timeout.Infinite, 0);
-        return Task.CompletedTask;
+
+        if (_isRegistered)
+        {
+            await UnregisterAsync(cancellationToken);
+        }
+    }
+
+    private async Task UnregisterAsync(CancellationToken ct)
+    {
+        try
+        {
+            await _serverApi.UnregisterAsync(new UnregisterAgentRequest(
+                AgentId: _options.AgentId,
+                AgentToken: _agentToken,
+                Reason: "Agent shutting down"));
+            _isRegistered = false;
+            _logger.LogInformation("Agent {AgentId} unregistered from server", _options.AgentId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to unregister agent {AgentId}", _options.AgentId);
+        }
     }
 
     public void Dispose()

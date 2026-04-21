@@ -135,7 +135,8 @@ public class HttpClientDownloader : IDownloader, IDisposable
 
     private int CalculateRetryDelay(int retryAttempt)
     {
-        return (int)(_options.RetryDelayMs * Math.Pow(2, retryAttempt));
+        var delay = (int)(_options.RetryDelayMs * Math.Pow(2, retryAttempt));
+        return Math.Min(delay, 60000);
     }
 
     public void Dispose()

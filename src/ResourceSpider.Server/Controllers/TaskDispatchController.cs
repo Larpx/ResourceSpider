@@ -25,8 +25,13 @@ public class TaskDispatchController : ControllerBase
     public async Task<IActionResult> PullTasks(
         [FromBody] PullTasksRequest request)
     {
-        var tasks = await _taskDispatchService.PullTasksAsync(
+        var (isValid, tasks) = await _taskDispatchService.PullTasksAsync(
             request.AgentId, request.AgentToken, request.MaxCount);
+
+        if (!isValid)
+        {
+            return Unauthorized(ApiResponse<object>.Error(1002, "Invalid token"));
+        }
 
         if (!tasks.Any())
         {
@@ -42,7 +47,7 @@ public class TaskDispatchController : ControllerBase
     public async Task<IActionResult> ReportTask([FromBody] ReportTaskRequest request)
     {
         var result = await _taskDispatchService.ReportTaskAsync(
-            request.AgentId, request.TaskId, request.Status, request.DataCount, request.Duration);
+            request.AgentId, request.AgentToken, request.TaskId, request.Status, request.DataCount, request.Duration);
 
         if (!result)
         {
@@ -61,6 +66,7 @@ public record PullTasksRequest(
 
 public record ReportTaskRequest(
     string AgentId,
+    string AgentToken,
     string TaskId,
     int Status,
     int DataCount = 0,

@@ -77,7 +77,16 @@ public class Program
                     services.AddSingleton<IResultReporter, ResultReporter>();
                     services.AddSingleton<IStorage>(sp =>
                     {
-                        return ActivatorUtilities.CreateInstance<FileStorage>(sp);
+                        var opts = new FileStorageOptions
+                        {
+                            OutputPath = agentOptions.LocalConfig.ResultOutputPath,
+                            Format = agentOptions.LocalConfig.OutputFormat,
+                            AgentId = $"agent-local-{Environment.MachineName}",
+                            AgentName = $"Local Agent ({Environment.MachineName})",
+                            HostName = Environment.MachineName,
+                            Mode = "Local"
+                        };
+                        return ActivatorUtilities.CreateInstance<FileStorage>(sp, Options.Create(opts));
                     });
                     services.AddSingleton<IHostedService, LocalModeRunner>();
                 }
@@ -92,7 +101,16 @@ public class Program
                     services.AddSingleton<IResultReporter, ResultReporter>();
                     services.AddSingleton<IStorage>(sp =>
                     {
-                        return ActivatorUtilities.CreateInstance<FileStorage>(sp);
+                        var opts = new FileStorageOptions
+                        {
+                            OutputPath = "./results",
+                            Format = "csv",
+                            AgentId = agentOptions.ServerConfig.AgentId,
+                            AgentName = agentOptions.ServerConfig.AgentName,
+                            HostName = Environment.MachineName,
+                            Mode = "Online"
+                        };
+                        return ActivatorUtilities.CreateInstance<FileStorage>(sp, Options.Create(opts));
                     });
                     services.AddSingleton<IHostedService, OnlineModeRunner>();
                 }

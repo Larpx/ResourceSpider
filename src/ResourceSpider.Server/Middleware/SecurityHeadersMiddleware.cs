@@ -16,7 +16,7 @@ public class SecurityHeadersMiddleware
         context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
         context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
         context.Response.Headers["Content-Security-Policy"] = 
-            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'";
+            "default-src 'self'; script-src 'self'; style-src 'self'";
 
         await _next(context);
     }

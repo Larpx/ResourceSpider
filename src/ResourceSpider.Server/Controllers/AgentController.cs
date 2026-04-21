@@ -51,18 +51,4 @@ public class AgentController : ControllerBase
         await _agentRegisterService.UnregisterAsync(request);
         return Ok(ApiResponse<object>.Success(new { }, "Agent unregistered successfully"));
     }
-
-    [HttpGet("tasks/pull")]
-    [ProducesResponseType(typeof(ApiResponse<List<TaskDto>>), 200)]
-    public async Task<IActionResult> PullTasks(
-        [FromQuery] string agentId,
-        [FromQuery] string agentToken,
-        [FromQuery] int maxCount = 10)
-    {
-        var tasks = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken)
-            ? new List<TaskDto>()
-            : new List<TaskDto>();
-
-        return Ok(ApiResponse<List<TaskDto>>.Success(tasks));
-    }
 }
