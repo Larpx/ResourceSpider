@@ -8,26 +8,38 @@ public class DepthFirstScheduler : IScheduler
 {
     private readonly ConcurrentStack<Request> _stack = new();
     private readonly IDuplicateRemover _duplicateRemover;
+    private string _spiderId;
 
     public DepthFirstScheduler(IDuplicateRemover duplicateRemover)
     {
         _duplicateRemover = duplicateRemover;
     }
 
-    public async Task AddRequestAsync(Request request, CancellationToken ct = default)
+    public Task InitializeAsync(string spiderId = null, CancellationToken ct = default)
     {
-        var isDuplicate = await _duplicateRemover.IsDuplicateAsync(
-            request.Fingerprint ?? request.RequestId, ct);
-        
-        if (!isDuplicate)
-        {
-            await _duplicateRemover.AddAsync(
-                request.Fingerprint ?? request.RequestId, ct);
-            _stack.Push(request);
-        }
+        _spiderId = spiderId;
+        return Task.CompletedTask;
     }
 
-    public Task<IEnumerable<Request>> GetRequestsAsync(int count, CancellationToken ct = default)
+    public async Task<int> EnqueueAsync(IEnumerable<Request> requests, CancellationToken ct = default)
+    {
+        var count = 0;
+        foreach (var request in requests)
+        {
+            var isDuplicate = await _duplicateRemover.IsDuplicateAsync(
+                request.Fingerprint ?? request.RequestId, ct);
+            if (!isDuplicate)
+            {
+                await _duplicateRemover.AddAsync(
+                    request.Fingerprint ?? request.RequestId, ct);
+                _stack.Push(request);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Task<IEnumerable<Request>> DequeueAsync(int count, CancellationToken ct = default)
     {
         var requests = new List<Request>();
         for (int i = 0; i < count && _stack.TryPop(out var request); i++)

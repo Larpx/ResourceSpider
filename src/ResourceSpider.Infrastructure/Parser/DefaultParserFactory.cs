@@ -1,6 +1,7 @@
 using ResourceSpider.Core.Interfaces;
 using ResourceSpider.Core.Models;
 using ResourceSpider.Infrastructure.Parser;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace ResourceSpider.Infrastructure.Parser;
 
@@ -181,7 +182,7 @@ public class ExpressionDrivenXPathParser : IParser
     {
         if (response.TextContent == null) yield break;
 
-        var doc = new HtmlAgilityPack.HtmlDocument();
+        var doc = new HtmlDocument();
         doc.LoadHtml(response.TextContent);
 
         var containerExpr = !string.IsNullOrEmpty(_config.ContainerExpression)
@@ -284,7 +285,7 @@ public class ExpressionDrivenCssParser : IParser
     {
         if (response.TextContent == null) yield break;
 
-        var doc = new HtmlAgilityPack.HtmlDocument();
+        var doc = new HtmlDocument();
         doc.LoadHtml(response.TextContent);
 
         var containerExpr = !string.IsNullOrEmpty(_config.ContainerExpression)

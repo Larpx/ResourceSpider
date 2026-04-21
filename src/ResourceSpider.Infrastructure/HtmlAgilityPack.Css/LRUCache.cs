@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+
+namespace ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
+
+public class LruCache<TInput, TResult> : IDisposable
+{
+    private readonly Dictionary<TInput, TResult> _data;
+    private readonly IndexedLinkedList<TInput> _lruList = new();
+    private readonly Func<TInput, TResult> _evalutor;
+    private readonly object _rwl = new();
+    private int _capacity;
+
+    public LruCache(Func<TInput, TResult> evalutor, int capacity)
+    {
+        if (capacity <= 0) throw new ArgumentOutOfRangeException();
+        _data = new Dictionary<TInput, TResult>(capacity);
+        _capacity = capacity;
+        _evalutor = evalutor;
+    }
+
+    public TResult GetValue(TInput key)
+    {
+        TResult value;
+        bool found;
+        lock (_rwl) { found = _data.TryGetValue(key, out value); }
+        if (!found) value = _evalutor(key);
+        lock (_rwl)
+        {
+            if (found)
+            {
+                _lruList.Remove(key);
+                _lruList.Add(key);
+            }
+            else
+            {
+                _data[key] = value;
+                _lruList.Add(key);
+                if (_data.Count > _capacity)
+                {
+                    Remove(_lruList.First);
+                    _lruList.RemoveFirst();
+                }
+            }
+        }
+        return value;
+    }
+
+    private bool Remove(TInput key)
+    {
+        var existed = _data.Remove(key);
+        _lruList.Remove(key);
+        return existed;
+    }
+
+    public int Capacity
+    {
+        get => _capacity;
+        set
+        {
+            if (value <= 0) throw new ArgumentOutOfRangeException();
+            lock (_rwl)
+            {
+                _capacity = value;
+                while (_data.Count > _capacity)
+                {
+                    Remove(_lruList.First);
+                    _lruList.RemoveFirst();
+                }
+            }
+        }
+    }
+
+    private class IndexedLinkedList<T>
+    {
+        private LinkedList<T> _data = [];
+        private Dictionary<T, LinkedListNode<T>> _index = new();
+
+        public void Add(T value) => _index[value] = _data.AddLast(value);
+        public void RemoveFirst() { _index.Remove(_data.First.Value); _data.RemoveFirst(); }
+        public void Remove(T value)
+        {
+            if (_index.TryGetValue(value, out var node)) { _data.Remove(node); _index.Remove(value); }
+        }
+        public T First => _data.First.Value;
+    }
+
+    public void Dispose() { }
+}

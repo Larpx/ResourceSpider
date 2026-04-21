@@ -55,7 +55,7 @@ ResourceSpider/
 
 ### 前置条件
 
-- .NET 11.0 SDK
+- .NET 10.0 SDK
 - MySQL 8.0+
 - Redis 7.0+ (可选)
 - Docker & Docker Compose (可选)
@@ -185,4 +185,4 @@ dotnet test
 
 ## 许可证
 
-MIT
+MIT License

@@ -87,8 +87,8 @@ public class SchedulerTests
         var request1 = new Core.Models.Request { Url = "http://example.com", Fingerprint = "fp1" };
         var request2 = new Core.Models.Request { Url = "http://example.com/2", Fingerprint = "fp1" };
         
-        await scheduler.AddRequestAsync(request1);
-        await scheduler.AddRequestAsync(request2);
+        await scheduler.EnqueueAsync(new[] { request1 });
+        await scheduler.EnqueueAsync(new[] { request2 });
         
         var isDuplicate = await scheduler.IsDuplicateAsync(request2);
         isDuplicate.ShouldBeTrue();
@@ -103,9 +103,8 @@ public class SchedulerTests
         var request1 = new Core.Models.Request { Url = "http://example.com/1", Fingerprint = "fp1" };
         var request2 = new Core.Models.Request { Url = "http://example.com/2", Fingerprint = "fp2" };
         
-        await scheduler.AddRequestAsync(request1);
-        await scheduler.AddRequestAsync(request2);
-        var requests = await scheduler.GetRequestsAsync(2);
+        await scheduler.EnqueueAsync(new[] { request1, request2 });
+        var requests = await scheduler.DequeueAsync(2);
         
         requests.Count().ShouldBe(2);
     }

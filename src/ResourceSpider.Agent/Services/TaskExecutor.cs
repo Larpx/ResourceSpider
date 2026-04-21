@@ -43,13 +43,9 @@ public class TaskExecutor : ITaskExecutor
             _logger.LogInformation("Executing task {TaskId}: {TaskName}", task.TaskId, task.TaskName);
 
             var requests = ExtractRequestsFromTask(task);
-            foreach (var request in requests)
-            {
-                request.TaskId = task.TaskId;
-                await _scheduler.AddRequestAsync(request, ct);
-            }
+            await _scheduler.EnqueueAsync(requests, ct);
 
-            var requestsToProcess = await _scheduler.GetRequestsAsync(requests.Count, ct);
+            var requestsToProcess = await _scheduler.DequeueAsync(requests.Count, ct);
 
             IParser? expressionParser = null;
             if (task.ExpressionConfig != null)
@@ -80,7 +76,8 @@ public class TaskExecutor : ITaskExecutor
 
                     if (expressionParser != null)
                     {
-                        await expressionParser.HandleAsync(dataContext, ct);
+                        var records = expressionParser.Parse(response);
+                        dataContext.DataRecords.AddRange(records);
 
                         foreach (var record in dataContext.DataRecords)
                         {
@@ -98,7 +95,8 @@ public class TaskExecutor : ITaskExecutor
                     else
                     {
                         var parser = _parserFactory.CreateParser(ParserType.JsonPath);
-                        await parser.HandleAsync(dataContext, ct);
+                        var records = parser.Parse(response);
+                        dataContext.DataRecords.AddRange(records);
                     }
 
                     result.DataRecords.AddRange(dataContext.DataRecords);

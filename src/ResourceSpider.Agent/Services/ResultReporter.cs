@@ -97,7 +97,7 @@ public class ResultReporter : IResultReporter
                 TaskId = result.TaskId
             };
 
-            await _storage.HandleAsync(context, ct);
+            await _storage.StoreAsync(result.DataRecords, ct);
             _logger.LogInformation("Stored {Count} records locally for task {TaskId}",
                 result.DataRecords.Count, result.TaskId);
         }
