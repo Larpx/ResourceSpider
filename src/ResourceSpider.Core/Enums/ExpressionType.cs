@@ -3,7 +3,7 @@ namespace ResourceSpider.Core.Enums;
 public enum ExpressionType
 {
     XPath,
-    Css,
+    CssSelector,
     JsonPath,
     Regex,
     Environment

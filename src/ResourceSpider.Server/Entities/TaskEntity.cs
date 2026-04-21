@@ -15,7 +15,7 @@ public class TaskEntity
     public string TaskName { get; set; } = string.Empty;
 
     [SugarColumn(Length = 64)]
-    public string TaskType { get; set; } = string.Empty;
+    public string TaskType { get; set; } = "SinglePage";
 
     public int Priority { get; set; } = 5;
 
@@ -29,6 +29,20 @@ public class TaskEntity
 
     [SugarColumn(ColumnDataType = "json", IsNullable = true)]
     public string? RetryPolicy { get; set; }
+
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? AntiCrawlConfig { get; set; }
+
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? GlobalConfig { get; set; }
+
+    public int ConfigVersion { get; set; } = 1;
+
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? Tags { get; set; }
+
+    [SugarColumn(Length = 64, IsNullable = true)]
+    public string? AgentGroupId { get; set; }
 
     [SugarColumn(Length = 64, IsNullable = true)]
     public string? AssignedAgentId { get; set; }

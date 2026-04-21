@@ -9,7 +9,12 @@ public record CreateTaskRequest(
     string? RequestConfig = null,
     string? ScheduleConfig = null,
     string? RetryPolicy = null,
-    string? ExpressionId = null
+    string? AntiCrawlConfig = null,
+    string? GlobalConfig = null,
+    string? Tags = null,
+    string? AgentGroupId = null,
+    string? ExpressionId = null,
+    List<CreateTaskStepRequest>? Steps = null
 );
 
 public record UpdateTaskRequest(
@@ -17,7 +22,11 @@ public record UpdateTaskRequest(
     int? Priority,
     string? RequestConfig,
     string? ScheduleConfig,
-    string? RetryPolicy
+    string? RetryPolicy,
+    string? AntiCrawlConfig,
+    string? GlobalConfig,
+    string? Tags,
+    string? AgentGroupId
 );
 
 public record TaskDto(
@@ -29,6 +38,11 @@ public record TaskDto(
     string RequestConfig,
     string? ScheduleConfig,
     string? RetryPolicy,
+    string? AntiCrawlConfig,
+    string? GlobalConfig,
+    int ConfigVersion,
+    string? Tags,
+    string? AgentGroupId,
     string? AssignedAgentId,
     decimal Progress,
     int TotalRequests,
@@ -39,7 +53,8 @@ public record TaskDto(
     string? CreatedBy,
     DateTime CreatedAt,
     string? ExpressionId = null,
-    ExpressionConfigDto? ExpressionConfig = null
+    ExpressionConfigDto? ExpressionConfig = null,
+    List<TaskStepDto>? Steps = null
 );
 
 public record TaskListResponse(

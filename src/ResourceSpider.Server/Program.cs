@@ -11,6 +11,7 @@ using ResourceSpider.Infrastructure.Scheduler;
 using ResourceSpider.Infrastructure.Storage;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Filters;
+using ResourceSpider.Server.Hubs;
 using ResourceSpider.Server.Middleware;
 using ResourceSpider.Server.Repositories;
 using ResourceSpider.Server.Services;
@@ -32,8 +33,11 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<ApiResponseFilter>();
 });
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApiDocument(options =>
+{
+    options.Title = "ResourceSpider API";
+    options.Version = "1.0";
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -51,16 +55,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// SqlSugar
+builder.Services.AddSignalR();
+
+builder.Services.AddHealthChecks();
+
+var dbTypeStr = builder.Configuration["Database:Type"] ?? "MySQL";
+var dbType = dbTypeStr.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase)
+    ? DbType.PostgreSQL
+    : DbType.MySql;
+
 builder.Services.AddScoped<ISqlSugarClient>(sp =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? "Server=localhost;Database=ResourceSpider;Uid=root;Pwd=root;";
-    
+
     var db = new SqlSugarClient(new ConnectionConfig
     {
         ConnectionString = connectionString,
-        DbType = DbType.MySql,
+        DbType = dbType,
         IsAutoCloseConnection = true,
         InitKeyType = InitKeyType.Attribute
     });
@@ -73,15 +85,13 @@ builder.Services.AddScoped<ISqlSugarClient>(sp =>
     return db;
 });
 
-// Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
-    var config = builder.Configuration.GetConnectionString("Redis") 
+    var config = builder.Configuration.GetConnectionString("Redis")
         ?? "localhost:6379";
     return ConnectionMultiplexer.Connect(config);
 });
 
-// Message Queue
 var mqType = builder.Configuration["MessageQueue:Type"] ?? "InMemory";
 if (mqType == "InMemory")
 {
@@ -92,7 +102,6 @@ else
     builder.Services.AddSingleton<IMessageQueue, RabbitMqMessageQueue>();
 }
 
-// Repositories
 builder.Services.AddScoped<IAgentRepository, AgentRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProxyRepository, ProxyRepository>();
@@ -101,8 +110,14 @@ builder.Services.AddScoped<IExpressionRepository, ExpressionRepository>();
 builder.Services.AddScoped<IExpressionFieldRepository, ExpressionFieldRepository>();
 builder.Services.AddScoped<ICollectionResultRepository, CollectionResultRepository>();
 builder.Services.AddScoped<IExpressionAvailabilityRepository, ExpressionAvailabilityRepository>();
+builder.Services.AddScoped<ITaskStepRepository, TaskStepRepository>();
+builder.Services.AddScoped<ITaskExecutionRepository, TaskExecutionRepository>();
+builder.Services.AddScoped<ICrawlResultRepository, CrawlResultRepository>();
+builder.Services.AddScoped<IConfigVersionRepository, ConfigVersionRepository>();
+builder.Services.AddScoped<ISystemLogRepository, SystemLogRepository>();
+builder.Services.AddScoped<IAgentGroupRepository, AgentGroupRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-// Services
 builder.Services.AddScoped<IAgentRegisterService, AgentRegisterService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskDispatchService, TaskDispatchService>();
@@ -110,8 +125,12 @@ builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 builder.Services.AddScoped<IProxyService, ProxyService>();
 builder.Services.AddScoped<IExpressionService, ExpressionService>();
 builder.Services.AddScoped<ICollectionResultService, CollectionResultService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITaskExecutionService, TaskExecutionService>();
+builder.Services.AddScoped<IConfigVersionService, ConfigVersionService>();
+builder.Services.AddScoped<IAgentGroupService, AgentGroupService>();
+builder.Services.AddScoped<ISystemLogService, SystemLogService>();
 
-// Infrastructure
 builder.Services.AddSingleton<IDuplicateRemover, HashSetDuplicateRemover>();
 builder.Services.AddSingleton<IScheduler, BreadthFirstScheduler>();
 builder.Services.AddTransient<HttpClientDownloader>();
@@ -120,7 +139,6 @@ builder.Services.AddSingleton<IDownloaderFactory, DefaultDownloaderFactory>();
 builder.Services.AddSingleton<IParserFactory, DefaultParserFactory>();
 builder.Services.AddSingleton<IProxyPool, ProxyPool>();
 
-// Options
 builder.Services.Configure<DownloaderOptions>(
     builder.Configuration.GetSection("Downloader"));
 builder.Services.Configure<PlaywrightOptions>(
@@ -132,13 +150,13 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? Array.Empty<string>())
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
 var app = builder.Build();
 
-// Initialize database
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ISqlSugarClient>();
@@ -147,16 +165,22 @@ using (var scope = app.Services.CreateScope())
         typeof(AgentEntity),
         typeof(TaskEntity),
         typeof(TaskRequestEntity),
+        typeof(TaskStepEntity),
+        typeof(TaskExecutionEntity),
+        typeof(CrawlResultEntity),
+        typeof(ConfigVersionEntity),
         typeof(ProxyEntity),
         typeof(StatisticEntity),
         typeof(ExpressionEntity),
         typeof(ExpressionFieldEntity),
         typeof(CollectionResultEntity),
-        typeof(ExpressionAvailabilityEntity)
+        typeof(ExpressionAvailabilityEntity),
+        typeof(SystemLogEntity),
+        typeof(AgentGroupEntity),
+        typeof(UserEntity)
     );
 }
 
-// Middleware pipeline
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RateLimitingMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();
@@ -168,11 +192,13 @@ app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
 
 app.MapControllers();
+app.MapHub<SpiderHub>("/hubs/spider");
+app.MapHealthChecks("/health");
 
-Log.Information("ResourceSpider Server starting on {Urls}", builder.Configuration["urls"] ?? "http://localhost:5000");
+Log.Information("ResourceSpider Server 启动，地址：{Urls}", builder.Configuration["urls"] ?? "http://localhost:5000");
 app.Run();

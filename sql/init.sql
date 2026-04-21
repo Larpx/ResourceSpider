@@ -18,23 +18,45 @@ CREATE TABLE IF NOT EXISTS agents (
     MemoryUsage DECIMAL(5,2) COMMENT '内存使用率',
     TaskCount INT DEFAULT 0 COMMENT '任务数量',
     LastHeartbeat DATETIME COMMENT '最后心跳时间',
+    Tags JSON COMMENT '标签',
+    GroupId VARCHAR(64) COMMENT '分组ID',
+    OS VARCHAR(100) COMMENT '操作系统',
+    Version VARCHAR(50) COMMENT '版本号',
+    Config JSON COMMENT '配置',
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_status (Status),
-    INDEX idx_last_heartbeat (LastHeartbeat)
+    INDEX idx_last_heartbeat (LastHeartbeat),
+    INDEX idx_group_id (GroupId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Agent信息表';
+
+-- Agent Group Table
+CREATE TABLE IF NOT EXISTS agent_groups (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    GroupId VARCHAR(64) UNIQUE NOT NULL COMMENT '分组唯一标识',
+    GroupName VARCHAR(128) NOT NULL COMMENT '分组名称',
+    Description VARCHAR(512) COMMENT '描述',
+    AgentIds JSON COMMENT 'Agent ID列表',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Agent分组表';
 
 -- Task Table
 CREATE TABLE IF NOT EXISTS tasks (
     Id BIGINT PRIMARY KEY AUTO_INCREMENT,
     TaskId VARCHAR(64) UNIQUE NOT NULL COMMENT '任务唯一标识',
     TaskName VARCHAR(256) NOT NULL COMMENT '任务名称',
-    TaskType VARCHAR(64) NOT NULL COMMENT '任务类型',
+    TaskType VARCHAR(64) NOT NULL DEFAULT 'SinglePage' COMMENT '任务类型: SinglePage/Paginated/MultiStage',
     Priority INT DEFAULT 5 COMMENT '优先级: 1-10',
-    Status TINYINT DEFAULT 0 COMMENT '状态: 0-待执行, 1-执行中, 2-已完成, 3-失败, 4-暂停',
+    Status TINYINT DEFAULT 0 COMMENT '状态: 0-待执行, 1-执行中, 2-已完成, 3-失败, 4-暂停, 5-等待恢复, 6-已取消',
     RequestConfig JSON NOT NULL COMMENT '请求配置',
     ScheduleConfig JSON COMMENT '调度配置',
     RetryPolicy JSON COMMENT '重试策略',
+    AntiCrawlConfig JSON COMMENT '反爬策略',
+    GlobalConfig JSON COMMENT '全局配置',
+    ConfigVersion INT DEFAULT 1 COMMENT '配置版本号',
+    Tags JSON COMMENT '标签',
+    AgentGroupId VARCHAR(64) COMMENT '指定Agent分组',
     AssignedAgentId VARCHAR(64) COMMENT '分配的Agent',
     ExpressionId VARCHAR(64) COMMENT '关联的表达式ID',
     Progress DECIMAL(5,2) DEFAULT 0 COMMENT '完成进度百分比',
@@ -49,8 +71,48 @@ CREATE TABLE IF NOT EXISTS tasks (
     INDEX idx_status (Status),
     INDEX idx_assigned_agent (AssignedAgentId),
     INDEX idx_expression_id (ExpressionId),
-    INDEX idx_created_at (CreatedAt)
+    INDEX idx_created_at (CreatedAt),
+    INDEX idx_agent_group (AgentGroupId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务表';
+
+-- Task Step Table
+CREATE TABLE IF NOT EXISTS task_steps (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    StepId VARCHAR(64) UNIQUE NOT NULL COMMENT '步骤唯一标识',
+    TaskId VARCHAR(64) NOT NULL COMMENT '任务ID',
+    StepOrder INT NOT NULL COMMENT '步骤顺序',
+    StepName VARCHAR(100) NOT NULL COMMENT '步骤名称',
+    CollectionMode VARCHAR(64) NOT NULL DEFAULT 'HttpClient' COMMENT '采集模式: HttpClient/Playwright/BrowserAutomation',
+    AgentGroupId VARCHAR(64) COMMENT '指定Agent分组',
+    RequestConfig JSON NOT NULL COMMENT '请求配置',
+    ExtractionRules JSON NOT NULL COMMENT '提取规则',
+    VariableMappings JSON COMMENT '变量映射',
+    PaginationConfig JSON COMMENT '分页配置',
+    OutputConfig JSON COMMENT '输出配置',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_task_id (TaskId),
+    INDEX idx_step_order (StepOrder)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务步骤表';
+
+-- Task Execution Table
+CREATE TABLE IF NOT EXISTS task_executions (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ExecutionId VARCHAR(64) UNIQUE NOT NULL COMMENT '执行唯一标识',
+    TaskId VARCHAR(64) NOT NULL COMMENT '任务ID',
+    AgentId VARCHAR(64) NOT NULL COMMENT '执行Agent',
+    Status TINYINT DEFAULT 0 COMMENT '状态: 0-待执行, 1-执行中, 2-已完成, 3-失败, 4-已取消',
+    ConfigSnapshot JSON COMMENT '配置快照',
+    StartedAt DATETIME COMMENT '开始时间',
+    CompletedAt DATETIME COMMENT '完成时间',
+    TotalPages INT DEFAULT 0 COMMENT '总页数',
+    SuccessCount INT DEFAULT 0 COMMENT '成功数',
+    FailCount INT DEFAULT 0 COMMENT '失败数',
+    ErrorMessage TEXT COMMENT '错误信息',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_task_id (TaskId),
+    INDEX idx_agent_id (AgentId),
+    INDEX idx_status (Status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务执行记录表';
 
 -- Task Request Table
 CREATE TABLE IF NOT EXISTS task_requests (
@@ -81,14 +143,14 @@ CREATE TABLE IF NOT EXISTS task_requests (
     INDEX idx_agent (AssignedAgentId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务请求表';
 
--- Expression Table (表达式配置表)
+-- Expression Table
 CREATE TABLE IF NOT EXISTS expressions (
     Id BIGINT PRIMARY KEY AUTO_INCREMENT,
     ExpressionId VARCHAR(64) UNIQUE NOT NULL COMMENT '表达式唯一标识',
     Name VARCHAR(128) NOT NULL COMMENT '表达式名称',
     Description VARCHAR(512) COMMENT '表达式描述',
-    SelectorType VARCHAR(32) NOT NULL DEFAULT 'XPath' COMMENT '选择器类型: XPath/Css/JsonPath/Regex/Environment',
-    ContainerExpression VARCHAR(1024) COMMENT '容器选择表达式(如EntitySelector)',
+    SelectorType VARCHAR(32) NOT NULL DEFAULT 'XPath' COMMENT '选择器类型: XPath/CssSelector/JsonPath/Regex/Environment',
+    ContainerExpression VARCHAR(1024) COMMENT '容器选择表达式',
     Status TINYINT DEFAULT 1 COMMENT '状态: 1-可用, 2-失效, 3-废弃, 4-测试中',
     SuccessCount INT DEFAULT 0 COMMENT '成功次数',
     FailureCount INT DEFAULT 0 COMMENT '失败次数',
@@ -104,7 +166,7 @@ CREATE TABLE IF NOT EXISTS expressions (
     INDEX idx_consecutive_failures (ConsecutiveFailures)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表达式配置表';
 
--- Expression Field Table (表达式字段表)
+-- Expression Field Table
 CREATE TABLE IF NOT EXISTS expression_fields (
     Id BIGINT PRIMARY KEY AUTO_INCREMENT,
     FieldId VARCHAR(64) NOT NULL COMMENT '字段唯一标识',
@@ -112,7 +174,7 @@ CREATE TABLE IF NOT EXISTS expression_fields (
     FieldName VARCHAR(128) NOT NULL COMMENT '字段名称',
     SelectorType VARCHAR(32) NOT NULL DEFAULT 'XPath' COMMENT '选择器类型',
     Expression VARCHAR(1024) NOT NULL COMMENT '选择表达式',
-    AttributeName VARCHAR(128) COMMENT 'HTML属性名(如href/src)',
+    AttributeName VARCHAR(128) COMMENT 'HTML属性名',
     IsRequired TINYINT DEFAULT 0 COMMENT '是否必填',
     DefaultValue VARCHAR(256) COMMENT '默认值',
     Formatter VARCHAR(64) COMMENT '格式化器名称',
@@ -124,7 +186,23 @@ CREATE TABLE IF NOT EXISTS expression_fields (
     INDEX idx_field_name (FieldName)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表达式字段表';
 
--- Collection Result Table (采集结果表)
+-- Crawl Result Table
+CREATE TABLE IF NOT EXISTS crawl_results (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ResultId VARCHAR(64) NOT NULL COMMENT '结果唯一标识',
+    ExecutionId VARCHAR(64) NOT NULL COMMENT '执行ID',
+    TaskId VARCHAR(64) NOT NULL COMMENT '任务ID',
+    StepId VARCHAR(64) COMMENT '步骤ID',
+    ExtractedData JSON NOT NULL COMMENT '提取数据',
+    SourceUrl VARCHAR(2000) COMMENT '来源URL',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_task_id (TaskId),
+    INDEX idx_execution_id (ExecutionId),
+    INDEX idx_step_id (StepId),
+    INDEX idx_created_at (CreatedAt)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采集结果表';
+
+-- Collection Result Table (legacy)
 CREATE TABLE IF NOT EXISTS collection_results (
     Id BIGINT PRIMARY KEY AUTO_INCREMENT,
     ResultId VARCHAR(64) NOT NULL COMMENT '结果唯一标识',
@@ -140,14 +218,14 @@ CREATE TABLE IF NOT EXISTS collection_results (
     INDEX idx_expression_id (ExpressionId),
     INDEX idx_agent_id (AgentId),
     INDEX idx_collected_at (CollectedAt)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采集结果表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采集结果表(旧)';
 
--- Expression Availability Table (表达式可用性表)
+-- Expression Availability Table
 CREATE TABLE IF NOT EXISTS expression_availability (
     Id BIGINT PRIMARY KEY AUTO_INCREMENT,
     ExpressionId VARCHAR(64) NOT NULL COMMENT '表达式ID',
     AgentId VARCHAR(64) NOT NULL COMMENT 'Agent ID',
-    IsAvailable TINYINT DEFAULT 1 COMMENT '是否可用: 0-不可用, 1-可用',
+    IsAvailable TINYINT DEFAULT 1 COMMENT '是否可用',
     FailureReason VARCHAR(1024) COMMENT '失败原因',
     LastCheckedAt DATETIME COMMENT '最后检查时间',
     LastSuccessAt DATETIME COMMENT '最后成功时间',
@@ -159,6 +237,46 @@ CREATE TABLE IF NOT EXISTS expression_availability (
     INDEX idx_is_available (IsAvailable),
     INDEX idx_agent_id (AgentId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表达式可用性表';
+
+-- Config Version Table
+CREATE TABLE IF NOT EXISTS config_versions (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    VersionId VARCHAR(64) UNIQUE NOT NULL COMMENT '版本唯一标识',
+    TaskId VARCHAR(64) NOT NULL COMMENT '任务ID',
+    Version INT NOT NULL COMMENT '版本号',
+    ConfigContent JSON NOT NULL COMMENT '配置内容',
+    ChangeDescription TEXT COMMENT '变更说明',
+    CreatedBy VARCHAR(64) COMMENT '创建者',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_task_id (TaskId),
+    INDEX idx_version (TaskId, Version)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='配置版本表';
+
+-- System Log Table
+CREATE TABLE IF NOT EXISTS system_logs (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    Level VARCHAR(20) NOT NULL DEFAULT 'Info' COMMENT '日志级别',
+    Category VARCHAR(100) NOT NULL COMMENT '分类',
+    Message VARCHAR(500) NOT NULL COMMENT '消息',
+    Detail JSON COMMENT '详情',
+    UserId VARCHAR(64) COMMENT '用户ID',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_level (Level),
+    INDEX idx_category (Category),
+    INDEX idx_created_at (CreatedAt)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统日志表';
+
+-- User Table
+CREATE TABLE IF NOT EXISTS users (
+    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    UserId VARCHAR(64) UNIQUE NOT NULL COMMENT '用户唯一标识',
+    Username VARCHAR(128) UNIQUE NOT NULL COMMENT '用户名',
+    PasswordHash VARCHAR(256) NOT NULL COMMENT '密码哈希',
+    Role VARCHAR(64) NOT NULL DEFAULT 'Operator' COMMENT '角色: Admin/Operator/Viewer',
+    Status TINYINT DEFAULT 1 COMMENT '状态: 0-禁用, 1-启用',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 
 -- Proxy Table
 CREATE TABLE IF NOT EXISTS proxies (

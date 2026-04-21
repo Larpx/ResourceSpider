@@ -50,27 +50,25 @@ public class Program
 
                 services.Configure<AgentOptions>(config.GetSection("Agent"));
 
-                // Register infrastructure
                 services.AddSingleton<IMessageQueue, InMemoryMessageQueue>();
                 services.AddSingleton<IDuplicateRemover, HashSetDuplicateRemover>();
                 services.AddSingleton<IScheduler, BreadthFirstScheduler>();
                 services.AddSingleton<IProxyPool, ProxyPool>();
                 services.AddSingleton<IParserFactory, DefaultParserFactory>();
-                
+
                 services.AddHttpClient<HttpClientDownloader>();
                 services.Configure<DownloaderOptions>(config.GetSection("Downloader"));
                 services.Configure<PlaywrightOptions>(config.GetSection("Playwright"));
                 services.AddTransient<HttpClientDownloader>();
                 services.AddTransient<PlaywrightDownloader>();
                 services.AddSingleton<IDownloaderFactory, DefaultDownloaderFactory>();
-                services.AddSingleton<IDownloader>(sp => 
+                services.AddSingleton<IDownloader>(sp =>
                     sp.GetRequiredService<IDownloaderFactory>().CreateDownloader(DownloadType.HttpClient));
 
-                // Register agent services
                 services.AddSingleton<ITaskExecutor, TaskExecutor>();
 
                 var mode = agentOptions.Mode;
-                
+
                 if (mode.Equals("Local", StringComparison.OrdinalIgnoreCase))
                 {
                     services.AddSingleton(agentOptions.LocalConfig);
@@ -98,6 +96,7 @@ public class Program
                         {
                             c.BaseAddress = new Uri(agentOptions.ServerConfig.ServerUrl);
                         });
+                    services.AddSingleton<ISignalRClient, SignalRClient>();
                     services.AddSingleton<IResultReporter, ResultReporter>();
                     services.AddSingleton<IStorage>(sp =>
                     {

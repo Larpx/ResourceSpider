@@ -1,7 +1,6 @@
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Entities;
 using ResourceSpider.Server.Repositories;
-using ResourceSpider.Server.Services;
 
 namespace ResourceSpider.Server.Services;
 
@@ -18,6 +17,7 @@ public interface ITaskDispatchService
 public class TaskDispatchService : ITaskDispatchService
 {
     private readonly ITaskRepository _taskRepository;
+    private readonly ITaskStepRepository _taskStepRepository;
     private readonly IAgentRegisterService _agentRegisterService;
     private readonly IExpressionService _expressionService;
     private readonly ICollectionResultService _resultService;
@@ -25,12 +25,14 @@ public class TaskDispatchService : ITaskDispatchService
 
     public TaskDispatchService(
         ITaskRepository taskRepository,
+        ITaskStepRepository taskStepRepository,
         IAgentRegisterService agentRegisterService,
         IExpressionService expressionService,
         ICollectionResultService resultService,
         ILogger<TaskDispatchService> logger)
     {
         _taskRepository = taskRepository;
+        _taskStepRepository = taskStepRepository;
         _agentRegisterService = agentRegisterService;
         _expressionService = expressionService;
         _resultService = resultService;
@@ -42,7 +44,7 @@ public class TaskDispatchService : ITaskDispatchService
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
         if (!isValid)
         {
-            _logger.LogWarning("Invalid token for agent {AgentId}", agentId);
+            _logger.LogWarning("Agent {AgentId} Token 无效", agentId);
             return (false, new List<TaskDto>());
         }
 
@@ -58,6 +60,18 @@ public class TaskDispatchService : ITaskDispatchService
 
             var dto = MapToDto(task);
 
+            var steps = await _taskStepRepository.GetByTaskIdAsync(task.TaskId);
+            if (steps.Count > 0)
+            {
+                dto = dto with
+                {
+                    Steps = steps.Select(s => new TaskStepDto(
+                        s.StepId, s.TaskId, s.StepOrder, s.StepName, s.CollectionMode,
+                        s.AgentGroupId, s.RequestConfig, s.ExtractionRules, s.VariableMappings,
+                        s.PaginationConfig, s.OutputConfig, s.CreatedAt)).ToList()
+                };
+            }
+
             if (!string.IsNullOrEmpty(task.ExpressionId))
             {
                 try
@@ -66,15 +80,14 @@ public class TaskDispatchService : ITaskDispatchService
                 }
                 catch (KeyNotFoundException ex)
                 {
-                    _logger.LogWarning(ex, "Expression {ExpressionId} not found for task {TaskId}",
-                        task.ExpressionId, task.TaskId);
+                    _logger.LogWarning(ex, "表达式 {ExpressionId} 未找到，任务 {TaskId}", task.ExpressionId, task.TaskId);
                 }
             }
 
             result.Add(dto);
         }
 
-        _logger.LogInformation("Agent {AgentId} pulled {Count} tasks", agentId, result.Count);
+        _logger.LogInformation("Agent {AgentId} 拉取 {Count} 个任务", agentId, result.Count);
         return (true, result);
     }
 
@@ -83,14 +96,14 @@ public class TaskDispatchService : ITaskDispatchService
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
         if (!isValid)
         {
-            _logger.LogWarning("Invalid token for agent {AgentId}", agentId);
+            _logger.LogWarning("Agent {AgentId} Token 无效", agentId);
             return false;
         }
 
         var task = await _taskRepository.GetByIdAsync(taskId);
         if (task == null)
         {
-            _logger.LogWarning("Task {TaskId} not found", taskId);
+            _logger.LogWarning("任务 {TaskId} 不存在", taskId);
             return false;
         }
 
@@ -112,8 +125,7 @@ public class TaskDispatchService : ITaskDispatchService
         }
 
         await _taskRepository.UpdateAsync(task);
-        _logger.LogInformation("Agent {AgentId} reported task {TaskId} status: {Status}",
-            agentId, taskId, status);
+        _logger.LogInformation("Agent {AgentId} 上报任务 {TaskId} 状态：{Status}", agentId, taskId, status);
 
         return true;
     }
@@ -130,7 +142,7 @@ public class TaskDispatchService : ITaskDispatchService
         try
         {
             var config = await _expressionService.GetConfigAsync(expressionId);
-            _logger.LogInformation("Agent {AgentId} pulled expression {ExpressionId}", agentId, expressionId);
+            _logger.LogInformation("Agent {AgentId} 拉取表达式 {ExpressionId}", agentId, expressionId);
             return (true, config);
         }
         catch (KeyNotFoundException)
@@ -149,7 +161,7 @@ public class TaskDispatchService : ITaskDispatchService
         }
 
         var expressions = await _expressionService.GetActiveExpressionsAsync();
-        _logger.LogInformation("Agent {AgentId} pulled {Count} active expressions", agentId, expressions.Count);
+        _logger.LogInformation("Agent {AgentId} 拉取 {Count} 个活跃表达式", agentId, expressions.Count);
         return (true, expressions);
     }
 
@@ -158,7 +170,7 @@ public class TaskDispatchService : ITaskDispatchService
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
         if (!isValid)
         {
-            _logger.LogWarning("Invalid token for agent {AgentId}", agentId);
+            _logger.LogWarning("Agent {AgentId} Token 无效", agentId);
             return false;
         }
 
@@ -166,7 +178,7 @@ public class TaskDispatchService : ITaskDispatchService
             request.TaskId, request.ExpressionId, agentId, request.Results);
 
         _logger.LogInformation(
-            "Agent {AgentId} stored {Count} results for task {TaskId}",
+            "Agent {AgentId} 存储 {Count} 条结果，任务 {TaskId}",
             agentId, request.Results.Count, request.TaskId);
         return true;
     }
@@ -187,23 +199,29 @@ public class TaskDispatchService : ITaskDispatchService
     private static TaskDto MapToDto(TaskEntity entity)
     {
         return new TaskDto(
-            TaskId: entity.TaskId,
-            TaskName: entity.TaskName,
-            TaskType: entity.TaskType,
-            Priority: entity.Priority,
-            Status: entity.Status,
-            RequestConfig: entity.RequestConfig,
-            ScheduleConfig: entity.ScheduleConfig,
-            RetryPolicy: entity.RetryPolicy,
-            AssignedAgentId: entity.AssignedAgentId,
-            Progress: entity.Progress,
-            TotalRequests: entity.TotalRequests,
-            CompletedRequests: entity.CompletedRequests,
-            FailedRequests: entity.FailedRequests,
-            StartTime: entity.StartTime,
-            EndTime: entity.EndTime,
-            CreatedBy: entity.CreatedBy,
-            CreatedAt: entity.CreatedAt
+            entity.TaskId,
+            entity.TaskName,
+            entity.TaskType,
+            entity.Priority,
+            entity.Status,
+            entity.RequestConfig,
+            entity.ScheduleConfig,
+            entity.RetryPolicy,
+            entity.AntiCrawlConfig,
+            entity.GlobalConfig,
+            entity.ConfigVersion,
+            entity.Tags,
+            entity.AgentGroupId,
+            entity.AssignedAgentId,
+            entity.Progress,
+            entity.TotalRequests,
+            entity.CompletedRequests,
+            entity.FailedRequests,
+            entity.StartTime,
+            entity.EndTime,
+            entity.CreatedBy,
+            entity.CreatedAt,
+            entity.ExpressionId
         );
     }
 }

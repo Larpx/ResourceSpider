@@ -12,6 +12,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
     private readonly IServerApiClient _serverApi;
     private readonly ITaskExecutor _taskExecutor;
     private readonly IResultReporter _resultReporter;
+    private readonly ISignalRClient _signalRClient;
     private readonly ILogger<OnlineModeRunner> _logger;
     private Timer? _heartbeatTimer;
     private Timer? _taskPullTimer;
@@ -27,24 +28,26 @@ public class OnlineModeRunner : IHostedService, IDisposable
         IServerApiClient serverApi,
         ITaskExecutor taskExecutor,
         IResultReporter resultReporter,
+        ISignalRClient signalRClient,
         ILogger<OnlineModeRunner> logger)
     {
         _options = options;
         _serverApi = serverApi;
         _taskExecutor = taskExecutor;
         _resultReporter = resultReporter;
+        _signalRClient = signalRClient;
         _logger = logger;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Starting Online Mode Agent");
+        _logger.LogInformation("启动在线模式 Agent");
 
         await RegisterAsync(cancellationToken);
 
         if (!_isRegistered)
         {
-            _logger.LogError("Failed to register agent with server");
+            _logger.LogError("Agent 注册失败");
             return;
         }
 
@@ -62,6 +65,25 @@ public class OnlineModeRunner : IHostedService, IDisposable
             SyncExpressions, null,
             TimeSpan.FromSeconds(10),
             TimeSpan.FromMinutes(5));
+
+        _signalRClient.OnTaskReceived += async (_, message) =>
+        {
+            _logger.LogInformation("通过 SignalR 收到任务分配：{TaskId}", message.TaskId);
+        };
+
+        _signalRClient.OnControlCommand += (_, message) =>
+        {
+            _logger.LogInformation("收到控制指令：{Command}", message.Command);
+        };
+
+        try
+        {
+            await _signalRClient.StartAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "SignalR 连接失败，将使用轮询模式");
+        }
     }
 
     private async Task RegisterAsync(CancellationToken ct)
@@ -79,12 +101,12 @@ public class OnlineModeRunner : IHostedService, IDisposable
             _agentToken = response.AgentToken;
             _isRegistered = true;
 
-            _logger.LogInformation("Agent registered with token: {Token}",
+            _logger.LogInformation("Agent 注册成功，Token: {Token}",
                 _agentToken.Substring(0, Math.Min(8, _agentToken.Length)));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to register agent");
+            _logger.LogError(ex, "Agent 注册失败");
         }
     }
 
@@ -104,7 +126,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send heartbeat");
+            _logger.LogError(ex, "心跳发送失败");
         }
     }
 
@@ -123,11 +145,11 @@ public class OnlineModeRunner : IHostedService, IDisposable
                 }
             }
 
-            _logger.LogInformation("Synced {Count} active expressions from server", expressions.Count);
+            _logger.LogInformation("同步 {Count} 个活跃表达式", expressions.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to sync expressions");
+            _logger.LogError(ex, "表达式同步失败");
         }
     }
 
@@ -148,7 +170,8 @@ public class OnlineModeRunner : IHostedService, IDisposable
                 {
                     TaskId = taskDto.TaskId,
                     TaskName = taskDto.TaskName,
-                    TaskType = taskDto.TaskType,
+                    TaskType = Enum.TryParse<Core.Enums.TaskType>(taskDto.TaskType, out var tt)
+                        ? tt : Core.Enums.TaskType.SinglePage,
                     RequestConfig = new Dictionary<string, object?>
                     {
                         ["Url"] = taskDto.RequestConfig
@@ -179,7 +202,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
                     }
                 }
 
-                _logger.LogInformation("Executing task: {TaskName}", task.TaskName);
+                _logger.LogInformation("执行任务：{TaskName}", task.TaskName);
                 var result = await _taskExecutor.ExecuteAsync(task);
                 await _resultReporter.ReportAsync(result);
 
@@ -202,7 +225,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to pull and execute tasks");
+            _logger.LogError(ex, "拉取并执行任务失败");
         }
     }
 
@@ -250,10 +273,12 @@ public class OnlineModeRunner : IHostedService, IDisposable
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Stopping Online Mode Agent");
+        _logger.LogInformation("停止在线模式 Agent");
         _heartbeatTimer?.Change(Timeout.Infinite, 0);
         _taskPullTimer?.Change(Timeout.Infinite, 0);
         _expressionSyncTimer?.Change(Timeout.Infinite, 0);
+
+        await _signalRClient.StopAsync();
 
         if (_isRegistered)
         {
@@ -270,11 +295,11 @@ public class OnlineModeRunner : IHostedService, IDisposable
                 AgentToken: _agentToken,
                 Reason: "Agent shutting down"));
             _isRegistered = false;
-            _logger.LogInformation("Agent {AgentId} unregistered from server", _options.AgentId);
+            _logger.LogInformation("Agent {AgentId} 已注销", _options.AgentId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to unregister agent {AgentId}", _options.AgentId);
+            _logger.LogError(ex, "Agent {AgentId} 注销失败", _options.AgentId);
         }
     }
 

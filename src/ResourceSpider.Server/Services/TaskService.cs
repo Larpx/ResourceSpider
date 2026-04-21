@@ -10,21 +10,27 @@ public interface ITaskService
     Task<TaskDto> CreateAsync(CreateTaskRequest request, string? createdBy = null);
     Task<TaskDto?> GetByIdAsync(string taskId);
     Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null);
+    Task<bool> UpdateAsync(string taskId, UpdateTaskRequest request);
     Task<bool> PauseAsync(string taskId);
     Task<bool> ResumeAsync(string taskId);
+    Task<bool> StopAsync(string taskId);
     Task<bool> DeleteAsync(string taskId);
+    Task<bool> TriggerExecutionAsync(string taskId);
 }
 
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
+    private readonly ITaskStepRepository _taskStepRepository;
     private readonly ILogger<TaskService> _logger;
 
     public TaskService(
         ITaskRepository taskRepository,
+        ITaskStepRepository taskStepRepository,
         ILogger<TaskService> logger)
     {
         _taskRepository = taskRepository;
+        _taskStepRepository = taskStepRepository;
         _logger = logger;
     }
 
@@ -41,20 +47,56 @@ public class TaskService : ITaskService
             RequestConfig = request.RequestConfig ?? "{}",
             ScheduleConfig = request.ScheduleConfig,
             RetryPolicy = request.RetryPolicy,
+            AntiCrawlConfig = request.AntiCrawlConfig,
+            GlobalConfig = request.GlobalConfig,
+            Tags = request.Tags,
+            AgentGroupId = request.AgentGroupId,
             ExpressionId = request.ExpressionId,
             CreatedBy = createdBy
         };
 
         await _taskRepository.AddAsync(entity);
-        _logger.LogInformation("Task {TaskId} created: {TaskName}", taskId, request.TaskName);
 
+        if (request.Steps != null && request.Steps.Count > 0)
+        {
+            var stepEntities = request.Steps.Select((s, i) => new TaskStepEntity
+            {
+                StepId = Guid.NewGuid().ToString("N"),
+                TaskId = taskId,
+                StepOrder = s.StepOrder > 0 ? s.StepOrder : i + 1,
+                StepName = s.StepName,
+                CollectionMode = s.CollectionMode,
+                AgentGroupId = s.AgentGroupId,
+                RequestConfig = s.RequestConfig ?? "{}",
+                ExtractionRules = s.ExtractionRules ?? "[]",
+                VariableMappings = s.VariableMappings,
+                PaginationConfig = s.PaginationConfig,
+                OutputConfig = s.OutputConfig
+            }).ToList();
+
+            await _taskStepRepository.AddRangeAsync(stepEntities);
+        }
+
+        _logger.LogInformation("任务 {TaskId} 创建成功：{TaskName}", taskId, request.TaskName);
         return MapToDto(entity);
     }
 
     public async Task<TaskDto?> GetByIdAsync(string taskId)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
-        return entity != null ? MapToDto(entity) : null;
+        if (entity == null) return null;
+
+        var dto = MapToDto(entity);
+        var steps = await _taskStepRepository.GetByTaskIdAsync(taskId);
+        if (steps.Count > 0)
+        {
+            dto = dto with
+            {
+                Steps = steps.Select(MapStepToDto).ToList()
+            };
+        }
+
+        return dto;
     }
 
     public async Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null)
@@ -63,11 +105,31 @@ public class TaskService : ITaskService
         var total = await _taskRepository.CountAsync(status);
 
         return new TaskListResponse(
-            Tasks: tasks.Select(MapToDto).ToList(),
-            Total: (int)total,
-            PageIndex: pageIndex,
-            PageSize: pageSize
+            tasks.Select(MapToDto).ToList(),
+            (int)total,
+            pageIndex,
+            pageSize
         );
+    }
+
+    public async Task<bool> UpdateAsync(string taskId, UpdateTaskRequest request)
+    {
+        var entity = await _taskRepository.GetByIdAsync(taskId);
+        if (entity == null) return false;
+
+        if (request.TaskName != null) entity.TaskName = request.TaskName;
+        if (request.Priority.HasValue) entity.Priority = request.Priority.Value;
+        if (request.RequestConfig != null) entity.RequestConfig = request.RequestConfig;
+        if (request.ScheduleConfig != null) entity.ScheduleConfig = request.ScheduleConfig;
+        if (request.RetryPolicy != null) entity.RetryPolicy = request.RetryPolicy;
+        if (request.AntiCrawlConfig != null) entity.AntiCrawlConfig = request.AntiCrawlConfig;
+        if (request.GlobalConfig != null) entity.GlobalConfig = request.GlobalConfig;
+        if (request.Tags != null) entity.Tags = request.Tags;
+        if (request.AgentGroupId != null) entity.AgentGroupId = request.AgentGroupId;
+
+        await _taskRepository.UpdateAsync(entity);
+        _logger.LogInformation("任务 {TaskId} 更新成功", taskId);
+        return true;
     }
 
     public async Task<bool> PauseAsync(string taskId)
@@ -77,7 +139,7 @@ public class TaskService : ITaskService
 
         entity.Status = 4;
         await _taskRepository.UpdateAsync(entity);
-        _logger.LogInformation("Task {TaskId} paused", taskId);
+        _logger.LogInformation("任务 {TaskId} 已暂停", taskId);
         return true;
     }
 
@@ -89,7 +151,19 @@ public class TaskService : ITaskService
         entity.Status = 1;
         entity.StartTime = entity.StartTime ?? DateTime.UtcNow;
         await _taskRepository.UpdateAsync(entity);
-        _logger.LogInformation("Task {TaskId} resumed", taskId);
+        _logger.LogInformation("任务 {TaskId} 已恢复", taskId);
+        return true;
+    }
+
+    public async Task<bool> StopAsync(string taskId)
+    {
+        var entity = await _taskRepository.GetByIdAsync(taskId);
+        if (entity == null) return false;
+
+        entity.Status = 6;
+        entity.EndTime = DateTime.UtcNow;
+        await _taskRepository.UpdateAsync(entity);
+        _logger.LogInformation("任务 {TaskId} 已终止", taskId);
         return true;
     }
 
@@ -98,32 +172,72 @@ public class TaskService : ITaskService
         var entity = await _taskRepository.GetByIdAsync(taskId);
         if (entity == null) return false;
 
+        await _taskStepRepository.DeleteByTaskIdAsync(taskId);
         await _taskRepository.DeleteAsync(taskId);
-        _logger.LogInformation("Task {TaskId} deleted", taskId);
+        _logger.LogInformation("任务 {TaskId} 已删除", taskId);
+        return true;
+    }
+
+    public async Task<bool> TriggerExecutionAsync(string taskId)
+    {
+        var entity = await _taskRepository.GetByIdAsync(taskId);
+        if (entity == null) return false;
+
+        entity.Status = 0;
+        entity.StartTime = null;
+        entity.EndTime = null;
+        entity.Progress = 0;
+        entity.CompletedRequests = 0;
+        entity.FailedRequests = 0;
+        await _taskRepository.UpdateAsync(entity);
+        _logger.LogInformation("任务 {TaskId} 已触发执行", taskId);
         return true;
     }
 
     private static TaskDto MapToDto(TaskEntity entity)
     {
         return new TaskDto(
-            TaskId: entity.TaskId,
-            TaskName: entity.TaskName,
-            TaskType: entity.TaskType,
-            Priority: entity.Priority,
-            Status: entity.Status,
-            RequestConfig: entity.RequestConfig,
-            ScheduleConfig: entity.ScheduleConfig,
-            RetryPolicy: entity.RetryPolicy,
-            AssignedAgentId: entity.AssignedAgentId,
-            Progress: entity.Progress,
-            TotalRequests: entity.TotalRequests,
-            CompletedRequests: entity.CompletedRequests,
-            FailedRequests: entity.FailedRequests,
-            StartTime: entity.StartTime,
-            EndTime: entity.EndTime,
-            CreatedBy: entity.CreatedBy,
-            CreatedAt: entity.CreatedAt,
-            ExpressionId: entity.ExpressionId
+            entity.TaskId,
+            entity.TaskName,
+            entity.TaskType,
+            entity.Priority,
+            entity.Status,
+            entity.RequestConfig,
+            entity.ScheduleConfig,
+            entity.RetryPolicy,
+            entity.AntiCrawlConfig,
+            entity.GlobalConfig,
+            entity.ConfigVersion,
+            entity.Tags,
+            entity.AgentGroupId,
+            entity.AssignedAgentId,
+            entity.Progress,
+            entity.TotalRequests,
+            entity.CompletedRequests,
+            entity.FailedRequests,
+            entity.StartTime,
+            entity.EndTime,
+            entity.CreatedBy,
+            entity.CreatedAt,
+            entity.ExpressionId
+        );
+    }
+
+    private static TaskStepDto MapStepToDto(TaskStepEntity entity)
+    {
+        return new TaskStepDto(
+            entity.StepId,
+            entity.TaskId,
+            entity.StepOrder,
+            entity.StepName,
+            entity.CollectionMode,
+            entity.AgentGroupId,
+            entity.RequestConfig,
+            entity.ExtractionRules,
+            entity.VariableMappings,
+            entity.PaginationConfig,
+            entity.OutputConfig,
+            entity.CreatedAt
         );
     }
 }

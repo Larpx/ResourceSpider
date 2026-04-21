@@ -38,6 +38,21 @@ public class AgentEntity
     [SugarColumn(IsNullable = true)]
     public DateTime? LastHeartbeat { get; set; }
 
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? Tags { get; set; }
+
+    [SugarColumn(Length = 64, IsNullable = true)]
+    public string? GroupId { get; set; }
+
+    [SugarColumn(Length = 100, IsNullable = true)]
+    public string? OS { get; set; }
+
+    [SugarColumn(Length = 50, IsNullable = true)]
+    public string? Version { get; set; }
+
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? Config { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
