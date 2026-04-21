@@ -20,7 +20,7 @@ public abstract class Spider : BackgroundService
     private readonly FlowBuilder _flowBuilder = new();
     private readonly RequestedQueue _requestedQueue = new();
     private readonly DependenceServices _services;
-    private ResponseDelegate _delegate;
+    private ResponseDelegate _delegate = null!;
 
     protected SpiderOptions Options { get; }
     protected ILogger Logger { get; }

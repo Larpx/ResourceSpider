@@ -26,8 +26,9 @@ public abstract class DataParser : DataFlowBase
     {
         _followRequestQueriers.Add(context =>
         {
-            return context.Selectable.SelectList(selector)?
-                .Where(x => x != null)
+            var selectable = context.Selectable?.SelectList(selector);
+            if (selectable == null) return Enumerable.Empty<Request>();
+            return selectable
                 .SelectMany(x => x.Links())
                 .Select(x => new Request { Url = x });
         });

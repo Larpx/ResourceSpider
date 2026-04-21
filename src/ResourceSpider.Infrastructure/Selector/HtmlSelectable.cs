@@ -13,7 +13,7 @@ public class HtmlSelectable : Selectable
 
     public HtmlSelectable(HtmlNode node) { _node = node; }
 
-    public HtmlSelectable(string html, string relativeUri = null, bool removeOutboundLinks = true)
+    public HtmlSelectable(string html, string? relativeUri = null, bool removeOutboundLinks = true)
     {
         var document = new HtmlDocument { OptionAutoCloseOnEnd = true };
         document.LoadHtml(html);
@@ -30,12 +30,12 @@ public class HtmlSelectable : Selectable
         return results;
     }
 
-    public override IEnumerable<ISelectable> Nodes() => _node?.ChildNodes.Select(x => new HtmlSelectable(x));
-    public override string Value => _node?.InnerText;
-    public string InnerHtml => _node?.InnerHtml;
-    public string OuterHtml => _node?.OuterHtml;
+    public override IEnumerable<ISelectable> Nodes() => _node.ChildNodes.Select(x => new HtmlSelectable(x));
+    public override string Value => _node.InnerText;
+    public string InnerHtml => _node.InnerHtml;
+    public string OuterHtml => _node.OuterHtml;
 
-    public override ISelectable Select(ISelector selector)
+    public override ISelectable? Select(ISelector selector)
     {
         if (selector == null) throw new ArgumentNullException(nameof(selector));
         return selector.Select(_node.OuterHtml);

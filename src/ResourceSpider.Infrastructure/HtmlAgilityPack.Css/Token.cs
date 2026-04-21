@@ -7,7 +7,7 @@ public struct Token : IEquatable<Token>
     public TokenKind Kind { get; private set; }
     public string Text { get; private set; }
 
-    private Token(TokenKind kind) : this(kind, null) { }
+    private Token(TokenKind kind) : this(kind, string.Empty) { }
     private Token(TokenKind kind, string text) : this() { Kind = kind; Text = text; }
 
     public static Token Eoi() => new(TokenKind.Eoi);
@@ -50,7 +50,7 @@ public struct Token : IEquatable<Token>
     public static Token Function(string text) { ValidateTextArgument(text); return new Token(TokenKind.Function, text); }
     public static Token Char(char ch) => new(TokenKind.Char, ch.ToString());
 
-    public override bool Equals(object obj) => obj != null && obj is Token && Equals((Token)obj);
+    public override bool Equals(object? obj) => obj != null && obj is Token && Equals((Token)obj);
     public override int GetHashCode() => Text == null ? Kind.GetHashCode() : Kind.GetHashCode() ^ Text.GetHashCode();
     public bool Equals(Token other) => Kind == other.Kind && Text == other.Text;
     public override string ToString() => Text == null ? Kind.ToString() : Kind + ": " + Text;

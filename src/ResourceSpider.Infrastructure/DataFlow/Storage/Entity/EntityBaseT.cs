@@ -24,7 +24,7 @@ public abstract class EntityBase<T> : IEntity where T : class, new()
         }
         else
         {
-            _tableMetadata.Value.Schema = new SchemaAttribute(null, type.Name);
+            _tableMetadata.Value.Schema = new SchemaAttribute(null!, type.Name);
         }
 
         var properties = type.GetProperties().Where(x => x.CanRead && x.CanWrite).ToList();
@@ -37,7 +37,7 @@ public abstract class EntityBase<T> : IEntity where T : class, new()
                 Type = property.PropertyType.Name,
                 Required = property.GetCustomAttributes(typeof(RequiredAttribute), false).Any()
             };
-            var stringLength = (StringLengthAttribute)property.GetCustomAttributes(typeof(StringLengthAttribute), false).FirstOrDefault();
+            var stringLength = (StringLengthAttribute?)property.GetCustomAttributes(typeof(StringLengthAttribute), false).FirstOrDefault();
             if (stringLength != null) column.Length = stringLength.MaximumLength;
             _tableMetadata.Value.Columns[property.Name] = column;
         }
@@ -48,7 +48,7 @@ public abstract class EntityBase<T> : IEntity where T : class, new()
             if (primary != null) _tableMetadata.Value.Primary = [primary.Name];
         }
 
-        _tableMetadata.Value.TypeName = type.FullName;
+        _tableMetadata.Value.TypeName = type.FullName ?? type.Name;
 
         if (_tableMetadata.Value.Primary != null && _tableMetadata.Value.Primary.Count > 0 && !_tableMetadata.Value.HasUpdateColumns)
         {
@@ -65,24 +65,24 @@ public abstract class EntityBase<T> : IEntity where T : class, new()
     protected T HasKey(Expression<Func<T, object>> expression)
     {
         var columns = GetColumns(expression);
-        if (columns == null || columns.Count == 0) throw new SpiderException("主键不能为空");
+        if (columns.Count == 0) throw new SpiderException("主键不能为空");
         _tableMetadata.Value.Primary = [..columns];
-        return this as T;
+        return (T)(object)this;
     }
 
     protected T HasIndex(Expression<Func<T, object>> expression, bool isUnique = false)
     {
         var columns = GetColumns(expression);
-        if (columns == null || columns.Count == 0) throw new SpiderException("索引列不能为空");
+        if (columns.Count == 0) throw new SpiderException("索引列不能为空");
         _tableMetadata.Value.Indexes.Add(new IndexMetadata(columns.ToArray(), isUnique));
-        return this as T;
+        return (T)(object)this;
     }
 
     protected T ConfigureUpdateColumns(Expression<Func<T, object>> expression)
     {
         var columns = GetColumns(expression);
         _tableMetadata.Value.Updates = columns;
-        return this as T;
+        return (T)(object)this;
     }
 
     private HashSet<string> GetColumns(Expression<Func<T, object>> expression)

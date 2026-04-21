@@ -12,7 +12,7 @@ public class SelectorGenerator<TElement> : ISelectorGenerator
 
     public SelectorGenerator(IElementOps<TElement> ops) : this(ops, null) { }
 
-    public SelectorGenerator(IElementOps<TElement> ops, IEqualityComparer<TElement> equalityComparer)
+    public SelectorGenerator(IElementOps<TElement> ops, IEqualityComparer<TElement>? equalityComparer)
     {
         if (ops == null) throw new ArgumentNullException("ops");
         Ops = ops;
@@ -20,7 +20,7 @@ public class SelectorGenerator<TElement> : ISelectorGenerator
         _selectors = new Stack<Selector<TElement>>();
     }
 
-    public Selector<TElement> Selector { get; private set; }
+    public Selector<TElement> Selector { get; private set; } = null!;
     object ISelectorGenerator.Selector => Selector;
     public IElementOps<TElement> Ops { get; }
 
@@ -38,8 +38,8 @@ public class SelectorGenerator<TElement> : ISelectorGenerator
         Selector = top == null ? selector : elements => selector(top(elements));
     }
 
-    public virtual void OnInit() { _selectors.Clear(); Selector = null; _anchorToRoot = false; }
-    public virtual void OnSelector() { if (Selector != null) _selectors.Push(Selector); Selector = null; }
+    public virtual void OnInit() { _selectors.Clear(); Selector = null!; _anchorToRoot = false; }
+    public virtual void OnSelector() { if (Selector != null) _selectors.Push(Selector); Selector = null!; }
     public virtual void OnClose()
     {
         var sum = GetSelectors().Aggregate((a, b) => elements => a(elements).Concat(b(elements)));

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
 
-public class LruCache<TInput, TResult> : IDisposable
+public class LruCache<TInput, TResult> : IDisposable where TInput : notnull
 {
     private readonly Dictionary<TInput, TResult> _data;
     private readonly IndexedLinkedList<TInput> _lruList = new();
@@ -21,9 +21,9 @@ public class LruCache<TInput, TResult> : IDisposable
 
     public TResult GetValue(TInput key)
     {
-        TResult value;
+        TResult value = default!;
         bool found;
-        lock (_rwl) { found = _data.TryGetValue(key, out value); }
+        lock (_rwl) { found = _data.TryGetValue(key, out value!); }
         if (!found) value = _evalutor(key);
         lock (_rwl)
         {
@@ -71,18 +71,18 @@ public class LruCache<TInput, TResult> : IDisposable
         }
     }
 
-    private class IndexedLinkedList<T>
+    private class IndexedLinkedList<T> where T : notnull
     {
         private LinkedList<T> _data = [];
         private Dictionary<T, LinkedListNode<T>> _index = new();
 
         public void Add(T value) => _index[value] = _data.AddLast(value);
-        public void RemoveFirst() { _index.Remove(_data.First.Value); _data.RemoveFirst(); }
+        public void RemoveFirst() { if (_data.First != null) { _index.Remove(_data.First.Value); _data.RemoveFirst(); } }
         public void Remove(T value)
         {
             if (_index.TryGetValue(value, out var node)) { _data.Remove(node); _index.Remove(value); }
         }
-        public T First => _data.First.Value;
+        public T First => _data.First!.Value;
     }
 
     public void Dispose() { }

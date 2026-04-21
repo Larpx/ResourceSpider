@@ -7,7 +7,7 @@ namespace ResourceSpider.Infrastructure.DataFlow.Parser;
 
 public static class SelectorExtensions
 {
-    public static ISelector ToSelector(this SelectorAttribute selector)
+    public static ISelector? ToSelector(this SelectorAttribute selector)
     {
         if (selector == null) return null;
         var expression = selector.Expression;
@@ -32,4 +32,6 @@ public static class SelectorExtensions
         if (string.IsNullOrWhiteSpace(selector.Expression))
             throw new ArgumentException($"Expression of {selector.Type} selector should not be null/empty");
     }
+
+    public static string? GetText(this ISelectable selectable) => selectable?.Value;
 }

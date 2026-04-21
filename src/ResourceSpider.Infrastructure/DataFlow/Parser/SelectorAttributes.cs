@@ -5,11 +5,11 @@ namespace ResourceSpider.Infrastructure.DataFlow.Parser;
 public class SelectorAttribute : Attribute
 {
     public SelectorType Type { get; set; } = SelectorType.XPath;
-    public string Expression { get; set; }
-    public string Arguments { get; set; }
+    public string Expression { get; set; } = string.Empty;
+    public string? Arguments { get; set; }
 
     public SelectorAttribute() { }
-    public SelectorAttribute(string expression, SelectorType type = SelectorType.XPath, string arguments = null)
+    public SelectorAttribute(string expression, SelectorType type = SelectorType.XPath, string? arguments = null)
     {
         Type = type;
         Expression = expression;
@@ -27,9 +27,9 @@ public class EntitySelectorAttribute : SelectorAttribute
 [AttributeUsage(AttributeTargets.Property)]
 public class ValueSelectorAttribute : SelectorAttribute
 {
-    internal System.Reflection.PropertyInfo PropertyInfo { get; set; }
+    internal System.Reflection.PropertyInfo PropertyInfo { get; set; } = null!;
     internal bool NotNull { get; set; }
-    public FormatterAttribute[] Formatters { get; set; }
+    public FormatterAttribute[] Formatters { get; set; } = [];
 
     public ValueSelectorAttribute() { }
     public ValueSelectorAttribute(string expression, SelectorType type = SelectorType.XPath) : base(expression, type) { }
@@ -39,23 +39,23 @@ public class ValueSelectorAttribute : SelectorAttribute
 public class FollowRequestSelectorAttribute : Attribute
 {
     public SelectorType SelectorType { get; set; } = SelectorType.XPath;
-    public string[] Expressions { get; set; }
+    public string[] Expressions { get; set; } = [];
     public string[] Patterns { get; set; } = [];
 }
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class GlobalValueSelectorAttribute : ValueSelectorAttribute
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 }
 
 [AttributeUsage(AttributeTargets.Property)]
 public abstract class FormatterAttribute : Attribute
 {
     protected FormatterAttribute() { Name = GetType().Name; }
-    public string Name { get; set; }
-    public string Default { get; set; }
-    protected abstract string Handle(string value);
+    public string Name { get; set; } = string.Empty;
+    public string? Default { get; set; }
+    protected abstract string? Handle(string? value);
     protected abstract void CheckArguments();
-    public string Format(string value) { CheckArguments(); return value == default ? Default : Handle(value); }
+    public string? Format(string? value) { CheckArguments(); return value == default ? Default : Handle(value); }
 }

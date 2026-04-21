@@ -1,28 +1,16 @@
 namespace ResourceSpider.Server.DTOs;
 
-public class ApiResponse<T>
+/// <summary>
+/// 服务端 API 响应模型，继承自 Core 层的统一响应模型
+/// </summary>
+/// <typeparam name="T">响应数据类型</typeparam>
+public class ApiResponse<T> : Core.Models.ApiResponse<T>
 {
-    public int Code { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public T? Data { get; set; }
-    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+}
 
-    public static ApiResponse<T> Success(T data, string message = "操作成功")
-    {
-        return new ApiResponse<T>
-        {
-            Code = 200,
-            Message = message,
-            Data = data
-        };
-    }
-
-    public static ApiResponse<T> Error(int code, string message)
-    {
-        return new ApiResponse<T>
-        {
-            Code = code,
-            Message = message
-        };
-    }
+/// <summary>
+/// 无数据的 API 响应模型
+/// </summary>
+public class ApiResponse : Core.Models.ApiResponse
+{
 }

@@ -12,7 +12,7 @@ public class JsonPathSelector : ISelector
 
     public JsonPathSelector(string jsonPath) { _jsonPath = jsonPath; }
 
-    public ISelectable Select(string text)
+    public ISelectable? Select(string text)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;
         if (!(JsonConvert.DeserializeObject(text) is JToken token)) return null;

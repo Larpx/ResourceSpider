@@ -124,7 +124,7 @@ public static class Tokener
         var strpos = reader.Position;
         reader.MarkFromNext();
         char? ch;
-        StringBuilder sb = null;
+        StringBuilder? sb = null;
         while ((ch = reader.Read()) != quote)
         {
             if (ch == null) throw new FormatException(string.Format("Unterminated string at position {0}.", strpos));

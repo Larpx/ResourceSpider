@@ -9,11 +9,11 @@ public interface IEntity
 
 public class Column
 {
-    public string Name { get; set; }
-    public string Type { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
     public int Length { get; set; } = 255;
     public bool Required { get; set; }
-    public PropertyInfo PropertyInfo { get; set; }
+    public PropertyInfo PropertyInfo { get; set; } = null!;
 }
 
 [AttributeUsage(AttributeTargets.Class)]
@@ -37,8 +37,8 @@ public enum StorageMode { Insert, InsertIgnoreDuplicate, InsertAndUpdate, Update
 
 public class TableMetadata
 {
-    public string TypeName { get; set; }
-    public SchemaAttribute Schema { get; set; }
+    public string TypeName { get; set; } = string.Empty;
+    public SchemaAttribute Schema { get; set; } = null!;
     public HashSet<string> Primary { get; set; } = [];
     public HashSet<IndexMetadata> Indexes { get; } = [];
     public HashSet<string> Updates { get; set; } = [];
@@ -62,10 +62,10 @@ public class IndexMetadata
 
 public class SqlStatements
 {
-    public string CreateDatabaseSql { get; set; }
-    public string CreateTableSql { get; set; }
-    public string InsertSql { get; set; }
-    public string InsertIgnoreDuplicateSql { get; set; }
-    public string UpdateSql { get; set; }
-    public string InsertAndUpdateSql { get; set; }
+    public string CreateDatabaseSql { get; set; } = string.Empty;
+    public string CreateTableSql { get; set; } = string.Empty;
+    public string InsertSql { get; set; } = string.Empty;
+    public string InsertIgnoreDuplicateSql { get; set; } = string.Empty;
+    public string UpdateSql { get; set; } = string.Empty;
+    public string InsertAndUpdateSql { get; set; } = string.Empty;
 }

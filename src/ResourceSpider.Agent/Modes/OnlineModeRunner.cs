@@ -1,12 +1,15 @@
 using ResourceSpider.Agent.Config;
 using ResourceSpider.Agent.Services;
-using ResourceSpider.Core.Interfaces;
+using ResourceSpider.Core;
+using ResourceSpider.Core.Enums;
 using ResourceSpider.Core.Models;
-using ResourceSpider.Infrastructure.Downloader;
 
 namespace ResourceSpider.Agent.Modes;
 
-public class OnlineModeRunner : IHostedService, IDisposable
+/// <summary>
+/// 在线模式运行器，负责 Agent 与服务端的通信，包括注册、心跳、任务拉取、表达式同步和 SignalR 实时通信
+/// </summary>
+public class OnlineModeRunner : IHostedService, IAsyncDisposable
 {
     private readonly OnlineModeOptions _options;
     private readonly IServerApiClient _serverApi;
@@ -22,6 +25,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
     private bool _isRegistered;
     private readonly Dictionary<string, ExpressionConfigDto> _expressionCache = new();
     private readonly object _cacheLock = new();
+    private readonly SemaphoreSlim _taskExecutionLock = new(1, 1);
 
     public OnlineModeRunner(
         OnlineModeOptions options,
@@ -66,7 +70,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
             TimeSpan.FromSeconds(10),
             TimeSpan.FromMinutes(5));
 
-        _signalRClient.OnTaskReceived += async (_, message) =>
+        _signalRClient.OnTaskReceived += (_, message) =>
         {
             _logger.LogInformation("通过 SignalR 收到任务分配：{TaskId}", message.TaskId);
         };
@@ -86,6 +90,9 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
     }
 
+    /// <summary>
+    /// 向服务端注册 Agent，获取认证 Token
+    /// </summary>
     private async Task RegisterAsync(CancellationToken ct)
     {
         try
@@ -95,14 +102,14 @@ public class OnlineModeRunner : IHostedService, IDisposable
                 AgentName: _options.AgentName,
                 IpAddress: GetLocalIpAddress(),
                 Port: 0,
-                Capabilities: new List<string> { "HttpClient", "Playwright" });
+                Capabilities: ["HttpClient", "Playwright"]);
 
             var response = await _serverApi.RegisterAsync(request);
             _agentToken = response.AgentToken;
             _isRegistered = true;
 
             _logger.LogInformation("Agent 注册成功，Token: {Token}",
-                _agentToken.Substring(0, Math.Min(8, _agentToken.Length)));
+                _agentToken[..Math.Min(8, _agentToken.Length)]);
         }
         catch (Exception ex)
         {
@@ -110,6 +117,9 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
     }
 
+    /// <summary>
+    /// 定时发送心跳，使用信号量防止并发
+    /// </summary>
     private async void SendHeartbeat(object? state)
     {
         try
@@ -120,7 +130,7 @@ public class OnlineModeRunner : IHostedService, IDisposable
                 CpuUsage: 0,
                 MemoryUsage: 0,
                 TaskCount: 0,
-                Status: 1);
+                Status: (int)AgentStatus.Online);
 
             await _serverApi.HeartbeatAsync(request);
         }
@@ -130,6 +140,9 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
     }
 
+    /// <summary>
+    /// 定时同步活跃表达式到本地缓存
+    /// </summary>
     private async void SyncExpressions(object? state)
     {
         try
@@ -153,8 +166,13 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
     }
 
+    /// <summary>
+    /// 拉取并执行任务，使用信号量防止并发执行
+    /// </summary>
     private async void PullAndExecuteTasks(object? state)
     {
+        if (!await _taskExecutionLock.WaitAsync(0)) return;
+
         try
         {
             var request = new PullTasksRequest(
@@ -166,87 +184,114 @@ public class OnlineModeRunner : IHostedService, IDisposable
 
             foreach (var taskDto in response.Tasks)
             {
-                var task = new Core.Models.SpiderTask
-                {
-                    TaskId = taskDto.TaskId,
-                    TaskName = taskDto.TaskName,
-                    TaskType = Enum.TryParse<Core.Enums.TaskType>(taskDto.TaskType, out var tt)
-                        ? tt : Core.Enums.TaskType.SinglePage,
-                    RequestConfig = new Dictionary<string, object?>
-                    {
-                        ["Url"] = taskDto.RequestConfig
-                    },
-                    ExpressionId = taskDto.ExpressionId
-                };
-
-                if (taskDto.ExpressionConfig != null)
-                {
-                    task.ExpressionConfig = MapExpressionConfig(taskDto.ExpressionConfig);
-                }
-                else if (!string.IsNullOrEmpty(taskDto.ExpressionId))
-                {
-                    ExpressionConfigDto? cachedExpr;
-                    lock (_cacheLock)
-                    {
-                        _expressionCache.TryGetValue(taskDto.ExpressionId, out cachedExpr);
-                    }
-
-                    if (cachedExpr == null)
-                    {
-                        cachedExpr = await _serverApi.PullExpressionAsync(taskDto.ExpressionId);
-                    }
-
-                    if (cachedExpr != null)
-                    {
-                        task.ExpressionConfig = MapExpressionConfig(cachedExpr);
-                    }
-                }
+                var task = MapTask(taskDto);
+                await ResolveExpressionConfig(taskDto, task);
 
                 _logger.LogInformation("执行任务：{TaskName}", task.TaskName);
                 var result = await _taskExecutor.ExecuteAsync(task);
                 await _resultReporter.ReportAsync(result);
 
-                if (!string.IsNullOrEmpty(result.ExpressionId))
-                {
-                    var isAvailable = result.Status == "Success" && result.DataRecords.Count > 0;
-                    var failureReason = isAvailable ? null : string.Join("; ", result.Errors.Take(3));
-
-                    await _serverApi.ReportExpressionAvailabilityAsync(
-                        new ReportAvailabilityRequest
-                        {
-                            AgentId = _options.AgentId,
-                            AgentToken = _agentToken,
-                            ExpressionId = result.ExpressionId,
-                            IsAvailable = isAvailable,
-                            FailureReason = failureReason
-                        });
-                }
+                await ReportExpressionAvailabilityIfNeeded(result);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "拉取并执行任务失败");
         }
+        finally
+        {
+            _taskExecutionLock.Release();
+        }
     }
 
-    private static Core.Models.ExpressionConfig? MapExpressionConfig(ExpressionConfigDto? dto)
+    /// <summary>
+    /// 将服务端的任务 DTO 映射为本地任务模型
+    /// </summary>
+    private static SpiderTask MapTask(TaskDto taskDto)
+    {
+        return new SpiderTask
+        {
+            TaskId = taskDto.TaskId,
+            TaskName = taskDto.TaskName,
+            TaskType = Enum.TryParse<TaskType>(taskDto.TaskType, out var tt)
+                ? tt : TaskType.SinglePage,
+            RequestConfig = new Dictionary<string, object?>
+            {
+                ["Url"] = taskDto.RequestConfig
+            },
+            ExpressionId = taskDto.ExpressionId
+        };
+    }
+
+    /// <summary>
+    /// 解析任务的表达式配置，优先使用任务自带配置，其次从缓存或服务端拉取
+    /// </summary>
+    private async Task ResolveExpressionConfig(TaskDto taskDto, SpiderTask task)
+    {
+        if (taskDto.ExpressionConfig != null)
+        {
+            task.ExpressionConfig = MapExpressionConfig(taskDto.ExpressionConfig);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(taskDto.ExpressionId)) return;
+
+        ExpressionConfigDto? cachedExpr;
+        lock (_cacheLock)
+        {
+            _expressionCache.TryGetValue(taskDto.ExpressionId, out cachedExpr);
+        }
+
+        cachedExpr ??= await _serverApi.PullExpressionAsync(taskDto.ExpressionId);
+
+        if (cachedExpr != null)
+        {
+            task.ExpressionConfig = MapExpressionConfig(cachedExpr);
+        }
+    }
+
+    /// <summary>
+    /// 如果任务关联了表达式，向服务端上报表达式可用性
+    /// </summary>
+    private async Task ReportExpressionAvailabilityIfNeeded(ExecutionResult result)
+    {
+        if (string.IsNullOrEmpty(result.ExpressionId)) return;
+
+        var isAvailable = result.Status == Constants.ExecutionStatus.Success && result.DataRecords.Count > 0;
+        var failureReason = isAvailable ? null : string.Join("; ", result.Errors.Take(3));
+
+        await _serverApi.ReportExpressionAvailabilityAsync(
+            new ReportAvailabilityRequest
+            {
+                AgentId = _options.AgentId,
+                AgentToken = _agentToken,
+                ExpressionId = result.ExpressionId,
+                IsAvailable = isAvailable,
+                FailureReason = failureReason
+            });
+    }
+
+    /// <summary>
+    /// 将服务端表达式配置 DTO 映射为本地表达式配置模型
+    /// </summary>
+    private static ExpressionConfig? MapExpressionConfig(ExpressionConfigDto? dto)
     {
         if (dto == null) return null;
 
-        return new Core.Models.ExpressionConfig
+        return new ExpressionConfig
         {
             ExpressionId = dto.ExpressionId,
             Name = dto.Name,
-            SelectorType = Enum.TryParse<Core.Enums.ExpressionType>(dto.SelectorType, out var t)
-                ? t : Core.Enums.ExpressionType.XPath,
+            SelectorType = Enum.TryParse<ExpressionType>(dto.SelectorType, out var t)
+                ? t : ExpressionType.XPath,
             ContainerExpression = dto.ContainerExpression,
-            Fields = dto.Fields.Select(f => new Core.Models.ExpressionField
+            Fields = dto.Fields.Select(f => new ExpressionField
             {
                 FieldId = Guid.NewGuid().ToString("N"),
                 ExpressionId = dto.ExpressionId,
                 FieldName = f.FieldName,
-                SelectorType = Enum.TryParse<Core.Enums.ExpressionType>(f.SelectorType, out var ft)
-                    ? ft : Core.Enums.ExpressionType.XPath,
+                SelectorType = Enum.TryParse<ExpressionType>(f.SelectorType, out var ft)
+                    ? ft : ExpressionType.XPath,
                 Expression = f.Expression,
                 AttributeName = f.AttributeName,
                 IsRequired = f.IsRequired,
@@ -258,6 +303,9 @@ public class OnlineModeRunner : IHostedService, IDisposable
         };
     }
 
+    /// <summary>
+    /// 获取本机 IPv4 地址
+    /// </summary>
     private static string GetLocalIpAddress()
     {
         var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
@@ -286,6 +334,9 @@ public class OnlineModeRunner : IHostedService, IDisposable
         }
     }
 
+    /// <summary>
+    /// 向服务端注销 Agent
+    /// </summary>
     private async Task UnregisterAsync(CancellationToken ct)
     {
         try
@@ -309,6 +360,23 @@ public class OnlineModeRunner : IHostedService, IDisposable
         _heartbeatTimer?.Dispose();
         _taskPullTimer?.Dispose();
         _expressionSyncTimer?.Dispose();
+        _taskExecutionLock.Dispose();
+        _disposed = true;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_disposed) return;
+        _heartbeatTimer?.Dispose();
+        _taskPullTimer?.Dispose();
+        _expressionSyncTimer?.Dispose();
+        _taskExecutionLock.Dispose();
+
+        if (_signalRClient is IAsyncDisposable asyncDisposable)
+        {
+            await asyncDisposable.DisposeAsync();
+        }
+
         _disposed = true;
     }
 }

@@ -17,7 +17,7 @@ public class RegexSelector : ISelector
         _replacement = replacement;
     }
 
-    public ISelectable Select(string text)
+    public ISelectable? Select(string text)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;
         var match = _regex.Match(text);
@@ -26,7 +26,7 @@ public class RegexSelector : ISelector
 
     public IEnumerable<ISelectable> SelectList(string text)
     {
-        if (string.IsNullOrWhiteSpace(text)) return null;
+        if (string.IsNullOrWhiteSpace(text)) return Enumerable.Empty<ISelectable>();
         var matches = _regex.Matches(text);
         var results = new List<string>();
         foreach (Match match in matches)

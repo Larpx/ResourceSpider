@@ -81,8 +81,8 @@ public sealed class Reader<T> : IDisposable, IEnumerable<T>
     {
         if (_enumerator == null) return;
         _enumerator.Dispose();
-        _enumerator = null;
-        _buffer = null!;
+        _enumerator = null!;
+        _buffer.Clear();
     }
 
     private void EnsureAlive()

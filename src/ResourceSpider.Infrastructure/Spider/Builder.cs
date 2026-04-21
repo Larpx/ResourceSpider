@@ -19,33 +19,33 @@ public class Builder : HostBuilder
 {
     private Builder() { }
 
-    public static Builder CreateDefaultBuilder<T>(Action<SpiderOptions> configureDelegate = null) where T : Spider
+    public static Builder CreateDefaultBuilder<T>(Action<SpiderOptions>? configureDelegate = null) where T : Spider
         => CreateDefaultBuilder<T>([], configureDelegate);
 
-    public static Builder CreateDefaultBuilder<T>(string[] args, Action<SpiderOptions> configureDelegate = null) where T : Spider
+    public static Builder CreateDefaultBuilder<T>(string[] args, Action<SpiderOptions>? configureDelegate = null) where T : Spider
         => CreateDefaultBuilder(typeof(T), args, configureDelegate);
 
-    public static Builder CreateDefaultBuilder(Type type, string[] args = null, Action<SpiderOptions> configure = null)
+    public static Builder CreateDefaultBuilder(Type type, string[]? args = null, Action<SpiderOptions>? configure = null)
     {
         var builder = new Builder();
         ConfigureBuilder(builder, type, args, configure);
         return builder;
     }
 
-    public static Builder CreateBuilder<T>(Action<SpiderOptions> configureDelegate = null) where T : Spider
+    public static Builder CreateBuilder<T>(Action<SpiderOptions>? configureDelegate = null) where T : Spider
         => CreateBuilder<T>(null, configureDelegate);
 
-    public static Builder CreateBuilder<T>(string[] args, Action<SpiderOptions> configureDelegate = null) where T : Spider
+    public static Builder CreateBuilder<T>(string[]? args, Action<SpiderOptions>? configureDelegate = null) where T : Spider
         => CreateBuilder(typeof(T), args, configureDelegate);
 
-    public static Builder CreateBuilder(Type type, string[] args = null, Action<SpiderOptions> configureDelegate = null)
+    public static Builder CreateBuilder(Type type, string[]? args = null, Action<SpiderOptions>? configureDelegate = null)
     {
         var builder = new Builder();
         ConfigureBuilder(builder, type, args, configureDelegate);
         return builder;
     }
 
-    private static void ConfigureBuilder(Builder builder, Type type, string[] args = null, Action<SpiderOptions> configureDelegate = null)
+    private static void ConfigureBuilder(Builder builder, Type type, string[]? args = null, Action<SpiderOptions>? configureDelegate = null)
     {
         if (!type.IsAssignableTo(typeof(Spider))) throw new ArgumentException($"Type {type.FullName} is not a spider");
 

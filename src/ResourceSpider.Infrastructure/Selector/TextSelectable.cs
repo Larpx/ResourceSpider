@@ -25,7 +25,7 @@ public class TextSelectable : Selectable
 
     public override string Value => _text;
 
-    public override ISelectable Select(ISelector selector)
+    public override ISelectable? Select(ISelector selector)
     {
         if (selector == null) throw new ArgumentNullException(nameof(selector));
         return selector.Select(_text);

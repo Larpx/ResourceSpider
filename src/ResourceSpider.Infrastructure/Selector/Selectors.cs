@@ -15,7 +15,7 @@ public static class Selectors
         return Cache[key];
     }
 
-    public static ISelector Css(string expr, string attr = null)
+    public static ISelector Css(string expr, string? attr = null)
     {
         var key = $"c_{expr}_{attr}";
         if (!Cache.ContainsKey(key)) Cache.TryAdd(key, new CssSelector(expr, attr));

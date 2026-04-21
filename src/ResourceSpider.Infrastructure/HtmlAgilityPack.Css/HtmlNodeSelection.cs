@@ -9,11 +9,11 @@ public static class HtmlNodeSelection
 {
     private static readonly HtmlNodeOps Ops = new();
 
-    public static HtmlNode QuerySelector(this HtmlNode node, string selector)
+    public static HtmlNode? QuerySelector(this HtmlNode node, string selector)
         => node.QuerySelectorAll(selector).FirstOrDefault();
 
     public static IEnumerable<HtmlNode> QuerySelectorAll(this HtmlNode node, string selector)
-        => QuerySelectorAll(node, selector, null);
+        => QuerySelectorAll(node, selector, null!);
 
     public static IEnumerable<HtmlNode> QuerySelectorAll(this HtmlNode node, string selector, Func<string, Func<HtmlNode, IEnumerable<HtmlNode>>> compiler)
         => (compiler ?? CachableCompile)(selector)(node);

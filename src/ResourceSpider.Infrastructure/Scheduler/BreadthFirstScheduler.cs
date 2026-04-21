@@ -8,16 +8,16 @@ public class BreadthFirstScheduler : IScheduler
 {
     private readonly ConcurrentQueue<Request> _queue = new();
     private readonly IDuplicateRemover _duplicateRemover;
-    private string _spiderId;
+    private string _spiderId = string.Empty;
 
     public BreadthFirstScheduler(IDuplicateRemover duplicateRemover)
     {
         _duplicateRemover = duplicateRemover;
     }
 
-    public Task InitializeAsync(string spiderId = null, CancellationToken ct = default)
+    public Task InitializeAsync(string? spiderId = null, CancellationToken ct = default)
     {
-        _spiderId = spiderId;
+        _spiderId = spiderId ?? string.Empty;
         return Task.CompletedTask;
     }
 

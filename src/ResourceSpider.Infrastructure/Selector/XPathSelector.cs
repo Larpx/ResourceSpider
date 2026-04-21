@@ -11,7 +11,7 @@ public class XPathSelector : ISelector
 {
     private static readonly Regex AttributeXPathRegex = new(@"@[\w\s-]+", RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
     private readonly string _xpath;
-    private readonly string _attrName;
+    private readonly string? _attrName;
 
     public XPathSelector(string xpath)
     {
@@ -24,14 +24,14 @@ public class XPathSelector : ISelector
         }
     }
 
-    public ISelectable Select(string text)
+    public ISelectable? Select(string text)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;
         var document = new HtmlDocument { OptionAutoCloseOnEnd = true };
         document.LoadHtml(text);
         var node = document.DocumentNode.SelectSingleNode(_xpath);
         if (node == null) return null;
-        return HasAttribute ? new TextSelectable(node.Attributes[_attrName]?.Value?.Trim()) : new HtmlSelectable(node);
+        return HasAttribute ? new TextSelectable(node.Attributes[_attrName!]?.Value?.Trim() ?? "") : new HtmlSelectable(node);
     }
 
     public IEnumerable<ISelectable> SelectList(string text)
@@ -39,9 +39,9 @@ public class XPathSelector : ISelector
         var document = new HtmlDocument { OptionAutoCloseOnEnd = true };
         document.LoadHtml(text);
         var nodes = document.DocumentNode.SelectNodes(_xpath);
-        if (nodes == null) return null;
+        if (nodes == null) return [];
         return HasAttribute
-            ? nodes.Select(x => new TextSelectable(x.Attributes[_attrName]?.Value?.Trim()))
+            ? nodes.Select(x => new TextSelectable(x.Attributes[_attrName!]?.Value?.Trim() ?? ""))
             : nodes.Select(node => new HtmlSelectable(node));
     }
 

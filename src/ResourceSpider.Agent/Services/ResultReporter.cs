@@ -1,14 +1,28 @@
+using ResourceSpider.Core;
 using ResourceSpider.Core.Interfaces;
 using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Agent.Services;
 
+/// <summary>
+/// 结果上报器接口，定义采集结果的上报和本地存储方法
+/// </summary>
 public interface IResultReporter
 {
+    /// <summary>
+    /// 向服务端上报采集结果
+    /// </summary>
     Task ReportAsync(ExecutionResult result, CancellationToken ct = default);
+
+    /// <summary>
+    /// 将采集结果存储到本地文件
+    /// </summary>
     Task StoreLocalAsync(ExecutionResult result, CancellationToken ct = default);
 }
 
+/// <summary>
+/// 结果上报器实现，在线模式上报服务端，本地模式写入文件存储
+/// </summary>
 public class ResultReporter : IResultReporter
 {
     private readonly IServerApiClient? _serverApiClient;
@@ -31,17 +45,20 @@ public class ResultReporter : IResultReporter
         _agentToken = serverConfig?.AgentToken ?? string.Empty;
     }
 
+    /// <summary>
+    /// 向服务端上报采集结果，包括任务状态和采集数据
+    /// </summary>
     public async Task ReportAsync(ExecutionResult result, CancellationToken ct = default)
     {
         if (_serverApiClient == null)
         {
-            _logger.LogWarning("No server API client configured, skipping report");
+            _logger.LogWarning("未配置服务端 API 客户端，跳过上报");
             return;
         }
 
         try
         {
-            var status = result.Status == "Success" ? 2 : 3;
+            var status = result.Status == Constants.ExecutionStatus.Success ? 2 : 3;
             await _serverApiClient.ReportTaskAsync(new ReportTaskRequest(
                 AgentId: _agentId,
                 AgentToken: _agentToken,
@@ -72,38 +89,35 @@ public class ResultReporter : IResultReporter
                 await _serverApiClient.StoreResultsAsync(storeRequest);
             }
 
-            _logger.LogInformation("Reported task {TaskId} result with {Count} records",
+            _logger.LogInformation("已上报任务 {TaskId} 结果，共 {Count} 条记录",
                 result.TaskId, result.DataRecords.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to report task {TaskId} result", result.TaskId);
+            _logger.LogError(ex, "上报任务 {TaskId} 结果失败", result.TaskId);
         }
     }
 
+    /// <summary>
+    /// 将采集结果存储到本地文件
+    /// </summary>
     public async Task StoreLocalAsync(ExecutionResult result, CancellationToken ct = default)
     {
-        if (!result.DataRecords.Any())
+        if (result.DataRecords.Count == 0)
         {
-            _logger.LogInformation("No data records to store for task {TaskId}", result.TaskId);
+            _logger.LogInformation("任务 {TaskId} 无数据记录需要存储", result.TaskId);
             return;
         }
 
         try
         {
-            var context = new DataContext
-            {
-                DataRecords = result.DataRecords,
-                TaskId = result.TaskId
-            };
-
             await _storage.StoreAsync(result.DataRecords, ct);
-            _logger.LogInformation("Stored {Count} records locally for task {TaskId}",
-                result.DataRecords.Count, result.TaskId);
+            _logger.LogInformation("已本地存储任务 {TaskId} 的 {Count} 条记录",
+                result.TaskId, result.DataRecords.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to store results locally for task {TaskId}", result.TaskId);
+            _logger.LogError(ex, "本地存储任务 {TaskId} 结果失败", result.TaskId);
         }
     }
 }

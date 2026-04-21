@@ -1,27 +1,54 @@
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ResourceSpider.Core;
+using ResourceSpider.Core.Enums;
 using ResourceSpider.Core.Exceptions;
 using ResourceSpider.Core.Interfaces;
 using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Infrastructure.Downloader;
 
+/// <summary>
+/// HTTP 下载器配置选项
+/// </summary>
 public class DownloaderOptions
 {
-    public int ConnectionTimeout { get; set; } = 30;
-    public int RequestTimeout { get; set; } = 60;
-    public int MaxConcurrentRequests { get; set; } = 10;
-    public int RetryCount { get; set; } = 3;
-    public int RetryDelayMs { get; set; } = 1000;
+    /// <summary>
+    /// 连接超时时间（秒）
+    /// </summary>
+    public int ConnectionTimeout { get; set; } = Constants.Defaults.DefaultConnectionTimeout;
+
+    /// <summary>
+    /// 请求超时时间（秒）
+    /// </summary>
+    public int RequestTimeout { get; set; } = Constants.Defaults.DefaultRequestTimeout;
+
+    /// <summary>
+    /// 最大并发请求数
+    /// </summary>
+    public int MaxConcurrentRequests { get; set; } = Constants.Defaults.DefaultMaxConcurrentRequests;
+
+    /// <summary>
+    /// 重试次数
+    /// </summary>
+    public int RetryCount { get; set; } = Constants.Defaults.DefaultRetryCount;
+
+    /// <summary>
+    /// 重试延迟基础时间（毫秒），实际延迟按指数退避计算
+    /// </summary>
+    public int RetryDelayMs { get; set; } = Constants.Defaults.DefaultRetryDelayMs;
 }
 
-public class HttpClientDownloader : IDownloader, IDisposable
+/// <summary>
+/// 基于 HttpClient 的 HTTP 下载器实现，支持自动重试和指数退避
+/// 注意：HttpClient 由 IHttpClientFactory 管理，不应在此处 Dispose
+/// </summary>
+public class HttpClientDownloader : IDownloader
 {
     private readonly HttpClient _httpClient;
     private readonly DownloaderOptions _options;
     private readonly ILogger<HttpClientDownloader> _logger;
-    private bool _disposed;
 
     public HttpClientDownloader(
         HttpClient httpClient,
@@ -34,6 +61,9 @@ public class HttpClientDownloader : IDownloader, IDisposable
         _httpClient.Timeout = TimeSpan.FromSeconds(_options.RequestTimeout);
     }
 
+    /// <summary>
+    /// 下载指定请求的内容，支持自动重试（指数退避策略）
+    /// </summary>
     public async Task<Response> DownloadAsync(Request request, CancellationToken ct = default)
     {
         var response = new Response
@@ -42,14 +72,14 @@ public class HttpClientDownloader : IDownloader, IDisposable
             Url = request.Url
         };
 
-        int retries = 0;
+        var retries = 0;
         Exception? lastException = null;
 
         while (retries <= _options.RetryCount)
         {
             try
             {
-                var httpRequest = BuildHttpRequest(request);
+                using var httpRequest = BuildHttpRequest(request);
                 var startTime = DateTime.UtcNow;
                 var httpResponse = await _httpClient.SendAsync(httpRequest, ct);
                 var duration = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
@@ -65,15 +95,14 @@ public class HttpClientDownloader : IDownloader, IDisposable
 
                 response.Content = await httpResponse.Content.ReadAsByteArrayAsync(ct);
                 response.ContentLength = response.Content.Length;
-                response.Status = httpResponse.IsSuccessStatusCode 
-                    ? Core.Enums.RequestStatus.Success 
-                    : Core.Enums.RequestStatus.Failed;
+                response.Status = httpResponse.IsSuccessStatusCode
+                    ? RequestStatus.Success
+                    : RequestStatus.Failed;
 
                 if (!httpResponse.IsSuccessStatusCode && retries < _options.RetryCount)
                 {
                     var delay = CalculateRetryDelay(retries);
-                    _logger.LogWarning(
-                        "Request {Url} failed with status {Status}. Retrying in {Delay}ms...",
+                    _logger.LogWarning("请求 {Url} 失败，状态码 {Status}，{Delay}ms 后重试...",
                         request.Url, httpResponse.StatusCode, delay);
                     await Task.Delay(delay, ct);
                     retries++;
@@ -90,37 +119,40 @@ public class HttpClientDownloader : IDownloader, IDisposable
             {
                 lastException = ex;
                 retries++;
-                
+
                 if (retries > _options.RetryCount)
                 {
-                    response.Status = Core.Enums.RequestStatus.Failed;
+                    response.Status = RequestStatus.Failed;
                     response.Error = ex.Message;
-                    response.ErrorType = Core.Enums.ErrorType.NetworkError;
-                    _logger.LogError(ex, "Download failed for {Url} after {Retries} retries", 
+                    response.ErrorType = ErrorType.NetworkError;
+                    _logger.LogError(ex, "下载 {Url} 失败，已重试 {Retries} 次",
                         request.Url, retries);
                     return response;
                 }
 
                 var delay = CalculateRetryDelay(retries - 1);
-                _logger.LogWarning(ex, "Download error for {Url}. Retrying in {Delay}ms...", 
+                _logger.LogWarning(ex, "下载 {Url} 出错，{Delay}ms 后重试...",
                     request.Url, delay);
                 await Task.Delay(delay, ct);
             }
         }
 
-        response.Status = Core.Enums.RequestStatus.Failed;
+        response.Status = RequestStatus.Failed;
         response.Error = lastException?.Message;
-        response.ErrorType = Core.Enums.ErrorType.NetworkError;
+        response.ErrorType = ErrorType.NetworkError;
         return response;
     }
 
-    private HttpRequestMessage BuildHttpRequest(Request request)
+    /// <summary>
+    /// 根据请求配置构建 HTTP 请求消息
+    /// </summary>
+    private static HttpRequestMessage BuildHttpRequest(Request request)
     {
         var message = new HttpRequestMessage(
-            new HttpMethod(request.Method), 
+            new HttpMethod(request.Method),
             request.Url);
 
-        if (request.Body != null && request.Body.Length > 0)
+        if (request.Body is { Length: > 0 })
         {
             message.Content = new ByteArrayContent(request.Body);
         }
@@ -133,16 +165,12 @@ public class HttpClientDownloader : IDownloader, IDisposable
         return message;
     }
 
+    /// <summary>
+    /// 计算重试延迟时间（指数退避），上限 60 秒
+    /// </summary>
     private int CalculateRetryDelay(int retryAttempt)
     {
         var delay = (int)(_options.RetryDelayMs * Math.Pow(2, retryAttempt));
         return Math.Min(delay, 60000);
-    }
-
-    public void Dispose()
-    {
-        if (_disposed) return;
-        _httpClient.Dispose();
-        _disposed = true;
     }
 }

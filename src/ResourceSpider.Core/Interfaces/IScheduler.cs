@@ -4,7 +4,7 @@ namespace ResourceSpider.Core.Interfaces;
 
 public interface IScheduler
 {
-    Task InitializeAsync(string spiderId = null, CancellationToken ct = default);
+    Task InitializeAsync(string? spiderId = null, CancellationToken ct = default);
 
     Task<int> EnqueueAsync(IEnumerable<Request> requests, CancellationToken ct = default);
 

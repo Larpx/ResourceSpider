@@ -21,17 +21,17 @@ public class CssSelector : ISelector
         document.LoadHtml(text);
         var node = document.DocumentNode.QuerySelector(_selector);
         if (node == null) return null;
-        return HasAttribute ? new TextSelectable(node.Attributes[_attrName]?.Value?.Trim() ?? "") : new HtmlSelectable(node);
+        return HasAttribute ? new TextSelectable(node.Attributes[_attrName!]?.Value?.Trim() ?? "") : new HtmlSelectable(node);
     }
 
-    public IEnumerable<ISelectable>? SelectList(string text)
+    public IEnumerable<ISelectable> SelectList(string text)
     {
-        if (string.IsNullOrWhiteSpace(text)) return null;
+        if (string.IsNullOrWhiteSpace(text)) return [];
         var document = new HtmlDocument { OptionAutoCloseOnEnd = true };
         document.LoadHtml(text);
         var nodes = document.DocumentNode.QuerySelectorAll(_selector);
         return HasAttribute
-            ? nodes.Select(x => (ISelectable)new TextSelectable(x.Attributes[_attrName]?.Value?.Trim() ?? ""))
+            ? nodes.Select(x => (ISelectable)new TextSelectable(x.Attributes[_attrName!]?.Value?.Trim() ?? ""))
             : nodes.Select(node => new HtmlSelectable(node));
     }
 

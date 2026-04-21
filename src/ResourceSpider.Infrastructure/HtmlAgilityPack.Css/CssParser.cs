@@ -146,7 +146,7 @@ public sealed class CssParser
             else throw new ArgumentException(string.Format("Unsupported parameter type for custom selector '{0}'", name));
         }
         var selector = deleg.Method.DynamicInvoke(actualParameters);
-        _generator.CustomSelector(selector);
+        _generator.CustomSelector(selector!);
     }
 
     private bool TryFunctionalPseudo()
@@ -261,5 +261,5 @@ public sealed class CssParser
     public static void RegisterCustomSelector<TNode, T1>(string name, Func<T1, Selector<TNode>> selector) => CustomSelectors.Add(name, new DelegateInfo { Method = selector, ParameterTypes = [typeof(T1)] });
     public static void RegisterCustomSelector<TNode, T1, T2>(string name, Func<T1, T2, Selector<TNode>> selector) => CustomSelectors.Add(name, new DelegateInfo { Method = selector, ParameterTypes = [typeof(T1), typeof(T2)] });
 
-    internal class DelegateInfo { public Delegate Method { get; set; } public List<Type> ParameterTypes { get; set; } = []; }
+    internal class DelegateInfo { public Delegate Method { get; set; } = null!; public List<Type> ParameterTypes { get; set; } = []; }
 }

@@ -8,16 +8,16 @@ public class DepthFirstScheduler : IScheduler
 {
     private readonly ConcurrentStack<Request> _stack = new();
     private readonly IDuplicateRemover _duplicateRemover;
-    private string _spiderId;
+    private string _spiderId = string.Empty;
 
     public DepthFirstScheduler(IDuplicateRemover duplicateRemover)
     {
         _duplicateRemover = duplicateRemover;
     }
 
-    public Task InitializeAsync(string spiderId = null, CancellationToken ct = default)
+    public Task InitializeAsync(string? spiderId = null, CancellationToken ct = default)
     {
-        _spiderId = spiderId;
+        _spiderId = spiderId ?? string.Empty;
         return Task.CompletedTask;
     }
 

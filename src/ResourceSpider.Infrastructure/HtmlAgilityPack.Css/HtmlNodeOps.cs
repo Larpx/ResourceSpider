@@ -112,26 +112,34 @@ public class HtmlNodeOps : IElementOps<HtmlNode>
     public Selector<HtmlNode> Before(ISelectorGenerator subgenerator)
     {
         var doc = new HtmlDocument();
-        return nodes => nodes.SelectNonNull(parent => { var end = IndexOfChild(subgenerator, parent, 0); return end != null ? CreateNodesGroup(doc, parent.ChildNodes, 0, end.Value - 1) : null; });
+        return nodes => nodes.SelectMany((Func<HtmlNode, IEnumerable<HtmlNode>>)(parent =>
+        {
+            var end = IndexOfChild(subgenerator, parent, 0);
+            return end != null ? new[] { CreateNodesGroup(doc, parent.ChildNodes, 0, end.Value - 1) } : Enumerable.Empty<HtmlNode>();
+        }));
     }
 
     public Selector<HtmlNode> After(ISelectorGenerator subgenerator)
     {
         var doc = new HtmlDocument();
-        return nodes => nodes.SelectNonNull(parent => { var start = IndexOfChild(subgenerator, parent, 0); return start != null ? CreateNodesGroup(doc, parent.ChildNodes, start.Value + 1, parent.ChildNodes.Count - 1) : null; });
+        return nodes => nodes.SelectMany((Func<HtmlNode, IEnumerable<HtmlNode>>)(parent =>
+        {
+            var start = IndexOfChild(subgenerator, parent, 0);
+            return start != null ? new[] { CreateNodesGroup(doc, parent.ChildNodes, start.Value + 1, parent.ChildNodes.Count - 1) } : Enumerable.Empty<HtmlNode>();
+        }));
     }
 
     public Selector<HtmlNode> Between(ISelectorGenerator startGenerator, ISelectorGenerator endGenerator)
     {
         var doc = new HtmlDocument();
-        return nodes => nodes.SelectNonNull(parent =>
+        return nodes => nodes.SelectMany((Func<HtmlNode, IEnumerable<HtmlNode>>)(parent =>
         {
             var start = IndexOfChild(startGenerator, parent, 0);
-            if (start == null) return null;
+            if (start == null) return Enumerable.Empty<HtmlNode>();
             var end = IndexOfChild(endGenerator, parent, start.Value);
-            if (end == null) return null;
-            return CreateNodesGroup(doc, parent.ChildNodes, start.Value + 1, end.Value - 1);
-        });
+            if (end == null) return Enumerable.Empty<HtmlNode>();
+            return new[] { CreateNodesGroup(doc, parent.ChildNodes, start.Value + 1, end.Value - 1) };
+        }));
     }
 
     private int? IndexOfChild(ISelectorGenerator subgenerator, HtmlNode parent, int startIndex)
@@ -152,7 +160,7 @@ public class HtmlNodeOps : IElementOps<HtmlNode>
     public Selector<HtmlNode> Not(ISelectorGenerator subgenerator)
     {
         var compiled = ((SelectorGenerator<HtmlNode>)subgenerator).Selector;
-        return nodes => { var matches = compiled(nodes.Select(x => x.ParentNode)).ToList(); return nodes.Except(matches); };
+        return nodes => { var matches = compiled(nodes.Select(x => x.ParentNode!)).ToList(); return nodes.Except(matches); };
     }
 
     public Selector<HtmlNode> SelectParent() => nodes => nodes.SelectNonNull(x => x.ParentNode);
