@@ -24,9 +24,9 @@ public class DatabaseHealthCheck : IHealthCheck
             return Task.FromResult(new HealthCheckResult(
                 context.Registration.FailureStatus,
                 "数据库初始化失败",
-                data: new Dictionary<string, object?>
+                data: new Dictionary<string, object>
                 {
-                    ["error"] = _startupState.DatabaseInitializationError,
+                    ["error"] = _startupState.DatabaseInitializationError??"",
                     ["updatedAtUtc"] = _startupState.UpdatedAtUtc
                 }));
         }
@@ -42,7 +42,7 @@ public class DatabaseHealthCheck : IHealthCheck
                 context.Registration.FailureStatus,
                 "数据库连接不可用",
                 ex,
-                new Dictionary<string, object?>
+                new Dictionary<string, object>
                 {
                     ["error"] = ex.Message,
                     ["updatedAtUtc"] = _startupState.UpdatedAtUtc

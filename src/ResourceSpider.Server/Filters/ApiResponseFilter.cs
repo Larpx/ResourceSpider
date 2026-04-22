@@ -29,7 +29,7 @@ public class ApiResponseFilter : IAsyncResultFilter
 
             var statusCode = objectResult.StatusCode ?? 200;
             objectResult.Value = statusCode >= 200 && statusCode < 300
-                ? ApiResponse<object>.Success(objectResult.Value, "操作成功")
+                ? ApiResponse<object>.Success(objectResult.Value!, "操作成功")
                 : ApiResponse<object>.Error(statusCode, "操作失败");
         }
 
