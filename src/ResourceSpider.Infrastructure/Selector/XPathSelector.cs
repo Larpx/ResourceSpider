@@ -7,12 +7,20 @@ using HtmlNode = HtmlAgilityPack.HtmlNode;
 
 namespace ResourceSpider.Infrastructure.Selector;
 
+/// <summary>
+/// XPath 选择器实现，支持 XPath 表达式对 HTML 文档进行节点选取
+/// 自动识别 XPath 末尾的属性选择器（如 @href），提取属性值而非元素
+/// </summary>
 public class XPathSelector : ISelector
 {
     private static readonly Regex AttributeXPathRegex = new(@"@[\w\s-]+", RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
     private readonly string _xpath;
     private readonly string? _attrName;
 
+    /// <summary>
+    /// 通过 XPath 表达式初始化，自动解析末尾的属性选择器
+    /// </summary>
+    /// <param name="xpath">XPath 表达式</param>
     public XPathSelector(string xpath)
     {
         _xpath = xpath;
@@ -24,6 +32,11 @@ public class XPathSelector : ISelector
         }
     }
 
+    /// <summary>
+    /// 使用 XPath 选取单个元素
+    /// </summary>
+    /// <param name="text">HTML 内容字符串</param>
+    /// <returns>匹配的可选择对象，未匹配返回 null</returns>
     public ISelectable? Select(string text)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;
@@ -34,6 +47,11 @@ public class XPathSelector : ISelector
         return HasAttribute ? new TextSelectable(node.Attributes[_attrName!]?.Value?.Trim() ?? "") : new HtmlSelectable(node);
     }
 
+    /// <summary>
+    /// 使用 XPath 选取多个元素
+    /// </summary>
+    /// <param name="text">HTML 内容字符串</param>
+    /// <returns>匹配的可选择对象集合</returns>
     public IEnumerable<ISelectable> SelectList(string text)
     {
         var document = new HtmlDocument { OptionAutoCloseOnEnd = true };
@@ -45,5 +63,8 @@ public class XPathSelector : ISelector
             : nodes.Select(node => new HtmlSelectable(node));
     }
 
+    /// <summary>
+    /// 获取是否指定了属性名提取
+    /// </summary>
     public bool HasAttribute => !string.IsNullOrWhiteSpace(_attrName);
 }

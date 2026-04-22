@@ -8,11 +8,16 @@ using ResourceSpider.Infrastructure.Parser;
 namespace ResourceSpider.Agent.Services;
 
 /// <summary>
-/// 任务执行器接口，定义爬虫任务的执行方�?/// </summary>
+/// 任务执行器接口，定义爬虫任务的执行方式
+/// </summary>
 public interface ITaskExecutor
 {
     /// <summary>
-    /// 执行爬虫任务，返回执行结�?    /// </summary>
+    /// 执行爬虫任务，返回执行结果
+    /// </summary>
+    /// <param name="task">待执行的爬虫任务</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>任务执行结果</returns>
     Task<ExecutionResult> ExecuteAsync(SpiderTask task, CancellationToken ct = default);
 }
 
@@ -22,12 +27,39 @@ public interface ITaskExecutor
 /// </summary>
 public class TaskExecutor : ITaskExecutor
 {
+    /// <summary>
+    /// 默认 HTTP 下载器实例
+    /// </summary>
     private readonly IDownloader _downloader;
+
+    /// <summary>
+    /// 下载器工厂，用于根据采集模式创建不同类型的下载器
+    /// </summary>
     private readonly IDownloaderFactory _downloaderFactory;
+
+    /// <summary>
+    /// 请求调度器，管理请求队列的入队和出队
+    /// </summary>
     private readonly IScheduler _scheduler;
+
+    /// <summary>
+    /// 解析器工厂，用于创建不同类型的解析器
+    /// </summary>
     private readonly IParserFactory _parserFactory;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<TaskExecutor> _logger;
 
+    /// <summary>
+    /// 初始化任务执行器实例
+    /// </summary>
+    /// <param name="downloader">默认下载器</param>
+    /// <param name="downloaderFactory">下载器工厂</param>
+    /// <param name="scheduler">请求调度器</param>
+    /// <param name="parserFactory">解析器工厂</param>
+    /// <param name="logger">日志记录器</param>
     public TaskExecutor(
         IDownloader downloader,
         IDownloaderFactory downloaderFactory,
@@ -42,8 +74,7 @@ public class TaskExecutor : ITaskExecutor
         _logger = logger;
     }
 
-    /// <summary>
-    /// 执行爬虫任务，根据是否包含步骤自动选择单步或多步执行模�?    /// </summary>
+    /// <inheritdoc />
     public async Task<ExecutionResult> ExecuteAsync(SpiderTask task, CancellationToken ct = default)
     {
         var result = new ExecutionResult
@@ -81,8 +112,11 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 执行单步任务：提取请�?�?调度 �?下载 �?解析
+    /// 执行单步任务：提取请求 → 调度 → 下载 → 解析
     /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果容器</param>
+    /// <param name="ct">取消令牌</param>
     private async Task ExecuteSingleTaskAsync(SpiderTask task, ExecutionResult result, CancellationToken ct)
     {
         var requests = ExtractRequestsFromTask(task);
@@ -121,6 +155,9 @@ public class TaskExecutor : ITaskExecutor
     /// <summary>
     /// 执行多步任务：按步骤顺序执行，支持步骤间变量传递和分页
     /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果容器</param>
+    /// <param name="ct">取消令牌</param>
     private async Task ExecuteMultiStepTaskAsync(SpiderTask task, ExecutionResult result, CancellationToken ct)
     {
         var stepVariables = new Dictionary<string, object?>();
@@ -166,6 +203,8 @@ public class TaskExecutor : ITaskExecutor
     /// <summary>
     /// 根据步骤的采集模式选择对应的下载器
     /// </summary>
+    /// <param name="step">任务步骤</param>
+    /// <returns>适配的下载器实例</returns>
     private IDownloader GetDownloaderForStep(TaskStep step)
     {
         return step.CollectionMode switch
@@ -177,7 +216,12 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 处理单步任务的响应，使用表达式配置或默认解析器提取数�?    /// </summary>
+    /// 处理单步任务的响应，使用表达式配置或默认解析器提取数据
+    /// </summary>
+    /// <param name="response">下载响应</param>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="expressionParser">表达式解析器</param>
+    /// <returns>提取的数据记录列表</returns>
     private List<DataRecord> ProcessResponse(Response response, SpiderTask task, IParser? expressionParser)
     {
         var records = new List<DataRecord>();
@@ -208,7 +252,12 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 处理多步任务中某个步骤的响应，根据提取规则或表达式配置提取数�?    /// </summary>
+    /// 处理多步任务中某个步骤的响应，根据提取规则或表达式配置提取数据
+    /// </summary>
+    /// <param name="response">下载响应</param>
+    /// <param name="step">当前步骤</param>
+    /// <param name="task">爬虫任务</param>
+    /// <returns>提取的数据记录列表</returns>
     private List<DataRecord> ProcessStepResponse(Response response, TaskStep step, SpiderTask task)
     {
         var records = new List<DataRecord>();
@@ -248,7 +297,11 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 将步骤提取的数据映射到变量，供后续步骤使�?    /// </summary>
+    /// 将步骤提取的数据映射到变量，供后续步骤使用
+    /// </summary>
+    /// <param name="step">当前步骤</param>
+    /// <param name="records">提取的数据记录</param>
+    /// <param name="stepVariables">步骤间共享的变量字典</param>
     private static void ApplyVariableMappings(TaskStep step, List<DataRecord> records, Dictionary<string, object?> stepVariables)
     {
         if (step.VariableMappings.Count == 0 || records.Count == 0) return;
@@ -263,8 +316,11 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 根据提取规则从内容中提取数据，支�?XPath、CSS、JSONPath、Regex 四种方式
+    /// 根据提取规则从内容中提取数据，支持 XPath、CSS、JSONPath、Regex 四种方式
     /// </summary>
+    /// <param name="content">待提取的文本内容</param>
+    /// <param name="rule">提取规则</param>
+    /// <returns>提取结果字符串列表</returns>
     private List<string> ExtractByRule(string? content, ExtractionRule rule)
     {
         var results = new List<string>();
@@ -312,7 +368,11 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 对提取的值应用转换规则（trim、replace、regexreplace、lowercase、uppercase�?    /// </summary>
+    /// 对提取的值应用转换规则（trim、replace、regexreplace、lowercase、uppercase）
+    /// </summary>
+    /// <param name="value">原始值</param>
+    /// <param name="transform">转换规则</param>
+    /// <returns>转换后的值</returns>
     private static string ApplyTransform(string value, TransformRule transform)
     {
         return transform.Type.ToLowerInvariant() switch
@@ -331,7 +391,14 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 处理分页请求，自动翻页直到无更多数据或达到最大页�?    /// </summary>
+    /// 处理分页请求，自动翻页直到无更多数据或达到最大页数
+    /// </summary>
+    /// <param name="downloader">下载器实例</param>
+    /// <param name="step">当前步骤</param>
+    /// <param name="originalRequest">原始请求</param>
+    /// <param name="result">执行结果容器</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>分页获取的数据记录列表</returns>
     private async Task<List<DataRecord>> HandlePaginationAsync(
         IDownloader downloader,
         TaskStep step,
@@ -390,8 +457,12 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 根据分页配置生成下一�?URL
+    /// 根据分页配置生成下一页 URL
     /// </summary>
+    /// <param name="baseUrl">基础 URL</param>
+    /// <param name="pagination">分页配置</param>
+    /// <param name="nextPage">下一页页码</param>
+    /// <returns>下一页 URL，无法生成时返回 null</returns>
     private static string? GetNextPageUrl(string baseUrl, PaginationConfig pagination, int nextPage)
     {
         if (!string.IsNullOrEmpty(pagination.UrlPattern))
@@ -411,6 +482,8 @@ public class TaskExecutor : ITaskExecutor
     /// <summary>
     /// 从任务配置中提取请求列表，支持单 URL 和多 URL 两种格式
     /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <returns>请求列表</returns>
     private static List<Request> ExtractRequestsFromTask(SpiderTask task)
     {
         var requests = new List<Request>();
@@ -443,7 +516,11 @@ public class TaskExecutor : ITaskExecutor
     }
 
     /// <summary>
-    /// 从步骤配置中提取请求，支持变量替换（�?{{变量名}}�?    /// </summary>
+    /// 从步骤配置中提取请求，支持变量替换（如 {{变量名}}）
+    /// </summary>
+    /// <param name="step">任务步骤</param>
+    /// <param name="variables">步骤间共享的变量字典</param>
+    /// <returns>请求列表</returns>
     private static List<Request> ExtractRequestsFromStep(TaskStep step, Dictionary<string, object?> variables)
     {
         var requests = new List<Request>();
@@ -475,17 +552,68 @@ public class TaskExecutor : ITaskExecutor
 /// </summary>
 public class ExecutionResult
 {
+    /// <summary>
+    /// 任务唯一标识
+    /// </summary>
     public string TaskId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 关联的表达式标识
+    /// </summary>
     public string? ExpressionId { get; set; }
+
+    /// <summary>
+    /// 执行状态（Success/Failed）
+    /// </summary>
     public string Status { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 总请求数
+    /// </summary>
     public int TotalRequests { get; set; }
+
+    /// <summary>
+    /// 成功请求数
+    /// </summary>
     public int SuccessRequests { get; set; }
+
+    /// <summary>
+    /// 失败请求数
+    /// </summary>
     public int FailedRequests { get; set; }
+
+    /// <summary>
+    /// 采集的数据记录列表
+    /// </summary>
     public List<DataRecord> DataRecords { get; set; } = [];
+
+    /// <summary>
+    /// 错误信息列表
+    /// </summary>
     public List<string> Errors { get; set; } = [];
+
+    /// <summary>
+    /// 执行进度百分比
+    /// </summary>
     public decimal Progress { get; set; }
+
+    /// <summary>
+    /// 执行开始时间
+    /// </summary>
     public DateTime StartTime { get; set; }
+
+    /// <summary>
+    /// 执行结束时间
+    /// </summary>
     public DateTime? EndTime { get; set; }
+
+    /// <summary>
+    /// 执行耗时（毫秒）
+    /// </summary>
     public int Duration { get; set; }
+
+    /// <summary>
+    /// 整体错误消息
+    /// </summary>
     public string? ErrorMessage { get; set; }
 }

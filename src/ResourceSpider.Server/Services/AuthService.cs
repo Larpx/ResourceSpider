@@ -8,19 +8,59 @@ using ResourceSpider.Server.Repositories;
 
 namespace ResourceSpider.Server.Services;
 
+/// <summary>
+/// 认证服务接口，提供用户登录、注册及信息查询功能
+/// </summary>
 public interface IAuthService
 {
+    /// <summary>
+    /// 用户登录，验证凭据并返回 JWT 令牌
+    /// </summary>
+    /// <param name="request">登录请求，包含用户名和密码</param>
+    /// <returns>认证响应（含令牌），若验证失败返回 null</returns>
     Task<AuthResponse?> LoginAsync(LoginRequest request);
+
+    /// <summary>
+    /// 用户注册，创建新用户并返回 JWT 令牌
+    /// </summary>
+    /// <param name="request">注册请求，包含用户名、密码和角色</param>
+    /// <returns>认证响应（含令牌），若用户名已存在返回 null</returns>
     Task<AuthResponse?> RegisterAsync(RegisterRequest request);
+
+    /// <summary>
+    /// 根据用户标识获取用户信息
+    /// </summary>
+    /// <param name="userId">用户唯一标识</param>
+    /// <returns>用户信息 DTO，若用户不存在返回 null</returns>
     Task<UserInfoDto?> GetUserInfoAsync(string userId);
 }
 
+/// <summary>
+/// 认证服务实现，处理用户登录验证、注册及 JWT 令牌生成
+/// </summary>
 public class AuthService : IAuthService
 {
+    /// <summary>
+    /// 用户数据仓库，用于用户数据的持久化操作
+    /// </summary>
     private readonly IUserRepository _userRepository;
+
+    /// <summary>
+    /// 应用配置，用于读取 JWT 密钥和过期时间等配置项
+    /// </summary>
     private readonly IConfiguration _configuration;
+
+    /// <summary>
+    /// 日志记录器，用于记录认证相关的事件
+    /// </summary>
     private readonly ILogger<AuthService> _logger;
 
+    /// <summary>
+    /// 初始化认证服务实例
+    /// </summary>
+    /// <param name="userRepository">用户数据仓库</param>
+    /// <param name="configuration">应用配置</param>
+    /// <param name="logger">日志记录器</param>
     public AuthService(
         IUserRepository userRepository,
         IConfiguration configuration,
@@ -31,6 +71,7 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<AuthResponse?> LoginAsync(LoginRequest request)
     {
         var user = await _userRepository.GetByUsernameAsync(request.Username);
@@ -52,6 +93,7 @@ public class AuthService : IAuthService
         return new AuthResponse(token, user.Username, user.Role, DateTime.UtcNow.AddHours(24));
     }
 
+    /// <inheritdoc />
     public async Task<AuthResponse?> RegisterAsync(RegisterRequest request)
     {
         var existing = await _userRepository.GetByUsernameAsync(request.Username);
@@ -76,6 +118,7 @@ public class AuthService : IAuthService
         return new AuthResponse(token, user.Username, user.Role, DateTime.UtcNow.AddHours(24));
     }
 
+    /// <inheritdoc />
     public async Task<UserInfoDto?> GetUserInfoAsync(string userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
@@ -84,6 +127,11 @@ public class AuthService : IAuthService
         return new UserInfoDto(user.UserId, user.Username, user.Role, user.Status, user.CreatedAt);
     }
 
+    /// <summary>
+    /// 根据用户实体生成 JWT 访问令牌
+    /// </summary>
+    /// <param name="user">用户实体，包含用户标识、名称和角色信息</param>
+    /// <returns>编码后的 JWT 令牌字符串</returns>
     private string GenerateJwtToken(UserEntity user)
     {
         var key = new SymmetricSecurityKey(

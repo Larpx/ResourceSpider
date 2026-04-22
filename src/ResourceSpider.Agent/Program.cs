@@ -15,8 +15,15 @@ using Serilog;
 
 namespace ResourceSpider.Agent;
 
+/// <summary>
+/// Agent 程序入口类，负责配置日志、依赖注入和服务启动
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// 应用程序入口方法，初始化日志系统并启动主机
+    /// </summary>
+    /// <param name="args">命令行参数</param>
     public static void Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
@@ -40,6 +47,12 @@ public class Program
         }
     }
 
+    /// <summary>
+    /// 创建主机构建器，配置依赖注入容器
+    /// 根据 Agent 运行模式（Local/Online）注册不同的服务集合
+    /// </summary>
+    /// <param name="args">命令行参数</param>
+    /// <returns>配置完成的 IHostBuilder 实例</returns>
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
             .UseSerilog()
@@ -56,11 +69,9 @@ public class Program
                 services.AddSingleton<IProxyPool, ProxyPool>();
                 services.AddSingleton<IParserFactory, DefaultParserFactory>();
 
-                services.AddHttpClient<HttpClientDownloader>();
-                services.Configure<DownloaderOptions>(config.GetSection("Downloader"));
-                services.Configure<PlaywrightOptions>(config.GetSection("Playwright"));
                 services.AddTransient<HttpClientDownloader>();
                 services.AddTransient<PlaywrightDownloader>();
+                services.AddHttpClient<HttpClientDownloader>();
                 services.AddSingleton<IDownloaderFactory, DefaultDownloaderFactory>();
                 services.AddSingleton<IDownloader>(sp =>
                     sp.GetRequiredService<IDownloaderFactory>().CreateDownloader(DownloadType.HttpClient));

@@ -1,0 +1,29 @@
+2026-04-22 07:46:05.920 +08:00 [INF] ResourceSpider Server 启动，地址：https://localhost:64422;http://localhost:64423
+2026-04-22 07:46:05.967 +08:00 [INF] User profile is available. Using 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-22 07:46:05.986 +08:00 [INF] Creating key {896b2017-fb69-45e4-b073-508ef526bec2} with creation date 2026-04-21 23:46:05Z, activation date 2026-04-21 23:46:05Z, and expiration date 2026-07-20 23:46:05Z.
+2026-04-22 07:46:06.005 +08:00 [INF] Writing data to file 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys\key-896b2017-fb69-45e4-b073-508ef526bec2.xml'.
+2026-04-22 07:46:06.214 +08:00 [INF] Now listening on: https://localhost:64422
+2026-04-22 07:46:06.217 +08:00 [INF] Now listening on: http://localhost:64423
+2026-04-22 07:46:06.273 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-22 07:46:06.275 +08:00 [INF] Hosting environment: Development
+2026-04-22 07:46:06.276 +08:00 [INF] Content root path: D:\Work\repos\ResourceSpider\src\ResourceSpider.Server
+2026-04-22 07:46:07.435 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/ - null null
+2026-04-22 07:46:07.704 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/ - 404 null null 277.4299ms
+2026-04-22 07:46:07.713 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:64422/, Response status code: 404
+2026-04-22 07:46:11.953 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/ - null null
+2026-04-22 07:46:11.960 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/ - 404 null null 7.2577ms
+2026-04-22 07:46:11.965 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:64422/, Response status code: 404
+2026-04-22 07:48:35.108 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/ - null null
+2026-04-22 07:48:35.123 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/ - 404 null null 15.2018ms
+2026-04-22 07:48:35.127 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:64422/, Response status code: 404
+2026-04-22 07:48:44.503 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/health - null null
+2026-04-22 07:48:44.513 +08:00 [INF] Executing endpoint 'Health checks'
+2026-04-22 07:48:44.536 +08:00 [INF] Executed endpoint 'Health checks'
+2026-04-22 07:48:44.537 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/health - 200 null text/plain 34.0919ms
+2026-04-22 07:48:44.800 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/favicon.ico - null null
+2026-04-22 07:48:44.806 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/favicon.ico - 404 0 null 5.5735ms
+2026-04-22 07:48:44.811 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:64422/favicon.ico, Response status code: 404
+2026-04-22 07:49:23.756 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/hubs/spider - null null
+2026-04-22 07:49:23.762 +08:00 [INF] Executing endpoint '/hubs/spider'
+2026-04-22 07:49:23.784 +08:00 [INF] Executed endpoint '/hubs/spider'
+2026-04-22 07:49:23.785 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/hubs/spider - 400 null text/plain 29.6403ms

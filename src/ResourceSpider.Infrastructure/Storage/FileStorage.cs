@@ -6,24 +6,78 @@ using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Infrastructure.Storage;
 
+/// <summary>
+/// 文件存储配置选项，定义输出路径、格式和采集元数据信息
+/// </summary>
 public class FileStorageOptions
 {
+    /// <summary>
+    /// 输出目录路径，默认为 "./results"
+    /// </summary>
     public string OutputPath { get; set; } = "./results";
+
+    /// <summary>
+    /// 输出文件格式，支持 csv、txt、json，默认为 csv
+    /// </summary>
     public string Format { get; set; } = "csv";
+
+    /// <summary>
+    /// 代理节点唯一标识
+    /// </summary>
     public string AgentId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 代理节点名称
+    /// </summary>
     public string AgentName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 主机名称
+    /// </summary>
     public string HostName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 运行模式（Local 或 Online）
+    /// </summary>
     public string Mode { get; set; } = "Local";
+
+    /// <summary>
+    /// 关联的任务标识
+    /// </summary>
     public string TaskId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 关联的任务名称
+    /// </summary>
     public string TaskName { get; set; } = string.Empty;
 }
 
+/// <summary>
+/// 文件存储实现，将采集数据记录持久化到本地文件系统
+/// 支持 CSV、TXT、JSON 三种输出格式，按日期和代理 ID 组织目录结构
+/// </summary>
 public class FileStorage : IStorage
 {
+    /// <summary>
+    /// 文件存储配置选项
+    /// </summary>
     private readonly FileStorageOptions _options;
+
+    /// <summary>
+    /// 日志记录器实例
+    /// </summary>
     private readonly ILogger<FileStorage> _logger;
+
+    /// <summary>
+    /// 输出目录路径，由 OutputPath/AgentId/日期 组合而成
+    /// </summary>
     private readonly string _outputDirectory;
 
+    /// <summary>
+    /// 初始化文件存储实例
+    /// </summary>
+    /// <param name="options">文件存储配置选项</param>
+    /// <param name="logger">日志记录器</param>
     public FileStorage(
         IOptions<FileStorageOptions> options, 
         ILogger<FileStorage> logger)
@@ -36,6 +90,12 @@ public class FileStorage : IStorage
             DateTime.UtcNow.ToString("yyyy-MM-dd"));
     }
 
+    /// <summary>
+    /// 处理数据上下文，如果包含数据记录则执行存储操作
+    /// </summary>
+    /// <param name="context">数据上下文，包含待存储的数据记录</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>异步任务</returns>
     public Task HandleAsync(DataContext context, CancellationToken ct = default)
     {
         if (context?.DataRecords.Any() == true)
@@ -45,6 +105,12 @@ public class FileStorage : IStorage
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// 将数据记录集合存储到文件，根据配置的格式选择对应的存储方法
+    /// </summary>
+    /// <param name="records">待存储的数据记录集合</param>
+    /// <param name="ct">取消令牌</param>
+    /// <exception cref="ArgumentException">当配置了不支持的输出格式时抛出</exception>
     public async Task StoreAsync(IEnumerable<DataRecord> records, CancellationToken ct = default)
     {
         var recordList = records.ToList();
@@ -73,6 +139,14 @@ public class FileStorage : IStorage
         _logger.LogInformation("Stored {Count} records to {Format} file", recordList.Count, _options.Format);
     }
 
+    /// <summary>
+    /// 将数据记录保存为 CSV 格式文件
+    /// 包含代理信息、任务信息和动态字段列
+    /// </summary>
+    /// <param name="records">数据记录列表</param>
+    /// <param name="fileName">文件名（不含扩展名）</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>异步任务</returns>
     private async Task SaveAsCsvAsync(List<DataRecord> records, string fileName, CancellationToken ct)
     {
         var filePath = Path.Combine(_outputDirectory, $"{fileName}.csv");
@@ -115,6 +189,14 @@ public class FileStorage : IStorage
         await File.WriteAllTextAsync(filePath, sb.ToString(), ct);
     }
 
+    /// <summary>
+    /// 将数据记录保存为 TXT 格式文件
+    /// 以键值对形式输出，包含代理信息、任务信息和数据内容
+    /// </summary>
+    /// <param name="records">数据记录列表</param>
+    /// <param name="fileName">文件名（不含扩展名）</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>异步任务</returns>
     private async Task SaveAsTxtAsync(List<DataRecord> records, string fileName, CancellationToken ct)
     {
         var filePath = Path.Combine(_outputDirectory, $"{fileName}.txt");
@@ -150,6 +232,14 @@ public class FileStorage : IStorage
         await File.WriteAllTextAsync(filePath, sb.ToString(), ct);
     }
 
+    /// <summary>
+    /// 将数据记录保存为 JSON 格式文件
+    /// 输出结构化的 JSON 对象，包含代理信息、任务信息和数据数组
+    /// </summary>
+    /// <param name="records">数据记录列表</param>
+    /// <param name="fileName">文件名（不含扩展名）</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>异步任务</returns>
     private async Task SaveAsJsonAsync(List<DataRecord> records, string fileName, CancellationToken ct)
     {
         var filePath = Path.Combine(_outputDirectory, $"{fileName}.json");
@@ -188,6 +278,11 @@ public class FileStorage : IStorage
         await File.WriteAllTextAsync(filePath, json, ct);
     }
 
+    /// <summary>
+    /// 转义 CSV 字段值，处理逗号、双引号和换行符
+    /// </summary>
+    /// <param name="value">原始字段值</param>
+    /// <returns>转义后的 CSV 安全字符串</returns>
     private static string EscapeCsv(string value)
     {
         if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))

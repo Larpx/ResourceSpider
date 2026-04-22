@@ -4,25 +4,114 @@ using ResourceSpider.Server.Repositories;
 
 namespace ResourceSpider.Server.Services;
 
+/// <summary>
+/// 任务调度服务接口，提供 Agent 拉取任务、上报状态、拉取表达式及存储结果等调度功能
+/// </summary>
 public interface ITaskDispatchService
 {
+    /// <summary>
+    /// Agent 拉取待执行的任务列表
+    /// </summary>
+    /// <param name="agentId">Agent 唯一标识</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="maxCount">最大拉取任务数量</param>
+    /// <returns>元组：令牌是否有效 + 任务 DTO 列表</returns>
     Task<(bool IsValid, List<TaskDto> Tasks)> PullTasksAsync(string agentId, string agentToken, int maxCount);
+
+    /// <summary>
+    /// Agent 上报任务执行状态和结果数据
+    /// </summary>
+    /// <param name="agentId">Agent 唯一标识</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="taskId">任务唯一标识</param>
+    /// <param name="status">任务状态码</param>
+    /// <param name="dataCount">本次采集的数据条数</param>
+    /// <param name="duration">执行耗时（毫秒）</param>
+    /// <returns>上报成功返回 true</returns>
     Task<bool> ReportTaskAsync(string agentId, string agentToken, string taskId, int status, int dataCount, int duration);
+
+    /// <summary>
+    /// Agent 拉取指定表达式的配置信息
+    /// </summary>
+    /// <param name="agentId">Agent 唯一标识</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="expressionId">表达式唯一标识</param>
+    /// <returns>元组：令牌是否有效 + 表达式配置 DTO</returns>
     Task<(bool IsValid, ExpressionConfigDto? Expression)> PullExpressionAsync(string agentId, string agentToken, string expressionId);
+
+    /// <summary>
+    /// Agent 拉取所有活跃表达式的配置信息
+    /// </summary>
+    /// <param name="agentId">Agent 唯一标识</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <returns>元组：令牌是否有效 + 活跃表达式配置列表</returns>
     Task<(bool IsValid, List<ExpressionConfigDto> Expressions)> PullActiveExpressionsAsync(string agentId, string agentToken);
+
+    /// <summary>
+    /// Agent 存储采集结果数据
+    /// </summary>
+    /// <param name="agentId">Agent 唯一标识</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="request">存储采集结果请求</param>
+    /// <returns>存储成功返回 true</returns>
     Task<bool> StoreResultsAsync(string agentId, string agentToken, StoreCollectionResultsRequest request);
+
+    /// <summary>
+    /// Agent 上报表达式可用性检测结果
+    /// </summary>
+    /// <param name="agentId">Agent 唯一标识</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="expressionId">表达式唯一标识</param>
+    /// <param name="isAvailable">表达式是否可用</param>
+    /// <param name="failureReason">不可用时的失败原因</param>
+    /// <returns>上报成功返回 true</returns>
     Task<bool> ReportExpressionAvailabilityAsync(string agentId, string agentToken, string expressionId, bool isAvailable, string? failureReason);
 }
 
+/// <summary>
+/// 任务调度服务实现，协调 Agent 与 Server 之间的任务分发、状态上报和数据存储
+/// </summary>
 public class TaskDispatchService : ITaskDispatchService
 {
+    /// <summary>
+    /// 任务数据仓库，用于任务实体的持久化操作
+    /// </summary>
     private readonly ITaskRepository _taskRepository;
+
+    /// <summary>
+    /// 任务步骤数据仓库，用于任务步骤的持久化操作
+    /// </summary>
     private readonly ITaskStepRepository _taskStepRepository;
+
+    /// <summary>
+    /// Agent 注册服务，用于验证 Agent 令牌
+    /// </summary>
     private readonly IAgentRegisterService _agentRegisterService;
+
+    /// <summary>
+    /// 表达式服务，用于获取表达式配置
+    /// </summary>
     private readonly IExpressionService _expressionService;
+
+    /// <summary>
+    /// 采集结果服务，用于存储采集数据
+    /// </summary>
     private readonly ICollectionResultService _resultService;
+
+    /// <summary>
+    /// 日志记录器，用于记录任务调度相关事件
+    /// </summary>
     private readonly ILogger<TaskDispatchService> _logger;
 
+    /// <summary>
+    /// 初始化任务调度服务实例
+    /// </summary>
+    /// <param name="taskRepository">任务数据仓库</param>
+    /// <param name="taskStepRepository">任务步骤数据仓库</param>
+    /// <param name="agentRegisterService">Agent 注册服务</param>
+    /// <param name="expressionService">表达式服务</param>
+    /// <param name="resultService">采集结果服务</param>
+    /// <param name="logger">日志记录器</param>
     public TaskDispatchService(
         ITaskRepository taskRepository,
         ITaskStepRepository taskStepRepository,
@@ -39,6 +128,7 @@ public class TaskDispatchService : ITaskDispatchService
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<(bool IsValid, List<TaskDto> Tasks)> PullTasksAsync(string agentId, string agentToken, int maxCount)
     {
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
@@ -91,6 +181,7 @@ public class TaskDispatchService : ITaskDispatchService
         return (true, result);
     }
 
+    /// <inheritdoc />
     public async Task<bool> ReportTaskAsync(string agentId, string agentToken, string taskId, int status, int dataCount, int duration)
     {
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
@@ -130,6 +221,7 @@ public class TaskDispatchService : ITaskDispatchService
         return true;
     }
 
+    /// <inheritdoc />
     public async Task<(bool IsValid, ExpressionConfigDto? Expression)> PullExpressionAsync(
         string agentId, string agentToken, string expressionId)
     {
@@ -151,6 +243,7 @@ public class TaskDispatchService : ITaskDispatchService
         }
     }
 
+    /// <inheritdoc />
     public async Task<(bool IsValid, List<ExpressionConfigDto> Expressions)> PullActiveExpressionsAsync(
         string agentId, string agentToken)
     {
@@ -165,6 +258,7 @@ public class TaskDispatchService : ITaskDispatchService
         return (true, expressions);
     }
 
+    /// <inheritdoc />
     public async Task<bool> StoreResultsAsync(string agentId, string agentToken, StoreCollectionResultsRequest request)
     {
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
@@ -183,6 +277,7 @@ public class TaskDispatchService : ITaskDispatchService
         return true;
     }
 
+    /// <inheritdoc />
     public async Task<bool> ReportExpressionAvailabilityAsync(
         string agentId, string agentToken, string expressionId, bool isAvailable, string? failureReason)
     {
@@ -196,6 +291,11 @@ public class TaskDispatchService : ITaskDispatchService
         return true;
     }
 
+    /// <summary>
+    /// 将任务实体映射为任务 DTO
+    /// </summary>
+    /// <param name="entity">任务实体</param>
+    /// <returns>任务 DTO</returns>
     private static TaskDto MapToDto(TaskEntity entity)
     {
         return new TaskDto(

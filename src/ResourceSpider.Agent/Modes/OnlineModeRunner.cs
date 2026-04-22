@@ -11,22 +11,90 @@ namespace ResourceSpider.Agent.Modes;
 /// </summary>
 public class OnlineModeRunner : IHostedService, IAsyncDisposable
 {
+    /// <summary>
+    /// 在线模式配置选项
+    /// </summary>
     private readonly OnlineModeOptions _options;
+
+    /// <summary>
+    /// 服务端 API 客户端
+    /// </summary>
     private readonly IServerApiClient _serverApi;
+
+    /// <summary>
+    /// 任务执行器
+    /// </summary>
     private readonly ITaskExecutor _taskExecutor;
+
+    /// <summary>
+    /// 结果上报器
+    /// </summary>
     private readonly IResultReporter _resultReporter;
+
+    /// <summary>
+    /// SignalR 客户端
+    /// </summary>
     private readonly ISignalRClient _signalRClient;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<OnlineModeRunner> _logger;
+
+    /// <summary>
+    /// 心跳定时器
+    /// </summary>
     private Timer? _heartbeatTimer;
+
+    /// <summary>
+    /// 任务拉取定时器
+    /// </summary>
     private Timer? _taskPullTimer;
+
+    /// <summary>
+    /// 表达式同步定时器
+    /// </summary>
     private Timer? _expressionSyncTimer;
+
+    /// <summary>
+    /// 服务端分配的认证令牌
+    /// </summary>
     private string _agentToken = string.Empty;
+
+    /// <summary>
+    /// 资源是否已释放
+    /// </summary>
     private bool _disposed;
+
+    /// <summary>
+    /// Agent 是否已成功注册
+    /// </summary>
     private bool _isRegistered;
+
+    /// <summary>
+    /// 表达式配置本地缓存
+    /// </summary>
     private readonly Dictionary<string, ExpressionConfigDto> _expressionCache = new();
+
+    /// <summary>
+    /// 缓存读写锁
+    /// </summary>
     private readonly object _cacheLock = new();
+
+    /// <summary>
+    /// 任务执行信号量，防止并发执行
+    /// </summary>
     private readonly SemaphoreSlim _taskExecutionLock = new(1, 1);
 
+    /// <summary>
+    /// 初始化在线模式运行器实例
+    /// </summary>
+    /// <param name="options">在线模式配置选项</param>
+    /// <param name="serverApi">服务端 API 客户端</param>
+    /// <param name="taskExecutor">任务执行器</param>
+    /// <param name="resultReporter">结果上报器</param>
+    /// <param name="signalRClient">SignalR 客户端</param>
+    /// <param name="logger">日志记录器</param>
     public OnlineModeRunner(
         OnlineModeOptions options,
         IServerApiClient serverApi,
@@ -43,6 +111,10 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
         _logger = logger;
     }
 
+    /// <summary>
+    /// 启动在线模式，执行注册、初始化定时器和 SignalR 连接
+    /// </summary>
+    /// <param name="cancellationToken">取消令牌</param>
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("启动在线模式 Agent");
@@ -93,6 +165,7 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 向服务端注册 Agent，获取认证 Token
     /// </summary>
+    /// <param name="ct">取消令牌</param>
     private async Task RegisterAsync(CancellationToken ct)
     {
         try
@@ -118,8 +191,9 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     }
 
     /// <summary>
-    /// 定时发送心跳，使用信号量防止并发
+    /// 定时发送心跳，维持 Agent 在线状态
     /// </summary>
+    /// <param name="state">定时器状态对象</param>
     private async void SendHeartbeat(object? state)
     {
         try
@@ -143,6 +217,7 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 定时同步活跃表达式到本地缓存
     /// </summary>
+    /// <param name="state">定时器状态对象</param>
     private async void SyncExpressions(object? state)
     {
         try
@@ -169,6 +244,7 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 拉取并执行任务，使用信号量防止并发执行
     /// </summary>
+    /// <param name="state">定时器状态对象</param>
     private async void PullAndExecuteTasks(object? state)
     {
         if (!await _taskExecutionLock.WaitAsync(0)) return;
@@ -207,6 +283,8 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 将服务端的任务 DTO 映射为本地任务模型
     /// </summary>
+    /// <param name="taskDto">服务端任务 DTO</param>
+    /// <returns>本地爬虫任务模型</returns>
     private static SpiderTask MapTask(TaskDto taskDto)
     {
         return new SpiderTask
@@ -226,6 +304,8 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 解析任务的表达式配置，优先使用任务自带配置，其次从缓存或服务端拉取
     /// </summary>
+    /// <param name="taskDto">服务端任务 DTO</param>
+    /// <param name="task">本地任务模型</param>
     private async Task ResolveExpressionConfig(TaskDto taskDto, SpiderTask task)
     {
         if (taskDto.ExpressionConfig != null)
@@ -253,6 +333,7 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 如果任务关联了表达式，向服务端上报表达式可用性
     /// </summary>
+    /// <param name="result">任务执行结果</param>
     private async Task ReportExpressionAvailabilityIfNeeded(ExecutionResult result)
     {
         if (string.IsNullOrEmpty(result.ExpressionId)) return;
@@ -274,6 +355,8 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 将服务端表达式配置 DTO 映射为本地表达式配置模型
     /// </summary>
+    /// <param name="dto">服务端表达式配置 DTO</param>
+    /// <returns>本地表达式配置模型，输入为 null 时返回 null</returns>
     private static ExpressionConfig? MapExpressionConfig(ExpressionConfigDto? dto)
     {
         if (dto == null) return null;
@@ -306,6 +389,7 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 获取本机 IPv4 地址
     /// </summary>
+    /// <returns>本机 IPv4 地址字符串</returns>
     private static string GetLocalIpAddress()
     {
         var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
@@ -319,6 +403,10 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
         return "127.0.0.1";
     }
 
+    /// <summary>
+    /// 停止在线模式，释放定时器并注销 Agent
+    /// </summary>
+    /// <param name="cancellationToken">取消令牌</param>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("停止在线模式 Agent");
@@ -337,6 +425,7 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
     /// <summary>
     /// 向服务端注销 Agent
     /// </summary>
+    /// <param name="ct">取消令牌</param>
     private async Task UnregisterAsync(CancellationToken ct)
     {
         try
@@ -354,6 +443,9 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// 释放托管资源
+    /// </summary>
     public void Dispose()
     {
         if (_disposed) return;
@@ -364,6 +456,9 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
         _disposed = true;
     }
 
+    /// <summary>
+    /// 异步释放所有资源，包括 SignalR 连接
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         if (_disposed) return;

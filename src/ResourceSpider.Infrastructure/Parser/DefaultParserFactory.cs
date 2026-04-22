@@ -5,10 +5,23 @@ using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace ResourceSpider.Infrastructure.Parser;
 
+/// <summary>
+/// 默认解析器工厂实现，根据解析器类型或表达式配置创建对应的解析器实例
+/// 支持 XPath、CSS 选择器、JsonPath 三种内置解析器，以及自定义解析器注册
+/// </summary>
 public class DefaultParserFactory : IParserFactory
 {
+    /// <summary>
+    /// 自定义解析器注册表，键为解析器名称，值为解析器实例
+    /// </summary>
     private readonly Dictionary<string, IParser> _customParsers = new();
 
+    /// <summary>
+    /// 根据解析器类型创建对应的解析器实例
+    /// </summary>
+    /// <param name="type">解析器类型（XPath、CssSelector、JsonPath、Custom）</param>
+    /// <returns>解析器实例</returns>
+    /// <exception cref="ArgumentException">当传入 Custom 类型或不支持的类型时抛出</exception>
     public IParser CreateParser(ParserType type)
     {
         return type switch
@@ -22,12 +35,17 @@ public class DefaultParserFactory : IParserFactory
         };
     }
 
+    /// <summary>
+    /// 根据表达式配置创建对应的表达式驱动解析器
+    /// 根据配置中的选择器类型自动选择 XPath、CSS 或 JSON 解析器
+    /// </summary>
+    /// <param name="config">表达式配置，包含选择器类型、容器表达式和字段定义</param>
+    /// <returns>表达式驱动的解析器实例</returns>
+    /// <exception cref="ArgumentException">当配置了不支持的选择器类型时抛出</exception>
     public IParser CreateFromExpressionConfig(ExpressionConfig config)
     {
         var containerType = Enum.TryParse<ParserType>(config.SelectorType.ToString(), out var ct)
             ? ct : ParserType.XPath;
-
-        var rules = new List<object>();
 
         switch (containerType)
         {
@@ -51,11 +69,22 @@ public class DefaultParserFactory : IParserFactory
         }
     }
 
+    /// <summary>
+    /// 注册自定义解析器到工厂中
+    /// </summary>
+    /// <param name="name">解析器名称，用于后续获取</param>
+    /// <param name="parser">解析器实例</param>
     public void RegisterCustomParser(string name, IParser parser)
     {
         _customParsers[name] = parser;
     }
 
+    /// <summary>
+    /// 根据名称获取已注册的自定义解析器
+    /// </summary>
+    /// <param name="name">解析器名称</param>
+    /// <returns>解析器实例</returns>
+    /// <exception cref="KeyNotFoundException">当指定名称的解析器未注册时抛出</exception>
     public IParser GetCustomParser(string name)
     {
         if (_customParsers.TryGetValue(name, out var parser))
@@ -65,21 +94,39 @@ public class DefaultParserFactory : IParserFactory
         throw new KeyNotFoundException($"Custom parser '{name}' not found");
     }
 
+    /// <summary>
+    /// 创建空的 XPath 解析器实例
+    /// </summary>
+    /// <returns>XPath 解析器实例</returns>
     private IParser CreateXPathParser()
     {
         return new XPathParser(new List<XPathRule>());
     }
 
+    /// <summary>
+    /// 创建空的 CSS 选择器解析器实例
+    /// </summary>
+    /// <returns>CSS 选择器解析器实例</returns>
     private IParser CreateCssSelectorParser()
     {
         return new CssSelectorParser(new List<CssRule>());
     }
 
+    /// <summary>
+    /// 创建空的 JSON 解析器实例
+    /// </summary>
+    /// <returns>JSON 解析器实例</returns>
     private IParser CreateJsonParser()
     {
         return new JsonParser(null, new List<JsonField>());
     }
 
+    /// <summary>
+    /// 根据表达式配置构建 XPath 规则列表
+    /// 将容器表达式作为根 XPath，字段表达式映射为 XPathField
+    /// </summary>
+    /// <param name="config">表达式配置</param>
+    /// <returns>XPath 规则列表</returns>
     private static List<XPathRule> BuildXPathRules(ExpressionConfig config)
     {
         var containerExpr = !string.IsNullOrEmpty(config.ContainerExpression)
@@ -100,6 +147,12 @@ public class DefaultParserFactory : IParserFactory
         return new List<XPathRule> { rule };
     }
 
+    /// <summary>
+    /// 根据表达式配置构建 CSS 规则列表
+    /// 将容器表达式作为根 CSS 选择器，字段表达式映射为 CssField
+    /// </summary>
+    /// <param name="config">表达式配置</param>
+    /// <returns>CSS 规则列表</returns>
     private static List<CssRule> BuildCssRules(ExpressionConfig config)
     {
         var containerExpr = !string.IsNullOrEmpty(config.ContainerExpression)
@@ -120,6 +173,12 @@ public class DefaultParserFactory : IParserFactory
         return new List<CssRule> { rule };
     }
 
+    /// <summary>
+    /// 根据表达式配置构建 JSON 字段列表
+    /// 将字段表达式直接映射为 JsonPath 表达式
+    /// </summary>
+    /// <param name="config">表达式配置</param>
+    /// <returns>JSON 字段列表</returns>
     private static List<JsonField> BuildJsonFields(ExpressionConfig config)
     {
         return config.Fields.Select(f => new JsonField
@@ -129,6 +188,12 @@ public class DefaultParserFactory : IParserFactory
         }).ToList();
     }
 
+    /// <summary>
+    /// 根据表达式字段的格式化器配置构建格式化函数
+    /// 支持 trim（去除空白）、replace（字符串替换）、regex（正则匹配）三种格式化器
+    /// </summary>
+    /// <param name="field">表达式字段定义</param>
+    /// <returns>格式化函数，无格式化器时返回 null</returns>
     private static Func<string, string>? BuildFormatter(ExpressionField field)
     {
         if (string.IsNullOrEmpty(field.Formatter)) return null;
@@ -158,17 +223,39 @@ public class DefaultParserFactory : IParserFactory
     }
 }
 
+/// <summary>
+/// 表达式驱动的 XPath 解析器，根据表达式配置从 HTML 文档中提取数据
+/// 支持环境变量解析（GUID、DATETIME、DATE）和必填字段验证
+/// </summary>
 public class ExpressionDrivenXPathParser : IParser
 {
+    /// <summary>
+    /// 表达式配置
+    /// </summary>
     private readonly ExpressionConfig _config;
+
+    /// <summary>
+    /// XPath 规则列表
+    /// </summary>
     private readonly List<XPathRule> _rules;
 
+    /// <summary>
+    /// 初始化表达式驱动的 XPath 解析器
+    /// </summary>
+    /// <param name="config">表达式配置</param>
+    /// <param name="rules">XPath 规则列表</param>
     public ExpressionDrivenXPathParser(ExpressionConfig config, List<XPathRule> rules)
     {
         _config = config;
         _rules = rules;
     }
 
+    /// <summary>
+    /// 处理数据上下文，解析响应内容并将结果添加到上下文中
+    /// </summary>
+    /// <param name="context">数据上下文</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>异步任务</returns>
     public Task HandleAsync(DataContext context, CancellationToken ct = default)
     {
         if (context?.Response == null) return Task.CompletedTask;
@@ -178,6 +265,13 @@ public class ExpressionDrivenXPathParser : IParser
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// 使用 XPath 表达式解析 HTML 响应内容
+    /// 按容器表达式定位元素组，再按字段表达式提取各字段值
+    /// 支持环境变量字段、默认值填充和必填字段验证
+    /// </summary>
+    /// <param name="response">HTTP 响应对象</param>
+    /// <returns>提取的数据记录集合，必填字段缺失时跳过该记录</returns>
     public IEnumerable<DataRecord> Parse(Response response)
     {
         if (response.TextContent == null) yield break;
@@ -249,6 +343,11 @@ public class ExpressionDrivenXPathParser : IParser
         }
     }
 
+    /// <summary>
+    /// 解析环境变量表达式，支持 GUID、DATETIME/NOW、DATE/TODAY
+    /// </summary>
+    /// <param name="expression">环境变量表达式</param>
+    /// <returns>解析后的值，不匹配时返回 null</returns>
     private static string? ResolveEnvironmentValue(string? expression)
     {
         return expression?.ToUpper() switch
@@ -261,17 +360,39 @@ public class ExpressionDrivenXPathParser : IParser
     }
 }
 
+/// <summary>
+/// 表达式驱动的 CSS 选择器解析器，根据表达式配置从 HTML 文档中提取数据
+/// 内部将 CSS 选择器转换为 XPath 进行查询，支持必填字段验证
+/// </summary>
 public class ExpressionDrivenCssParser : IParser
 {
+    /// <summary>
+    /// 表达式配置
+    /// </summary>
     private readonly ExpressionConfig _config;
+
+    /// <summary>
+    /// CSS 规则列表
+    /// </summary>
     private readonly List<CssRule> _rules;
 
+    /// <summary>
+    /// 初始化表达式驱动的 CSS 选择器解析器
+    /// </summary>
+    /// <param name="config">表达式配置</param>
+    /// <param name="rules">CSS 规则列表</param>
     public ExpressionDrivenCssParser(ExpressionConfig config, List<CssRule> rules)
     {
         _config = config;
         _rules = rules;
     }
 
+    /// <summary>
+    /// 处理数据上下文，解析响应内容并将结果添加到上下文中
+    /// </summary>
+    /// <param name="context">数据上下文</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>异步任务</returns>
     public Task HandleAsync(DataContext context, CancellationToken ct = default)
     {
         if (context?.Response == null) return Task.CompletedTask;
@@ -281,6 +402,13 @@ public class ExpressionDrivenCssParser : IParser
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// 使用 CSS 选择器解析 HTML 响应内容
+    /// 按容器 CSS 选择器定位元素组，再按字段 CSS 选择器提取各字段值
+    /// 支持默认值填充和必填字段验证
+    /// </summary>
+    /// <param name="response">HTTP 响应对象</param>
+    /// <returns>提取的数据记录集合，必填字段缺失时跳过该记录</returns>
     public IEnumerable<DataRecord> Parse(Response response)
     {
         if (response.TextContent == null) yield break;
@@ -346,6 +474,12 @@ public class ExpressionDrivenCssParser : IParser
         }
     }
 
+    /// <summary>
+    /// 将简单的 CSS 选择器转换为 XPath 表达式
+    /// 支持 ID 选择器（#id）、类选择器（.class）和标签选择器
+    /// </summary>
+    /// <param name="cssSelector">CSS 选择器表达式</param>
+    /// <returns>对应的 XPath 表达式</returns>
     private static string CssToXPath(string cssSelector)
     {
         if (cssSelector.StartsWith("#"))
@@ -360,17 +494,39 @@ public class ExpressionDrivenCssParser : IParser
     }
 }
 
+/// <summary>
+/// 表达式驱动的 JSON 解析器，根据表达式配置从 JSON 响应中提取数据
+/// 支持通过容器表达式定位 JSON 数组，以及必填字段验证
+/// </summary>
 public class ExpressionDrivenJsonParser : IParser
 {
+    /// <summary>
+    /// 表达式配置
+    /// </summary>
     private readonly ExpressionConfig _config;
+
+    /// <summary>
+    /// JSON 字段列表
+    /// </summary>
     private readonly List<JsonField> _fields;
 
+    /// <summary>
+    /// 初始化表达式驱动的 JSON 解析器
+    /// </summary>
+    /// <param name="config">表达式配置</param>
+    /// <param name="fields">JSON 字段列表</param>
     public ExpressionDrivenJsonParser(ExpressionConfig config, List<JsonField> fields)
     {
         _config = config;
         _fields = fields;
     }
 
+    /// <summary>
+    /// 处理数据上下文，解析响应内容并将结果添加到上下文中
+    /// </summary>
+    /// <param name="context">数据上下文</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>异步任务</returns>
     public Task HandleAsync(DataContext context, CancellationToken ct = default)
     {
         if (context?.Response == null) return Task.CompletedTask;
@@ -380,6 +536,13 @@ public class ExpressionDrivenJsonParser : IParser
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// 使用 JsonPath 表达式解析 JSON 响应内容
+    /// 按容器表达式定位 JSON 对象数组，再按字段表达式提取各字段值
+    /// 支持默认值填充和必填字段验证
+    /// </summary>
+    /// <param name="response">HTTP 响应对象</param>
+    /// <returns>提取的数据记录集合，必填字段缺失时跳过该记录</returns>
     public IEnumerable<DataRecord> Parse(Response response)
     {
         if (response.TextContent == null) yield break;

@@ -12,11 +12,15 @@ public interface IResultReporter
     /// <summary>
     /// 向服务端上报采集结果
     /// </summary>
+    /// <param name="result">任务执行结果</param>
+    /// <param name="ct">取消令牌</param>
     Task ReportAsync(ExecutionResult result, CancellationToken ct = default);
 
     /// <summary>
     /// 将采集结果存储到本地文件
     /// </summary>
+    /// <param name="result">任务执行结果</param>
+    /// <param name="ct">取消令牌</param>
     Task StoreLocalAsync(ExecutionResult result, CancellationToken ct = default);
 }
 
@@ -25,12 +29,39 @@ public interface IResultReporter
 /// </summary>
 public class ResultReporter : IResultReporter
 {
+    /// <summary>
+    /// 服务端 API 客户端（在线模式时使用）
+    /// </summary>
     private readonly IServerApiClient? _serverApiClient;
+
+    /// <summary>
+    /// 存储服务实例
+    /// </summary>
     private readonly IStorage _storage;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<ResultReporter> _logger;
+
+    /// <summary>
+    /// Agent 唯一标识
+    /// </summary>
     private readonly string _agentId;
+
+    /// <summary>
+    /// Agent 认证令牌
+    /// </summary>
     private readonly string _agentToken;
 
+    /// <summary>
+    /// 初始化结果上报器实例
+    /// </summary>
+    /// <param name="serverApiClient">服务端 API 客户端（在线模式时提供）</param>
+    /// <param name="storage">存储服务实例</param>
+    /// <param name="logger">日志记录器</param>
+    /// <param name="localConfig">本地模式配置（本地模式时提供）</param>
+    /// <param name="serverConfig">在线模式配置（在线模式时提供）</param>
     public ResultReporter(
         IServerApiClient? serverApiClient,
         IStorage storage,
@@ -45,9 +76,7 @@ public class ResultReporter : IResultReporter
         _agentToken = serverConfig?.AgentToken ?? string.Empty;
     }
 
-    /// <summary>
-    /// 向服务端上报采集结果，包括任务状态和采集数据
-    /// </summary>
+    /// <inheritdoc />
     public async Task ReportAsync(ExecutionResult result, CancellationToken ct = default)
     {
         if (_serverApiClient == null)
@@ -98,9 +127,7 @@ public class ResultReporter : IResultReporter
         }
     }
 
-    /// <summary>
-    /// 将采集结果存储到本地文件
-    /// </summary>
+    /// <inheritdoc />
     public async Task StoreLocalAsync(ExecutionResult result, CancellationToken ct = default)
     {
         if (result.DataRecords.Count == 0)

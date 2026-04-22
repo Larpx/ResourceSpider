@@ -6,15 +6,29 @@ using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Infrastructure.Downloader;
 
+/// <summary>
+/// CDP（Chrome DevTools Protocol）下载器，通过连接远程浏览器实例进行页面采集
+/// 适用于需要复用已有浏览器实例的场景
+/// </summary>
 public class CdpDownloader : IDownloader
 {
     private readonly ILogger<CdpDownloader> _logger;
 
+    /// <summary>
+    /// 初始化 CDP 下载器
+    /// </summary>
+    /// <param name="logger">日志记录器</param>
     public CdpDownloader(ILogger<CdpDownloader> logger)
     {
         _logger = logger;
     }
 
+    /// <summary>
+    /// 通过 CDP 协议连接远程浏览器并下载页面内容
+    /// </summary>
+    /// <param name="request">下载请求，需在 Metadata 中包含 CdpUrl</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>下载响应对象</returns>
     public async Task<Response> DownloadAsync(Request request, CancellationToken ct = default)
     {
         var cdpUrl = request.Metadata.GetValueOrDefault("CdpUrl")?.ToString();

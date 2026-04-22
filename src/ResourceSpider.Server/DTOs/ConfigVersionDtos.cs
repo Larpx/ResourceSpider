@@ -1,5 +1,15 @@
 namespace ResourceSpider.Server.DTOs;
 
+/// <summary>
+/// 配置版本数据传输对象
+/// </summary>
+/// <param name="VersionId">版本 ID</param>
+/// <param name="TaskId">关联任务 ID</param>
+/// <param name="Version">版本号</param>
+/// <param name="ConfigContent">配置内容 JSON</param>
+/// <param name="ChangeDescription">变更描述</param>
+/// <param name="CreatedBy">创建者</param>
+/// <param name="CreatedAt">创建时间</param>
 public record ConfigVersionDto(
     string VersionId,
     string TaskId,
@@ -10,11 +20,20 @@ public record ConfigVersionDto(
     DateTime CreatedAt
 );
 
+/// <summary>
+/// 配置版本列表响应
+/// </summary>
+/// <param name="Versions">版本列表</param>
+/// <param name="Total">总数</param>
 public record ConfigVersionListResponse(
     List<ConfigVersionDto> Versions,
     int Total
 );
 
+/// <summary>
+/// 回滚配置请求
+/// </summary>
+/// <param name="Version">目标版本号</param>
 public record RollbackConfigRequest(
     int Version
 );

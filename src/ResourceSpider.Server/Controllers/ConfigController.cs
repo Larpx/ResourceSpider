@@ -5,18 +5,35 @@ using ResourceSpider.Server.Services;
 
 namespace ResourceSpider.Server.Controllers;
 
+/// <summary>
+/// 配置控制器，提供表达式测试和配置模板功能
+/// 支持在线测试 XPath、CSS 选择器、正则表达式和 JSONPath 等提取表达式
+/// </summary>
 [ApiController]
 [Route("api/config")]
 [Authorize]
 public class ConfigController : ControllerBase
 {
+    /// <summary>
+    /// 日志记录器实例
+    /// </summary>
     private readonly ILogger<ConfigController> _logger;
 
+    /// <summary>
+    /// 初始化配置控制器
+    /// </summary>
+    /// <param name="logger">日志记录器</param>
     public ConfigController(ILogger<ConfigController> logger)
     {
         _logger = logger;
     }
 
+    /// <summary>
+    /// 测试提取表达式，根据指定的表达式类型对内容进行提取
+    /// 支持 XPath、CSS 选择器、正则表达式和 JSONPath 四种表达式类型
+    /// </summary>
+    /// <param name="request">测试提取请求，包含内容、表达式和表达式类型</param>
+    /// <returns>提取成功返回结果列表，失败返回错误信息</returns>
     [HttpPost("test-extraction")]
     [ProducesResponseType(typeof(ApiResponse<TestExtractionResponse>), 200)]
     public IActionResult TestExtraction([FromBody] TestExtractionRequest request)
@@ -73,6 +90,10 @@ public class ConfigController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 获取配置模板列表，用于快速创建任务配置
+    /// </summary>
+    /// <returns>配置模板列表</returns>
     [HttpGet("templates")]
     [ProducesResponseType(typeof(ApiResponse<List<ConfigTemplateDto>>), 200)]
     public IActionResult GetTemplates()

@@ -6,11 +6,19 @@ using ResourceSpider.Core.DataFlow;
 
 namespace ResourceSpider.Infrastructure.DataFlow;
 
+/// <summary>
+/// 数据流构建器，负责组装和构建数据流处理管道
+/// 支持通过泛型或工厂方法添加数据流处理器，并按添加顺序构建中间件管道
+/// </summary>
 public class FlowBuilder
 {
     private readonly List<Func<ResponseDelegate, ResponseDelegate>> _components = [];
     private readonly List<Func<IServiceProvider, IDataFlow>> _flowFactories = [];
 
+    /// <summary>
+    /// 构建数据流管道，初始化所有处理器并返回管道信息和执行委托
+    /// </summary>
+    /// <returns>管道描述信息和执行委托的元组</returns>
     public async Task<(string, ResponseDelegate)> BuildAsync()
     {
         var info = await InitializeAsync();
@@ -28,6 +36,10 @@ public class FlowBuilder
         return (info, requestDelegate);
     }
 
+    /// <summary>
+    /// 通过泛型添加数据流处理器到管道中
+    /// </summary>
+    /// <typeparam name="T">数据流处理器类型</typeparam>
     public void AddFlow<T>() where T : IDataFlow
     {
         _flowFactories.Add(sp => (IDataFlow)ActivatorUtilities.CreateInstance<T>(sp));
@@ -35,12 +47,22 @@ public class FlowBuilder
             default!), @delegate));
     }
 
+    /// <summary>
+    /// 通过工厂方法添加数据流处理器到管道中
+    /// </summary>
+    /// <param name="factory">数据流处理器工厂方法</param>
     public void AddFlow(Func<IDataFlow> factory)
     {
         _flowFactories.Add(_ => factory());
         _components.Add(@delegate => CreateMiddleware(factory, @delegate));
     }
 
+    /// <summary>
+    /// 创建中间件委托，包装数据流处理器的初始化和执行逻辑
+    /// </summary>
+    /// <param name="factory">数据流处理器工厂方法</param>
+    /// <param name="next">下一个处理器的委托</param>
+    /// <returns>中间件委托</returns>
     private ResponseDelegate CreateMiddleware(Func<IDataFlow> factory, ResponseDelegate next)
     {
         return async context =>
@@ -56,6 +78,10 @@ public class FlowBuilder
         };
     }
 
+    /// <summary>
+    /// 初始化并生成数据流管道的描述信息
+    /// </summary>
+    /// <returns>管道描述字符串</returns>
     private Task<string> InitializeAsync()
     {
         if (_flowFactories.Count == 0) return Task.FromResult("Empty data flow chain");
