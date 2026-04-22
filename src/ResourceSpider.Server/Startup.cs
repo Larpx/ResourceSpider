@@ -198,12 +198,43 @@ public class Startup
     /// <param name="services">服务集合</param>
     private void ConfigureRedis(IServiceCollection services)
     {
-        services.AddSingleton<IConnectionMultiplexer>(sp =>
+        var redisConnection = Configuration.GetConnectionString("Redis");
+        var redisConfigured = !string.IsNullOrWhiteSpace(redisConnection);
+
+        var redisSection = Configuration.GetSection("Redis");
+        var redisEnabled = redisSection.GetValue<bool?>("Enabled") ?? redisConfigured;
+        var taskContentTtlSeconds = redisSection.GetValue<int?>("TaskContentTtlSeconds") ?? 300;
+
+        IConnectionMultiplexer? redis = null;
+        if (redisEnabled && redisConfigured)
         {
-            var config = Configuration.GetConnectionString("Redis")
-                ?? "localhost:6379";
-            return ConnectionMultiplexer.Connect(config);
-        });
+            try
+            {
+                redis = ConnectionMultiplexer.Connect(redisConnection!);
+                services.AddSingleton(redis);
+                services.AddSingleton<IConnectionMultiplexer>(redis);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Redis 初始化失败，系统将以无 Redis 模式运行");
+            }
+        }
+
+        services.AddSingleton<IRedisFeatureService>(_ =>
+            new RedisFeatureService(
+                enabled: redisEnabled,
+                configured: redisConfigured,
+                taskContentTtlSeconds: taskContentTtlSeconds,
+                redis: redis));
+
+        if (redis != null)
+        {
+            services.AddSingleton<IAgentTaskContentCache, RedisAgentTaskContentCache>();
+        }
+        else
+        {
+            services.AddSingleton<IAgentTaskContentCache, NoOpAgentTaskContentCache>();
+        }
     }
 
     /// <summary>

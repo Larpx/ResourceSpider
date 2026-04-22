@@ -19,6 +19,15 @@ public interface ITaskDispatchService
     Task<(bool IsValid, List<TaskDto> Tasks)> PullTasksAsync(string agentId, string agentToken, int maxCount);
 
     /// <summary>
+    /// Agent 获取任务内容
+    /// </summary>
+    /// <param name="agentId">Agent 唯一标识</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="taskId">任务唯一标识</param>
+    /// <returns>元组：令牌是否有效 + 任务 DTO</returns>
+    Task<(bool IsValid, TaskDto? Task)> GetTaskContentAsync(string agentId, string agentToken, string taskId);
+
+    /// <summary>
     /// Agent 上报任务执行状态和结果数据
     /// </summary>
     /// <param name="agentId">Agent 唯一标识</param>
@@ -99,6 +108,11 @@ public class TaskDispatchService : ITaskDispatchService
     private readonly ICollectionResultService _resultService;
 
     /// <summary>
+    /// 任务内容缓存
+    /// </summary>
+    private readonly IAgentTaskContentCache _taskContentCache;
+
+    /// <summary>
     /// 日志记录器，用于记录任务调度相关事件
     /// </summary>
     private readonly ILogger<TaskDispatchService> _logger;
@@ -111,6 +125,7 @@ public class TaskDispatchService : ITaskDispatchService
     /// <param name="agentRegisterService">Agent 注册服务</param>
     /// <param name="expressionService">表达式服务</param>
     /// <param name="resultService">采集结果服务</param>
+    /// <param name="taskContentCache">任务内容缓存</param>
     /// <param name="logger">日志记录器</param>
     public TaskDispatchService(
         ITaskRepository taskRepository,
@@ -118,6 +133,7 @@ public class TaskDispatchService : ITaskDispatchService
         IAgentRegisterService agentRegisterService,
         IExpressionService expressionService,
         ICollectionResultService resultService,
+        IAgentTaskContentCache taskContentCache,
         ILogger<TaskDispatchService> logger)
     {
         _taskRepository = taskRepository;
@@ -125,6 +141,7 @@ public class TaskDispatchService : ITaskDispatchService
         _agentRegisterService = agentRegisterService;
         _expressionService = expressionService;
         _resultService = resultService;
+        _taskContentCache = taskContentCache;
         _logger = logger;
     }
 
@@ -148,37 +165,40 @@ public class TaskDispatchService : ITaskDispatchService
             task.StartTime = task.StartTime ?? DateTime.UtcNow;
             await _taskRepository.UpdateAsync(task);
 
-            var dto = MapToDto(task);
-
-            var steps = await _taskStepRepository.GetByTaskIdAsync(task.TaskId);
-            if (steps.Count > 0)
-            {
-                dto = dto with
-                {
-                    Steps = steps.Select(s => new TaskStepDto(
-                        s.StepId, s.TaskId, s.StepOrder, s.StepName, s.CollectionMode,
-                        s.AgentGroupId, s.RequestConfig, s.ExtractionRules, s.VariableMappings,
-                        s.PaginationConfig, s.OutputConfig, s.CreatedAt)).ToList()
-                };
-            }
-
-            if (!string.IsNullOrEmpty(task.ExpressionId))
-            {
-                try
-                {
-                    dto = dto with { ExpressionConfig = await _expressionService.GetConfigAsync(task.ExpressionId) };
-                }
-                catch (KeyNotFoundException ex)
-                {
-                    _logger.LogWarning(ex, "表达式 {ExpressionId} 未找到，任务 {TaskId}", task.ExpressionId, task.TaskId);
-                }
-            }
-
+            var dto = await BuildTaskDtoAsync(task);
             result.Add(dto);
+            await _taskContentCache.SetAsync(dto);
         }
 
         _logger.LogInformation("Agent {AgentId} 拉取 {Count} 个任务", agentId, result.Count);
         return (true, result);
+    }
+
+    /// <inheritdoc />
+    public async Task<(bool IsValid, TaskDto? Task)> GetTaskContentAsync(string agentId, string agentToken, string taskId)
+    {
+        var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);
+        if (!isValid)
+        {
+            _logger.LogWarning("Agent {AgentId} Token 无效", agentId);
+            return (false, null);
+        }
+
+        var cached = await _taskContentCache.GetAsync(taskId);
+        if (cached != null)
+        {
+            return (true, cached);
+        }
+
+        var task = await _taskRepository.GetByIdAsync(taskId);
+        if (task == null)
+        {
+            return (true, null);
+        }
+
+        var dto = await BuildTaskDtoAsync(task);
+        await _taskContentCache.SetAsync(dto);
+        return (true, dto);
     }
 
     /// <inheritdoc />
@@ -213,6 +233,7 @@ public class TaskDispatchService : ITaskDispatchService
         if (status == 2 || status == 3)
         {
             task.EndTime = DateTime.UtcNow;
+            await _taskContentCache.RemoveAsync(taskId);
         }
 
         await _taskRepository.UpdateAsync(task);
@@ -323,5 +344,41 @@ public class TaskDispatchService : ITaskDispatchService
             entity.CreatedAt,
             entity.ExpressionId
         );
+    }
+
+    /// <summary>
+    /// 构建任务 DTO
+    /// </summary>
+    /// <param name="task">任务实体</param>
+    /// <returns>任务 DTO</returns>
+    private async Task<TaskDto> BuildTaskDtoAsync(TaskEntity task)
+    {
+        var dto = MapToDto(task);
+
+        var steps = await _taskStepRepository.GetByTaskIdAsync(task.TaskId);
+        if (steps.Count > 0)
+        {
+            dto = dto with
+            {
+                Steps = steps.Select(s => new TaskStepDto(
+                    s.StepId, s.TaskId, s.StepOrder, s.StepName, s.CollectionMode,
+                    s.AgentGroupId, s.RequestConfig, s.ExtractionRules, s.VariableMappings,
+                    s.PaginationConfig, s.OutputConfig, s.CreatedAt)).ToList()
+            };
+        }
+
+        if (!string.IsNullOrEmpty(task.ExpressionId))
+        {
+            try
+            {
+                dto = dto with { ExpressionConfig = await _expressionService.GetConfigAsync(task.ExpressionId) };
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex, "表达式 {ExpressionId} 未找到，任务 {TaskId}", task.ExpressionId, task.TaskId);
+            }
+        }
+
+        return dto;
     }
 }

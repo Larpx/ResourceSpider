@@ -51,24 +51,32 @@ public class SystemController : ControllerBase
     private static readonly DateTime _startedAt = DateTime.UtcNow;
 
     /// <summary>
+    /// Redis 功能开关服务
+    /// </summary>
+    private readonly IRedisFeatureService _redisFeatureService;
+
+    /// <summary>
     /// 初始化系统控制器
     /// </summary>
     /// <param name="systemLogService">系统日志服务</param>
     /// <param name="agentRepository">Agent 仓储</param>
     /// <param name="startupState">启动状态</param>
     /// <param name="hostEnvironment">主机环境</param>
+    /// <param name="redisFeatureService">Redis 功能开关服务</param>
     /// <param name="logger">日志记录器</param>
     public SystemController(
         ISystemLogService systemLogService,
         IAgentRepository agentRepository,
         StartupState startupState,
         IHostEnvironment hostEnvironment,
+        IRedisFeatureService redisFeatureService,
         ILogger<SystemController> logger)
     {
         _systemLogService = systemLogService;
         _agentRepository = agentRepository;
         _startupState = startupState;
         _hostEnvironment = hostEnvironment;
+        _redisFeatureService = redisFeatureService;
         _logger = logger;
     }
 
@@ -84,17 +92,7 @@ public class SystemController : ControllerBase
             ? "Connected"
             : $"Unavailable: {_startupState.DatabaseInitializationError}";
 
-        string redisStatus;
-        try
-        {
-            var redis = HttpContext.RequestServices.GetService<IConnectionMultiplexer>();
-            redisStatus = redis?.IsConnected == true ? "Connected" : "Unavailable";
-        }
-        catch (Exception ex)
-        {
-            redisStatus = $"Unavailable: {ex.Message}";
-            _logger.LogWarning(ex, "Redis 状态检查失败");
-        }
+        var redisStatus = BuildRedisStatusText();
 
         var components = new Dictionary<string, string>
         {
@@ -103,7 +101,7 @@ public class SystemController : ControllerBase
             { "startup", _startupState.DatabaseInitializationSucceeded ? "Ready" : "Partial" }
         };
 
-        var overall = _startupState.DatabaseInitializationSucceeded && redisStatus == "Connected"
+        var overall = _startupState.DatabaseInitializationSucceeded
             ? "Healthy"
             : "Degraded";
 
@@ -118,6 +116,32 @@ public class SystemController : ControllerBase
             _hostEnvironment.EnvironmentName);
 
         return Ok(ApiResponse<SystemHealthDto>.Success(health));
+    }
+
+    /// <summary>
+    /// 获取 Redis 功能开关的当前状态
+    /// </summary>
+    /// <returns>Redis 功能开关状态信息</returns>
+    [HttpGet("redis")]
+    [ProducesResponseType(typeof(ApiResponse<RedisFeatureStatusDto>), 200)]
+    public IActionResult GetRedisStatus()
+    {
+        var dto = BuildRedisFeatureStatus();
+        return Ok(ApiResponse<RedisFeatureStatusDto>.Success(dto));
+    }
+
+    /// <summary>
+    /// 更新 Redis 功能开关的状态
+    /// </summary>
+    /// <param name="request">更新请求，包含启用/禁用信息</param>
+    /// <returns>更新后的 Redis 功能开关状态</returns>
+    [HttpPut("redis")]
+    [ProducesResponseType(typeof(ApiResponse<RedisFeatureStatusDto>), 200)]
+    public IActionResult UpdateRedisStatus([FromBody] UpdateRedisFeatureRequest request)
+    {
+        _redisFeatureService.SetEnabled(request.Enabled);
+        var dto = BuildRedisFeatureStatus();
+        return Ok(ApiResponse<RedisFeatureStatusDto>.Success(dto, "Redis 开关更新成功"));
     }
 
     /// <summary>
@@ -271,6 +295,37 @@ public class SystemController : ControllerBase
         catch
         {
             return [];
+        }
+    }
+
+    private RedisFeatureStatusDto BuildRedisFeatureStatus()
+    {
+        var status = !_redisFeatureService.IsConfigured
+            ? "NotConfigured"
+            : !_redisFeatureService.IsEnabled
+                ? "Disabled"
+                : _redisFeatureService.IsConnected
+                    ? "Connected"
+                    : "Unavailable";
+
+        return new RedisFeatureStatusDto(
+            Enabled: _redisFeatureService.IsEnabled,
+            Configured: _redisFeatureService.IsConfigured,
+            Connected: _redisFeatureService.IsConnected,
+            TaskContentTtlSeconds: _redisFeatureService.TaskContentTtlSeconds,
+            Status: status);
+    }
+
+    private string BuildRedisStatusText()
+    {
+        try
+        {
+            return BuildRedisFeatureStatus().Status;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Redis 状态检查失败");
+            return $"Unavailable: {ex.Message}";
         }
     }
 }

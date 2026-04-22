@@ -175,6 +175,38 @@ public class TaskDispatchController : ControllerBase
 
         return Ok(ApiResponse<object>.Success(new { }, "Availability reported successfully"));
     }
+
+    /// <summary>
+    /// 代理拉取任务内容
+    /// </summary>
+    /// <param name="request">拉取任务内容请求，包含代理 ID、令牌和任务 ID</param>
+    /// <returns>令牌有效返回任务内容，令牌无效返回 401，任务不存在返回 404</returns>
+    [HttpPost("tasks/content")]
+    [ProducesResponseType(typeof(ApiResponse<TaskDto>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 401)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> GetTaskContent([FromBody] PullTaskContentRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.TaskId))
+        {
+            return BadRequest(ApiResponse<object>.Error(1007, "TaskId is required"));
+        }
+
+        var (isValid, task) = await _taskDispatchService.GetTaskContentAsync(
+            request.AgentId, request.AgentToken, request.TaskId);
+
+        if (!isValid)
+        {
+            return Unauthorized(ApiResponse<object>.Error(1002, "Invalid token"));
+        }
+
+        if (task == null)
+        {
+            return NotFound(ApiResponse<object>.Error(1001, "Task not found"));
+        }
+
+        return Ok(ApiResponse<TaskDto>.Success(task));
+    }
 }
 
 /// <summary>
@@ -202,3 +234,11 @@ public record ReportTaskRequest(string AgentId, string AgentToken, string TaskId
 /// <param name="AgentId">代理 ID</param>
 /// <param name="AgentToken">代理认证令牌</param>
 public record PullActiveExpressionsRequest(string AgentId, string AgentToken);
+
+/// <summary>
+/// 拉取任务内容请求记录
+/// </summary>
+/// <param name="AgentId">代理 ID</param>
+/// <param name="AgentToken">代理认证令牌</param>
+/// <param name="TaskId">任务 ID</param>
+public record PullTaskContentRequest(string AgentId, string AgentToken, string TaskId);

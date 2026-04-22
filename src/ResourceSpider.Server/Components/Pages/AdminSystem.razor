@@ -72,6 +72,24 @@ else
         </section>
 
         <section class="card">
+            <h2>Redis 配置</h2>
+            @if (_redisStatus == null)
+            {
+                <p>暂无 Redis 状态。</p>
+            }
+            else
+            {
+                <p>状态：<strong>@_redisStatus.Status</strong></p>
+                <p>配置存在：@(_redisStatus.Configured ? "是" : "否")</p>
+                <p>连接状态：@(_redisStatus.Connected ? "已连接" : "未连接")</p>
+                <p>任务缓存 TTL：@_redisStatus.TaskContentTtlSeconds 秒</p>
+                <button class="btn btn-secondary" type="button" @onclick="ToggleRedisAsync">
+                    @(_redisStatus.Enabled ? "停用 Redis" : "启用 Redis")
+                </button>
+            }
+        </section>
+
+        <section class="card">
             <h2>最近日志</h2>
             @if (_logs.Count == 0)
             {
@@ -93,6 +111,7 @@ else
 @code {
     private bool _ready;
     private SystemHealthDto? _health;
+    private RedisFeatureStatusDto? _redisStatus;
     private List<SystemLogDto> _logs = new();
 
     protected override async Task OnInitializedAsync()
@@ -110,7 +129,19 @@ else
     private async Task RefreshAsync()
     {
         _health = await ApiClient.GetSystemHealthAsync();
+        _redisStatus = await ApiClient.GetRedisFeatureStatusAsync();
         var logsResponse = await ApiClient.GetSystemLogsAsync();
         _logs = logsResponse?.Logs ?? new List<SystemLogDto>();
+    }
+
+    private async Task ToggleRedisAsync()
+    {
+        if (_redisStatus == null)
+        {
+            return;
+        }
+
+        _redisStatus = await ApiClient.UpdateRedisFeatureStatusAsync(!_redisStatus.Enabled) ?? _redisStatus;
+        _health = await ApiClient.GetSystemHealthAsync();
     }
 }

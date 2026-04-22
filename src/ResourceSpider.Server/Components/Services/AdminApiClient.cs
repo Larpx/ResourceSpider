@@ -116,6 +116,36 @@ public class AdminApiClient
         return payload?.Data;
     }
 
+    public async Task<RedisFeatureStatusDto?> GetRedisFeatureStatusAsync()
+    {
+        var payload = await GetAuthorizedAsync<RedisFeatureStatusDto>("api/admin/system/redis");
+        return payload?.Data;
+    }
+
+    public async Task<RedisFeatureStatusDto?> UpdateRedisFeatureStatusAsync(bool enabled)
+    {
+        if (!_session.IsAuthenticated || string.IsNullOrWhiteSpace(_session.Token))
+        {
+            return null;
+        }
+
+        using var request = new HttpRequestMessage(HttpMethod.Put, "api/admin/system/redis")
+        {
+            Content = JsonContent.Create(new UpdateRedisFeatureRequest(enabled))
+        };
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _session.Token);
+
+        using var response = await _httpClient.SendAsync(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        var payload = await response.Content.ReadFromJsonAsync<ApiResponse<RedisFeatureStatusDto>>();
+        return payload?.Data;
+    }
+
     private async Task<ApiResponse<T>?> GetAuthorizedAsync<T>(string url)
     {
         if (!_session.IsAuthenticated || string.IsNullOrWhiteSpace(_session.Token))
