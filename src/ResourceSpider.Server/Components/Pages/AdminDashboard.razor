@@ -1,0 +1,80 @@
+@page "/admin"
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>后台首页</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载后台信息...</p>
+}
+else
+{
+    <h1>后台管理首页</h1>
+    <p>当前用户：<strong>@Session.Username</strong>（@Session.Role）</p>
+
+    <div class="card-grid">
+        <section class="card">
+            <h2>系统统计</h2>
+            @if (_statistics == null)
+            {
+                <p>暂无统计数据或尚未获取。</p>
+            }
+            else
+            {
+                <ul>
+                    <li>在线 Agent：@_statistics.OnlineAgents / @_statistics.TotalAgents</li>
+                    <li>运行中任务：@_statistics.RunningTasks</li>
+                    <li>待执行任务：@_statistics.PendingTasks</li>
+                    <li>已完成任务：@_statistics.CompletedTasks</li>
+                    <li>总数据量：@_statistics.TotalDataVolume</li>
+                </ul>
+            }
+        </section>
+
+        <section class="card">
+            <h2>系统健康</h2>
+            @if (_health == null)
+            {
+                <p>暂无健康状态数据。</p>
+            }
+            else
+            {
+                <p>状态：<strong>@_health.Status</strong></p>
+                <p>版本：@_health.Version</p>
+                <p>运行时长：@_health.Uptime</p>
+            }
+        </section>
+
+        <section class="card">
+            <h2>管理入口</h2>
+            <ul>
+                <li><a href="/admin/agents">Agent 配置</a></li>
+                <li><a href="/admin/tasks">任务配置</a></li>
+                <li><a href="/admin/expressions">表达式配置</a></li>
+                <li><a href="/admin/proxies">代理池配置</a></li>
+                <li><a href="/admin/system">系统配置</a></li>
+            </ul>
+        </section>
+    </div>
+}
+
+@code {
+    private bool _ready;
+    private SystemStatisticsDto? _statistics;
+    private SystemHealthDto? _health;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        _statistics = await ApiClient.GetSystemStatisticsAsync();
+        _health = await ApiClient.GetSystemHealthAsync();
+        _ready = true;
+    }
+}

@@ -10,7 +10,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 支持按任务 ID 筛选结果，并可将结果导出为 CSV、JSON 或 Excel 格式
 /// </summary>
 [ApiController]
-[Route("api/results")]
+[Route("api/admin/results")]
 [Authorize]
 public class ResultController : ControllerBase
 {

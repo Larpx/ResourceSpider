@@ -10,7 +10,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 包括代理统计、任务统计、系统概览和趋势数据
 /// </summary>
 [ApiController]
-[Route("api/statistics")]
+[Route("api/admin/statistics")]
 [Authorize]
 public class StatisticsController : ControllerBase
 {

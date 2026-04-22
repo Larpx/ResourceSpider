@@ -10,7 +10,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 管理可用的 HTTP 代理资源，支持代理可用性测试
 /// </summary>
 [ApiController]
-[Route("api/proxies")]
+[Route("api/admin/proxies")]
 [Authorize]
 public class ProxyController : ControllerBase
 {

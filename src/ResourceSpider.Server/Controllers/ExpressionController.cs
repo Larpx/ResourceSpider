@@ -10,7 +10,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 表达式定义了从网页中提取数据的规则，支持 XPath、CSS 选择器、正则和 JSONPath
 /// </summary>
 [ApiController]
-[Route("api/expressions")]
+[Route("api/admin/expressions")]
 [Authorize]
 public class ExpressionController : ControllerBase
 {

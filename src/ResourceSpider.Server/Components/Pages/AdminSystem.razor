@@ -1,0 +1,68 @@
+@page "/admin/system"
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>系统配置</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载系统信息...</p>
+}
+else
+{
+    <h1>系统配置</h1>
+
+    <div class="card-grid">
+        <section class="card">
+            <h2>系统健康</h2>
+            @if (_health == null)
+            {
+                <p>暂无健康数据。</p>
+            }
+            else
+            {
+                <p>状态：<strong>@_health.Status</strong></p>
+                <p>版本：@_health.Version</p>
+                <p>运行时长：@_health.Uptime</p>
+            }
+        </section>
+
+        <section class="card">
+            <h2>最近日志</h2>
+            @if (_logs.Count == 0)
+            {
+                <p>暂无日志数据。</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var log in _logs)
+                    {
+                        <li>[@log.Level] @log.Message</li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+}
+
+@code {
+    private bool _ready;
+    private SystemHealthDto? _health;
+    private List<SystemLogDto> _logs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        _health = await ApiClient.GetSystemHealthAsync();
+        var logsResponse = await ApiClient.GetSystemLogsAsync();
+        _logs = logsResponse?.Logs ?? new List<SystemLogDto>();
+        _ready = true;
+    }
+}

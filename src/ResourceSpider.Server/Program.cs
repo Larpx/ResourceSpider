@@ -1,5 +1,4 @@
 using Serilog;
-using ResourceSpider.Server;
 
 namespace ResourceSpider.Server;
 
@@ -20,6 +19,15 @@ public class Program
             .MinimumLevel.Information()
             .Enrich.FromLogContext()
             .CreateLogger();
+
+        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            Log.Fatal((Exception)e.ExceptionObject, "未处理的致命异常");
+
+        TaskScheduler.UnobservedTaskException += (s, e) =>
+        {
+            Log.Error(e.Exception, "未观察到的任务异常");
+            e.SetObserved();
+        };
 
         try
         {

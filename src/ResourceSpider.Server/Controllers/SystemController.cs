@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResourceSpider.Server.DTOs;
+using ResourceSpider.Server.Observability;
 using ResourceSpider.Server.Services;
+using StackExchange.Redis;
 
 namespace ResourceSpider.Server.Controllers;
 
@@ -10,7 +12,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 用于监控系统运行状态和排查问题
 /// </summary>
 [ApiController]
-[Route("api/system")]
+[Route("api/admin/system")]
 [Authorize]
 public class SystemController : ControllerBase
 {
@@ -25,6 +27,11 @@ public class SystemController : ControllerBase
     private readonly ILogger<SystemController> _logger;
 
     /// <summary>
+    /// 启动阶段状态
+    /// </summary>
+    private readonly StartupState _startupState;
+
+    /// <summary>
     /// 系统启动时间，用于计算运行时长
     /// </summary>
     private static readonly DateTime _startedAt = DateTime.UtcNow;
@@ -33,10 +40,15 @@ public class SystemController : ControllerBase
     /// 初始化系统控制器
     /// </summary>
     /// <param name="systemLogService">系统日志服务</param>
+    /// <param name="startupState">启动状态</param>
     /// <param name="logger">日志记录器</param>
-    public SystemController(ISystemLogService systemLogService, ILogger<SystemController> logger)
+    public SystemController(
+        ISystemLogService systemLogService,
+        StartupState startupState,
+        ILogger<SystemController> logger)
     {
         _systemLogService = systemLogService;
+        _startupState = startupState;
         _logger = logger;
     }
 
@@ -48,14 +60,34 @@ public class SystemController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<SystemHealthDto>), 200)]
     public IActionResult Health()
     {
+        var dbStatus = _startupState.DatabaseInitializationSucceeded
+            ? "Connected"
+            : $"Unavailable: {_startupState.DatabaseInitializationError}";
+
+        string redisStatus;
+        try
+        {
+            var redis = HttpContext.RequestServices.GetService<IConnectionMultiplexer>();
+            redisStatus = redis?.IsConnected == true ? "Connected" : "Unavailable";
+        }
+        catch (Exception ex)
+        {
+            redisStatus = $"Unavailable: {ex.Message}";
+            _logger.LogWarning(ex, "Redis 状态检查失败");
+        }
+
+        var overall = _startupState.DatabaseInitializationSucceeded && redisStatus == "Connected"
+            ? "Healthy"
+            : "Degraded";
+
         var health = new SystemHealthDto(
-            "Healthy",
+            overall,
             "1.0.0",
             DateTime.UtcNow - _startedAt,
             new Dictionary<string, string>
             {
-                { "database", "Connected" },
-                { "redis", "Connected" }
+                { "database", dbStatus },
+                { "redis", redisStatus }
             });
 
         return Ok(ApiResponse<SystemHealthDto>.Success(health));

@@ -1,5 +1,8 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using ResourceSpider.Core.Interfaces;
 using ResourceSpider.Infrastructure.Duplicate;
@@ -9,11 +12,14 @@ using ResourceSpider.Infrastructure.Parser;
 using ResourceSpider.Infrastructure.Proxy;
 using ResourceSpider.Infrastructure.Scheduler;
 using ResourceSpider.Infrastructure.Storage;
+using ResourceSpider.Server.Components;
+using ResourceSpider.Server.Components.Services;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Entities;
 using ResourceSpider.Server.Filters;
 using ResourceSpider.Server.Hubs;
 using ResourceSpider.Server.Middleware;
+using ResourceSpider.Server.Observability;
 using ResourceSpider.Server.Repositories;
 using ResourceSpider.Server.Services;
 using Serilog;
@@ -47,6 +53,8 @@ public class Startup
     /// <param name="services">服务集合</param>
     public void ConfigureServices(IServiceCollection services)
     {
+        ConfigureAdminUiServices(services);
+        ConfigureBlazor(services);
         ConfigureControllers(services);
         ConfigureOpenApi(services);
         ConfigureAuthentication(services);
@@ -60,6 +68,27 @@ public class Startup
         ConfigureInfrastructure(services);
         ConfigureOptions(services);
         ConfigureCors(services);
+    }
+
+    /// <summary>
+    /// 配置后台管理 UI 的会话与 API 客户端服务
+    /// </summary>
+    /// <param name="services">服务集合</param>
+    private static void ConfigureAdminUiServices(IServiceCollection services)
+    {
+        services.AddHttpClient();
+        services.AddScoped<AdminSessionState>();
+        services.AddScoped<AdminApiClient>();
+    }
+
+    /// <summary>
+    /// 配置 Blazor Razor Components 服务
+    /// </summary>
+    /// <param name="services">服务集合</param>
+    private static void ConfigureBlazor(IServiceCollection services)
+    {
+        services.AddRazorComponents()
+            .AddInteractiveServerComponents();
     }
 
     /// <summary>
@@ -123,9 +152,11 @@ public class Startup
     /// 配置健康检查服务
     /// </summary>
     /// <param name="services">服务集合</param>
-    private void ConfigureHealthChecks(IServiceCollection services)
+    private static void ConfigureHealthChecks(IServiceCollection services)
     {
-        services.AddHealthChecks();
+        services.AddSingleton<StartupState>();
+        services.AddHealthChecks()
+            .AddCheck<DatabaseHealthCheck>("database", failureStatus: HealthStatus.Unhealthy, tags: ["ready", "db"]);
     }
 
     /// <summary>
@@ -294,27 +325,109 @@ public class Startup
     /// <param name="app">Web 应用程序实例</param>
     private void InitializeDatabase(WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ISqlSugarClient>();
-        db.DbMaintenance.CreateDatabase();
-        db.CodeFirst.InitTables(
-            typeof(AgentEntity),
-            typeof(TaskEntity),
-            typeof(TaskRequestEntity),
-            typeof(TaskStepEntity),
-            typeof(TaskExecutionEntity),
-            typeof(CrawlResultEntity),
-            typeof(ConfigVersionEntity),
-            typeof(ProxyEntity),
-            typeof(StatisticEntity),
-            typeof(ExpressionEntity),
-            typeof(ExpressionFieldEntity),
-            typeof(CollectionResultEntity),
-            typeof(ExpressionAvailabilityEntity),
-            typeof(SystemLogEntity),
-            typeof(AgentGroupEntity),
-            typeof(UserEntity)
-        );
+        var startupState = app.Services.GetRequiredService<StartupState>();
+
+        try
+        {
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<ISqlSugarClient>();
+
+            SeedInitialTestData(db);
+
+            startupState.MarkDatabaseReady();
+            Log.Information("数据库初始化完成");
+        }
+        catch (Exception ex)
+        {
+            startupState.MarkDatabaseFailed(ex);
+            Log.Error(ex, "数据库初始化失败，应用将继续启动（请检查连接字符串）");
+        }
+    }
+
+    private static void SeedInitialTestData(ISqlSugarClient db)
+    {
+        var now = DateTime.UtcNow;
+
+        var databaseExists = true;
+        try
+        {
+            db.Ado.GetInt("SELECT 1");
+        }
+        catch
+        {
+            databaseExists = false;
+        }
+
+        if (!databaseExists)
+        {
+            db.DbMaintenance.CreateDatabase();
+        }
+
+        var usersTableExists = false;
+        try
+        {
+            usersTableExists = db.DbMaintenance.IsAnyTable("users", false);
+        }
+        catch
+        {
+            usersTableExists = false;
+        }
+
+        if (!usersTableExists)
+        {
+            db.CodeFirst.InitTables(
+                typeof(AgentEntity),
+                typeof(TaskEntity),
+                typeof(TaskRequestEntity),
+                typeof(TaskStepEntity),
+                typeof(TaskExecutionEntity),
+                typeof(CrawlResultEntity),
+                typeof(ConfigVersionEntity),
+                typeof(ProxyEntity),
+                typeof(StatisticEntity),
+                typeof(ExpressionEntity),
+                typeof(ExpressionFieldEntity),
+                typeof(CollectionResultEntity),
+                typeof(ExpressionAvailabilityEntity),
+                typeof(SystemLogEntity),
+                typeof(AgentGroupEntity),
+                typeof(UserEntity)
+            );
+        }
+
+        if (!db.DbMaintenance.IsAnyTable("users", false))
+        {
+            return;
+        }
+
+        if (db.Queryable<UserEntity>().Count() > 0)
+        {
+            return;
+        }
+
+        db.Insertable(new List<UserEntity>
+        {
+            new()
+            {
+                UserId = "u_admin_default",
+                Username = "admin",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123456"),
+                Role = "Admin",
+                Status = 1,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new()
+            {
+                UserId = "u_operator_demo",
+                Username = "operator",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Operator@123456"),
+                Role = "Operator",
+                Status = 1,
+                CreatedAt = now,
+                UpdatedAt = now
+            }
+        }).ExecuteCommand();
     }
 
     /// <summary>
@@ -327,10 +440,12 @@ public class Startup
         app.UseMiddleware<RateLimitingMiddleware>();
         app.UseMiddleware<SecurityHeadersMiddleware>();
 
+        app.UseStaticFiles();
         app.UseCors();
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseAntiforgery();
 
         if (app.Environment.IsDevelopment())
         {
@@ -345,8 +460,37 @@ public class Startup
     /// <param name="app">Web 应用程序实例</param>
     private void ConfigureEndpoints(WebApplication app)
     {
+        app.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode();
         app.MapControllers();
         app.MapHub<SpiderHub>("/hubs/spider");
-        app.MapHealthChecks("/health");
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = WriteHealthResponse
+        });
+    }
+
+    private static Task WriteHealthResponse(HttpContext context, HealthReport report)
+    {
+        context.Response.ContentType = "application/json";
+
+        var payload = new
+        {
+            status = report.Status.ToString(),
+            totalDuration = report.TotalDuration.TotalMilliseconds,
+            entries = report.Entries.ToDictionary(
+                x => x.Key,
+                x => new
+                {
+                    status = x.Value.Status.ToString(),
+                    description = x.Value.Description,
+                    duration = x.Value.Duration.TotalMilliseconds,
+                    exception = x.Value.Exception?.Message,
+                    data = x.Value.Data
+                }),
+            timestamp = DateTime.UtcNow
+        };
+
+        return context.Response.WriteAsync(JsonSerializer.Serialize(payload));
     }
 }

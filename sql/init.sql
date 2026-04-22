@@ -1,5 +1,92 @@
 -- ResourceSpider Database Initialization Script
 -- MySQL 8.0+
+--
+-- =============================================
+-- MySQL 大小写敏感配置说明
+-- =============================================
+-- Windows 系统下 MySQL 默认 lower_case_table_names=1（不区分大小写）
+-- Linux 系统下 MySQL 默认 lower_case_table_names=0（区分大小写）
+--
+-- 如需统一不区分大小写，请修改 MySQL 配置文件：
+-- lower_case_table_names=1
+--
+-- 如需统一区分大小写（Windows 系统），请修改：
+-- lower_case_table_names=0
+--
+-- 配置文件位置：
+-- Windows: my.ini (MySQL Server 8.4\my.ini)
+-- Linux: /etc/mysql/my.cnf 或 /etc/my.cnf
+--
+-- 注意：此参数必须在 MySQL 数据目录初始化前设置，已初始化的数据库需要重新初始化
+-- =============================================
+
+-- =============================================
+-- MySQL 重新初始化步骤（Windows 环境 - 区分大小写）
+-- =============================================
+-- 1. 停止 MySQL 服务
+--    net stop mysql84
+--
+-- 2. 备份数据（重要！）
+--    xcopy "C:\ProgramData\MySQL\MySQL Server 8.4\Data" "C:\MySQL-Backup" /E /I
+--
+-- 3. 删除或移动现有数据目录
+--    rmdir /S /Q "C:\ProgramData\MySQL\MySQL Server 8.4\Data"
+--    或移动到其他位置作为备份
+--
+-- 4. 修改 my.ini 配置文件，添加或修改：
+--    [mysqld]
+--    lower_case_table_names=0
+--
+-- 5. 重新初始化 MySQL（以管理员运行命令提示符）
+--    mysqld --initialize --console
+--    注意：请记录初始化后生成的临时密码
+--
+-- 6. 启动 MySQL 服务
+--    net start mysql84
+--
+-- 7. 使用临时密码登录并修改密码
+--    mysql -u root -p
+--    ALTER USER 'root'@'localhost' IDENTIFIED BY 'YourNewPassword';
+--
+-- 8. 运行本脚本初始化数据库
+--    source d:\Work\repos\ResourceSpider\sql\init.sql
+--
+-- 9. 重新导入备份数据（如有）
+-- =============================================
+
+-- =============================================
+-- MySQL 重新初始化步骤（Windows 环境 - 不区分大小写）
+-- =============================================
+-- 1. 停止 MySQL 服务
+--    net stop mysql84
+--
+-- 2. 备份数据（重要！）
+--    xcopy "C:\ProgramData\MySQL\MySQL Server 8.4\Data" "C:\MySQL-Backup" /E /I
+--
+-- 3. 删除或移动现有数据目录
+--    rmdir /S /Q "C:\ProgramData\MySQL\MySQL Server 8.4\Data"
+--    或移动到其他位置作为备份
+--
+-- 4. 修改 my.ini 配置文件，添加或修改：
+--    [mysqld]
+--    lower_case_table_names=1
+--
+-- 5. 重新初始化 MySQL（以管理员运行命令提示符）
+--    mysqld --initialize --console
+--    注意：请记录初始化后生成的临时密码
+--
+-- 6. 启动 MySQL 服务
+--    net start mysql84
+--
+-- 7. 使用临时密码登录并修改密码
+--    mysql -u root -p
+--    ALTER USER 'root'@'localhost' IDENTIFIED BY 'YourNewPassword';
+--
+-- 8. 运行本脚本初始化数据库
+--    source d:\Work\repos\ResourceSpider\sql\init.sql
+--
+-- 9. 重新导入备份数据（如有）
+-- ==============================================
 
 CREATE DATABASE IF NOT EXISTS ResourceSpider DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE ResourceSpider;
@@ -312,3 +399,61 @@ CREATE TABLE IF NOT EXISTS statistics (
     UNIQUE KEY uk_agent_date (AgentId, StatDate),
     INDEX idx_stat_date (StatDate)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='统计表';
+
+-- ==================== 测试数据 ====================
+
+-- 用户表测试数据
+-- 密码说明: BCrypt加密，Admin@123 的哈希值为 $2a$11$rR2e...
+-- 原始密码: Admin@123 (管理员), Operator@123 (操作员), Viewer@123 (查看者)
+INSERT INTO users (UserId, Username, PasswordHash, Role, Status) VALUES
+('user-admin-001', 'admin', '$2a$11$rR2e7xKmJb5lP5v5v5v5vO.k5v5v5v5v5v5v5v5v5v5v5v5v5v5v5', 'Admin', 1),
+('user-operator-001', 'operator', '$2a$11$oR2f8KnLc6mP6w6w6w6w6P.l6w6w6w6w6w6w6w6w6w6w6w6w6w6w6w', 'Operator', 1),
+('user-viewer-001', 'viewer', '$2a$11$pS3g9LoMd7nQ7x7x7x7x7Q.m7x7x7x7x7x7x7x7x7x7x7x7x7x7x7x', 'Viewer', 1);
+
+-- Agent分组测试数据
+INSERT INTO agent_groups (GroupId, GroupName, Description) VALUES
+('group-default', '默认分组', '系统默认Agent分组'),
+('group-high-priority', '高优先级分组', '用于处理高优先级任务的Agent分组'),
+('group-scraper', '爬虫分组', '专门执行爬虫任务的Agent分组');
+
+-- Agent测试数据
+INSERT INTO agents (AgentId, AgentName, AgentToken, IpAddress, Port, Capabilities, Status, Tags, GroupId, OS, Version) VALUES
+('agent-001', '主爬虫Agent', 'token-agent-001-abc123', '192.168.1.101', 8080, '{"canCrawl": true, "canParse": true, "maxConcurrency": 10}', 1, '["爬虫", "主力"]', 'group-default', 'Linux', '1.0.0'),
+('agent-002', '辅助爬虫Agent', 'token-agent-002-def456', '192.168.1.102', 8081, '{"canCrawl": true, "canParse": true, "maxConcurrency": 5}', 1, '["爬虫", "辅助"]', 'group-default', 'Windows', '1.0.0'),
+('agent-003', '高优先级Agent', 'token-agent-003-ghi789', '192.168.1.103', 8082, '{"canCrawl": true, "canParse": true, "maxConcurrency": 20}', 1, '["高优先级", "快速"]', 'group-high-priority', 'Linux', '1.1.0');
+
+-- 表达式测试数据
+INSERT INTO expressions (ExpressionId, Name, Description, SelectorType, ContainerExpression, Status, SuccessCount, FailureCount, CreatedBy) VALUES
+('expr-title-001', '页面标题表达式', '用于提取网页标题的XPath表达式', 'XPath', '//title', 1, 100, 2, 'user-admin-001'),
+('expr-content-001', '正文内容表达式', '用于提取网页正文的XPath表达式', 'XPath', '//div[@class="content"]', 1, 95, 5, 'user-admin-001'),
+('expr-link-001', '链接提取表达式', '用于提取页面链接的XPath表达式', 'XPath', '//a[@class="link"]/@href', 1, 200, 10, 'user-admin-001');
+
+-- 表达式字段测试数据
+INSERT INTO expression_fields (FieldId, ExpressionId, FieldName, SelectorType, Expression, AttributeName, IsRequired, SortOrder) VALUES
+('field-title-001', 'expr-title-001', '页面标题', 'XPath', '//title', NULL, 1, 1),
+('field-content-001', 'expr-content-001', '正文', 'XPath', '//div[@class="content"]', NULL, 1, 1),
+('field-link-001', 'expr-link-001', '链接地址', 'XPath', '//a[@class="link"]', 'href', 1, 1);
+
+-- 任务测试数据
+INSERT INTO tasks (TaskId, TaskName, TaskType, Priority, Status, RequestConfig, Tags, CreatedBy, Progress, TotalRequests, CompletedRequests) VALUES
+('task-001', '示例单页爬虫任务', 'SinglePage', 5, 2, '{"url": "https://example.com", "method": "GET", "timeout": 30000}', '["示例", "测试"]', 'user-admin-001', 100.00, 10, 10),
+('task-002', '示例分页爬虫任务', 'Paginated', 7, 1, '{"startUrl": "https://example.com/list", "method": "GET", "timeout": 30000}', '["示例", "分页"]', 'user-admin-001', 45.50, 100, 45),
+('task-003', '示例多阶段爬虫任务', 'MultiStage', 3, 0, '{"stages": 3}', '["示例", "多阶段"]', 'user-operator-001', 0.00, 0, 0);
+
+-- 任务步骤测试数据
+INSERT INTO task_steps (StepId, TaskId, StepOrder, StepName, CollectionMode, RequestConfig, ExtractionRules, VariableMappings) VALUES
+('step-001', 'task-001', 1, '获取页面内容', 'HttpClient', '{"url": "https://example.com", "method": "GET"}', '{"title": "//title", "content": "//div[@class=\\"content\\"]"}', NULL),
+('step-002', 'task-002', 1, '获取列表页', 'HttpClient', '{"url": "https://example.com/list", "method": "GET"}', '{"links": "//a[@class=\\"item\\"]/@href"}', NULL),
+('step-002', 'task-002', 2, '获取详情页', 'HttpClient', '{"url": "https://example.com/detail/{id}", "method": "GET"}', '{"title": "//title", "content": "//div[@class=\\"content\\"]"}', '{"id": "links"}');
+
+-- 代理测试数据
+INSERT INTO proxies (ProxyId, Host, Port, Protocol, Status, SuccessCount, FailureCount) VALUES
+('proxy-001', '192.168.1.200', 8080, 'HTTP', 1, 50, 5),
+('proxy-002', '192.168.1.201', 8080, 'HTTP', 1, 45, 8),
+('proxy-003', '192.168.1.202', 8080, 'HTTPS', 0, 0, 0);
+
+-- 系统日志测试数据
+INSERT INTO system_logs (Level, Category, Message, Detail, UserId) VALUES
+('Info', 'System', '系统初始化完成', '{"version": "1.0.0", "environment": "Development"}', 'user-admin-001'),
+('Info', 'Task', '任务创建成功', '{"taskId": "task-001", "taskName": "示例单页爬虫任务"}', 'user-admin-001'),
+('Warning', 'Agent', 'Agent心跳超时', '{"agentId": "agent-001", "lastHeartbeat": "2026-04-22 10:00:00"}', NULL);

@@ -1,0 +1,226 @@
+2026-04-22 13:17:46.056 +08:00 [INF] ResourceSpider Server 正在启动
+2026-04-22 13:17:47.182 +08:00 [INF] ResourceSpider Server 启动，地址：https://localhost:0;http://localhost:0
+2026-04-22 13:17:47.201 +08:00 [INF] User profile is available. Using 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-22 13:17:47.355 +08:00 [ERR] Hosting failed to start
+System.InvalidOperationException: Dynamic port binding is not supported when binding to localhost. You must either bind to 127.0.0.1:0 or [::1]:0, or both.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions..ctor(Int32 port)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.ParseAddress(String address, Boolean& https)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-04-22 13:17:47.379 +08:00 [FTL] ResourceSpider Server 启动失败
+System.InvalidOperationException: Dynamic port binding is not supported when binding to localhost. You must either bind to 127.0.0.1:0 or [::1]:0, or both.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions..ctor(Int32 port)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.ParseAddress(String address, Boolean& https)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at ResourceSpider.Server.Program.Main(String[] args) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Program.cs:line 27
+2026-04-22 13:17:53.482 +08:00 [INF] ResourceSpider Server 正在启动
+2026-04-22 13:17:55.254 +08:00 [INF] ResourceSpider Server 启动，地址：https://localhost:0;http://localhost:0
+2026-04-22 13:17:55.270 +08:00 [INF] User profile is available. Using 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-22 13:17:55.606 +08:00 [ERR] Hosting failed to start
+System.InvalidOperationException: Dynamic port binding is not supported when binding to localhost. You must either bind to 127.0.0.1:0 or [::1]:0, or both.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions..ctor(Int32 port)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.ParseAddress(String address, Boolean& https)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-04-22 13:17:55.684 +08:00 [FTL] ResourceSpider Server 启动失败
+System.InvalidOperationException: Dynamic port binding is not supported when binding to localhost. You must either bind to 127.0.0.1:0 or [::1]:0, or both.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions..ctor(Int32 port)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.ParseAddress(String address, Boolean& https)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at ResourceSpider.Server.Program.Main(String[] args) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Program.cs:line 27
+2026-04-22 13:18:15.732 +08:00 [INF] ResourceSpider Server 正在启动
+2026-04-22 13:18:16.590 +08:00 [INF] ResourceSpider Server 启动，地址：https://127.0.0.1:0;http://127.0.0.1:0
+2026-04-22 13:18:16.605 +08:00 [INF] User profile is available. Using 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-22 13:18:16.729 +08:00 [INF] Now listening on: https://127.0.0.1:57684
+2026-04-22 13:18:16.731 +08:00 [INF] Now listening on: http://127.0.0.1:57685
+2026-04-22 13:18:16.734 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-22 13:18:16.735 +08:00 [INF] Hosting environment: Development
+2026-04-22 13:18:16.737 +08:00 [INF] Content root path: D:\Work\repos\ResourceSpider\src\ResourceSpider.Server
+2026-04-22 13:18:35.878 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:57684/ - null null
+2026-04-22 13:18:35.929 +08:00 [ERR] Unhandled exception occurred
+System.InvalidOperationException: Endpoint / (/) contains anti-forgery metadata, but a middleware was not found that supports anti-forgery.
+Configure your application startup by adding app.UseAntiforgery() in the application startup code. If there are calls to app.UseRouting() and app.UseEndpoints(...), the call to app.UseAntiforgery() must go between them. Calls to app.UseAntiforgery() must be placed after calls to app.UseAuthentication() and app.UseAuthorization().
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.ThrowMissingAntiforgeryMiddlewareException(Endpoint endpoint)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.DefaultFilesMiddleware.Invoke(HttpContext context)
+   at NSwag.AspNetCore.Middlewares.SwaggerUiIndexMiddleware.Invoke(HttpContext context)
+   at NSwag.AspNetCore.Middlewares.RedirectToIndexMiddleware.Invoke(HttpContext context)
+   at NSwag.AspNetCore.Middlewares.OpenApiDocumentMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at ResourceSpider.Server.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Middleware\SecurityHeadersMiddleware.cs:line 36
+   at ResourceSpider.Server.Middleware.RateLimitingMiddleware.InvokeAsync(HttpContext context) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Middleware\RateLimitingMiddleware.cs:line 91
+   at ResourceSpider.Server.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Middleware\ExceptionHandlingMiddleware.cs:line 43
+2026-04-22 13:18:35.969 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:57684/ - 500 null application/json 92.8056ms
+2026-04-22 13:18:36.341 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:57684/favicon.ico - null null
+2026-04-22 13:18:36.350 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:57684/favicon.ico - 404 0 null 9.0612ms
+2026-04-22 13:18:36.357 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://127.0.0.1:57684/favicon.ico, Response status code: 404
+2026-04-22 13:18:47.481 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:57684/ - null null
+2026-04-22 13:18:47.488 +08:00 [ERR] Unhandled exception occurred
+System.InvalidOperationException: Endpoint / (/) contains anti-forgery metadata, but a middleware was not found that supports anti-forgery.
+Configure your application startup by adding app.UseAntiforgery() in the application startup code. If there are calls to app.UseRouting() and app.UseEndpoints(...), the call to app.UseAntiforgery() must go between them. Calls to app.UseAntiforgery() must be placed after calls to app.UseAuthentication() and app.UseAuthorization().
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.ThrowMissingAntiforgeryMiddlewareException(Endpoint endpoint)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.DefaultFilesMiddleware.Invoke(HttpContext context)
+   at NSwag.AspNetCore.Middlewares.SwaggerUiIndexMiddleware.Invoke(HttpContext context)
+   at NSwag.AspNetCore.Middlewares.RedirectToIndexMiddleware.Invoke(HttpContext context)
+   at NSwag.AspNetCore.Middlewares.OpenApiDocumentMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at ResourceSpider.Server.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Middleware\SecurityHeadersMiddleware.cs:line 36
+   at ResourceSpider.Server.Middleware.RateLimitingMiddleware.InvokeAsync(HttpContext context) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Middleware\RateLimitingMiddleware.cs:line 91
+   at ResourceSpider.Server.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\Middleware\ExceptionHandlingMiddleware.cs:line 43
+2026-04-22 13:18:47.495 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:57684/ - 500 null application/json 14.7252ms
+2026-04-22 13:18:56.880 +08:00 [INF] Application is shutting down...
+2026-04-22 13:19:40.023 +08:00 [INF] ResourceSpider Server 正在启动
+2026-04-22 13:19:40.829 +08:00 [INF] User profile is available. Using 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-22 13:19:40.970 +08:00 [INF] ResourceSpider Server 启动，地址：https://127.0.0.1:0;http://127.0.0.1:0
+2026-04-22 13:19:41.106 +08:00 [INF] Now listening on: https://127.0.0.1:49987
+2026-04-22 13:19:41.109 +08:00 [INF] Now listening on: http://127.0.0.1:49988
+2026-04-22 13:19:41.111 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-22 13:19:41.113 +08:00 [INF] Hosting environment: Development
+2026-04-22 13:19:41.114 +08:00 [INF] Content root path: D:\Work\repos\ResourceSpider\src\ResourceSpider.Server
+2026-04-22 13:19:59.062 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/ - null null
+2026-04-22 13:19:59.121 +08:00 [INF] Executing endpoint '/ (/)'
+2026-04-22 13:19:59.229 +08:00 [INF] Executed endpoint '/ (/)'
+2026-04-22 13:19:59.233 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/ - 302 null text/html; charset=utf-8 172.9957ms
+2026-04-22 13:19:59.240 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/welcome - null null
+2026-04-22 13:19:59.246 +08:00 [INF] Executing endpoint '/welcome (/welcome)'
+2026-04-22 13:19:59.294 +08:00 [INF] Executed endpoint '/welcome (/welcome)'
+2026-04-22 13:19:59.300 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/welcome - 200 null text/html; charset=utf-8 60.2603ms
+2026-04-22 13:19:59.340 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/app.css - null null
+2026-04-22 13:19:59.340 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/_framework/blazor.web.js - null null
+2026-04-22 13:19:59.366 +08:00 [INF] Sending file. Request path: '/app.css'. Physical path: 'D:\Work\repos\ResourceSpider\src\ResourceSpider.Server\wwwroot\app.css'
+2026-04-22 13:19:59.366 +08:00 [INF] Sending file. Request path: '/_framework/blazor.web.js'. Physical path: 'C:\Users\HZhao\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.5\_framework\blazor.web.js'
+2026-04-22 13:19:59.369 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/app.css - 200 1928 text/css 28.2678ms
+2026-04-22 13:19:59.371 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/_framework/blazor.web.js - 200 200213 text/javascript 30.5826ms
+2026-04-22 13:19:59.398 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/_blazor/initializers - null null
+2026-04-22 13:19:59.407 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:19:59.414 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:19:59.416 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/_blazor/initializers - 200 null application/json; charset=utf-8 18.3954ms
+2026-04-22 13:19:59.427 +08:00 [INF] Request starting HTTP/2 POST https://127.0.0.1:49987/_blazor/negotiate?negotiateVersion=1 - null 0
+2026-04-22 13:19:59.434 +08:00 [INF] CORS policy execution failed.
+2026-04-22 13:19:59.436 +08:00 [INF] Request origin https://127.0.0.1:49987 does not have permission to access the resource.
+2026-04-22 13:19:59.440 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:19:59.452 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:19:59.454 +08:00 [INF] Request finished HTTP/2 POST https://127.0.0.1:49987/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 27.2114ms
+2026-04-22 13:19:59.497 +08:00 [INF] Request starting HTTP/2 CONNECT https://127.0.0.1:49987/_blazor?id=TtPRCNMCO1-pQDl2NTt1lA - null null
+2026-04-22 13:19:59.506 +08:00 [INF] CORS policy execution failed.
+2026-04-22 13:19:59.507 +08:00 [INF] Request origin https://127.0.0.1:49987 does not have permission to access the resource.
+2026-04-22 13:19:59.509 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:19:59.538 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/favicon.ico - null null
+2026-04-22 13:19:59.545 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/favicon.ico - 404 0 null 7.0608ms
+2026-04-22 13:19:59.551 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://127.0.0.1:49987/favicon.ico, Response status code: 404
+2026-04-22 13:20:16.672 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger - null null
+2026-04-22 13:20:16.679 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger - 302 0 null 7.2938ms
+2026-04-22 13:20:16.686 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - null null
+2026-04-22 13:20:16.746 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - 200 null text/html; charset=utf-8 59.6075ms
+2026-04-22 13:20:16.767 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:16.770 +08:00 [INF] Request finished HTTP/2 CONNECT https://127.0.0.1:49987/_blazor?id=TtPRCNMCO1-pQDl2NTt1lA - 200 null null 17271.8558ms
+2026-04-22 13:20:16.795 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui.css - null null
+2026-04-22 13:20:16.809 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/index.css - null null
+2026-04-22 13:20:16.809 +08:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-04-22 13:20:16.809 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui-bundle.js - null null
+2026-04-22 13:20:16.810 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui-standalone-preset.js - null null
+2026-04-22 13:20:16.813 +08:00 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2026-04-22 13:20:16.814 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui.css - 200 154988 text/css 18.5494ms
+2026-04-22 13:20:16.821 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/index.css - 200 218 text/css 12.1037ms
+2026-04-22 13:20:16.826 +08:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-04-22 13:20:16.838 +08:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-04-22 13:20:16.845 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui-standalone-preset.js - 200 229224 text/javascript 34.385ms
+2026-04-22 13:20:16.846 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui-bundle.js - 200 1468327 text/javascript 36.687ms
+2026-04-22 13:20:17.018 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/favicon-32x32.png - null null
+2026-04-22 13:20:17.025 +08:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-04-22 13:20:17.029 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/favicon-32x32.png - 200 628 image/png 10.9026ms
+2026-04-22 13:20:29.456 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/overview - null null
+2026-04-22 13:20:29.462 +08:00 [INF] Executing endpoint '/overview (/overview)'
+2026-04-22 13:20:29.468 +08:00 [INF] Executed endpoint '/overview (/overview)'
+2026-04-22 13:20:29.470 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/overview - 200 null text/html; charset=utf-8 14.2829ms
+2026-04-22 13:20:29.529 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/_blazor/initializers - null null
+2026-04-22 13:20:29.536 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:29.539 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:29.542 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/_blazor/initializers - 200 null application/json; charset=utf-8 13.4327ms
+2026-04-22 13:20:29.550 +08:00 [INF] Request starting HTTP/2 POST https://127.0.0.1:49987/_blazor/negotiate?negotiateVersion=1 - null 0
+2026-04-22 13:20:29.554 +08:00 [INF] CORS policy execution failed.
+2026-04-22 13:20:29.555 +08:00 [INF] Request origin https://127.0.0.1:49987 does not have permission to access the resource.
+2026-04-22 13:20:29.557 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:29.559 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:29.561 +08:00 [INF] Request finished HTTP/2 POST https://127.0.0.1:49987/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 11.5204ms
+2026-04-22 13:20:29.597 +08:00 [INF] Request starting HTTP/2 CONNECT https://127.0.0.1:49987/_blazor?id=RzlDFyhpK97TKT509HcysQ - null null
+2026-04-22 13:20:29.604 +08:00 [INF] CORS policy execution failed.
+2026-04-22 13:20:29.606 +08:00 [INF] Request origin https://127.0.0.1:49987 does not have permission to access the resource.
+2026-04-22 13:20:29.610 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:34.720 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/health - null null
+2026-04-22 13:20:34.725 +08:00 [INF] Executing endpoint 'Health checks'
+2026-04-22 13:20:34.732 +08:00 [INF] Executed endpoint 'Health checks'
+2026-04-22 13:20:34.734 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/health - 200 null text/plain 14.6673ms
+2026-04-22 13:20:34.742 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:34.744 +08:00 [INF] Request finished HTTP/2 CONNECT https://127.0.0.1:49987/_blazor?id=RzlDFyhpK97TKT509HcysQ - 200 null null 5146.6992ms
+2026-04-22 13:20:36.052 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/overview - null null
+2026-04-22 13:20:36.056 +08:00 [INF] Executing endpoint '/overview (/overview)'
+2026-04-22 13:20:36.059 +08:00 [INF] Executed endpoint '/overview (/overview)'
+2026-04-22 13:20:36.061 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/overview - 200 null text/html; charset=utf-8 9.0649ms
+2026-04-22 13:20:36.105 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/_blazor/initializers - null null
+2026-04-22 13:20:36.109 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:36.110 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:36.112 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/_blazor/initializers - 200 null application/json; charset=utf-8 7.1703ms
+2026-04-22 13:20:36.154 +08:00 [INF] Request starting HTTP/2 POST https://127.0.0.1:49987/_blazor/negotiate?negotiateVersion=1 - null 0
+2026-04-22 13:20:36.160 +08:00 [INF] CORS policy execution failed.
+2026-04-22 13:20:36.161 +08:00 [INF] Request origin https://127.0.0.1:49987 does not have permission to access the resource.
+2026-04-22 13:20:36.163 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:36.165 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:36.167 +08:00 [INF] Request finished HTTP/2 POST https://127.0.0.1:49987/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 13.4829ms
+2026-04-22 13:20:36.176 +08:00 [INF] Request starting HTTP/2 CONNECT https://127.0.0.1:49987/_blazor?id=i6LFJAi3_Ow6k5sRvngclw - null null
+2026-04-22 13:20:36.180 +08:00 [INF] CORS policy execution failed.
+2026-04-22 13:20:36.181 +08:00 [INF] Request origin https://127.0.0.1:49987 does not have permission to access the resource.
+2026-04-22 13:20:36.183 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 13:20:38.661 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger - null null
+2026-04-22 13:20:38.664 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger - 302 0 null 3.3002ms
+2026-04-22 13:20:38.672 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - null null
+2026-04-22 13:20:38.678 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - 200 null text/html; charset=utf-8 5.404ms
+2026-04-22 13:21:00.646 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger - null null
+2026-04-22 13:21:00.650 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger - 302 0 null 4.3066ms
+2026-04-22 13:21:00.658 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - null null
+2026-04-22 13:21:00.663 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - 200 null text/html; charset=utf-8 4.9173ms
+2026-04-22 13:21:03.783 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-04-22 13:21:03.788 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 4.8504ms
+2026-04-22 13:21:03.794 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://127.0.0.1:49987/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-04-22 13:21:04.332 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui.css.map - null null
+2026-04-22 13:21:04.337 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui.css.map - 404 0 null 5.2917ms
+2026-04-22 13:21:04.344 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://127.0.0.1:49987/swagger/swagger-ui.css.map, Response status code: 404
+2026-04-22 13:21:04.916 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - null null
+2026-04-22 13:21:04.922 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/index.html - 200 null text/html; charset=utf-8 5.5769ms
+2026-04-22 13:21:04.962 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-04-22 13:21:04.972 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 10.1608ms
+2026-04-22 13:21:04.988 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://127.0.0.1:49987/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-04-22 13:21:05.005 +08:00 [INF] Request starting HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui.css.map - null null
+2026-04-22 13:21:05.011 +08:00 [INF] Request finished HTTP/2 GET https://127.0.0.1:49987/swagger/swagger-ui.css.map - 404 0 null 5.2489ms
+2026-04-22 13:21:05.019 +08:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://127.0.0.1:49987/swagger/swagger-ui.css.map, Response status code: 404

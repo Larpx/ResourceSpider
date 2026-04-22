@@ -21,22 +21,43 @@ public class ApiResponseFilter : IAsyncResultFilter
     {
         if (context.Result is ObjectResult objectResult)
         {
-            if (objectResult.Value != null && 
-                objectResult.Value.GetType().IsGenericType && 
-                objectResult.Value.GetType().GetGenericTypeDefinition() == typeof(ApiResponse<>))
+            if (IsApiResponseType(objectResult.Value?.GetType()))
             {
                 await next();
                 return;
             }
 
             var statusCode = objectResult.StatusCode ?? 200;
-            var response = statusCode >= 200 && statusCode < 300
-                ? ApiResponse<object>.Success(objectResult.Value!, "操作成功")
+            objectResult.Value = statusCode >= 200 && statusCode < 300
+                ? ApiResponse<object>.Success(objectResult.Value, "操作成功")
                 : ApiResponse<object>.Error(statusCode, "操作失败");
-
-            objectResult.Value = response;
         }
 
         await next();
+    }
+
+    private static bool IsApiResponseType(Type? type)
+    {
+        while (type != null)
+        {
+            if (type == typeof(ApiResponse))
+            {
+                return true;
+            }
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ApiResponse<>))
+            {
+                return true;
+            }
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ResourceSpider.Core.Models.ApiResponse<>))
+            {
+                return true;
+            }
+
+            type = type.BaseType;
+        }
+
+        return false;
     }
 }

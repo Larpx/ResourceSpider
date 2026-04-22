@@ -1,0 +1,17 @@
+@page "/"
+@inject NavigationManager Navigation
+
+<PageTitle>跳转中</PageTitle>
+
+<p>正在进入欢迎页...</p>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // 在首次渲染时执行导航，避免在预呈现阶段调用 Navigation.NavigateTo 导致 NavigationException
+            Navigation.NavigateTo("/welcome", replace: true);
+        }
+    }
+}

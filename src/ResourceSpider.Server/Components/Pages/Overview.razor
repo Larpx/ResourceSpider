@@ -1,0 +1,23 @@
+@page "/overview"
+
+<PageTitle>系统概览</PageTitle>
+
+<h1>系统概览</h1>
+
+<div class="card-grid">
+    <section class="card">
+        <h2>管理端 API</h2>
+        <p>后台管理：<code>/api/admin/*</code></p>
+        <p>后台登录：<code>/api/admin/auth/login</code></p>
+    </section>
+    <section class="card">
+        <h2>Agent 通讯 API</h2>
+        <p>节点通讯：<code>/api/agent/*</code></p>
+        <p>任务拉取与结果上报：<code>/api/agent/tasks/*</code>、<code>/api/agent/results/*</code></p>
+    </section>
+    <section class="card">
+        <h2>运维入口</h2>
+        <p>Swagger：<code>/swagger</code></p>
+        <p>健康检查：<code>/health</code></p>
+    </section>
+</div>

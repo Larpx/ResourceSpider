@@ -9,7 +9,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 采集结果控制器，提供按 ID、任务 ID 和表达式 ID 查询采集结果的功能
 /// </summary>
 [ApiController]
-[Route("api/results")]
+[Route("api/admin/collection-results")]
 [Authorize]
 public class CollectionResultController : ControllerBase
 {

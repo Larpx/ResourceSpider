@@ -10,7 +10,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 支持按分组管理代理节点，便于批量操作和资源隔离
 /// </summary>
 [ApiController]
-[Route("api/agents/groups")]
+[Route("api/admin/agent-groups")]
 [Authorize]
 public class AgentGroupController : ControllerBase
 {

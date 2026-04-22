@@ -1,0 +1,61 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<div class="page">
+    <header class="top-bar">
+        <div class="brand">ResourceSpider Server</div>
+        <nav class="menu">
+            <NavLink href="/welcome">欢迎</NavLink>
+            <NavLink href="/home">主页</NavLink>
+            <NavLink href="/overview">系统概览</NavLink>
+
+            @if (Session.IsAuthenticated)
+            {
+                <NavLink href="/admin">后台首页</NavLink>
+                <NavLink href="/admin/agents">Agent 配置</NavLink>
+                <NavLink href="/admin/tasks">任务配置</NavLink>
+                <NavLink href="/admin/expressions">表达式配置</NavLink>
+                <NavLink href="/admin/proxies">代理配置</NavLink>
+                <NavLink href="/admin/system">系统配置</NavLink>
+                <button class="menu-button" type="button" @onclick="Logout">退出</button>
+            }
+            else
+            {
+                <NavLink href="/admin/login">后台登录</NavLink>
+            }
+
+            <a href="/swagger" target="_blank">API 文档</a>
+            <a href="/health" target="_blank">健康检查</a>
+        </nav>
+    </header>
+
+    <main class="content">
+        @Body
+    </main>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Session.OnChange += HandleSessionChanged;
+    }
+
+    private void Logout()
+    {
+        ApiClient.Logout();
+        Navigation.NavigateTo("/welcome", replace: true);
+    }
+
+    private void HandleSessionChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Session.OnChange -= HandleSessionChanged;
+    }
+}

@@ -10,7 +10,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 包括创建、查询、更新、删除以及执行控制（暂停、恢复、终止）
 /// </summary>
 [ApiController]
-[Route("api/tasks")]
+[Route("api/admin/tasks")]
 [Authorize]
 public class TaskController : ControllerBase
 {

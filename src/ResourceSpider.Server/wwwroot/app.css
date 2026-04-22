@@ -1,0 +1,119 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+.page {
+    min-height: 100vh;
+}
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #111827;
+    color: #ffffff;
+    gap: 16px;
+}
+
+.brand {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.menu a,
+.menu .active {
+    color: #d1d5db;
+    text-decoration: none;
+}
+
+.menu a:hover,
+.menu .active {
+    color: #ffffff;
+}
+
+.menu-button {
+    border: 0;
+    border-radius: 6px;
+    background: #374151;
+    color: #f9fafb;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.content {
+    max-width: 1080px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.form-card {
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 10px;
+    background: #ffffff;
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.btn {
+    border: 0;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 8px 14px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #4b5563;
+}
+
+.error-text {
+    color: #b91c1c;
+    margin: 4px 0;
+}

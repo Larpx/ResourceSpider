@@ -10,7 +10,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 支持在线测试 XPath、CSS 选择器、正则表达式和 JSONPath 等提取表达式
 /// </summary>
 [ApiController]
-[Route("api/config")]
+[Route("api/admin/config")]
 [Authorize]
 public class ConfigController : ControllerBase
 {

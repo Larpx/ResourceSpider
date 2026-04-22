@@ -1,0 +1,53 @@
+@page "/admin/agents"
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>Agent 配置</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载 Agent 列表...</p>
+}
+else
+{
+    <h1>Agent 配置</h1>
+
+    @if (_agents.Count == 0)
+    {
+        <p>暂无 Agent 数据。</p>
+    }
+    else
+    {
+        <div class="card-grid">
+            @foreach (var agent in _agents)
+            {
+                <section class="card">
+                    <h2>@agent.AgentName</h2>
+                    <p>ID：<code>@agent.AgentId</code></p>
+                    <p>地址：@agent.IpAddress:@agent.Port</p>
+                    <p>状态：@agent.Status</p>
+                    <p>任务数：@agent.TaskCount</p>
+                    <p>最后心跳：@agent.LastHeartbeat</p>
+                </section>
+            }
+        </div>
+    }
+}
+
+@code {
+    private bool _ready;
+    private List<AgentDto> _agents = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        _agents = await ApiClient.GetAgentsAsync();
+        _ready = true;
+    }
+}

@@ -1,0 +1,52 @@
+@page "/admin/proxies"
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>代理池配置</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载代理列表...</p>
+}
+else
+{
+    <h1>代理池配置</h1>
+
+    @if (_proxies.Count == 0)
+    {
+        <p>暂无代理数据。</p>
+    }
+    else
+    {
+        <div class="card-grid">
+            @foreach (var proxy in _proxies)
+            {
+                <section class="card">
+                    <h2>@proxy.Host:@proxy.Port</h2>
+                    <p>ID：<code>@proxy.ProxyId</code></p>
+                    <p>协议：@proxy.Protocol</p>
+                    <p>状态：@proxy.Status</p>
+                    <p>成功/失败：@proxy.SuccessCount / @proxy.FailureCount</p>
+                </section>
+            }
+        </div>
+    }
+}
+
+@code {
+    private bool _ready;
+    private List<ProxyDto> _proxies = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        _proxies = await ApiClient.GetProxiesAsync();
+        _ready = true;
+    }
+}

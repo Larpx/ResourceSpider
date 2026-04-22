@@ -12,7 +12,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 包括查看代理列表、更新代理配置、发送控制命令（重启、更新、紧急停止）等
 /// </summary>
 [ApiController]
-[Route("api/agents")]
+[Route("api/admin/agents")]
 [Authorize]
 public class AgentManagementController : ControllerBase
 {

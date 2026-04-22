@@ -9,7 +9,7 @@ namespace ResourceSpider.Server.Controllers;
 /// 处理 JWT 令牌的颁发和用户账户的创建
 /// </summary>
 [ApiController]
-[Route("api/auth")]
+[Route("api/admin/auth")]
 public class AuthController : ControllerBase
 {
     /// <summary>
@@ -41,14 +41,24 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(typeof(ApiResponse<AuthResponse>), 200)]
     [ProducesResponseType(typeof(ApiResponse<object>), 401)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 500)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var result = await _authService.LoginAsync(request);
-        if (result == null)
+        try
         {
-            return Unauthorized(ApiResponse<object>.Error(10401, "用户名或密码错误"));
+            var result = await _authService.LoginAsync(request);
+            if (result == null)
+            {
+                return Unauthorized(ApiResponse<object>.Error(401, "用户名或密码错误"));
+            }
+
+            return Ok(ApiResponse<AuthResponse>.Success(result, "登录成功"));
         }
-        return Ok(ApiResponse<AuthResponse>.Success(result, "登录成功"));
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "登录时发生异常");
+            return StatusCode(500, ApiResponse<object>.Error(500, "服务器错误，登录失败"));
+        }
     }
 
     /// <summary>

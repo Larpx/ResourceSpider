@@ -1,0 +1,53 @@
+@page "/admin/expressions"
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>表达式配置</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载表达式列表...</p>
+}
+else
+{
+    <h1>表达式配置</h1>
+
+    @if (_expressions.Count == 0)
+    {
+        <p>暂无表达式数据。</p>
+    }
+    else
+    {
+        <div class="card-grid">
+            @foreach (var expression in _expressions)
+            {
+                <section class="card">
+                    <h2>@expression.Name</h2>
+                    <p>ID：<code>@expression.ExpressionId</code></p>
+                    <p>类型：@expression.SelectorType</p>
+                    <p>状态：@expression.Status</p>
+                    <p>字段数：@expression.Fields.Count</p>
+                </section>
+            }
+        </div>
+    }
+}
+
+@code {
+    private bool _ready;
+    private List<ExpressionDto> _expressions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        var response = await ApiClient.GetExpressionsAsync();
+        _expressions = response?.Expressions ?? new List<ExpressionDto>();
+        _ready = true;
+    }
+}

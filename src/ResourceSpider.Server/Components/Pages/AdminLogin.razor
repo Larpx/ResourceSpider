@@ -1,0 +1,65 @@
+@page "/admin/login"
+@inject AdminApiClient ApiClient
+@inject AdminSessionState Session
+@inject NavigationManager Navigation
+
+<PageTitle>后台登录</PageTitle>
+
+<h1>后台管理登录</h1>
+
+<div class="form-card">
+    <EditForm Model="_model" OnValidSubmit="HandleLoginAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <label for="username">用户名</label>
+        <InputText id="username" class="input" @bind-Value="_model.Username" />
+
+        <label for="password">密码</label>
+        <InputText id="password" class="input" type="password" @bind-Value="_model.Password" />
+
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <p class="error-text">@_errorMessage</p>
+        }
+
+        <button type="submit" class="btn" disabled="@_isSubmitting">@(_isSubmitting ? "登录中..." : "登录")</button>
+    </EditForm>
+</div>
+
+@code {
+    private readonly LoginFormModel _model = new();
+    private bool _isSubmitting;
+    private string? _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        if (Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin", replace: true);
+        }
+    }
+
+    private async Task HandleLoginAsync()
+    {
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        var (success, message) = await ApiClient.LoginAsync(_model.Username, _model.Password);
+        _isSubmitting = false;
+
+        if (!success)
+        {
+            _errorMessage = message;
+            return;
+        }
+
+        Navigation.NavigateTo("/admin", replace: true);
+    }
+
+    private sealed class LoginFormModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}

@@ -1,0 +1,53 @@
+@page "/admin/tasks"
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>任务配置</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载任务列表...</p>
+}
+else
+{
+    <h1>任务配置</h1>
+
+    @if (_tasks.Count == 0)
+    {
+        <p>暂无任务数据。</p>
+    }
+    else
+    {
+        <div class="card-grid">
+            @foreach (var task in _tasks)
+            {
+                <section class="card">
+                    <h2>@task.TaskName</h2>
+                    <p>ID：<code>@task.TaskId</code></p>
+                    <p>类型：@task.TaskType</p>
+                    <p>状态：@task.Status</p>
+                    <p>进度：@task.Progress%</p>
+                </section>
+            }
+        </div>
+    }
+}
+
+@code {
+    private bool _ready;
+    private List<TaskDto> _tasks = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        var response = await ApiClient.GetTasksAsync();
+        _tasks = response?.Tasks ?? new List<TaskDto>();
+        _ready = true;
+    }
+}
