@@ -29,4 +29,10 @@ public class OnlineModeOptions
     /// 心跳发送间隔（秒），默认为 30 秒
     /// </summary>
     public int HeartbeatInterval { get; set; } = 30;
+
+    public string? EncryptionKey { get; set; }
+
+    public int MaxConcurrentTasks { get; set; } = 5;
+
+    public int OfflineSyncIntervalMinutes { get; set; } = 5;
 }

@@ -71,6 +71,12 @@ public interface IServerApiClient
     /// <param name="request">可用性上报请求</param>
     /// <returns>上报成功返回 true</returns>
     Task<bool> ReportExpressionAvailabilityAsync(ReportAvailabilityRequest request);
+
+    Task<bool> ReportStepStatusAsync(ReportStepStatusRequest request);
+
+    Task<List<StepResourceItem>> PullStepResourcesAsync(string taskId, string stepId, int take);
+
+    Task<bool> PrefetchTasksAsync(int count);
 }
 
 /// <summary>
@@ -189,6 +195,32 @@ public class ServerApiClient : IServerApiClient
     public async Task<bool> ReportExpressionAvailabilityAsync(ReportAvailabilityRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync(Constants.ApiRoutes.AgentExpressionAvailability, request);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+        return result?.Code == 200;
+    }
+
+    public async Task<bool> ReportStepStatusAsync(ReportStepStatusRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/agent/tasks/step/report", request);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+        return result?.Code == 200;
+    }
+
+    public async Task<List<StepResourceItem>> PullStepResourcesAsync(string taskId, string stepId, int take)
+    {
+        var request = new { AgentId = _options.AgentId, AgentToken = _options.AgentToken, TaskId = taskId, StepId = stepId, Take = take };
+        var response = await _httpClient.PostAsJsonAsync("api/agent/resources/pull", request);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<StepResourceItem>>>();
+        return result?.Data ?? [];
+    }
+
+    public async Task<bool> PrefetchTasksAsync(int count)
+    {
+        var request = new { AgentId = _options.AgentId, AgentToken = _options.AgentToken, Count = count };
+        var response = await _httpClient.PostAsJsonAsync("api/agent/tasks/prefetch", request);
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
         return result?.Code == 200;
@@ -554,28 +586,24 @@ public class ResultItemDto
 /// </summary>
 public class ReportAvailabilityRequest
 {
-    /// <summary>
-    /// Agent 唯一标识
-    /// </summary>
     public string AgentId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Agent 认证令牌
-    /// </summary>
     public string AgentToken { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 表达式唯一标识
-    /// </summary>
     public string ExpressionId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 表达式是否可用
-    /// </summary>
     public bool IsAvailable { get; set; }
-
-    /// <summary>
-    /// 不可用时的失败原因
-    /// </summary>
     public string? FailureReason { get; set; }
+}
+
+public record ReportStepStatusRequest(string AgentId, string AgentToken, string TaskId, string StepId, int State, int DataCount = 0);
+
+public class StepResourceItem
+{
+    public string ResourceId { get; set; } = string.Empty;
+    public string TaskId { get; set; } = string.Empty;
+    public string StepId { get; set; } = string.Empty;
+    public string? SourceStepId { get; set; }
+    public string ResourceType { get; set; } = string.Empty;
+    public string Payload { get; set; } = "{}";
+    public string? SourceUrl { get; set; }
+    public int Status { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

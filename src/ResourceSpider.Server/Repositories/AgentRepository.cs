@@ -35,6 +35,8 @@ public interface IAgentRepository
     /// <returns>在线代理节点列表</returns>
     Task<List<AgentEntity>> GetOnlineAsync();
 
+    Task<List<AgentEntity>> GetOnlineAgentsAsync();
+
     /// <summary>
     /// 新增代理节点实体
     /// </summary>
@@ -111,6 +113,12 @@ public class AgentRepository : IAgentRepository
         return await _db.Queryable<AgentEntity>()
             .Where(x => x.Status == 1)
             .ToListAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<List<AgentEntity>> GetOnlineAgentsAsync()
+    {
+        return await GetOnlineAsync();
     }
 
     /// <inheritdoc/>

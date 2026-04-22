@@ -82,6 +82,35 @@ public class TaskStepEntity
     public string? OutputConfig { get; set; }
 
     /// <summary>
+    /// 步骤开始条件 JSON，定义触发步骤执行的条件
+    /// </summary>
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? StartCondition { get; set; }
+
+    /// <summary>
+    /// 步骤结束条件 JSON，定义步骤执行完成的条件
+    /// </summary>
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? EndCondition { get; set; }
+
+    /// <summary>
+    /// 依赖的步骤 ID 数组 JSON，定义当前步骤依赖于哪些其他步骤的执行结果
+    /// </summary>
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? DependsOnStepIds { get; set; }
+
+    /// <summary>
+    /// 步骤状态流转配置 JSON，定义步骤在不同状态之间转换的规则
+    /// </summary>
+    [SugarColumn(ColumnDataType = "json", IsNullable = true)]
+    public string? StepConfig { get; set; }
+
+    /// <summary>
+    /// 步骤状态：0-等待, 1-就绪, 2-执行中, 3-完成, 4-失败
+    /// </summary>
+    public int State { get; set; }
+
+    /// <summary>
     /// 步骤创建时间
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

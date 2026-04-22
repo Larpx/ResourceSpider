@@ -5,105 +5,25 @@ using ResourceSpider.Server.Repositories;
 
 namespace ResourceSpider.Server.Services;
 
-/// <summary>
-/// 任务服务接口，提供爬虫任务的完整生命周期管理
-/// </summary>
 public interface ITaskService
 {
-    /// <summary>
-    /// 创建新的爬虫任务，包含任务步骤
-    /// </summary>
-    /// <param name="request">创建任务请求</param>
-    /// <param name="createdBy">任务创建者标识</param>
-    /// <returns>创建后的任务 DTO</returns>
     Task<TaskDto> CreateAsync(CreateTaskRequest request, string? createdBy = null);
-
-    /// <summary>
-    /// 根据任务标识获取任务详情，包含步骤信息
-    /// </summary>
-    /// <param name="taskId">任务唯一标识</param>
-    /// <returns>任务 DTO，若不存在返回 null</returns>
     Task<TaskDto?> GetByIdAsync(string taskId);
-
-    /// <summary>
-    /// 分页获取任务列表，支持按状态筛选
-    /// </summary>
-    /// <param name="pageIndex">页码（从 1 开始）</param>
-    /// <param name="pageSize">每页数量</param>
-    /// <param name="status">任务状态筛选条件，null 表示不筛选</param>
-    /// <returns>任务列表响应</returns>
     Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null);
-
-    /// <summary>
-    /// 更新任务配置信息
-    /// </summary>
-    /// <param name="taskId">任务唯一标识</param>
-    /// <param name="request">更新任务请求</param>
-    /// <returns>更新成功返回 true，任务不存在返回 false</returns>
     Task<bool> UpdateAsync(string taskId, UpdateTaskRequest request);
-
-    /// <summary>
-    /// 暂停正在运行的任务
-    /// </summary>
-    /// <param name="taskId">任务唯一标识</param>
-    /// <returns>暂停成功返回 true，任务不存在返回 false</returns>
     Task<bool> PauseAsync(string taskId);
-
-    /// <summary>
-    /// 恢复已暂停的任务
-    /// </summary>
-    /// <param name="taskId">任务唯一标识</param>
-    /// <returns>恢复成功返回 true，任务不存在返回 false</returns>
     Task<bool> ResumeAsync(string taskId);
-
-    /// <summary>
-    /// 终止任务执行
-    /// </summary>
-    /// <param name="taskId">任务唯一标识</param>
-    /// <returns>终止成功返回 true，任务不存在返回 false</returns>
     Task<bool> StopAsync(string taskId);
-
-    /// <summary>
-    /// 删除任务及其关联的步骤数据
-    /// </summary>
-    /// <param name="taskId">任务唯一标识</param>
-    /// <returns>删除成功返回 true，任务不存在返回 false</returns>
     Task<bool> DeleteAsync(string taskId);
-
-    /// <summary>
-    /// 触发任务重新执行，重置进度和状态
-    /// </summary>
-    /// <param name="taskId">任务唯一标识</param>
-    /// <returns>触发成功返回 true，任务不存在返回 false</returns>
     Task<bool> TriggerExecutionAsync(string taskId);
 }
 
-/// <summary>
-/// 任务服务实现，管理爬虫任务的创建、查询、更新、暂停/恢复/终止及删除等操作
-/// </summary>
 public class TaskService : ITaskService
 {
-    /// <summary>
-    /// 任务数据仓库，用于任务实体的持久化操作
-    /// </summary>
     private readonly ITaskRepository _taskRepository;
-
-    /// <summary>
-    /// 任务步骤数据仓库，用于任务步骤的持久化操作
-    /// </summary>
     private readonly ITaskStepRepository _taskStepRepository;
-
-    /// <summary>
-    /// 日志记录器，用于记录任务操作相关事件
-    /// </summary>
     private readonly ILogger<TaskService> _logger;
 
-    /// <summary>
-    /// 初始化任务服务实例
-    /// </summary>
-    /// <param name="taskRepository">任务数据仓库</param>
-    /// <param name="taskStepRepository">任务步骤数据仓库</param>
-    /// <param name="logger">日志记录器</param>
     public TaskService(
         ITaskRepository taskRepository,
         ITaskStepRepository taskStepRepository,
@@ -114,7 +34,6 @@ public class TaskService : ITaskService
         _logger = logger;
     }
 
-    /// <inheritdoc />
     public async Task<TaskDto> CreateAsync(CreateTaskRequest request, string? createdBy = null)
     {
         var taskId = Guid.NewGuid().ToString("N");
@@ -152,8 +71,18 @@ public class TaskService : ITaskService
                 ExtractionRules = s.ExtractionRules ?? "[]",
                 VariableMappings = s.VariableMappings,
                 PaginationConfig = s.PaginationConfig,
-                OutputConfig = s.OutputConfig
+                OutputConfig = s.OutputConfig,
+                StartCondition = s.StartCondition,
+                EndCondition = s.EndCondition,
+                DependsOnStepIds = s.DependsOnStepIds == null ? null : System.Text.Json.JsonSerializer.Serialize(s.DependsOnStepIds),
+                StepConfig = s.StepConfig,
+                State = 0
             }).ToList();
+
+            if (stepEntities.Count > 0)
+            {
+                stepEntities.OrderBy(s => s.StepOrder).First().State = 1;
+            }
 
             await _taskStepRepository.AddRangeAsync(stepEntities);
         }
@@ -162,7 +91,6 @@ public class TaskService : ITaskService
         return MapToDto(entity);
     }
 
-    /// <inheritdoc />
     public async Task<TaskDto?> GetByIdAsync(string taskId)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
@@ -181,7 +109,6 @@ public class TaskService : ITaskService
         return dto;
     }
 
-    /// <inheritdoc />
     public async Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null)
     {
         var tasks = await _taskRepository.GetAllAsync(pageIndex, pageSize, status);
@@ -195,7 +122,6 @@ public class TaskService : ITaskService
         );
     }
 
-    /// <inheritdoc />
     public async Task<bool> UpdateAsync(string taskId, UpdateTaskRequest request)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
@@ -216,7 +142,6 @@ public class TaskService : ITaskService
         return true;
     }
 
-    /// <inheritdoc />
     public async Task<bool> PauseAsync(string taskId)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
@@ -228,7 +153,6 @@ public class TaskService : ITaskService
         return true;
     }
 
-    /// <inheritdoc />
     public async Task<bool> ResumeAsync(string taskId)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
@@ -241,7 +165,6 @@ public class TaskService : ITaskService
         return true;
     }
 
-    /// <inheritdoc />
     public async Task<bool> StopAsync(string taskId)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
@@ -254,7 +177,6 @@ public class TaskService : ITaskService
         return true;
     }
 
-    /// <inheritdoc />
     public async Task<bool> DeleteAsync(string taskId)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
@@ -266,7 +188,6 @@ public class TaskService : ITaskService
         return true;
     }
 
-    /// <inheritdoc />
     public async Task<bool> TriggerExecutionAsync(string taskId)
     {
         var entity = await _taskRepository.GetByIdAsync(taskId);
@@ -279,15 +200,25 @@ public class TaskService : ITaskService
         entity.CompletedRequests = 0;
         entity.FailedRequests = 0;
         await _taskRepository.UpdateAsync(entity);
+
+        var steps = await _taskStepRepository.GetByTaskIdAsync(taskId);
+        if (steps.Count > 0)
+        {
+            foreach (var step in steps)
+            {
+                step.State = 0;
+                await _taskStepRepository.UpdateAsync(step);
+            }
+
+            var firstStep = steps.OrderBy(x => x.StepOrder).First();
+            firstStep.State = 1;
+            await _taskStepRepository.UpdateAsync(firstStep);
+        }
+
         _logger.LogInformation("任务 {TaskId} 已触发执行", taskId);
         return true;
     }
 
-    /// <summary>
-    /// 将任务实体映射为任务 DTO
-    /// </summary>
-    /// <param name="entity">任务实体</param>
-    /// <returns>任务 DTO</returns>
     private static TaskDto MapToDto(TaskEntity entity)
     {
         return new TaskDto(
@@ -317,11 +248,6 @@ public class TaskService : ITaskService
         );
     }
 
-    /// <summary>
-    /// 将任务步骤实体映射为任务步骤 DTO
-    /// </summary>
-    /// <param name="entity">任务步骤实体</param>
-    /// <returns>任务步骤 DTO</returns>
     private static TaskStepDto MapStepToDto(TaskStepEntity entity)
     {
         return new TaskStepDto(
@@ -336,6 +262,13 @@ public class TaskService : ITaskService
             entity.VariableMappings,
             entity.PaginationConfig,
             entity.OutputConfig,
+            entity.StartCondition,
+            entity.EndCondition,
+            string.IsNullOrWhiteSpace(entity.DependsOnStepIds)
+                ? null
+                : System.Text.Json.JsonSerializer.Deserialize<List<string>>(entity.DependsOnStepIds),
+            entity.StepConfig,
+            entity.State,
             entity.CreatedAt
         );
     }

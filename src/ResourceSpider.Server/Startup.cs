@@ -267,6 +267,7 @@ public class Startup
         services.AddScoped<IExpressionRepository, ExpressionRepository>();
         services.AddScoped<IExpressionFieldRepository, ExpressionFieldRepository>();
         services.AddScoped<ICollectionResultRepository, CollectionResultRepository>();
+        services.AddScoped<IStepResourceRepository, StepResourceRepository>();
         services.AddScoped<IExpressionAvailabilityRepository, ExpressionAvailabilityRepository>();
         services.AddScoped<ITaskStepRepository, TaskStepRepository>();
         services.AddScoped<ITaskExecutionRepository, TaskExecutionRepository>();
@@ -295,6 +296,10 @@ public class Startup
         services.AddScoped<IConfigVersionService, ConfigVersionService>();
         services.AddScoped<IAgentGroupService, AgentGroupService>();
         services.AddScoped<ISystemLogService, SystemLogService>();
+        services.AddScoped<IStepStateMachineService, StepStateMachineService>();
+        services.AddScoped<IStepResourcePoolService, StepResourcePoolService>();
+        services.AddScoped<IDataEncryptionService, DataEncryptionService>();
+        services.AddScoped<IStorageStrategyService, StorageStrategyService>();
     }
 
     /// <summary>
@@ -419,6 +424,7 @@ public class Startup
                 typeof(ExpressionEntity),
                 typeof(ExpressionFieldEntity),
                 typeof(CollectionResultEntity),
+                typeof(StepResourceEntity),
                 typeof(ExpressionAvailabilityEntity),
                 typeof(SystemLogEntity),
                 typeof(AgentGroupEntity),

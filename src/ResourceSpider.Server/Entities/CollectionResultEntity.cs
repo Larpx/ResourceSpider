@@ -28,6 +28,12 @@ public class CollectionResultEntity
     public string TaskId { get; set; } = string.Empty;
 
     /// <summary>
+    /// 步骤 ID，标识该采集结果属于哪个步骤
+    /// </summary>
+    [SugarColumn(Length = 64, IsNullable = true)]
+    public string? StepId { get; set; }
+
+    /// <summary>
     /// 关联的表达式 ID，标识该结果使用的采集表达式
     /// </summary>
     [SugarColumn(Length = 64, IsNullable = true)]
@@ -56,6 +62,12 @@ public class CollectionResultEntity
     /// </summary>
     [SugarColumn(ColumnDataType = "json", IsNullable = true)]
     public string? FieldExpressionMap { get; set; }
+
+    /// <summary>
+    /// 存储引擎信息，标识结果数据的存储方式
+    /// </summary>
+    [SugarColumn(Length = 32, IsNullable = true)]
+    public string? StorageEngine { get; set; }
 
     /// <summary>
     /// 数据采集时间

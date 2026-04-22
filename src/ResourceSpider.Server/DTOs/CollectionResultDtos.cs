@@ -10,6 +10,7 @@ namespace ResourceSpider.Server.DTOs;
 /// <param name="SourceUrl">来源 URL</param>
 /// <param name="Fields">提取的字段数据</param>
 /// <param name="FieldExpressionMap">字段与表达式的映射关系</param>
+/// <param name="StepId">步骤 ID</param>
 /// <param name="CollectedAt">采集时间</param>
 /// <param name="CreatedAt">记录创建时间</param>
 public record CollectionResultDto(
@@ -20,6 +21,7 @@ public record CollectionResultDto(
     string SourceUrl,
     Dictionary<string, object?> Fields,
     Dictionary<string, string> FieldExpressionMap,
+    string? StepId,
     DateTime? CollectedAt,
     DateTime CreatedAt
 );
@@ -45,12 +47,14 @@ public record CollectionResultListResponse(
 /// <param name="SourceUrl">来源 URL，可选</param>
 /// <param name="Fields">提取的字段数据</param>
 /// <param name="FieldExpressionMap">字段与表达式的映射关系，可选</param>
+/// <param name="StepId">步骤 ID，可选</param>
 /// <param name="CollectedAt">采集时间，可选</param>
 public record CollectionResultItemDto(
     string? ResultId,
     string? SourceUrl,
     Dictionary<string, object?> Fields,
     Dictionary<string, string>? FieldExpressionMap,
+    string? StepId,
     DateTime? CollectedAt
 );
 
@@ -62,12 +66,16 @@ public record CollectionResultItemDto(
 /// <param name="TaskId">关联任务 ID</param>
 /// <param name="ExpressionId">关联表达式 ID，可选</param>
 /// <param name="Results">采集结果列表</param>
+/// <param name="EncryptedPayload">加密负载，可选</param>
+/// <param name="EncryptionIv">加密向量，可选</param>
 public record StoreCollectionResultsRequest(
     string AgentId,
     string AgentToken,
     string TaskId,
     string? ExpressionId,
-    List<CollectionResultItemDto> Results
+    List<CollectionResultItemDto>? Results,
+    string? EncryptedPayload = null,
+    string? EncryptionIv = null
 );
 
 /// <summary>

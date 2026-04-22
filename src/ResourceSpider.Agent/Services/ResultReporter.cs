@@ -29,54 +29,29 @@ public interface IResultReporter
 /// </summary>
 public class ResultReporter : IResultReporter
 {
-    /// <summary>
-    /// 服务端 API 客户端（在线模式时使用）
-    /// </summary>
     private readonly IServerApiClient? _serverApiClient;
-
-    /// <summary>
-    /// 存储服务实例
-    /// </summary>
     private readonly IStorage _storage;
-
-    /// <summary>
-    /// 日志记录器
-    /// </summary>
+    private readonly IOfflineTaskStore? _offlineStore;
     private readonly ILogger<ResultReporter> _logger;
-
-    /// <summary>
-    /// Agent 唯一标识
-    /// </summary>
     private readonly string _agentId;
-
-    /// <summary>
-    /// Agent 认证令牌
-    /// </summary>
     private readonly string _agentToken;
 
-    /// <summary>
-    /// 初始化结果上报器实例
-    /// </summary>
-    /// <param name="serverApiClient">服务端 API 客户端（在线模式时提供）</param>
-    /// <param name="storage">存储服务实例</param>
-    /// <param name="logger">日志记录器</param>
-    /// <param name="localConfig">本地模式配置（本地模式时提供）</param>
-    /// <param name="serverConfig">在线模式配置（在线模式时提供）</param>
     public ResultReporter(
         IServerApiClient? serverApiClient,
         IStorage storage,
         ILogger<ResultReporter> logger,
+        IOfflineTaskStore? offlineStore = null,
         Agent.Config.LocalModeOptions? localConfig = null,
         Agent.Config.OnlineModeOptions? serverConfig = null)
     {
         _serverApiClient = serverApiClient;
         _storage = storage;
+        _offlineStore = offlineStore;
         _logger = logger;
         _agentId = serverConfig?.AgentId ?? localConfig?.TaskFilePath ?? "local-agent";
         _agentToken = serverConfig?.AgentToken ?? string.Empty;
     }
 
-    /// <inheritdoc />
     public async Task ReportAsync(ExecutionResult result, CancellationToken ct = default)
     {
         if (_serverApiClient == null)
@@ -123,11 +98,23 @@ public class ResultReporter : IResultReporter
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "上报任务 {TaskId} 结果失败", result.TaskId);
+            _logger.LogError(ex, "上报任务 {TaskId} 结果失败，尝试离线存储", result.TaskId);
+
+            if (_offlineStore != null)
+            {
+                try
+                {
+                    await _offlineStore.SavePendingResultAsync(result);
+                    _logger.LogInformation("任务 {TaskId} 结果已保存到离线存储", result.TaskId);
+                }
+                catch (Exception offlineEx)
+                {
+                    _logger.LogError(offlineEx, "离线存储任务 {TaskId} 结果也失败", result.TaskId);
+                }
+            }
         }
     }
 
-    /// <inheritdoc />
     public async Task StoreLocalAsync(ExecutionResult result, CancellationToken ct = default)
     {
         if (result.DataRecords.Count == 0)

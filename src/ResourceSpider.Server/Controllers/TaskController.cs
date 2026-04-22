@@ -14,42 +14,26 @@ namespace ResourceSpider.Server.Controllers;
 [Authorize]
 public class TaskController : ControllerBase
 {
-    /// <summary>
-    /// 任务服务实例，处理任务的业务逻辑
-    /// </summary>
     private readonly ITaskService _taskService;
-
-    /// <summary>
-    /// 任务执行服务实例，处理任务执行记录的查询
-    /// </summary>
     private readonly ITaskExecutionService _taskExecutionService;
-
-    /// <summary>
-    /// 配置版本服务实例，处理任务配置的版本管理和回滚
-    /// </summary>
     private readonly IConfigVersionService _configVersionService;
-
-    /// <summary>
-    /// 日志记录器实例
-    /// </summary>
+    private readonly IStepStateMachineService _stepStateMachineService;
+    private readonly IStepResourcePoolService _stepResourcePoolService;
     private readonly ILogger<TaskController> _logger;
 
-    /// <summary>
-    /// 初始化任务控制器
-    /// </summary>
-    /// <param name="taskService">任务服务</param>
-    /// <param name="taskExecutionService">任务执行服务</param>
-    /// <param name="configVersionService">配置版本服务</param>
-    /// <param name="logger">日志记录器</param>
     public TaskController(
         ITaskService taskService,
         ITaskExecutionService taskExecutionService,
         IConfigVersionService configVersionService,
+        IStepStateMachineService stepStateMachineService,
+        IStepResourcePoolService stepResourcePoolService,
         ILogger<TaskController> logger)
     {
         _taskService = taskService;
         _taskExecutionService = taskExecutionService;
         _configVersionService = configVersionService;
+        _stepStateMachineService = stepStateMachineService;
+        _stepResourcePoolService = stepResourcePoolService;
         _logger = logger;
     }
 
@@ -260,5 +244,72 @@ public class TaskController : ControllerBase
             return NotFound(ApiResponse<object>.Error(10101, "配置版本不存在"));
         }
         return Ok(ApiResponse<object>.Success(new { }, "配置已回滚"));
+    }
+
+    [HttpGet("{taskId}/steps/status")]
+    [ProducesResponseType(typeof(ApiResponse<List<StepStatusDto>>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> GetStepStatuses(string taskId)
+    {
+        var task = await _taskService.GetByIdAsync(taskId);
+        if (task == null)
+        {
+            return NotFound(ApiResponse<object>.Error(10001, "任务不存在"));
+        }
+
+        var steps = task.Steps ?? [];
+        var result = steps.Select(s => new StepStatusDto(
+            s.StepId, s.StepName, s.StepOrder, s.State,
+            s.StartCondition, s.EndCondition,
+            s.DependsOnStepIds)).ToList();
+
+        return Ok(ApiResponse<List<StepStatusDto>>.Success(result));
+    }
+
+    [HttpGet("{taskId}/steps/{stepId}/resources")]
+    [ProducesResponseType(typeof(ApiResponse<StepResourceOverviewDto>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> GetStepResources(string taskId, string stepId, [FromQuery] int take = 100)
+    {
+        var task = await _taskService.GetByIdAsync(taskId);
+        if (task == null)
+        {
+            return NotFound(ApiResponse<object>.Error(10001, "任务不存在"));
+        }
+
+        var resources = await _stepResourcePoolService.GetAvailableResourcesAsync(taskId, stepId, take);
+        var count = await _stepResourcePoolService.GetResourceCountAsync(taskId, stepId);
+
+        var result = new StepResourceOverviewDto(
+            stepId, count, resources.Select(r => new StepResourceDto(
+                r.ResourceId, r.TaskId, r.StepId, r.SourceStepId,
+                r.ResourceType, r.Payload, r.SourceUrl, r.Status, r.CreatedAt
+            )).ToList()
+        );
+
+        return Ok(ApiResponse<StepResourceOverviewDto>.Success(result));
+    }
+
+    [HttpPost("{taskId}/steps/evaluate")]
+    [ProducesResponseType(typeof(ApiResponse<List<StepStatusDto>>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> EvaluateStepTransitions(string taskId)
+    {
+        var task = await _taskService.GetByIdAsync(taskId);
+        if (task == null)
+        {
+            return NotFound(ApiResponse<object>.Error(10001, "任务不存在"));
+        }
+
+        var transitioned = await _stepStateMachineService.EvaluateStepTransitionsAsync(taskId);
+        var result = transitioned.Select(s => new StepStatusDto(
+            s.StepId, s.StepName, s.StepOrder, s.State,
+            s.StartCondition, s.EndCondition,
+            string.IsNullOrWhiteSpace(s.DependsOnStepIds)
+                ? null
+                : System.Text.Json.JsonSerializer.Deserialize<List<string>>(s.DependsOnStepIds)
+        )).ToList();
+
+        return Ok(ApiResponse<List<StepStatusDto>>.Success(result, "步骤状态评估完成"));
     }
 }

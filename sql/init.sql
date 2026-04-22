@@ -176,6 +176,11 @@ CREATE TABLE IF NOT EXISTS task_steps (
     VariableMappings JSON COMMENT '变量映射',
     PaginationConfig JSON COMMENT '分页配置',
     OutputConfig JSON COMMENT '输出配置',
+    StartCondition JSON COMMENT '步骤开始条件',
+    EndCondition JSON COMMENT '步骤结束条件',
+    DependsOnStepIds JSON COMMENT '依赖的步骤ID数组',
+    StepConfig JSON COMMENT '步骤配置（含资源池配置）',
+    State TINYINT DEFAULT 0 COMMENT '步骤状态: 0-等待, 1-就绪, 2-执行中, 3-完成, 4-失败, 5-跳过',
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_task_id (TaskId),
     INDEX idx_step_order (StepOrder)

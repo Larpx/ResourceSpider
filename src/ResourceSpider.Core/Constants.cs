@@ -21,6 +21,10 @@ public static class Constants
         public const string AgentActiveExpressions = "api/agent/expressions/active";
         public const string AgentExpressionAvailability = "api/agent/expressions/availability";
         public const string AgentStoreResults = "api/agent/results/store";
+        public const string AgentStepReport = "api/agent/tasks/step/report";
+        public const string AgentResourcesPull = "api/agent/resources/pull";
+        public const string AgentPrefetch = "api/agent/tasks/prefetch";
+        public const string AgentStatus = "api/agent/status";
         public const string Tasks = "api/tasks";
         public const string Auth = "api/auth";
         public const string AuthLogin = "api/auth/login";

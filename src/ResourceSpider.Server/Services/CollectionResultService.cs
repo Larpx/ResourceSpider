@@ -1,3 +1,6 @@
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Entities;
 using ResourceSpider.Server.Repositories;
@@ -56,34 +59,23 @@ public interface ICollectionResultService
 /// </summary>
 public class CollectionResultService : ICollectionResultService
 {
-    /// <summary>
-    /// 采集结果数据仓库，用于结果实体的持久化操作
-    /// </summary>
     private readonly ICollectionResultRepository _resultRepository;
-
-    /// <summary>
-    /// 表达式数据仓库，用于表达式关联查询
-    /// </summary>
     private readonly IExpressionRepository _expressionRepository;
-
-    /// <summary>
-    /// 日志记录器，用于记录采集结果操作相关事件
-    /// </summary>
+    private readonly IStepResourceRepository _stepResourceRepository;
+    private readonly IStorageStrategyService _storageStrategyService;
     private readonly ILogger<CollectionResultService> _logger;
 
-    /// <summary>
-    /// 初始化采集结果服务实例
-    /// </summary>
-    /// <param name="resultRepository">采集结果数据仓库</param>
-    /// <param name="expressionRepository">表达式数据仓库</param>
-    /// <param name="logger">日志记录器</param>
     public CollectionResultService(
         ICollectionResultRepository resultRepository,
         IExpressionRepository expressionRepository,
+        IStepResourceRepository stepResourceRepository,
+        IStorageStrategyService storageStrategyService,
         ILogger<CollectionResultService> logger)
     {
         _resultRepository = resultRepository;
         _expressionRepository = expressionRepository;
+        _stepResourceRepository = stepResourceRepository;
+        _storageStrategyService = storageStrategyService;
         _logger = logger;
     }
 
@@ -117,21 +109,44 @@ public class CollectionResultService : ICollectionResultService
     /// <inheritdoc />
     public async Task StoreResultsAsync(string taskId, string? expressionId, string agentId, List<CollectionResultItemDto> results)
     {
+        var storageEngine = _storageStrategyService.GetCurrentEngine().ToString();
+
         var entities = results.Select(r => new CollectionResultEntity
         {
             ResultId = r.ResultId ?? Guid.NewGuid().ToString("N"),
             TaskId = taskId,
+            StepId = r.StepId,
             ExpressionId = expressionId,
             AgentId = agentId,
             SourceUrl = r.SourceUrl,
-            Fields = System.Text.Json.JsonSerializer.Serialize(r.Fields),
+            Fields = JsonSerializer.Serialize(NormalizeFields(r.Fields)),
             FieldExpressionMap = r.FieldExpressionMap != null
-                ? System.Text.Json.JsonSerializer.Serialize(r.FieldExpressionMap)
+                ? JsonSerializer.Serialize(r.FieldExpressionMap)
                 : null,
+            StorageEngine = storageEngine,
             CollectedAt = r.CollectedAt ?? DateTime.UtcNow
         }).ToList();
 
-        await _resultRepository.AddRangeAsync(entities);
+        await _storageStrategyService.StoreResultsAsync(entities);
+
+        var stepResources = entities
+            .Where(e => !string.IsNullOrWhiteSpace(e.StepId))
+            .Select(e => new StepResourceEntity
+            {
+                ResourceId = Guid.NewGuid().ToString("N"),
+                TaskId = e.TaskId,
+                StepId = e.StepId!,
+                SourceStepId = e.StepId,
+                ResourceType = "CollectionResult",
+                Payload = e.Fields,
+                ContentHash = ComputeHash(e.Fields),
+                SourceUrl = e.SourceUrl,
+                Status = 0
+            })
+            .ToList();
+
+        await _stepResourceRepository.AddRangeAsync(stepResources);
+
         _logger.LogInformation(
             "Stored {Count} results for task {TaskId}, expression {ExpressionId}",
             entities.Count, taskId, expressionId);
@@ -150,10 +165,10 @@ public class CollectionResultService : ICollectionResultService
     /// <returns>采集结果 DTO</returns>
     private static CollectionResultDto MapToDto(CollectionResultEntity entity)
     {
-        var fields = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object?>>(entity.Fields)
+        var fields = JsonSerializer.Deserialize<Dictionary<string, object?>>(entity.Fields)
             ?? new Dictionary<string, object?>();
         var fieldExpressionMap = entity.FieldExpressionMap != null
-            ? System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(entity.FieldExpressionMap)
+            ? JsonSerializer.Deserialize<Dictionary<string, string>>(entity.FieldExpressionMap)
             : new Dictionary<string, string>();
 
         return new CollectionResultDto(
@@ -164,8 +179,66 @@ public class CollectionResultService : ICollectionResultService
             entity.SourceUrl ?? string.Empty,
             fields,
             fieldExpressionMap ?? new Dictionary<string, string>(),
+            entity.StepId,
             entity.CollectedAt,
             entity.CreatedAt
         );
+    }
+
+    /// <summary>
+    /// 标准化字段，将输入的领域模型转换为一致的存储格式
+    /// </summary>
+    /// <param name="fields">输入的字段字典</param>
+    /// <returns>标准化后的字段字典</returns>
+    private static Dictionary<string, object?> NormalizeFields(Dictionary<string, object?> fields)
+    {
+        var result = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (key, value) in fields)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                continue;
+            }
+
+            result[key.Trim()] = value switch
+            {
+                null => null,
+                JsonElement el => NormalizeJsonElement(el),
+                _ => value
+            };
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 标准化 JSON 元素的值，将其转换为可存储的基本类型
+    /// </summary>
+    /// <param name="element">输入的 JSON 元素</param>
+    /// <returns>标准化后的元素值</returns>
+    private static object? NormalizeJsonElement(JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.String => element.GetString(),
+            JsonValueKind.Number => element.TryGetInt64(out var l) ? l : element.TryGetDecimal(out var d) ? d : element.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Null => null,
+            JsonValueKind.Object => element.ToString(),
+            JsonValueKind.Array => element.ToString(),
+            _ => element.ToString()
+        };
+    }
+
+    /// <summary>
+    /// 计算给定负载的 SHA256 哈希值
+    /// </summary>
+    /// <param name="payload">输入的字符串负载</param>
+    /// <returns>计算得到的哈希值（十六进制字符串）</returns>
+    private static string ComputeHash(string payload)
+    {
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(payload));
+        return Convert.ToHexString(bytes).ToLowerInvariant();
     }
 }

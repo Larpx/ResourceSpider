@@ -108,6 +108,8 @@ public class Program
                             c.BaseAddress = new Uri(agentOptions.ServerConfig.ServerUrl);
                         });
                     services.AddSingleton<ISignalRClient, SignalRClient>();
+                    services.AddSingleton<IOfflineTaskStore, OfflineTaskStore>();
+                    services.AddSingleton<IAgentEncryptionService, AgentEncryptionService>();
                     services.AddSingleton<IResultReporter, ResultReporter>();
                     services.AddSingleton<IStorage>(sp =>
                     {
