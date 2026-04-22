@@ -1,0 +1,251 @@
+@page "/admin/runtime"
+@implements IAsyncDisposable
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>运行监控</PageTitle>
+
+<h1>运行监控</h1>
+
+@if (!_ready)
+{
+    <p>正在加载运行状态...</p>
+}
+else if (_runtime == null)
+{
+    <p>暂未获取到运行状态。</p>
+}
+else
+{
+    <div class="action-row">
+        <button class="btn" type="button" @onclick="LoadAsync">立即刷新</button>
+        <button class="btn btn-secondary" type="button" @onclick="ToggleAutoRefreshAsync">@(_autoRefreshEnabled ? "暂停自动刷新" : "开启自动刷新")</button>
+        <label class="inline-setting">
+            刷新间隔
+            <select class="input interval-select" @bind="_refreshIntervalSeconds">
+                <option value="1">1 秒</option>
+                <option value="2">2 秒</option>
+                <option value="5">5 秒</option>
+                <option value="10">10 秒</option>
+            </select>
+        </label>
+        <span class="refresh-badge">自动刷新：@(_autoRefreshEnabled ? "开启" : "暂停")，最近刷新：@_lastRefreshedAtText</span>
+        <a class="btn btn-secondary" href="/admin/system">返回系统配置</a>
+    </div>
+
+    <div class="card-grid">
+        <section class="card">
+            <h2>服务状态</h2>
+            <p>状态：<strong>@_runtime.Status</strong></p>
+            <p>环境：@_runtime.Environment</p>
+            <p>版本：@_runtime.Version</p>
+            <p>机器名：@_runtime.MachineName</p>
+            <p>进程 ID：@_runtime.ProcessId</p>
+            <p>运行时：@_runtime.Framework</p>
+            <p>系统：@_runtime.OsDescription</p>
+            <p>运行时长：@_runtime.Uptime</p>
+            <p>采样时间(UTC)：@_runtime.TimestampUtc.ToString("u")</p>
+        </section>
+
+        <section class="card">
+            <h2>当前负载</h2>
+            <ul>
+                <li>CPU：@_runtime.CurrentLoad.CpuLoadPercent%</li>
+                <li>工作集内存：@_runtime.CurrentLoad.WorkingSetMb MB</li>
+                <li>托管堆内存：@_runtime.CurrentLoad.GcHeapMb MB</li>
+                <li>线程池：@_runtime.CurrentLoad.ThreadPoolAvailableWorkers / @_runtime.CurrentLoad.ThreadPoolMaxWorkers</li>
+                <li>待处理工作项：@_runtime.CurrentLoad.PendingWorkItems</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Agent 负载概览</h2>
+            <ul>
+                <li>总数：@_runtime.AgentLoad.TotalAgents</li>
+                <li>在线：@_runtime.AgentLoad.OnlineAgents</li>
+                <li>忙碌：@_runtime.AgentLoad.BusyAgents</li>
+                <li>执行中任务：@_runtime.AgentLoad.TotalRunningTasks</li>
+                <li>平均 CPU：@_runtime.AgentLoad.AverageCpuUsage%</li>
+                <li>平均内存：@_runtime.AgentLoad.AverageMemoryUsage%</li>
+            </ul>
+        </section>
+    </div>
+
+    <section class="card runtime-section">
+        <h2>Agent 实时状态（最多 20 条）</h2>
+        @if (_runtime.Agents.Count == 0)
+        {
+            <p>暂无 Agent 状态。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>AgentId</th>
+                        <th>名称</th>
+                        <th>状态</th>
+                        <th>CPU(%)</th>
+                        <th>内存(%)</th>
+                        <th>任务数</th>
+                        <th>最后心跳</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var agent in _runtime.Agents)
+                    {
+                        <tr>
+                            <td>@agent.AgentId</td>
+                            <td>@agent.AgentName</td>
+                            <td>@agent.Status</td>
+                            <td>@(agent.CpuUsage?.ToString("0.##") ?? "-")</td>
+                            <td>@(agent.MemoryUsage?.ToString("0.##") ?? "-")</td>
+                            <td>@agent.TaskCount</td>
+                            <td>@(agent.LastHeartbeat?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>系统日志（数据库）</h2>
+        @if (_runtime.RecentLogs.Count == 0)
+        {
+            <p>暂无系统日志。</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var log in _runtime.RecentLogs)
+                {
+                    <li>[@log.CreatedAt.ToLocalTime().ToString("HH:mm:ss")] [@log.Level] (@log.Category) @log.Message</li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>输出日志（文件尾部，实时）</h2>
+        @if (_runtime.OutputLogs.Count == 0)
+        {
+            <p>未检测到输出日志文件。</p>
+        }
+        else
+        {
+            @foreach (var output in _runtime.OutputLogs)
+            {
+                <h3>@output.FileName (@output.LastWriteTimeUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss"))</h3>
+                <pre class="log-box">@string.Join(Environment.NewLine, output.TailLines)</pre>
+            }
+        }
+    </section>
+}
+
+@code {
+    private bool _ready;
+    private bool _loading;
+    private bool _autoRefreshEnabled = true;
+    private int _refreshIntervalSeconds = 2;
+    private string _lastRefreshedAtText = "-";
+    private SystemRuntimeStatusDto? _runtime;
+    private CancellationTokenSource? _refreshCts;
+    private Task? _refreshTask;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        await LoadAsync();
+        _ready = true;
+        StartRefreshLoop();
+    }
+
+    private async Task LoadAsync()
+    {
+        if (_loading)
+        {
+            return;
+        }
+
+        _loading = true;
+        try
+        {
+            _runtime = await ApiClient.GetSystemRuntimeStatusAsync();
+            _lastRefreshedAtText = DateTime.Now.ToString("HH:mm:ss");
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private Task ToggleAutoRefreshAsync()
+    {
+        _autoRefreshEnabled = !_autoRefreshEnabled;
+        return Task.CompletedTask;
+    }
+
+    private void StartRefreshLoop()
+    {
+        _refreshCts = new CancellationTokenSource();
+        _refreshTask = Task.Run(() => RefreshLoopAsync(_refreshCts.Token));
+    }
+
+    private async Task RefreshLoopAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(_refreshIntervalSeconds), cancellationToken);
+
+                if (!_autoRefreshEnabled)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    await InvokeAsync(async () =>
+                    {
+                        await LoadAsync();
+                        StateHasChanged();
+                    });
+                }
+                catch
+                {
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_refreshCts != null)
+        {
+            await _refreshCts.CancelAsync();
+            _refreshCts.Dispose();
+        }
+
+        if (_refreshTask != null)
+        {
+            try
+            {
+                await _refreshTask;
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
+    }
+}

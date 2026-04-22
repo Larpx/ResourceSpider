@@ -13,6 +13,11 @@ else
 {
     <h1>系统配置</h1>
 
+    <div class="action-row">
+        <button class="btn" type="button" @onclick="RefreshAsync">刷新健康状态</button>
+        <a class="btn btn-secondary" href="/admin/runtime">打开运行监控页</a>
+    </div>
+
     <div class="card-grid">
         <section class="card">
             <h2>系统健康</h2>
@@ -23,8 +28,46 @@ else
             else
             {
                 <p>状态：<strong>@_health.Status</strong></p>
+                <p>环境：@(_health.Environment ?? "N/A")</p>
                 <p>版本：@_health.Version</p>
                 <p>运行时长：@_health.Uptime</p>
+                <p>启动时间(UTC)：@(_health.StartedAtUtc?.ToString("u") ?? "N/A")</p>
+                <p>采样时间(UTC)：@(_health.TimestampUtc?.ToString("u") ?? "N/A")</p>
+            }
+        </section>
+
+        <section class="card">
+            <h2>服务负载</h2>
+            @if (_health?.Load == null)
+            {
+                <p>暂无负载数据。</p>
+            }
+            else
+            {
+                <ul>
+                    <li>CPU：@_health.Load.CpuLoadPercent%</li>
+                    <li>工作集内存：@_health.Load.WorkingSetMb MB</li>
+                    <li>托管堆内存：@_health.Load.GcHeapMb MB</li>
+                    <li>线程池：@_health.Load.ThreadPoolAvailableWorkers / @_health.Load.ThreadPoolMaxWorkers</li>
+                    <li>待处理工作项：@_health.Load.PendingWorkItems</li>
+                </ul>
+            }
+        </section>
+
+        <section class="card">
+            <h2>依赖组件状态</h2>
+            @if (_health?.Components == null || _health.Components.Count == 0)
+            {
+                <p>暂无组件状态。</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var component in _health.Components)
+                    {
+                        <li>@component.Key：@component.Value</li>
+                    }
+                </ul>
             }
         </section>
 
@@ -60,9 +103,14 @@ else
             return;
         }
 
+        await RefreshAsync();
+        _ready = true;
+    }
+
+    private async Task RefreshAsync()
+    {
         _health = await ApiClient.GetSystemHealthAsync();
         var logsResponse = await ApiClient.GetSystemLogsAsync();
         _logs = logsResponse?.Logs ?? new List<SystemLogDto>();
-        _ready = true;
     }
 }

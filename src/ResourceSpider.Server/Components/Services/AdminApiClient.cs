@@ -80,6 +80,12 @@ public class AdminApiClient
         return payload?.Data;
     }
 
+    public async Task<SystemRuntimeStatusDto?> GetSystemRuntimeStatusAsync()
+    {
+        var payload = await GetAuthorizedAsync<SystemRuntimeStatusDto>("api/admin/system/runtime");
+        return payload?.Data;
+    }
+
     public async Task<List<AgentDto>> GetAgentsAsync()
     {
         var payload = await GetAuthorizedAsync<List<AgentDto>>("api/admin/agents");

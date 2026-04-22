@@ -7,11 +7,121 @@ namespace ResourceSpider.Server.DTOs;
 /// <param name="Version">系统版本号</param>
 /// <param name="Uptime">系统运行时长</param>
 /// <param name="Components">依赖组件状态字典</param>
+/// <param name="Load">当前服务负载快照</param>
+/// <param name="StartedAtUtc">服务启动时间（UTC）</param>
+/// <param name="TimestampUtc">响应时间戳（UTC）</param>
+/// <param name="Environment">运行环境名称</param>
 public record SystemHealthDto(
     string Status,
     string Version,
     TimeSpan Uptime,
-    Dictionary<string, string> Components
+    Dictionary<string, string> Components,
+    SystemLoadSnapshotDto? Load = null,
+    DateTime? StartedAtUtc = null,
+    DateTime? TimestampUtc = null,
+    string? Environment = null
+);
+
+/// <summary>
+/// 系统负载快照
+/// </summary>
+/// <param name="CpuLoadPercent">进程平均 CPU 负载百分比（基于运行期估算）</param>
+/// <param name="WorkingSetMb">进程工作集内存（MB）</param>
+/// <param name="GcHeapMb">GC 托管堆内存（MB）</param>
+/// <param name="ThreadPoolAvailableWorkers">线程池可用 Worker 线程数</param>
+/// <param name="ThreadPoolMaxWorkers">线程池最大 Worker 线程数</param>
+/// <param name="PendingWorkItems">线程池待处理工作项数</param>
+public record SystemLoadSnapshotDto(
+    double CpuLoadPercent,
+    double WorkingSetMb,
+    double GcHeapMb,
+    int ThreadPoolAvailableWorkers,
+    int ThreadPoolMaxWorkers,
+    long PendingWorkItems
+);
+
+/// <summary>
+/// Agent 负载聚合快照
+/// </summary>
+/// <param name="TotalAgents">Agent 总数</param>
+/// <param name="OnlineAgents">在线 Agent 数</param>
+/// <param name="BusyAgents">忙碌 Agent 数</param>
+/// <param name="TotalRunningTasks">Agent 正在执行任务总数</param>
+/// <param name="AverageCpuUsage">在线 Agent 平均 CPU 使用率</param>
+/// <param name="AverageMemoryUsage">在线 Agent 平均内存使用率</param>
+public record AgentLoadSnapshotDto(
+    int TotalAgents,
+    int OnlineAgents,
+    int BusyAgents,
+    int TotalRunningTasks,
+    decimal AverageCpuUsage,
+    decimal AverageMemoryUsage
+);
+
+/// <summary>
+/// 运行时 Agent 状态项
+/// </summary>
+/// <param name="AgentId">Agent 标识</param>
+/// <param name="AgentName">Agent 名称</param>
+/// <param name="Status">状态文本</param>
+/// <param name="CpuUsage">CPU 使用率</param>
+/// <param name="MemoryUsage">内存使用率</param>
+/// <param name="TaskCount">执行中任务数</param>
+/// <param name="LastHeartbeat">最后心跳时间</param>
+public record RuntimeAgentStatusDto(
+    string AgentId,
+    string AgentName,
+    string Status,
+    decimal? CpuUsage,
+    decimal? MemoryUsage,
+    int TaskCount,
+    DateTime? LastHeartbeat
+);
+
+/// <summary>
+/// 日志文件输出项
+/// </summary>
+/// <param name="FileName">日志文件名</param>
+/// <param name="LastWriteTimeUtc">最后写入时间（UTC）</param>
+/// <param name="TailLines">尾部日志行</param>
+public record RuntimeLogFileDto(
+    string FileName,
+    DateTime LastWriteTimeUtc,
+    List<string> TailLines
+);
+
+/// <summary>
+/// 系统运行时状态详情
+/// </summary>
+/// <param name="Status">当前整体状态</param>
+/// <param name="Version">版本号</param>
+/// <param name="Environment">运行环境</param>
+/// <param name="MachineName">机器名</param>
+/// <param name="Framework">运行时框架</param>
+/// <param name="OsDescription">操作系统描述</param>
+/// <param name="ProcessId">进程 ID</param>
+/// <param name="Uptime">运行时长</param>
+/// <param name="CurrentLoad">当前负载</param>
+/// <param name="AgentLoad">Agent 负载聚合</param>
+/// <param name="Agents">Agent 详情列表</param>
+/// <param name="RecentLogs">最近系统日志</param>
+/// <param name="OutputLogs">输出日志尾部</param>
+/// <param name="TimestampUtc">响应时间戳（UTC）</param>
+public record SystemRuntimeStatusDto(
+    string Status,
+    string Version,
+    string Environment,
+    string MachineName,
+    string Framework,
+    string OsDescription,
+    int ProcessId,
+    TimeSpan Uptime,
+    SystemLoadSnapshotDto CurrentLoad,
+    AgentLoadSnapshotDto AgentLoad,
+    List<RuntimeAgentStatusDto> Agents,
+    List<SystemLogDto> RecentLogs,
+    List<RuntimeLogFileDto> OutputLogs,
+    DateTime TimestampUtc
 );
 
 /// <summary>
