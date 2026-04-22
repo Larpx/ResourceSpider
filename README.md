@@ -264,14 +264,14 @@ docker-compose up -d
 | /api/expressions/{id}/config | GET | 获取配置 |
 | /api/expressions/invalidate-expired | POST | 失效过期表达式 |
 
-### 代理管理
+## 代理管理
 
 | 接口 | 方法 | 说明 |
 |------|------|------|
-| /api/proxies | GET | 代理列表 |
-| /api/proxies | POST | 添加代理 |
-| /api/proxies/{proxyId} | DELETE | 删除代理 |
-| /api/proxies/test | POST | 代理测试 |
+| /api/admin/proxies | GET | 代理列表 |
+| /api/admin/proxies | POST | 添加代理 |
+| /api/admin/proxies/{proxyId} | DELETE | 删除代理 |
+| /api/admin/proxies/test | POST | 代理测试 |
 
 ### 数据统计
 

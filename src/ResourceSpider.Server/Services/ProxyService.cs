@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using ResourceSpider.Core.Models;
 using ResourceSpider.Server.DTOs;
@@ -111,27 +112,90 @@ public class ProxyService : IProxyService
     /// <inheritdoc />
     public async Task<ProxyTestResponse> TestAsync(ProxyTestRequest request)
     {
+        string? host = request.Host;
+        int? port = request.Port;
+        string protocol = "http";
+        string? username = null;
+        string? password = null;
+
+        if (!string.IsNullOrWhiteSpace(request.ProxyId))
+        {
+            var proxyEntity = await _proxyRepository.GetByIdAsync(request.ProxyId);
+            if (proxyEntity is null)
+            {
+                return new ProxyTestResponse(
+                    IsAvailable: false,
+                    DurationMs: null,
+                    Error: "代理不存在"
+                );
+            }
+
+            host = proxyEntity.Host;
+            port = proxyEntity.Port;
+            protocol = proxyEntity.Protocol;
+            username = proxyEntity.Username;
+            password = proxyEntity.Password;
+        }
+
+        if (string.IsNullOrWhiteSpace(host) || port is null or <= 0 or > 65535)
+        {
+            return new ProxyTestResponse(
+                IsAvailable: false,
+                DurationMs: null,
+                Error: "代理主机或端口无效"
+            );
+        }
+
         try
         {
-            var handler = new HttpClientHandler
+            var proxyAddress = host.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+                               || host.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
+                ? host
+                : $"{protocol.ToLowerInvariant()}://{host}";
+
+            var webProxy = new WebProxy(proxyAddress, port.Value);
+            if (!string.IsNullOrWhiteSpace(username))
             {
-                Proxy = new WebProxy(request.Host ?? string.Empty, request.Port ?? 0),
+                webProxy.Credentials = new NetworkCredential(username, password);
+            }
+
+            using var handler = new HttpClientHandler
+            {
+                Proxy = webProxy,
                 UseProxy = true
             };
 
             using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
-            var startTime = DateTime.UtcNow;
-            await client.GetAsync("https://httpbin.org/ip");
-            var duration = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+            var stopwatch = Stopwatch.StartNew();
+            using var response = await client.GetAsync("https://httpbin.org/ip", HttpCompletionOption.ResponseHeadersRead);
+            stopwatch.Stop();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ProxyTestResponse(
+                    IsAvailable: false,
+                    DurationMs: (int)stopwatch.ElapsedMilliseconds,
+                    Error: $"代理连通失败，HTTP {(int)response.StatusCode}"
+                );
+            }
 
             return new ProxyTestResponse(
                 IsAvailable: true,
-                DurationMs: duration,
+                DurationMs: (int)stopwatch.ElapsedMilliseconds,
                 Error: null
+            );
+        }
+        catch (OperationCanceledException)
+        {
+            return new ProxyTestResponse(
+                IsAvailable: false,
+                DurationMs: null,
+                Error: "代理测试超时"
             );
         }
         catch (Exception ex)
         {
+            _logger.LogWarning(ex, "Proxy test failed for {Host}:{Port}", host, port);
             return new ProxyTestResponse(
                 IsAvailable: false,
                 DurationMs: null,

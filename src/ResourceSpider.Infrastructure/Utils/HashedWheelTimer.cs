@@ -4,7 +4,7 @@ namespace ResourceSpider.Infrastructure.Utils;
 /// 哈希时间轮定时器，使用时间轮算法高效管理大量延迟任务
 /// 适用于爬虫中的超时检测、重试调度等场景
 /// </summary>
-public class HashedWheelTimer
+public sealed class HashedWheelTimer : IDisposable
 {
     private readonly int _ticksPerWheel;
     private readonly TimeSpan _tickDuration;
@@ -39,11 +39,15 @@ public class HashedWheelTimer
     /// <param name="delay">延迟时间</param>
     public void AddTask(TimerTask task, TimeSpan delay)
     {
-        var ticks = (int)(delay.TotalMilliseconds / _tickDuration.TotalMilliseconds);
-        var targetTick = (_currentTick + ticks) % _ticksPerWheel;
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentNullException.ThrowIfNull(task);
+
+        var ticks = Math.Max(1, (int)(delay.TotalMilliseconds / _tickDuration.TotalMilliseconds));
+        var currentTick = Volatile.Read(ref _currentTick);
+        var targetTick = (currentTick + ticks) % _ticksPerWheel;
         
         task.Deadline = DateTime.UtcNow.Add(delay);
-        task.RemainingTicks = ticks;
+        task.RemainingTicks = ticks / _ticksPerWheel;
         
         lock (_wheel[targetTick])
         {
@@ -57,12 +61,18 @@ public class HashedWheelTimer
     /// <param name="state">定时器状态对象</param>
     private void Tick(object? state)
     {
+        if (_disposed)
+        {
+            return;
+        }
+
+        var currentTick = Volatile.Read(ref _currentTick);
         var tasksToExecute = new List<TimerTask>();
         
-        lock (_wheel[_currentTick])
+        lock (_wheel[currentTick])
         {
-            tasksToExecute.AddRange(_wheel[_currentTick]);
-            _wheel[_currentTick].Clear();
+            tasksToExecute.AddRange(_wheel[currentTick]);
+            _wheel[currentTick].Clear();
         }
 
         foreach (var task in tasksToExecute)
@@ -80,7 +90,7 @@ public class HashedWheelTimer
             else if (!task.IsCancelled)
             {
                 task.RemainingTicks--;
-                var targetTick = _currentTick;
+                var targetTick = currentTick;
                 lock (_wheel[targetTick])
                 {
                     _wheel[targetTick].Add(task);
@@ -88,7 +98,7 @@ public class HashedWheelTimer
             }
         }
 
-        _currentTick = (_currentTick + 1) % _ticksPerWheel;
+        Volatile.Write(ref _currentTick, (currentTick + 1) % _ticksPerWheel);
     }
 
     /// <summary>
@@ -114,6 +124,7 @@ public class HashedWheelTimer
         if (_disposed) return;
         _timer.Dispose();
         _disposed = true;
+        GC.SuppressFinalize(this);
     }
 }
 

@@ -20,7 +20,7 @@ else
 {
     <div class="action-row">
         <button class="btn" type="button" @onclick="LoadAsync">立即刷新</button>
-        <button class="btn btn-secondary" type="button" @onclick="ToggleAutoRefreshAsync">@(_autoRefreshEnabled ? "暂停自动刷新" : "开启自动刷新")</button>
+        <button class="btn btn-secondary" type="button" @onclick="ToggleAutoRefresh">@(_autoRefreshEnabled ? "暂停自动刷新" : "开启自动刷新")</button>
         <label class="inline-setting">
             刷新间隔
             <select class="input interval-select" @bind="_refreshIntervalSeconds">
@@ -186,16 +186,20 @@ else
         }
     }
 
-    private Task ToggleAutoRefreshAsync()
+    private void ToggleAutoRefresh()
     {
         _autoRefreshEnabled = !_autoRefreshEnabled;
-        return Task.CompletedTask;
     }
 
     private void StartRefreshLoop()
     {
+        if (_refreshTask is { IsCompleted: false })
+        {
+            return;
+        }
+
         _refreshCts = new CancellationTokenSource();
-        _refreshTask = Task.Run(() => RefreshLoopAsync(_refreshCts.Token));
+        _refreshTask = RefreshLoopAsync(_refreshCts.Token);
     }
 
     private async Task RefreshLoopAsync(CancellationToken cancellationToken)
@@ -211,20 +215,17 @@ else
                     continue;
                 }
 
-                try
+                await InvokeAsync(async () =>
                 {
-                    await InvokeAsync(async () =>
-                    {
-                        await LoadAsync();
-                        StateHasChanged();
-                    });
-                }
-                catch
-                {
-                }
+                    await LoadAsync();
+                    StateHasChanged();
+                });
             }
         }
         catch (OperationCanceledException)
+        {
+        }
+        catch (ObjectDisposedException)
         {
         }
     }
