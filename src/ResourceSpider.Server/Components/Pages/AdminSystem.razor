@@ -83,8 +83,43 @@ else
                 <p>配置存在：@(_redisStatus.Configured ? "是" : "否")</p>
                 <p>连接状态：@(_redisStatus.Connected ? "已连接" : "未连接")</p>
                 <p>任务缓存 TTL：@_redisStatus.TaskContentTtlSeconds 秒</p>
+                <p>生效配置文件：@(_redisStatus.EffectiveConfigFile ?? "未写入")</p>
+                @if (!string.IsNullOrWhiteSpace(_redisStatus.LastConfigWriteError))
+                {
+                    <p class="error-text">配置写入失败：@_redisStatus.LastConfigWriteError</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(_redisStatus.LastError))
+                {
+                    <p class="error-text">连接/切换失败：@_redisStatus.LastError</p>
+                }
                 <button class="btn btn-secondary" type="button" @onclick="ToggleRedisAsync">
                     @(_redisStatus.Enabled ? "停用 Redis" : "启用 Redis")
+                </button>
+            }
+        </section>
+
+        <section class="card">
+            <h2>PostgreSQL 结果存储</h2>
+            @if (_postgreStatus == null)
+            {
+                <p>暂无 PostgreSQL 状态。</p>
+            }
+            else
+            {
+                <p>状态：<strong>@_postgreStatus.Status</strong></p>
+                <p>配置存在：@(_postgreStatus.Configured ? "是" : "否")</p>
+                <p>连接状态：@(_postgreStatus.Connected ? "已连接" : "未连接")</p>
+                <p>生效配置文件：@(_postgreStatus.EffectiveConfigFile ?? "未写入")</p>
+                @if (!string.IsNullOrWhiteSpace(_postgreStatus.LastConfigWriteError))
+                {
+                    <p class="error-text">配置写入失败：@_postgreStatus.LastConfigWriteError</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(_postgreStatus.LastError))
+                {
+                    <p class="error-text">连接/切换失败：@_postgreStatus.LastError</p>
+                }
+                <button class="btn btn-secondary" type="button" @onclick="TogglePostgreAsync">
+                    @(_postgreStatus.Enabled ? "停用 PGSQL 结果存储" : "启用 PGSQL 结果存储")
                 </button>
             }
         </section>
@@ -112,6 +147,7 @@ else
     private bool _ready;
     private SystemHealthDto? _health;
     private RedisFeatureStatusDto? _redisStatus;
+    private PostgreSqlResultStorageStatusDto? _postgreStatus;
     private List<SystemLogDto> _logs = new();
 
     protected override async Task OnInitializedAsync()
@@ -130,6 +166,7 @@ else
     {
         _health = await ApiClient.GetSystemHealthAsync();
         _redisStatus = await ApiClient.GetRedisFeatureStatusAsync();
+        _postgreStatus = await ApiClient.GetPostgreSqlResultStorageStatusAsync();
         var logsResponse = await ApiClient.GetSystemLogsAsync();
         _logs = logsResponse?.Logs ?? new List<SystemLogDto>();
     }
@@ -142,6 +179,17 @@ else
         }
 
         _redisStatus = await ApiClient.UpdateRedisFeatureStatusAsync(!_redisStatus.Enabled) ?? _redisStatus;
-        _health = await ApiClient.GetSystemHealthAsync();
+        await RefreshAsync();
+    }
+
+    private async Task TogglePostgreAsync()
+    {
+        if (_postgreStatus == null)
+        {
+            return;
+        }
+
+        _postgreStatus = await ApiClient.UpdatePostgreSqlResultStorageStatusAsync(!_postgreStatus.Enabled) ?? _postgreStatus;
+        await RefreshAsync();
     }
 }

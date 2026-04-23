@@ -21,14 +21,18 @@ public interface IProxyRepository
     /// </summary>
     /// <param name="pageIndex">页码，从 1 开始</param>
     /// <param name="pageSize">每页记录数</param>
+    /// <param name="status">状态筛选，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选，为 null 时不筛选（支持主机与 ID）</param>
     /// <returns>代理服务器列表，按创建时间倒序排列</returns>
-    Task<List<ProxyEntity>> GetAllAsync(int pageIndex, int pageSize);
+    Task<List<ProxyEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null);
 
     /// <summary>
     /// 统计代理服务器总数
     /// </summary>
+    /// <param name="status">状态筛选，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选，为 null 时不筛选（支持主机与 ID）</param>
     /// <returns>代理服务器总数</returns>
-    Task<long> CountAsync();
+    Task<long> CountAsync(int? status = null, string? keyword = null);
 
     /// <summary>
     /// 获取所有可用状态的代理服务器
@@ -82,9 +86,21 @@ public class ProxyRepository : IProxyRepository
     }
 
     /// <inheritdoc/>
-    public async Task<List<ProxyEntity>> GetAllAsync(int pageIndex, int pageSize)
+    public async Task<List<ProxyEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null)
     {
-        return await _db.Queryable<ProxyEntity>()
+        var query = _db.Queryable<ProxyEntity>();
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.Host.Contains(keyword) || x.ProxyId.Contains(keyword));
+        }
+
+        return await query
             .OrderByDescending(x => x.CreatedAt)
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
@@ -92,9 +108,21 @@ public class ProxyRepository : IProxyRepository
     }
 
     /// <inheritdoc/>
-    public async Task<long> CountAsync()
+    public async Task<long> CountAsync(int? status = null, string? keyword = null)
     {
-        return await _db.Queryable<ProxyEntity>().CountAsync();
+        var query = _db.Queryable<ProxyEntity>();
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.Host.Contains(keyword) || x.ProxyId.Contains(keyword));
+        }
+
+        return await query.CountAsync();
     }
 
     /// <inheritdoc/>

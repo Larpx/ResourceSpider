@@ -10,46 +10,79 @@ public interface IStorageStrategyService
 
     Task StoreResultsAsync(List<CollectionResultEntity> entities);
 
-    StorageEngine GetCurrentEngine();
+    string GetCurrentEngineName();
 }
 
 public class StorageStrategyService : IStorageStrategyService
 {
+    private const string MySqlEngineName = "MySQL";
+    private const string PostgreSqlEngineName = "PostgreSQL";
+
     private readonly ICollectionResultRepository _mysqlResultRepository;
+    private readonly IPostgreCollectionResultRepository _postgreResultRepository;
+    private readonly IPostgreSqlResultStorageFeatureService _postgreFeatureService;
     private readonly ILogger<StorageStrategyService> _logger;
-    private readonly StorageEngine _currentEngine;
 
     public StorageStrategyService(
         ICollectionResultRepository mysqlResultRepository,
-        IConfiguration configuration,
+        IPostgreCollectionResultRepository postgreResultRepository,
+        IPostgreSqlResultStorageFeatureService postgreFeatureService,
         ILogger<StorageStrategyService> logger)
     {
         _mysqlResultRepository = mysqlResultRepository;
+        _postgreResultRepository = postgreResultRepository;
+        _postgreFeatureService = postgreFeatureService;
         _logger = logger;
-
-        var engineStr = configuration["Storage:Engine"] ?? "MySQL";
-        _currentEngine = engineStr.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase)
-            ? StorageEngine.PostgreSQL
-            : StorageEngine.MySQL;
     }
 
-    public StorageEngine GetCurrentEngine() => _currentEngine;
+    public string GetCurrentEngineName()
+    {
+        return _postgreFeatureService.IsEnabled
+               && _postgreFeatureService.IsConfigured
+               && _postgreFeatureService.IsConnected
+            ? PostgreSqlEngineName
+            : MySqlEngineName;
+    }
 
     public async Task StoreResultAsync(CollectionResultEntity entity)
     {
-        entity.StorageEngine = _currentEngine.ToString();
-        await _mysqlResultRepository.AddAsync(entity);
-        _logger.LogDebug("存储采集结果到 {Engine}，结果 ID: {ResultId}", _currentEngine, entity.ResultId);
+        var engine = GetCurrentEngineName();
+        entity.StorageEngine = engine;
+
+        if (engine == PostgreSqlEngineName)
+        {
+            await _postgreResultRepository.AddAsync(entity);
+        }
+        else
+        {
+            await _mysqlResultRepository.AddAsync(entity);
+        }
+
+        _logger.LogDebug("存储采集结果到 {Engine}，结果 ID: {ResultId}", engine, entity.ResultId);
     }
 
     public async Task StoreResultsAsync(List<CollectionResultEntity> entities)
     {
-        foreach (var entity in entities)
+        if (entities.Count == 0)
         {
-            entity.StorageEngine = _currentEngine.ToString();
+            return;
         }
 
-        await _mysqlResultRepository.AddRangeAsync(entities);
-        _logger.LogInformation("批量存储 {Count} 条采集结果到 {Engine}", entities.Count, _currentEngine);
+        var engine = GetCurrentEngineName();
+        foreach (var entity in entities)
+        {
+            entity.StorageEngine = engine;
+        }
+
+        if (engine == PostgreSqlEngineName)
+        {
+            await _postgreResultRepository.AddRangeAsync(entities);
+        }
+        else
+        {
+            await _mysqlResultRepository.AddRangeAsync(entities);
+        }
+
+        _logger.LogInformation("批量存储 {Count} 条采集结果到 {Engine}", entities.Count, engine);
     }
 }

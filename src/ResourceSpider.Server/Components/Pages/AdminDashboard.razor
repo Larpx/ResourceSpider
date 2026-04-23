@@ -3,62 +3,98 @@
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
 
-<PageTitle>后台首页</PageTitle>
+<PageTitle>后台首页 - ResourceSpider</PageTitle>
 
 @if (!_ready)
 {
-    <p>正在加载后台信息...</p>
+    <div class="loading">
+        <p>正在加载后台信息...</p>
+    </div>
 }
 else
 {
     <h1>后台管理首页</h1>
-    <p>当前用户：<strong>@Session.Username</strong>（@Session.Role）</p>
+    
+    <div class="user-info">
+        <span>当前用户：</span>
+        <strong>@Session.Username</strong>
+        <span>（@Session.Role）</span>
+    </div>
 
     <div class="card-grid">
-        <section class="card">
-            <h2>系统统计</h2>
-            @if (_statistics == null)
-            {
-                <p>暂无统计数据或尚未获取。</p>
-            }
-            else
-            {
-                <ul>
-                    <li>在线 Agent：@_statistics.OnlineAgents / @_statistics.TotalAgents</li>
-                    <li>运行中任务：@_statistics.RunningTasks</li>
-                    <li>待执行任务：@_statistics.PendingTasks</li>
-                    <li>已完成任务：@_statistics.CompletedTasks</li>
-                    <li>总数据量：@_statistics.TotalDataVolume</li>
-                </ul>
-            }
-        </section>
+        @if (_statistics != null)
+        {
+            <section class="card stat-card">
+                <div class="card-icon">📊</div>
+                <div class="stat-value">@_statistics.OnlineAgents / @_statistics.TotalAgents</div>
+                <div class="stat-label">在线 Agent</div>
+            </section>
 
-        <section class="card">
-            <h2>系统健康</h2>
-            @if (_health == null)
-            {
-                <p>暂无健康状态数据。</p>
-            }
-            else
-            {
-                <p>状态：<strong>@_health.Status</strong></p>
+            <section class="card stat-card">
+                <div class="card-icon">⚙️</div>
+                <div class="stat-value">@_statistics.RunningTasks</div>
+                <div class="stat-label">运行中任务</div>
+            </section>
+
+            <section class="card stat-card">
+                <div class="card-icon">⏳</div>
+                <div class="stat-value">@_statistics.PendingTasks</div>
+                <div class="stat-label">待执行任务</div>
+            </section>
+
+            <section class="card stat-card">
+                <div class="card-icon">✅</div>
+                <div class="stat-value">@_statistics.CompletedTasks</div>
+                <div class="stat-label">已完成任务</div>
+            </section>
+
+            <section class="card stat-card">
+                <div class="card-icon">💾</div>
+                <div class="stat-value">@_statistics.TotalDataVolume</div>
+                <div class="stat-label">总数据量</div>
+            </section>
+        }
+
+        @if (_health != null)
+        {
+            <section class="card">
+                <h2>系统健康</h2>
+                <p>状态：<strong class="health-status">@_health.Status</strong></p>
                 <p>版本：@_health.Version</p>
                 <p>运行时长：@_health.Uptime</p>
-            }
-        </section>
-
-        <section class="card">
-            <h2>管理入口</h2>
-            <ul>
-                <li><a href="/admin/agents">Agent 配置</a></li>
-                <li><a href="/admin/tasks">任务配置</a></li>
-                <li><a href="/admin/expressions">表达式配置</a></li>
-                <li><a href="/admin/proxies">代理池配置</a></li>
-                <li><a href="/admin/system">系统配置</a></li>
-                <li><a href="/admin/runtime">运行监控</a></li>
-            </ul>
-        </section>
+            </section>
+        }
     </div>
+
+    <section class="card runtime-section">
+        <h2>管理入口</h2>
+        <div class="admin-links">
+            <a class="admin-link" href="/admin/agents">
+                <div class="admin-link-icon">🤖</div>
+                <span>Agent 配置</span>
+            </a>
+            <a class="admin-link" href="/admin/tasks">
+                <div class="admin-link-icon">📋</div>
+                <span>任务配置</span>
+            </a>
+            <a class="admin-link" href="/admin/expressions">
+                <div class="admin-link-icon">🔧</div>
+                <span>表达式配置</span>
+            </a>
+            <a class="admin-link" href="/admin/proxies">
+                <div class="admin-link-icon">🌐</div>
+                <span>代理池配置</span>
+            </a>
+            <a class="admin-link" href="/admin/system">
+                <div class="admin-link-icon">⚙️</div>
+                <span>系统配置</span>
+            </a>
+            <a class="admin-link" href="/admin/runtime">
+                <div class="admin-link-icon">📈</div>
+                <span>运行监控</span>
+            </a>
+        </div>
+    </section>
 }
 
 @code {

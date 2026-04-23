@@ -1,42 +1,359 @@
+@using Microsoft.JSInterop
 @page "/admin/tasks"
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-<PageTitle>任务配置</PageTitle>
+<PageTitle>任务配置 - ResourceSpider</PageTitle>
 
 @if (!_ready)
 {
-    <p>正在加载任务列表...</p>
+    <div class="loading">
+        <p>正在加载任务列表...</p>
+    </div>
 }
 else
 {
     <h1>任务配置</h1>
 
-    @if (_tasks.Count == 0)
+    @if (!string.IsNullOrWhiteSpace(_message))
     {
-        <p>暂无任务数据。</p>
+        <div class="message-banner">@_message</div>
     }
-    else
+
+    <section class="form-card">
+        <h2>新增任务</h2>
+        <div class="form-grid">
+            <input class="input" placeholder="任务名称" @bind="_newTaskName" />
+            <input class="input" placeholder="任务类型" @bind="_newTaskType" />
+            <input class="input" type="number" min="1" max="10" @bind="_newTaskPriority" placeholder="优先级" />
+        </div>
+        <div class="action-row">
+            <button class="btn" type="button" @onclick="CreateTaskAsync">新增任务</button>
+            <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
+        </div>
+    </section>
+
+    <section class="card runtime-section">
+        <h2>查询过滤</h2>
+        <div class="filter-row">
+            <input class="input" placeholder="关键字（任务名称/类型/ID）" @bind="_keyword" />
+            <select class="input" @bind="_statusFilter">
+                <option value="-1">全部状态</option>
+                <option value="0">待执行</option>
+                <option value="1">执行中</option>
+                <option value="2">成功</option>
+                <option value="3">失败</option>
+                <option value="4">已暂停</option>
+                <option value="6">已终止</option>
+            </select>
+            <select class="input" @bind="_pageSize">
+                <option value="10">10 / 页</option>
+                <option value="20">20 / 页</option>
+                <option value="50">50 / 页</option>
+            </select>
+            <button class="btn" type="button" @onclick="SearchAsync">查询</button>
+        </div>
+    </section>
+
+    <section class="card runtime-section">
+        <h2>任务列表</h2>
+
+        @if (_tasks.Count == 0)
+        {
+            <p class="empty-state">暂无任务数据。</p>
+        }
+        else
+        {
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>任务名称</th>
+                            <th>任务类型</th>
+                            <th>状态</th>
+                            <th>结果存储</th>
+                            <th>优先级</th>
+                            <th>进度</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in _tasks)
+                        {
+                            <tr>
+                                @if (_editingTaskId == task.TaskId)
+                                {
+                                    <td><input class="input" @bind="_editTaskName" /></td>
+                                    <td>@task.TaskType</td>
+                                    <td><span class="status-badge @GetTaskStatusBadgeClass(task.Status)">@GetTaskStatusLabel(task.Status)</span></td>
+                                    <td>@GetStorageEngineLabel(task.ResultStorageEngine)</td>
+                                    <td><input class="input input-small" type="number" min="1" max="10" @bind="_editTaskPriority" /></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: @task.Progress%"></div>
+                                            <span class="progress-text">@task.Progress%</span>
+                                        </div>
+                                    </td>
+                                    <td>@task.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <button class="btn btn-sm" type="button" @onclick="SaveTaskAsync">保存</button>
+                                            <button class="btn btn-sm btn-secondary" type="button" @onclick="CancelTaskEdit">取消</button>
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td><strong>@task.TaskName</strong></td>
+                                    <td><code>@task.TaskType</code></td>
+                                    <td><span class="status-badge @GetTaskStatusBadgeClass(task.Status)">@GetTaskStatusLabel(task.Status)</span></td>
+                                    <td>@GetStorageEngineLabel(task.ResultStorageEngine)</td>
+                                    <td><span class="priority-badge">@task.Priority</span></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: @task.Progress%"></div>
+                                            <span class="progress-text">@task.Progress%</span>
+                                        </div>
+                                    </td>
+                                    <td>@task.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <button class="btn btn-sm btn-secondary" type="button" @onclick="() => BeginTaskEdit(task)">编辑</button>
+                                            <button class="btn btn-sm btn-secondary" type="button" @onclick="() => LoadTaskResultsAsync(task)">结果</button>
+                                            @if (_confirmDeleteTaskId == task.TaskId)
+                                            {
+                                                <button class="btn btn-sm btn-danger" type="button" @onclick="() => DeleteTaskAsync(task.TaskId)">确认删除</button>
+                                                <button class="btn btn-sm btn-secondary" type="button" @onclick="CancelTaskDelete">取消</button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-danger" type="button" @onclick="() => PrepareDeleteTask(task.TaskId)">删除</button>
+                                            }
+                                        </div>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <div class="pagination-row">
+            <span>总数：@_total 条，当前第 @_pageIndex / @TotalPages 页</span>
+            <div class="table-actions">
+                <button class="btn btn-sm btn-secondary" type="button" disabled="@(_pageIndex <= 1)" @onclick="PrevPageAsync">上一页</button>
+                <button class="btn btn-sm btn-secondary" type="button" disabled="@(_pageIndex >= TotalPages)" @onclick="NextPageAsync">下一页</button>
+            </div>
+            <div class="page-jump">
+                <span>跳转到</span>
+                <input class="input" type="number" min="1" max="@TotalPages" @bind="_jumpPageIndex" />
+                <button class="btn btn-sm btn-secondary" type="button" @onclick="JumpPageAsync">GO</button>
+            </div>
+        </div>
+    </section>
+
+    @if (!string.IsNullOrWhiteSpace(_selectedTaskId))
     {
-        <div class="card-grid">
-            @foreach (var task in _tasks)
+        <section class="card runtime-section">
+            <h2>任务结果：@_selectedTaskName</h2>
+            <div class="action-row result-toolbar">
+                <button class="btn btn-sm btn-secondary" type="button" @onclick="async () => await RefreshTaskResultsAsync()">刷新结果</button>
+                <input class="input input-medium" placeholder="字段值关键字检索" @bind="_resultKeyword" />
+                <button class="btn btn-sm btn-secondary" type="button" @onclick="SearchTaskResultsAsync">检索结果</button>
+                <input class="input input-medium" type="datetime-local" value="@FormatDateTimeLocalValue(_exportStartLocal)" @onchange="OnExportStartChanged" />
+                <input class="input input-medium" type="datetime-local" value="@FormatDateTimeLocalValue(_exportEndLocal)" @onchange="OnExportEndChanged" />
+                <label class="column-checkbox-item">
+                    <input type="checkbox" @bind="_exportVisibleColumnsOnly" />
+                    <span>仅导出当前显示列</span>
+                </label>
+                <button class="btn btn-sm btn-secondary" type="button" @onclick="() => ExportTaskResultsAsync(ExportFormat.Csv)">导出 CSV</button>
+                <button class="btn btn-sm btn-secondary" type="button" @onclick="() => ExportTaskResultsAsync(ExportFormat.Json)">导出 JSON</button>
+                <button class="btn btn-sm btn-secondary" type="button" @onclick="() => ExportTaskResultsAsync(ExportFormat.Excel)">导出 Excel</button>
+            </div>
+
+            @if (_dynamicResultColumns.Count > 0)
             {
-                <section class="card">
-                    <h2>@task.TaskName</h2>
-                    <p>ID：<code>@task.TaskId</code></p>
-                    <p>类型：@task.TaskType</p>
-                    <p>状态：@task.Status</p>
-                    <p>进度：@task.Progress%</p>
-                </section>
+                <div class="column-selector">
+                    <div class="table-actions">
+                        <button class="btn btn-sm btn-secondary" type="button" @onclick="ShowAllDynamicColumns">显示全部列</button>
+                        <button class="btn btn-sm btn-secondary" type="button" @onclick="HideAllDynamicColumns">隐藏全部动态列</button>
+                    </div>
+                    <div class="table-actions sort-toolbar">
+                        <span>结果排序：</span>
+                        <button class="btn btn-sm btn-secondary" type="button" @onclick="() => SortResultsBy(ResultSortField.CollectedAt)">按采集时间</button>
+                        <button class="btn btn-sm btn-secondary" type="button" @onclick="() => SortResultsBy(ResultSortField.SourceUrl)">按来源地址</button>
+                        <button class="btn btn-sm btn-secondary" type="button" @onclick="() => SortResultsBy(ResultSortField.ResultId)">按结果ID</button>
+                        <span class="sort-current">当前：@GetSortLabel()</span>
+                    </div>
+                    <div class="column-checkbox-list">
+                        @foreach (var column in _dynamicResultColumns)
+                        {
+                            <label class="column-checkbox-item">
+                                <input type="checkbox" checked="@IsDynamicColumnVisible(column)" @onchange="args => ToggleDynamicColumn(column, args)" />
+                                <span>@column</span>
+                            </label>
+                        }
+                    </div>
+                </div>
             }
+
+            @if (_taskResults.Count == 0)
+            {
+                <p class="empty-state">该任务暂无采集结果。</p>
+            }
+            else
+            {
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>结果ID</th>
+                                <th>来源URL</th>
+                                <th>存储位置</th>
+                                <th>采集时间</th>
+                                @foreach (var column in VisibleDynamicResultColumns)
+                                {
+                                    <th>@column</th>
+                                }
+                                <th>详情</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var result in _taskResults)
+                            {
+                                <tr>
+                                    <td><code>@result.ResultId</code></td>
+                                    <td class="url-cell" title="@result.SourceUrl">@result.SourceUrl</td>
+                                    <td>@GetStorageEngineLabel(result.StorageEngine)</td>
+                                    <td>@(result.CollectedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") ?? "-")</td>
+                                    @foreach (var column in VisibleDynamicResultColumns)
+                                    {
+                                        <td>@FormatFieldValue(result, column)</td>
+                                    }
+                                    <td>
+                                        <button class="btn btn-sm btn-secondary" type="button" @onclick="() => OpenResultDetailAsync(result.ResultId)">查看 JSON</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <div class="pagination-row">
+                <span>结果总数：@_taskResultTotal 条，当前第 @_taskResultPageIndex / @TaskResultTotalPages 页</span>
+                <div class="table-actions">
+                    <button class="btn btn-sm btn-secondary" type="button" disabled="@(_taskResultPageIndex <= 1)" @onclick="PrevTaskResultPageAsync">上一页</button>
+                    <button class="btn btn-sm btn-secondary" type="button" disabled="@(_taskResultPageIndex >= TaskResultTotalPages)" @onclick="NextTaskResultPageAsync">下一页</button>
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (_showResultDetailModal)
+    {
+        <div class="modal-backdrop" @onclick="CloseResultDetailModal">
+            <div class="modal-dialog" @onclick:stopPropagation="true">
+                <div class="modal-header">
+                    <h2>结果详情</h2>
+                    <div class="table-actions">
+                        <button class="btn btn-sm" type="button" @onclick="CopyResultDetailJsonAsync">复制 JSON</button>
+                        <button class="btn btn-sm btn-secondary" type="button" @onclick="CloseResultDetailModal">关闭</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    @if (_resultDetail == null)
+                    {
+                        <p class="empty-state">未获取到结果详情。</p>
+                    }
+                    else
+                    {
+                        <p><strong>结果ID：</strong><code>@_resultDetail.ResultId</code></p>
+                        <p><strong>来源URL：</strong>@_resultDetail.SourceUrl</p>
+                        <p><strong>存储位置：</strong>@GetStorageEngineLabel(_resultDetail.StorageEngine)</p>
+                        <div class="detail-view-switch">
+                            <button class="btn btn-sm @(_detailViewMode == ResultDetailViewMode.Table ? string.Empty : "btn-secondary")" type="button" @onclick="() => SwitchDetailView(ResultDetailViewMode.Table)">字段表格视图</button>
+                            <button class="btn btn-sm @(_detailViewMode == ResultDetailViewMode.Json ? string.Empty : "btn-secondary")" type="button" @onclick="() => SwitchDetailView(ResultDetailViewMode.Json)">JSON 视图</button>
+                        </div>
+                        @if (_detailViewMode == ResultDetailViewMode.Table)
+                        {
+                            <table class="data-table detail-table">
+                                <thead>
+                                    <tr>
+                                        <th>字段名</th>
+                                        <th>字段值</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var field in GetDetailFields())
+                                    {
+                                        <tr>
+                                            <td>@field.Key</td>
+                                            <td>@field.Value</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <pre class="log-box">@_resultDetailJson</pre>
+                        }
+                    }
+                </div>
+            </div>
         </div>
     }
 }
 
 @code {
     private bool _ready;
+    private string _newTaskName = string.Empty;
+    private string _newTaskType = "Generic";
+    private int _newTaskPriority = 5;
+    private string _message = string.Empty;
+
+    private string? _editingTaskId;
+    private string _editTaskName = string.Empty;
+    private int _editTaskPriority = 5;
+
+    private string? _confirmDeleteTaskId;
+
+    private int _pageIndex = 1;
+    private int _pageSize = 20;
+    private int _total;
+    private int _statusFilter = -1;
+    private string _keyword = string.Empty;
+    private int _jumpPageIndex = 1;
+
+    private string? _selectedTaskId;
+    private string _selectedTaskName = string.Empty;
+    private int _taskResultPageIndex = 1;
+    private int _taskResultPageSize = 20;
+    private int _taskResultTotal;
+    private List<CollectionResultDto> _taskResults = new();
+    private List<string> _dynamicResultColumns = new();
+    private HashSet<string> _hiddenDynamicResultColumns = new(StringComparer.OrdinalIgnoreCase);
+    private DateTime? _exportStartLocal;
+    private DateTime? _exportEndLocal;
+    private string _resultKeyword = string.Empty;
+    private bool _showResultDetailModal;
+    private CollectionResultDto? _resultDetail;
+    private string _resultDetailJson = string.Empty;
+    private bool _exportVisibleColumnsOnly = true;
+    private ResultSortField _resultSortField = ResultSortField.CollectedAt;
+    private bool _resultSortDescending = true;
+    private ResultDetailViewMode _detailViewMode = ResultDetailViewMode.Table;
+
     private List<TaskDto> _tasks = new();
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling(_total / (double)_pageSize));
+    private int TaskResultTotalPages => Math.Max(1, (int)Math.Ceiling(_taskResultTotal / (double)_taskResultPageSize));
+    private IEnumerable<string> VisibleDynamicResultColumns => _dynamicResultColumns.Where(IsDynamicColumnVisible);
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,8 +363,600 @@ else
             return;
         }
 
-        var response = await ApiClient.GetTasksAsync();
-        _tasks = response?.Tasks ?? new List<TaskDto>();
+        LoadFiltersFromUri();
+        await LoadPageAsync(updateUri: false);
+
+        if (!string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            _selectedTaskName = _tasks.FirstOrDefault(x => x.TaskId == _selectedTaskId)?.TaskName ?? _selectedTaskId;
+            await RefreshTaskResultsAsync(updateUri: false);
+        }
+
         _ready = true;
+    }
+
+    private void LoadFiltersFromUri()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("page", out var pageValue)
+            && int.TryParse(pageValue, out var pageParsed)
+            && pageParsed > 0)
+        {
+            _pageIndex = pageParsed;
+        }
+
+        if (query.TryGetValue("pageSize", out var pageSizeValue)
+            && int.TryParse(pageSizeValue, out var pageSizeParsed)
+            && (pageSizeParsed == 10 || pageSizeParsed == 20 || pageSizeParsed == 50))
+        {
+            _pageSize = pageSizeParsed;
+        }
+
+        if (query.TryGetValue("status", out var statusValue)
+            && int.TryParse(statusValue, out var statusParsed)
+            && (statusParsed == -1 || statusParsed == 0 || statusParsed == 1 || statusParsed == 2 || statusParsed == 3 || statusParsed == 4 || statusParsed == 6))
+        {
+            _statusFilter = statusParsed;
+        }
+
+        if (query.TryGetValue("keyword", out var keywordValue))
+        {
+            _keyword = keywordValue.ToString();
+        }
+
+        if (query.TryGetValue("resultTaskId", out var resultTaskIdValue))
+        {
+            _selectedTaskId = resultTaskIdValue.ToString();
+        }
+
+        if (query.TryGetValue("resultPage", out var resultPageValue)
+            && int.TryParse(resultPageValue, out var resultPageParsed)
+            && resultPageParsed > 0)
+        {
+            _taskResultPageIndex = resultPageParsed;
+        }
+
+        if (query.TryGetValue("resultStart", out var resultStartValue))
+        {
+            _exportStartLocal = ParseDateTimeLocalValue(resultStartValue.ToString());
+        }
+
+        if (query.TryGetValue("resultEnd", out var resultEndValue))
+        {
+            _exportEndLocal = ParseDateTimeLocalValue(resultEndValue.ToString());
+        }
+
+        if (query.TryGetValue("resultKeyword", out var resultKeywordValue))
+        {
+            _resultKeyword = resultKeywordValue.ToString();
+        }
+
+        if (query.TryGetValue("hiddenColumns", out var hiddenColumnsValue))
+        {
+            _hiddenDynamicResultColumns = hiddenColumnsValue
+                .ToString()
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+
+        if (query.TryGetValue("resultSortField", out var resultSortFieldValue)
+            && Enum.TryParse<ResultSortField>(resultSortFieldValue.ToString(), ignoreCase: true, out var sortField))
+        {
+            _resultSortField = sortField;
+        }
+
+        if (query.TryGetValue("resultSortDesc", out var resultSortDescValue)
+            && bool.TryParse(resultSortDescValue, out var sortDesc))
+        {
+            _resultSortDescending = sortDesc;
+        }
+    }
+
+    private void SyncUri()
+    {
+        var hiddenColumns = _hiddenDynamicResultColumns.Count == 0
+            ? null
+            : string.Join(',', _hiddenDynamicResultColumns.OrderBy(x => x, StringComparer.OrdinalIgnoreCase));
+
+        var target = Navigation.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            ["page"] = _pageIndex,
+            ["pageSize"] = _pageSize,
+            ["status"] = _statusFilter,
+            ["keyword"] = string.IsNullOrWhiteSpace(_keyword) ? null : _keyword.Trim(),
+            ["resultTaskId"] = string.IsNullOrWhiteSpace(_selectedTaskId) ? null : _selectedTaskId,
+            ["resultPage"] = string.IsNullOrWhiteSpace(_selectedTaskId) ? null : _taskResultPageIndex,
+            ["resultStart"] = FormatDateTimeLocalValue(_exportStartLocal),
+            ["resultEnd"] = FormatDateTimeLocalValue(_exportEndLocal),
+            ["resultKeyword"] = string.IsNullOrWhiteSpace(_resultKeyword) ? null : _resultKeyword.Trim(),
+            ["hiddenColumns"] = hiddenColumns,
+            ["resultSortField"] = _resultSortField.ToString(),
+            ["resultSortDesc"] = _resultSortDescending
+        });
+
+        Navigation.NavigateTo(target, replace: true);
+    }
+
+    private async Task LoadPageAsync(bool updateUri = true)
+    {
+        int? status = _statusFilter < 0 ? null : _statusFilter;
+        var keyword = string.IsNullOrWhiteSpace(_keyword) ? null : _keyword.Trim();
+        var response = await ApiClient.GetTasksAsync(_pageIndex, _pageSize, status, keyword);
+
+        _tasks = response?.Tasks ?? new List<TaskDto>();
+        _total = response?.Total ?? 0;
+
+        if (_pageIndex > TotalPages)
+        {
+            _pageIndex = TotalPages;
+            await LoadPageAsync(updateUri);
+            return;
+        }
+
+        _jumpPageIndex = _pageIndex;
+
+        if (updateUri)
+        {
+            SyncUri();
+        }
+    }
+
+    private async Task SearchAsync()
+    {
+        _pageIndex = 1;
+        await LoadPageAsync();
+    }
+
+    private async Task PrevPageAsync()
+    {
+        if (_pageIndex <= 1)
+        {
+            return;
+        }
+
+        _pageIndex--;
+        await LoadPageAsync();
+    }
+
+    private async Task NextPageAsync()
+    {
+        if (_pageIndex >= TotalPages)
+        {
+            return;
+        }
+
+        _pageIndex++;
+        await LoadPageAsync();
+    }
+
+    private async Task JumpPageAsync()
+    {
+        if (_jumpPageIndex < 1 || _jumpPageIndex > TotalPages)
+        {
+            _message = $"页码范围应为 1 到 {TotalPages}。";
+            return;
+        }
+
+        _pageIndex = _jumpPageIndex;
+        await LoadPageAsync();
+    }
+
+    private async Task CreateTaskAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_newTaskName) || string.IsNullOrWhiteSpace(_newTaskType))
+        {
+            _message = "任务名称和任务类型不能为空。";
+            return;
+        }
+
+        var (success, message) = await ApiClient.CreateTaskAsync(new CreateTaskRequest(
+            _newTaskName.Trim(),
+            _newTaskType.Trim(),
+            _newTaskPriority));
+
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        _newTaskName = string.Empty;
+        _newTaskType = "Generic";
+        _newTaskPriority = 5;
+        await SearchAsync();
+    }
+
+    private void BeginTaskEdit(TaskDto task)
+    {
+        _editingTaskId = task.TaskId;
+        _editTaskName = task.TaskName;
+        _editTaskPriority = task.Priority;
+        _confirmDeleteTaskId = null;
+    }
+
+    private void CancelTaskEdit()
+    {
+        _editingTaskId = null;
+        _editTaskName = string.Empty;
+        _editTaskPriority = 5;
+    }
+
+    private async Task SaveTaskAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_editingTaskId))
+        {
+            return;
+        }
+
+        var (success, message) = await ApiClient.UpdateTaskAsync(_editingTaskId, new UpdateTaskRequest(
+            _editTaskName,
+            _editTaskPriority,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null));
+
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        CancelTaskEdit();
+        await LoadPageAsync();
+    }
+
+    private void PrepareDeleteTask(string taskId)
+    {
+        _confirmDeleteTaskId = taskId;
+        _editingTaskId = null;
+    }
+
+    private void CancelTaskDelete()
+    {
+        _confirmDeleteTaskId = null;
+    }
+
+    private async Task DeleteTaskAsync(string taskId)
+    {
+        var (success, message) = await ApiClient.DeleteTaskAsync(taskId);
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        _confirmDeleteTaskId = null;
+        if (_selectedTaskId == taskId)
+        {
+            _selectedTaskId = null;
+            _selectedTaskName = string.Empty;
+            _taskResults.Clear();
+            _taskResultTotal = 0;
+            _dynamicResultColumns.Clear();
+            _hiddenDynamicResultColumns.Clear();
+            _resultKeyword = string.Empty;
+            CloseResultDetailModal();
+        }
+
+        await LoadPageAsync();
+    }
+
+    private async Task LoadTaskResultsAsync(TaskDto task)
+    {
+        _selectedTaskId = task.TaskId;
+        _selectedTaskName = task.TaskName;
+        _taskResultPageIndex = 1;
+        _dynamicResultColumns.Clear();
+        _hiddenDynamicResultColumns.Clear();
+        _resultKeyword = string.Empty;
+        _resultSortField = ResultSortField.CollectedAt;
+        _resultSortDescending = true;
+        CloseResultDetailModal();
+        await RefreshTaskResultsAsync();
+    }
+
+    private async Task SearchTaskResultsAsync()
+    {
+        _taskResultPageIndex = 1;
+        await RefreshTaskResultsAsync();
+    }
+
+    private async Task RefreshTaskResultsAsync(bool updateUri = true)
+    {
+        if (string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            return;
+        }
+
+        var keyword = string.IsNullOrWhiteSpace(_resultKeyword) ? null : _resultKeyword.Trim();
+        var response = await ApiClient.GetTaskResultsAsync(_selectedTaskId, _taskResultPageIndex, _taskResultPageSize, keyword);
+        _taskResults = response?.Results ?? new List<CollectionResultDto>();
+        _taskResultTotal = response?.Total ?? 0;
+
+        ApplyResultSorting();
+
+        var latestColumns = _taskResults
+            .SelectMany(x => x.Fields.Keys)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(x => x)
+            .ToList();
+
+        _hiddenDynamicResultColumns.RemoveWhere(column => !latestColumns.Contains(column, StringComparer.OrdinalIgnoreCase));
+        _dynamicResultColumns = latestColumns;
+
+        if (updateUri)
+        {
+            SyncUri();
+        }
+    }
+
+    private async Task PrevTaskResultPageAsync()
+    {
+        if (_taskResultPageIndex <= 1)
+        {
+            return;
+        }
+
+        _taskResultPageIndex--;
+        await RefreshTaskResultsAsync();
+    }
+
+    private async Task NextTaskResultPageAsync()
+    {
+        if (_taskResultPageIndex >= TaskResultTotalPages)
+        {
+            return;
+        }
+
+        _taskResultPageIndex++;
+        await RefreshTaskResultsAsync();
+    }
+
+    private async Task ExportTaskResultsAsync(ExportFormat format)
+    {
+        if (string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            return;
+        }
+
+        if (_exportStartLocal.HasValue && _exportEndLocal.HasValue && _exportStartLocal > _exportEndLocal)
+        {
+            _message = "导出时间范围无效：开始时间不能晚于结束时间。";
+            return;
+        }
+
+        var fields = _exportVisibleColumnsOnly ? VisibleDynamicResultColumns.ToList() : null;
+        var export = await ApiClient.ExportTaskResultsAsync(_selectedTaskId, format, _exportStartLocal, _exportEndLocal, fields);
+        if (export == null || string.IsNullOrWhiteSpace(export.DownloadUrl))
+        {
+            _message = "导出失败。";
+            return;
+        }
+
+        _message = $"导出完成：{export.FileName}，记录数 {export.TotalRecords}";
+        SyncUri();
+        Navigation.NavigateTo(export.DownloadUrl, forceLoad: true);
+    }
+
+    private void OnExportStartChanged(ChangeEventArgs args)
+    {
+        _exportStartLocal = ParseDateTimeLocalValue(args.Value?.ToString());
+        SyncUri();
+    }
+
+    private void OnExportEndChanged(ChangeEventArgs args)
+    {
+        _exportEndLocal = ParseDateTimeLocalValue(args.Value?.ToString());
+        SyncUri();
+    }
+
+    private void ShowAllDynamicColumns()
+    {
+        _hiddenDynamicResultColumns.Clear();
+        SyncUri();
+    }
+
+    private void HideAllDynamicColumns()
+    {
+        _hiddenDynamicResultColumns = _dynamicResultColumns.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        SyncUri();
+    }
+
+    private void ToggleDynamicColumn(string column, ChangeEventArgs args)
+    {
+        var rawValue = args.Value?.ToString();
+        var isChecked = string.Equals(rawValue, "true", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(rawValue, "on", StringComparison.OrdinalIgnoreCase);
+
+        if (isChecked)
+        {
+            _hiddenDynamicResultColumns.Remove(column);
+        }
+        else
+        {
+            _hiddenDynamicResultColumns.Add(column);
+        }
+
+        SyncUri();
+    }
+
+    private bool IsDynamicColumnVisible(string column)
+    {
+        return !_hiddenDynamicResultColumns.Contains(column);
+    }
+
+    private async Task OpenResultDetailAsync(string resultId)
+    {
+        var detail = await ApiClient.GetTaskResultByIdAsync(resultId);
+        if (detail == null)
+        {
+            _message = "未获取到结果详情。";
+            return;
+        }
+
+        _resultDetail = detail;
+        _resultDetailJson = System.Text.Json.JsonSerializer.Serialize(detail.Fields, new System.Text.Json.JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+        _detailViewMode = ResultDetailViewMode.Table;
+        _showResultDetailModal = true;
+    }
+
+    private async Task CopyResultDetailJsonAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_resultDetailJson))
+        {
+            return;
+        }
+
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", _resultDetailJson);
+        _message = "JSON 已复制到剪贴板。";
+    }
+
+    private void CloseResultDetailModal()
+    {
+        _showResultDetailModal = false;
+        _resultDetail = null;
+        _resultDetailJson = string.Empty;
+    }
+
+    private void SwitchDetailView(ResultDetailViewMode mode)
+    {
+        _detailViewMode = mode;
+    }
+
+    private IEnumerable<KeyValuePair<string, string>> GetDetailFields()
+    {
+        if (_resultDetail == null)
+        {
+            return [];
+        }
+
+        return _resultDetail.Fields
+            .OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(x => new KeyValuePair<string, string>(x.Key, x.Value?.ToString() ?? string.Empty));
+    }
+
+    private void SortResultsBy(ResultSortField field)
+    {
+        if (_resultSortField == field)
+        {
+            _resultSortDescending = !_resultSortDescending;
+        }
+        else
+        {
+            _resultSortField = field;
+            _resultSortDescending = field == ResultSortField.CollectedAt;
+        }
+
+        ApplyResultSorting();
+        SyncUri();
+    }
+
+    private void ApplyResultSorting()
+    {
+        Func<CollectionResultDto, object?> keySelector = _resultSortField switch
+        {
+            ResultSortField.ResultId => x => x.ResultId,
+            ResultSortField.SourceUrl => x => x.SourceUrl,
+            _ => x => x.CollectedAt ?? x.CreatedAt
+        };
+
+        _taskResults = _resultSortDescending
+            ? _taskResults.OrderByDescending(keySelector).ToList()
+            : _taskResults.OrderBy(keySelector).ToList();
+    }
+
+    private string GetSortLabel()
+    {
+        var name = _resultSortField switch
+        {
+            ResultSortField.ResultId => "结果ID",
+            ResultSortField.SourceUrl => "来源地址",
+            _ => "采集时间"
+        };
+
+        return $"{name} {(_resultSortDescending ? "↓" : "↑")}";
+    }
+
+    private static string GetTaskStatusLabel(int status)
+    {
+        return status switch
+        {
+            0 => "待执行",
+            1 => "执行中",
+            2 => "成功",
+            3 => "失败",
+            4 => "已暂停",
+            5 => "已取消",
+            6 => "已终止",
+            _ => $"未知({status})"
+        };
+    }
+
+    private static string GetTaskStatusBadgeClass(int status)
+    {
+        return status switch
+        {
+            1 => "running",
+            0 or 4 => "pending",
+            3 or 6 => "error",
+            _ => "idle"
+        };
+    }
+
+    private static string GetStorageEngineLabel(string? engine)
+    {
+        return engine?.ToLowerInvariant() switch
+        {
+            "postgresql" => "PostgreSQL 结果库",
+            "mysql" => "MySQL 结果表",
+            _ => "MySQL 结果表"
+        };
+    }
+
+    private static string FormatFieldValue(CollectionResultDto result, string fieldName)
+    {
+        if (!result.Fields.TryGetValue(fieldName, out var value) || value == null)
+        {
+            return string.Empty;
+        }
+
+        return value.ToString() ?? string.Empty;
+    }
+
+    private static string? FormatDateTimeLocalValue(DateTime? value)
+    {
+        return value?.ToString("yyyy-MM-ddTHH:mm");
+    }
+
+    private static DateTime? ParseDateTimeLocalValue(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        return DateTime.TryParse(value, out var parsed) ? parsed : null;
+    }
+
+    private enum ResultSortField
+    {
+        CollectedAt,
+        SourceUrl,
+        ResultId
+    }
+
+    private enum ResultDetailViewMode
+    {
+        Table,
+        Json
     }
 }

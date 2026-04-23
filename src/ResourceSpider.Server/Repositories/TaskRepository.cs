@@ -22,15 +22,17 @@ public interface ITaskRepository
     /// <param name="pageIndex">页码，从 1 开始</param>
     /// <param name="pageSize">每页记录数</param>
     /// <param name="status">状态筛选，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选，为 null 时不筛选</param>
     /// <returns>任务列表</returns>
-    Task<List<TaskEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null);
+    Task<List<TaskEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null);
 
     /// <summary>
     /// 统计任务数量，支持按状态筛选
     /// </summary>
     /// <param name="status">状态筛选，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选，为 null 时不筛选</param>
     /// <returns>任务总数</returns>
-    Task<long> CountAsync(int? status = null);
+    Task<long> CountAsync(int? status = null, string? keyword = null);
 
     /// <summary>
     /// 新增任务实体
@@ -86,13 +88,18 @@ public class TaskRepository : ITaskRepository
     }
 
     /// <inheritdoc/>
-    public async Task<List<TaskEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null)
+    public async Task<List<TaskEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null)
     {
         var query = _db.Queryable<TaskEntity>();
-        
+
         if (status.HasValue)
         {
             query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.TaskName.Contains(keyword) || x.TaskType.Contains(keyword) || x.TaskId.Contains(keyword));
         }
 
         return await query
@@ -104,13 +111,19 @@ public class TaskRepository : ITaskRepository
     }
 
     /// <inheritdoc/>
-    public async Task<long> CountAsync(int? status = null)
+    public async Task<long> CountAsync(int? status = null, string? keyword = null)
     {
         var query = _db.Queryable<TaskEntity>();
         if (status.HasValue)
         {
             query = query.Where(x => x.Status == status.Value);
         }
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.TaskName.Contains(keyword) || x.TaskType.Contains(keyword) || x.TaskId.Contains(keyword));
+        }
+
         return await query.CountAsync();
     }
 

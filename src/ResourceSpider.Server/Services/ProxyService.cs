@@ -20,6 +20,24 @@ public interface IProxyService
     Task<ProxyDto> AddAsync(CreateProxyRequest request);
 
     /// <summary>
+    /// 更新指定代理服务器配置
+    /// </summary>
+    /// <param name="proxyId">代理唯一标识</param>
+    /// <param name="request">更新代理请求</param>
+    /// <returns>更新成功返回 true，代理不存在返回 false</returns>
+    Task<bool> UpdateAsync(string proxyId, UpdateProxyRequest request);
+
+    /// <summary>
+    /// 分页获取代理列表，支持状态和关键字筛选
+    /// </summary>
+    /// <param name="pageIndex">页码（从 1 开始）</param>
+    /// <param name="pageSize">每页数量</param>
+    /// <param name="status">状态筛选</param>
+    /// <param name="keyword">关键字筛选（主机或 ID）</param>
+    /// <returns>分页代理响应</returns>
+    Task<ProxyListResponse> GetPagedAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null);
+
+    /// <summary>
     /// 分页获取代理列表
     /// </summary>
     /// <param name="pageIndex">页码（从 1 开始）</param>
@@ -92,10 +110,67 @@ public class ProxyService : IProxyService
     }
 
     /// <inheritdoc />
+    public async Task<bool> UpdateAsync(string proxyId, UpdateProxyRequest request)
+    {
+        var entity = await _proxyRepository.GetByIdAsync(proxyId);
+        if (entity == null)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Host))
+        {
+            entity.Host = request.Host;
+        }
+
+        if (request.Port.HasValue)
+        {
+            entity.Port = request.Port.Value;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Protocol))
+        {
+            entity.Protocol = request.Protocol;
+        }
+
+        if (request.Username != null)
+        {
+            entity.Username = request.Username;
+        }
+
+        if (request.Password != null)
+        {
+            entity.Password = request.Password;
+        }
+
+        if (request.Status.HasValue)
+        {
+            entity.Status = request.Status.Value;
+        }
+
+        await _proxyRepository.UpdateAsync(entity);
+        _logger.LogInformation("Proxy {ProxyId} updated", proxyId);
+        return true;
+    }
+
+    /// <inheritdoc />
+    public async Task<ProxyListResponse> GetPagedAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null)
+    {
+        var proxies = await _proxyRepository.GetAllAsync(pageIndex, pageSize, status, keyword);
+        var total = await _proxyRepository.CountAsync(status, keyword);
+
+        return new ProxyListResponse(
+            proxies.Select(MapToDto).ToList(),
+            (int)total,
+            pageIndex,
+            pageSize);
+    }
+
+    /// <inheritdoc />
     public async Task<List<ProxyDto>> GetListAsync(int pageIndex, int pageSize)
     {
-        var proxies = await _proxyRepository.GetAllAsync(pageIndex, pageSize);
-        return proxies.Select(MapToDto).ToList();
+        var paged = await GetPagedAsync(pageIndex, pageSize);
+        return paged.Proxies;
     }
 
     /// <inheritdoc />

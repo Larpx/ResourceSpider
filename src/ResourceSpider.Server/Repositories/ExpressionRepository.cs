@@ -22,8 +22,9 @@ public interface IExpressionRepository
     /// <param name="pageIndex">页码，从 1 开始</param>
     /// <param name="pageSize">每页记录数</param>
     /// <param name="status">状态筛选，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选，为 null 时不筛选</param>
     /// <returns>表达式列表，按创建时间倒序排列</returns>
-    Task<List<ExpressionEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null);
+    Task<List<ExpressionEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null);
 
     /// <summary>
     /// 获取所有启用状态的表达式
@@ -35,8 +36,9 @@ public interface IExpressionRepository
     /// 统计表达式数量，支持按状态筛选
     /// </summary>
     /// <param name="status">状态筛选，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选，为 null 时不筛选</param>
     /// <returns>表达式总数</returns>
-    Task<long> CountAsync(int? status = null);
+    Task<long> CountAsync(int? status = null, string? keyword = null);
 
     /// <summary>
     /// 新增表达式实体
@@ -103,13 +105,19 @@ public class ExpressionRepository : IExpressionRepository
     }
 
     /// <inheritdoc/>
-    public async Task<List<ExpressionEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null)
+    public async Task<List<ExpressionEntity>> GetAllAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null)
     {
         var query = _db.Queryable<ExpressionEntity>();
         if (status.HasValue)
         {
             query = query.Where(x => x.Status == status.Value);
         }
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.Name.Contains(keyword) || x.ExpressionId.Contains(keyword) || (x.Description != null && x.Description.Contains(keyword)));
+        }
+
         return await query
             .OrderByDescending(x => x.CreatedAt)
             .Skip((pageIndex - 1) * pageSize)
@@ -126,13 +134,19 @@ public class ExpressionRepository : IExpressionRepository
     }
 
     /// <inheritdoc/>
-    public async Task<long> CountAsync(int? status = null)
+    public async Task<long> CountAsync(int? status = null, string? keyword = null)
     {
         var query = _db.Queryable<ExpressionEntity>();
         if (status.HasValue)
         {
             query = query.Where(x => x.Status == status.Value);
         }
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.Name.Contains(keyword) || x.ExpressionId.Contains(keyword) || (x.Description != null && x.Description.Contains(keyword)));
+        }
+
         return await query.CountAsync();
     }
 

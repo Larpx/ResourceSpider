@@ -13,6 +13,7 @@ namespace ResourceSpider.Server.DTOs;
 /// <param name="StepId">步骤 ID</param>
 /// <param name="CollectedAt">采集时间</param>
 /// <param name="CreatedAt">记录创建时间</param>
+/// <param name="StorageEngine">结果存储引擎</param>
 public record CollectionResultDto(
     string ResultId,
     string TaskId,
@@ -23,7 +24,8 @@ public record CollectionResultDto(
     Dictionary<string, string> FieldExpressionMap,
     string? StepId,
     DateTime? CollectedAt,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    string? StorageEngine = null
 );
 
 /// <summary>

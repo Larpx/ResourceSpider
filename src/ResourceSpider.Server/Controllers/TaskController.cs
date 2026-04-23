@@ -75,15 +75,17 @@ public class TaskController : ControllerBase
     /// <param name="pageIndex">页码，默认第 1 页</param>
     /// <param name="pageSize">每页数量，默认 20 条</param>
     /// <param name="status">任务状态筛选条件，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选条件，为 null 时不筛选</param>
     /// <returns>任务列表及分页信息</returns>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<TaskListResponse>), 200)]
     public async Task<IActionResult> GetList(
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 20,
-        [FromQuery] int? status = null)
+        [FromQuery] int? status = null,
+        [FromQuery] string? keyword = null)
     {
-        var result = await _taskService.GetListAsync(pageIndex, pageSize, status);
+        var result = await _taskService.GetListAsync(pageIndex, pageSize, status, keyword);
         return Ok(ApiResponse<TaskListResponse>.Success(result));
     }
 

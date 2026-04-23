@@ -25,13 +25,14 @@ public interface IExpressionService
     Task<ExpressionDto?> GetByIdAsync(string expressionId);
 
     /// <summary>
-    /// 分页获取表达式列表，支持按状态筛选
+    /// 分页获取表达式列表，支持按状态和关键字筛选
     /// </summary>
     /// <param name="pageIndex">页码（从 1 开始）</param>
     /// <param name="pageSize">每页数量</param>
     /// <param name="status">状态筛选条件，null 表示不筛选</param>
+    /// <param name="keyword">关键字筛选，null 表示不筛选</param>
     /// <returns>表达式列表响应</returns>
-    Task<ExpressionListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null);
+    Task<ExpressionListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null);
 
     /// <summary>
     /// 更新表达式信息，包括字段定义的替换
@@ -171,10 +172,10 @@ public class ExpressionService : IExpressionService
     }
 
     /// <inheritdoc />
-    public async Task<ExpressionListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null)
+    public async Task<ExpressionListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null)
     {
-        var expressions = await _expressionRepository.GetAllAsync(pageIndex, pageSize, status);
-        var total = await _expressionRepository.CountAsync(status);
+        var expressions = await _expressionRepository.GetAllAsync(pageIndex, pageSize, status, keyword);
+        var total = await _expressionRepository.CountAsync(status, keyword);
 
         var dtos = new List<ExpressionDto>();
         foreach (var expr in expressions)

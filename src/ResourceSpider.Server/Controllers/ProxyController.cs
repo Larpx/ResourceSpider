@@ -33,15 +33,39 @@ public class ProxyController : ControllerBase
     /// </summary>
     /// <param name="pageIndex">页码，默认第 1 页</param>
     /// <param name="pageSize">每页数量，默认 20 条</param>
+    /// <param name="status">代理状态筛选（可选）</param>
+    /// <param name="keyword">关键字筛选（可选）</param>
     /// <returns>代理列表</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<List<ProxyDto>>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<ProxyListResponse>), 200)]
     public async Task<IActionResult> GetList(
         [FromQuery] int pageIndex = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20,
+        [FromQuery] int? status = null,
+        [FromQuery] string? keyword = null)
     {
-        var result = await _proxyService.GetListAsync(pageIndex, pageSize);
-        return Ok(ApiResponse<List<ProxyDto>>.Success(result));
+        var result = await _proxyService.GetPagedAsync(pageIndex, pageSize, status, keyword);
+        return Ok(ApiResponse<ProxyListResponse>.Success(result));
+    }
+
+    /// <summary>
+    /// 更新指定代理服务器配置
+    /// </summary>
+    /// <param name="proxyId">代理 ID</param>
+    /// <param name="request">更新请求</param>
+    /// <returns>更新成功返回确认，代理不存在返回 404 状态码</returns>
+    [HttpPut("{proxyId}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> Update(string proxyId, [FromBody] UpdateProxyRequest request)
+    {
+        var result = await _proxyService.UpdateAsync(proxyId, request);
+        if (!result)
+        {
+            return NotFound(ApiResponse<object>.Error(404, "Proxy not found"));
+        }
+
+        return Ok(ApiResponse<object>.Success(new { }, "Proxy updated"));
     }
 
     /// <summary>

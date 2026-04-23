@@ -2,10 +2,40 @@
 
 <PageTitle>欢迎使用 ResourceSpider</PageTitle>
 
-<h1>欢迎使用 ResourceSpider</h1>
-<p>这是系统的默认启动欢迎界面。你可以从这里进入项目主页或后台管理。</p>
-
-<div class="action-row">
-    <a class="btn" href="/home">进入项目主页</a>
-    <a class="btn btn-secondary" href="/admin/login">后台登录</a>
+<div class="welcome-hero">
+    <h1>欢迎使用 ResourceSpider</h1>
+    <p>ResourceSpider 是一个强大的资源采集与管理系统。你可以从这里进入项目主页或后台管理。</p>
+    <div class="welcome-actions">
+        <a class="btn btn-lg" href="/admin">进入后台管理</a>
+        <a class="btn btn-lg btn-secondary" href="/overview">查看系统概览</a>
+    </div>
 </div>
+
+<div class="card-grid">
+    <section class="card feature-card">
+        <div class="card-icon">🤖</div>
+        <h2>Agent 管理</h2>
+        <p>配置和管理分布式采集节点，实现高效的资源采集任务。</p>
+    </section>
+
+    <section class="card feature-card">
+        <div class="card-icon">📋</div>
+        <h2>任务调度</h2>
+        <p>灵活的任务配置和调度系统，支持多种任务类型和优先级管理。</p>
+    </section>
+
+    <section class="card feature-card">
+        <div class="card-icon">📊</div>
+        <h2>数据管理</h2>
+        <p>采集结果的查询、过滤、导出功能，支持多种数据格式。</p>
+    </section>
+
+    <section class="card feature-card">
+        <div class="card-icon">🌐</div>
+        <h2>代理池</h2>
+        <p>内置代理池管理，支持 IP 轮换和代理健康检查。</p>
+    </section>
+</div>
+
+@code {
+}

@@ -26,6 +26,13 @@ public interface ICollectionResultRepository
     Task<List<CollectionResultEntity>> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize);
 
     /// <summary>
+    /// 根据任务 ID 获取全部采集结果
+    /// </summary>
+    /// <param name="taskId">任务唯一标识符</param>
+    /// <returns>采集结果列表，按创建时间倒序排列</returns>
+    Task<List<CollectionResultEntity>> GetAllByTaskIdAsync(string taskId);
+
+    /// <summary>
     /// 根据表达式 ID 分页获取采集结果列表
     /// </summary>
     /// <param name="expressionId">表达式唯一标识符</param>
@@ -101,6 +108,15 @@ public class CollectionResultRepository : ICollectionResultRepository
             .OrderByDescending(x => x.CreatedAt)
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
+            .ToListAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<List<CollectionResultEntity>> GetAllByTaskIdAsync(string taskId)
+    {
+        return await _db.Queryable<CollectionResultEntity>()
+            .Where(x => x.TaskId == taskId)
+            .OrderByDescending(x => x.CreatedAt)
             .ToListAsync();
     }
 

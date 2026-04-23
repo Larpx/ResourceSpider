@@ -13,30 +13,153 @@ else
 {
     <h1>表达式配置</h1>
 
-    @if (_expressions.Count == 0)
+    @if (!string.IsNullOrWhiteSpace(_message))
     {
-        <p>暂无表达式数据。</p>
+        <p>@_message</p>
     }
-    else
-    {
-        <div class="card-grid">
-            @foreach (var expression in _expressions)
-            {
-                <section class="card">
-                    <h2>@expression.Name</h2>
-                    <p>ID：<code>@expression.ExpressionId</code></p>
-                    <p>类型：@expression.SelectorType</p>
-                    <p>状态：@expression.Status</p>
-                    <p>字段数：@expression.Fields.Count</p>
-                </section>
-            }
+
+    <section class="form-card">
+        <h2>新增表达式</h2>
+        <input class="input" placeholder="表达式名称" @bind="_newName" />
+        <input class="input" placeholder="选择器类型（xpath/cssselector/regex/jsonpath）" @bind="_newSelectorType" />
+        <input class="input" placeholder="描述（可选）" @bind="_newDescription" />
+        <input class="input" placeholder="容器表达式（可选）" @bind="_newContainerExpression" />
+        <div class="action-row">
+            <button class="btn" type="button" @onclick="CreateExpressionAsync">新增</button>
+            <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
         </div>
-    }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>查询过滤</h2>
+        <div class="filter-row">
+            <input class="input" placeholder="关键字（名称/描述/ID）" @bind="_keyword" />
+            <select class="input" @bind="_statusFilter">
+                <option value="-1">全部状态</option>
+                <option value="0">草稿/未启用</option>
+                <option value="1">启用</option>
+                <option value="2">失效</option>
+            </select>
+            <select class="input" @bind="_pageSize">
+                <option value="10">10 / 页</option>
+                <option value="20">20 / 页</option>
+                <option value="50">50 / 页</option>
+            </select>
+            <button class="btn" type="button" @onclick="SearchAsync">查询</button>
+        </div>
+    </section>
+
+    <section class="card runtime-section">
+        <h2>表达式列表</h2>
+
+        @if (_expressions.Count == 0)
+        {
+            <p>暂无表达式数据。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>选择器类型</th>
+                        <th>状态</th>
+                        <th>字段数</th>
+                        <th>成功/失败</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var expression in _expressions)
+                    {
+                        <tr>
+                            @if (_editingExpressionId == expression.ExpressionId)
+                            {
+                                <td><input class="input" @bind="_editName" /></td>
+                                <td><input class="input" @bind="_editSelectorType" /></td>
+                                <td><input class="input" type="number" min="0" max="2" @bind="_editStatus" /></td>
+                                <td>@expression.Fields.Count</td>
+                                <td>@expression.SuccessCount / @expression.FailureCount</td>
+                                <td>@expression.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="btn" type="button" @onclick="SaveExpressionAsync">保存</button>
+                                        <button class="btn btn-secondary" type="button" @onclick="CancelEdit">取消</button>
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@expression.Name</td>
+                                <td>@expression.SelectorType</td>
+                                <td>@GetExpressionStatusLabel(expression.Status)</td>
+                                <td>@expression.Fields.Count</td>
+                                <td>@expression.SuccessCount / @expression.FailureCount</td>
+                                <td>@expression.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="btn btn-secondary" type="button" @onclick="() => BeginEdit(expression)">编辑</button>
+                                        @if (_confirmDeleteExpressionId == expression.ExpressionId)
+                                        {
+                                            <button class="btn btn-danger" type="button" @onclick="() => DeleteExpressionAsync(expression.ExpressionId)">确认删除</button>
+                                            <button class="btn btn-secondary" type="button" @onclick="CancelDelete">取消</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-danger" type="button" @onclick="() => PrepareDelete(expression.ExpressionId)">删除</button>
+                                        }
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <div class="pagination-row">
+            <span>总数：@_total 条，当前第 @_pageIndex / @TotalPages 页</span>
+            <div class="table-actions">
+                <button class="btn btn-secondary" type="button" disabled="@(_pageIndex <= 1)" @onclick="PrevPageAsync">上一页</button>
+                <button class="btn btn-secondary" type="button" disabled="@(_pageIndex >= TotalPages)" @onclick="NextPageAsync">下一页</button>
+            </div>
+            <div class="page-jump">
+                <span>跳转到</span>
+                <input class="input" type="number" min="1" max="@TotalPages" @bind="_jumpPageIndex" />
+                <button class="btn btn-secondary" type="button" @onclick="JumpPageAsync">GO</button>
+            </div>
+        </div>
+    </section>
 }
 
 @code {
     private bool _ready;
     private List<ExpressionDto> _expressions = new();
+    private string _message = string.Empty;
+
+    private string _newName = string.Empty;
+    private string _newSelectorType = "xpath";
+    private string _newDescription = string.Empty;
+    private string _newContainerExpression = string.Empty;
+
+    private string? _editingExpressionId;
+    private string _editName = string.Empty;
+    private string _editSelectorType = string.Empty;
+    private string _editDescription = string.Empty;
+    private string _editContainerExpression = string.Empty;
+    private int _editStatus = 1;
+
+    private string? _confirmDeleteExpressionId;
+
+    private int _pageIndex = 1;
+    private int _pageSize = 20;
+    private int _total;
+    private int _statusFilter = -1;
+    private string _keyword = string.Empty;
+    private int _jumpPageIndex = 1;
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling(_total / (double)_pageSize));
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,8 +169,221 @@ else
             return;
         }
 
-        var response = await ApiClient.GetExpressionsAsync();
-        _expressions = response?.Expressions ?? new List<ExpressionDto>();
+        LoadFiltersFromUri();
+        await LoadPageAsync(updateUri: false);
         _ready = true;
+    }
+
+    private void LoadFiltersFromUri()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("page", out var pageValue)
+            && int.TryParse(pageValue, out var pageParsed)
+            && pageParsed > 0)
+        {
+            _pageIndex = pageParsed;
+        }
+
+        if (query.TryGetValue("pageSize", out var pageSizeValue)
+            && int.TryParse(pageSizeValue, out var pageSizeParsed)
+            && (pageSizeParsed == 10 || pageSizeParsed == 20 || pageSizeParsed == 50))
+        {
+            _pageSize = pageSizeParsed;
+        }
+
+        if (query.TryGetValue("status", out var statusValue)
+            && int.TryParse(statusValue, out var statusParsed)
+            && (statusParsed == -1 || statusParsed == 0 || statusParsed == 1 || statusParsed == 2))
+        {
+            _statusFilter = statusParsed;
+        }
+
+        if (query.TryGetValue("keyword", out var keywordValue))
+        {
+            _keyword = keywordValue.ToString();
+        }
+    }
+
+    private void SyncUri()
+    {
+        var target = Navigation.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            ["page"] = _pageIndex,
+            ["pageSize"] = _pageSize,
+            ["status"] = _statusFilter,
+            ["keyword"] = string.IsNullOrWhiteSpace(_keyword) ? null : _keyword.Trim()
+        });
+
+        Navigation.NavigateTo(target, replace: true);
+    }
+
+    private async Task LoadPageAsync(bool updateUri = true)
+    {
+        int? status = _statusFilter < 0 ? null : _statusFilter;
+        var keyword = string.IsNullOrWhiteSpace(_keyword) ? null : _keyword.Trim();
+        var response = await ApiClient.GetExpressionsAsync(_pageIndex, _pageSize, status, keyword);
+
+        _expressions = response?.Expressions ?? new List<ExpressionDto>();
+        _total = response?.Total ?? 0;
+
+        if (_pageIndex > TotalPages)
+        {
+            _pageIndex = TotalPages;
+            await LoadPageAsync(updateUri);
+            return;
+        }
+
+        _jumpPageIndex = _pageIndex;
+
+        if (updateUri)
+        {
+            SyncUri();
+        }
+    }
+
+    private async Task SearchAsync()
+    {
+        _pageIndex = 1;
+        await LoadPageAsync();
+    }
+
+    private async Task PrevPageAsync()
+    {
+        if (_pageIndex <= 1)
+        {
+            return;
+        }
+
+        _pageIndex--;
+        await LoadPageAsync();
+    }
+
+    private async Task NextPageAsync()
+    {
+        if (_pageIndex >= TotalPages)
+        {
+            return;
+        }
+
+        _pageIndex++;
+        await LoadPageAsync();
+    }
+
+    private async Task JumpPageAsync()
+    {
+        if (_jumpPageIndex < 1 || _jumpPageIndex > TotalPages)
+        {
+            _message = $"页码范围应为 1 到 {TotalPages}。";
+            return;
+        }
+
+        _pageIndex = _jumpPageIndex;
+        await LoadPageAsync();
+    }
+
+    private async Task CreateExpressionAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_newName) || string.IsNullOrWhiteSpace(_newSelectorType))
+        {
+            _message = "表达式名称和选择器类型不能为空。";
+            return;
+        }
+
+        var (success, message) = await ApiClient.CreateExpressionAsync(new CreateExpressionRequest(
+            _newName.Trim(),
+            string.IsNullOrWhiteSpace(_newDescription) ? null : _newDescription.Trim(),
+            _newSelectorType.Trim(),
+            string.IsNullOrWhiteSpace(_newContainerExpression) ? null : _newContainerExpression.Trim(),
+            null));
+
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        _newName = string.Empty;
+        _newSelectorType = "xpath";
+        _newDescription = string.Empty;
+        _newContainerExpression = string.Empty;
+        await SearchAsync();
+    }
+
+    private void BeginEdit(ExpressionDto expression)
+    {
+        _editingExpressionId = expression.ExpressionId;
+        _editName = expression.Name;
+        _editSelectorType = expression.SelectorType;
+        _editDescription = expression.Description;
+        _editContainerExpression = expression.ContainerExpression;
+        _editStatus = expression.Status;
+        _confirmDeleteExpressionId = null;
+    }
+
+    private void CancelEdit()
+    {
+        _editingExpressionId = null;
+    }
+
+    private async Task SaveExpressionAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_editingExpressionId))
+        {
+            return;
+        }
+
+        var (success, message) = await ApiClient.UpdateExpressionAsync(_editingExpressionId, new UpdateExpressionRequest(
+            _editName,
+            string.IsNullOrWhiteSpace(_editDescription) ? null : _editDescription,
+            _editSelectorType,
+            string.IsNullOrWhiteSpace(_editContainerExpression) ? null : _editContainerExpression,
+            _editStatus,
+            null));
+
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        CancelEdit();
+        await LoadPageAsync();
+    }
+
+    private void PrepareDelete(string expressionId)
+    {
+        _confirmDeleteExpressionId = expressionId;
+        _editingExpressionId = null;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmDeleteExpressionId = null;
+    }
+
+    private async Task DeleteExpressionAsync(string expressionId)
+    {
+        var (success, message) = await ApiClient.DeleteExpressionAsync(expressionId);
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        _confirmDeleteExpressionId = null;
+        await LoadPageAsync();
+    }
+
+    private static string GetExpressionStatusLabel(int status)
+    {
+        return status switch
+        {
+            0 => "草稿/未启用",
+            1 => "启用",
+            2 => "失效",
+            _ => $"未知({status})"
+        };
     }
 }

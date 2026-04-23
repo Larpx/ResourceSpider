@@ -75,15 +75,17 @@ public class ExpressionController : ControllerBase
     /// <param name="pageIndex">页码，默认第 1 页</param>
     /// <param name="pageSize">每页数量，默认 20 条</param>
     /// <param name="status">表达式状态筛选条件，为 null 时不筛选</param>
+    /// <param name="keyword">关键字筛选条件，为 null 时不筛选</param>
     /// <returns>表达式列表及分页信息</returns>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<ExpressionListResponse>), 200)]
     public async Task<IActionResult> GetList(
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 20,
-        [FromQuery] int? status = null)
+        [FromQuery] int? status = null,
+        [FromQuery] string? keyword = null)
     {
-        var result = await _expressionService.GetListAsync(pageIndex, pageSize, status);
+        var result = await _expressionService.GetListAsync(pageIndex, pageSize, status, keyword);
         return Ok(ApiResponse<ExpressionListResponse>.Success(result));
     }
 

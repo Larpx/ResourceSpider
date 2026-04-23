@@ -9,7 +9,7 @@ public interface ITaskService
 {
     Task<TaskDto> CreateAsync(CreateTaskRequest request, string? createdBy = null);
     Task<TaskDto?> GetByIdAsync(string taskId);
-    Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null);
+    Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null);
     Task<bool> UpdateAsync(string taskId, UpdateTaskRequest request);
     Task<bool> PauseAsync(string taskId);
     Task<bool> ResumeAsync(string taskId);
@@ -52,7 +52,8 @@ public class TaskService : ITaskService
             Tags = request.Tags,
             AgentGroupId = request.AgentGroupId,
             ExpressionId = request.ExpressionId,
-            CreatedBy = createdBy
+            CreatedBy = createdBy,
+            ResultStorageEngine = "MySQL"
         };
 
         await _taskRepository.AddAsync(entity);
@@ -109,10 +110,10 @@ public class TaskService : ITaskService
         return dto;
     }
 
-    public async Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null)
+    public async Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null)
     {
-        var tasks = await _taskRepository.GetAllAsync(pageIndex, pageSize, status);
-        var total = await _taskRepository.CountAsync(status);
+        var tasks = await _taskRepository.GetAllAsync(pageIndex, pageSize, status, keyword);
+        var total = await _taskRepository.CountAsync(status, keyword);
 
         return new TaskListResponse(
             tasks.Select(MapToDto).ToList(),
@@ -244,7 +245,10 @@ public class TaskService : ITaskService
             entity.EndTime,
             entity.CreatedBy,
             entity.CreatedAt,
-            entity.ExpressionId
+            entity.ExpressionId,
+            null,
+            null,
+            entity.ResultStorageEngine
         );
     }
 

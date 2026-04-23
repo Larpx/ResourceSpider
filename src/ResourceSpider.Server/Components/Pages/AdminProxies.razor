@@ -13,30 +13,156 @@ else
 {
     <h1>代理池配置</h1>
 
-    @if (_proxies.Count == 0)
+    @if (!string.IsNullOrWhiteSpace(_message))
     {
-        <p>暂无代理数据。</p>
+        <p>@_message</p>
     }
-    else
-    {
-        <div class="card-grid">
-            @foreach (var proxy in _proxies)
-            {
-                <section class="card">
-                    <h2>@proxy.Host:@proxy.Port</h2>
-                    <p>ID：<code>@proxy.ProxyId</code></p>
-                    <p>协议：@proxy.Protocol</p>
-                    <p>状态：@proxy.Status</p>
-                    <p>成功/失败：@proxy.SuccessCount / @proxy.FailureCount</p>
-                </section>
-            }
+
+    <section class="form-card">
+        <h2>新增代理</h2>
+        <input class="input" placeholder="主机" @bind="_newHost" />
+        <input class="input" type="number" min="1" max="65535" placeholder="端口" @bind="_newPort" />
+        <input class="input" placeholder="协议（HTTP/HTTPS）" @bind="_newProtocol" />
+        <input class="input" placeholder="用户名（可选）" @bind="_newUsername" />
+        <input class="input" placeholder="密码（可选）" @bind="_newPassword" />
+        <div class="action-row">
+            <button class="btn" type="button" @onclick="CreateProxyAsync">新增</button>
+            <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
         </div>
-    }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>查询过滤</h2>
+        <div class="filter-row">
+            <input class="input" placeholder="关键字（主机/ID）" @bind="_keyword" />
+            <select class="input" @bind="_statusFilter">
+                <option value="-1">全部状态</option>
+                <option value="0">待检测</option>
+                <option value="1">可用</option>
+                <option value="2">不可用</option>
+                <option value="3">禁用</option>
+            </select>
+            <select class="input" @bind="_pageSize">
+                <option value="10">10 / 页</option>
+                <option value="20">20 / 页</option>
+                <option value="50">50 / 页</option>
+            </select>
+            <button class="btn" type="button" @onclick="SearchAsync">查询</button>
+        </div>
+    </section>
+
+    <section class="card runtime-section">
+        <h2>代理列表</h2>
+
+        @if (_proxies.Count == 0)
+        {
+            <p>暂无代理数据。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>主机</th>
+                        <th>端口</th>
+                        <th>协议</th>
+                        <th>状态</th>
+                        <th>用户名</th>
+                        <th>成功/失败</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var proxy in _proxies)
+                    {
+                        <tr>
+                            @if (_editingProxyId == proxy.ProxyId)
+                            {
+                                <td><input class="input" @bind="_editHost" /></td>
+                                <td><input class="input" type="number" min="1" max="65535" @bind="_editPort" /></td>
+                                <td><input class="input" @bind="_editProtocol" /></td>
+                                <td><input class="input" type="number" min="0" max="3" @bind="_editStatus" /></td>
+                                <td><input class="input" @bind="_editUsername" /></td>
+                                <td>@proxy.SuccessCount / @proxy.FailureCount</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="btn" type="button" @onclick="SaveProxyAsync">保存</button>
+                                        <button class="btn btn-secondary" type="button" @onclick="CancelEdit">取消</button>
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@proxy.Host</td>
+                                <td>@proxy.Port</td>
+                                <td>@proxy.Protocol</td>
+                                <td>@GetProxyStatusLabel(proxy.Status)</td>
+                                <td>@(string.IsNullOrWhiteSpace(proxy.Username) ? "-" : proxy.Username)</td>
+                                <td>@proxy.SuccessCount / @proxy.FailureCount</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="btn btn-secondary" type="button" @onclick="() => BeginEdit(proxy)">编辑</button>
+                                        @if (_confirmDeleteProxyId == proxy.ProxyId)
+                                        {
+                                            <button class="btn btn-danger" type="button" @onclick="() => DeleteProxyAsync(proxy.ProxyId)">确认删除</button>
+                                            <button class="btn btn-secondary" type="button" @onclick="CancelDelete">取消</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-danger" type="button" @onclick="() => PrepareDelete(proxy.ProxyId)">删除</button>
+                                        }
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <div class="pagination-row">
+            <span>总数：@_total 条，当前第 @_pageIndex / @TotalPages 页</span>
+            <div class="table-actions">
+                <button class="btn btn-secondary" type="button" disabled="@(_pageIndex <= 1)" @onclick="PrevPageAsync">上一页</button>
+                <button class="btn btn-secondary" type="button" disabled="@(_pageIndex >= TotalPages)" @onclick="NextPageAsync">下一页</button>
+            </div>
+            <div class="page-jump">
+                <span>跳转到</span>
+                <input class="input" type="number" min="1" max="@TotalPages" @bind="_jumpPageIndex" />
+                <button class="btn btn-secondary" type="button" @onclick="JumpPageAsync">GO</button>
+            </div>
+        </div>
+    </section>
 }
 
 @code {
     private bool _ready;
     private List<ProxyDto> _proxies = new();
+    private string _message = string.Empty;
+
+    private string _newHost = string.Empty;
+    private int _newPort = 8080;
+    private string _newProtocol = "HTTP";
+    private string _newUsername = string.Empty;
+    private string _newPassword = string.Empty;
+
+    private string? _editingProxyId;
+    private string _editHost = string.Empty;
+    private int _editPort;
+    private string _editProtocol = string.Empty;
+    private string _editUsername = string.Empty;
+    private int _editStatus;
+
+    private string? _confirmDeleteProxyId;
+
+    private int _pageIndex = 1;
+    private int _pageSize = 20;
+    private int _total;
+    private int _statusFilter = -1;
+    private string _keyword = string.Empty;
+    private int _jumpPageIndex = 1;
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling(_total / (double)_pageSize));
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,7 +172,223 @@ else
             return;
         }
 
-        _proxies = await ApiClient.GetProxiesAsync();
+        LoadFiltersFromUri();
+        await LoadPageAsync(updateUri: false);
         _ready = true;
+    }
+
+    private void LoadFiltersFromUri()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("page", out var pageValue)
+            && int.TryParse(pageValue, out var pageParsed)
+            && pageParsed > 0)
+        {
+            _pageIndex = pageParsed;
+        }
+
+        if (query.TryGetValue("pageSize", out var pageSizeValue)
+            && int.TryParse(pageSizeValue, out var pageSizeParsed)
+            && (pageSizeParsed == 10 || pageSizeParsed == 20 || pageSizeParsed == 50))
+        {
+            _pageSize = pageSizeParsed;
+        }
+
+        if (query.TryGetValue("status", out var statusValue)
+            && int.TryParse(statusValue, out var statusParsed)
+            && (statusParsed == -1 || statusParsed == 0 || statusParsed == 1 || statusParsed == 2 || statusParsed == 3))
+        {
+            _statusFilter = statusParsed;
+        }
+
+        if (query.TryGetValue("keyword", out var keywordValue))
+        {
+            _keyword = keywordValue.ToString();
+        }
+    }
+
+    private void SyncUri()
+    {
+        var target = Navigation.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            ["page"] = _pageIndex,
+            ["pageSize"] = _pageSize,
+            ["status"] = _statusFilter,
+            ["keyword"] = string.IsNullOrWhiteSpace(_keyword) ? null : _keyword.Trim()
+        });
+
+        Navigation.NavigateTo(target, replace: true);
+    }
+
+    private async Task LoadPageAsync(bool updateUri = true)
+    {
+        int? status = _statusFilter < 0 ? null : _statusFilter;
+        var keyword = string.IsNullOrWhiteSpace(_keyword) ? null : _keyword.Trim();
+        var response = await ApiClient.GetProxiesAsync(_pageIndex, _pageSize, status, keyword);
+
+        _proxies = response?.Proxies ?? new List<ProxyDto>();
+        _total = response?.Total ?? 0;
+
+        if (_pageIndex > TotalPages)
+        {
+            _pageIndex = TotalPages;
+            await LoadPageAsync(updateUri);
+            return;
+        }
+
+        _jumpPageIndex = _pageIndex;
+
+        if (updateUri)
+        {
+            SyncUri();
+        }
+    }
+
+    private async Task SearchAsync()
+    {
+        _pageIndex = 1;
+        await LoadPageAsync();
+    }
+
+    private async Task PrevPageAsync()
+    {
+        if (_pageIndex <= 1)
+        {
+            return;
+        }
+
+        _pageIndex--;
+        await LoadPageAsync();
+    }
+
+    private async Task NextPageAsync()
+    {
+        if (_pageIndex >= TotalPages)
+        {
+            return;
+        }
+
+        _pageIndex++;
+        await LoadPageAsync();
+    }
+
+    private async Task JumpPageAsync()
+    {
+        if (_jumpPageIndex < 1 || _jumpPageIndex > TotalPages)
+        {
+            _message = $"页码范围应为 1 到 {TotalPages}。";
+            return;
+        }
+
+        _pageIndex = _jumpPageIndex;
+        await LoadPageAsync();
+    }
+
+    private async Task CreateProxyAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_newHost))
+        {
+            _message = "代理主机不能为空。";
+            return;
+        }
+
+        var (success, message) = await ApiClient.CreateProxyAsync(new CreateProxyRequest(
+            _newHost.Trim(),
+            _newPort,
+            string.IsNullOrWhiteSpace(_newProtocol) ? "HTTP" : _newProtocol.Trim(),
+            string.IsNullOrWhiteSpace(_newUsername) ? null : _newUsername.Trim(),
+            string.IsNullOrWhiteSpace(_newPassword) ? null : _newPassword));
+
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        _newHost = string.Empty;
+        _newPort = 8080;
+        _newProtocol = "HTTP";
+        _newUsername = string.Empty;
+        _newPassword = string.Empty;
+        await SearchAsync();
+    }
+
+    private void BeginEdit(ProxyDto proxy)
+    {
+        _editingProxyId = proxy.ProxyId;
+        _editHost = proxy.Host;
+        _editPort = proxy.Port;
+        _editProtocol = proxy.Protocol;
+        _editUsername = proxy.Username ?? string.Empty;
+        _editStatus = proxy.Status;
+        _confirmDeleteProxyId = null;
+    }
+
+    private void CancelEdit()
+    {
+        _editingProxyId = null;
+    }
+
+    private async Task SaveProxyAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_editingProxyId))
+        {
+            return;
+        }
+
+        var (success, message) = await ApiClient.UpdateProxyAsync(_editingProxyId, new UpdateProxyRequest(
+            _editHost,
+            _editPort,
+            _editProtocol,
+            string.IsNullOrWhiteSpace(_editUsername) ? null : _editUsername,
+            null,
+            _editStatus));
+
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        CancelEdit();
+        await LoadPageAsync();
+    }
+
+    private void PrepareDelete(string proxyId)
+    {
+        _confirmDeleteProxyId = proxyId;
+        _editingProxyId = null;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmDeleteProxyId = null;
+    }
+
+    private async Task DeleteProxyAsync(string proxyId)
+    {
+        var (success, message) = await ApiClient.DeleteProxyAsync(proxyId);
+        _message = message;
+        if (!success)
+        {
+            return;
+        }
+
+        _confirmDeleteProxyId = null;
+        await LoadPageAsync();
+    }
+
+    private static string GetProxyStatusLabel(int status)
+    {
+        return status switch
+        {
+            0 => "待检测",
+            1 => "可用",
+            2 => "不可用",
+            3 => "禁用",
+            _ => $"未知({status})"
+        };
     }
 }

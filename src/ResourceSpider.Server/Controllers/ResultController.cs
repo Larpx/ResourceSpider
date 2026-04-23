@@ -5,34 +5,16 @@ using ResourceSpider.Server.Services;
 
 namespace ResourceSpider.Server.Controllers;
 
-/// <summary>
-/// 采集结果管理控制器，提供结果查询、批量删除、导出和统计功能
-/// 支持按任务 ID 筛选结果，并可将结果导出为 CSV、JSON 或 Excel 格式
-/// </summary>
 [ApiController]
 [Route("api/admin/results")]
 [Authorize]
 public class ResultController : ControllerBase
 {
-    /// <summary>
-    /// 采集结果服务实例，处理结果的查询逻辑
-    /// </summary>
     private readonly ICollectionResultService _resultService;
 
-    /// <summary>
-    /// 日志记录器实例
-    /// </summary>
-    private readonly ILogger<ResultController> _logger;
-
-    /// <summary>
-    /// 初始化结果管理控制器
-    /// </summary>
-    /// <param name="resultService">采集结果服务</param>
-    /// <param name="logger">日志记录器</param>
-    public ResultController(ICollectionResultService resultService, ILogger<ResultController> logger)
+    public ResultController(ICollectionResultService resultService)
     {
         _resultService = resultService;
-        _logger = logger;
     }
 
     /// <summary>
@@ -41,17 +23,19 @@ public class ResultController : ControllerBase
     /// <param name="taskId">任务 ID 筛选条件，为 null 时返回空列表</param>
     /// <param name="pageIndex">页码，默认第 1 页</param>
     /// <param name="pageSize">每页数量，默认 20 条</param>
+    /// <param name="keyword">关键字筛选条件，为 null 时不添加此条件</param>
     /// <returns>采集结果列表及分页信息</returns>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<CollectionResultListResponse>), 200)]
     public async Task<IActionResult> GetList(
         [FromQuery] string? taskId = null,
         [FromQuery] int pageIndex = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? keyword = null)
     {
         if (!string.IsNullOrEmpty(taskId))
         {
-            var result = await _resultService.GetByTaskIdAsync(taskId, pageIndex, pageSize);
+            var result = await _resultService.GetByTaskIdAsync(taskId, pageIndex, pageSize, keyword);
             return Ok(ApiResponse<CollectionResultListResponse>.Success(result));
         }
 
@@ -107,10 +91,28 @@ public class ResultController : ControllerBase
     /// <returns>导出成功返回文件信息（文件名、下载路径、记录数和文件大小）</returns>
     [HttpPost("export")]
     [ProducesResponseType(typeof(ApiResponse<ExportResultDto>), 200)]
-    public async Task<IActionResult> Export([FromBody] ExportRequest request,
-        [FromServices] Repositories.ICollectionResultRepository resultRepository)
+    public async Task<IActionResult> Export([FromBody] ExportRequest request)
     {
-        var results = await resultRepository.GetByTaskIdAsync(request.TaskId, 1, 10000);
+        var response = await _resultService.GetByTaskIdAsync(request.TaskId, 1, 10000);
+        IEnumerable<CollectionResultDto> query = response.Results;
+
+        if (!string.IsNullOrWhiteSpace(request.StepId))
+        {
+            query = query.Where(r => string.Equals(r.StepId, request.StepId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (request.StartTime.HasValue)
+        {
+            query = query.Where(r => (r.CollectedAt ?? r.CreatedAt) >= request.StartTime.Value);
+        }
+
+        if (request.EndTime.HasValue)
+        {
+            query = query.Where(r => (r.CollectedAt ?? r.CreatedAt) <= request.EndTime.Value);
+        }
+
+        var results = query.ToList();
+
         var fileName = $"{request.TaskId}_{DateTime.UtcNow:yyyyMMddHHmmss}.{request.Format.ToString().ToLower()}";
         var exportDir = Path.Combine("exports", request.TaskId);
         Directory.CreateDirectory(exportDir);
@@ -119,13 +121,13 @@ public class ResultController : ControllerBase
         switch (request.Format)
         {
             case ExportFormat.Csv:
-                await WriteCsvAsync(results, filePath);
+                await WriteCsvAsync(results, filePath, request.Fields);
                 break;
             case ExportFormat.Json:
-                await WriteJsonAsync(results, filePath);
+                await WriteJsonAsync(results, filePath, request.Fields);
                 break;
             case ExportFormat.Excel:
-                await WriteCsvAsync(results, filePath);
+                await WriteCsvAsync(results, filePath, request.Fields);
                 break;
         }
 
@@ -142,15 +144,14 @@ public class ResultController : ControllerBase
     /// <returns>任务结果统计（总数）</returns>
     [HttpGet("stats")]
     [ProducesResponseType(typeof(ApiResponse<object>), 200)]
-    public async Task<IActionResult> GetStats([FromQuery] string? taskId = null,
-        [FromServices] Repositories.ICollectionResultRepository resultRepository = null!)
+    public async Task<IActionResult> GetStats([FromQuery] string? taskId = null)
     {
         if (string.IsNullOrEmpty(taskId))
         {
             return Ok(ApiResponse<object>.Success(new { }));
         }
 
-        var count = await resultRepository.CountByTaskIdAsync(taskId);
+        var count = await _resultService.GetResultCountByTaskIdAsync(taskId);
         return Ok(ApiResponse<object>.Success(new { taskId, totalResults = count }));
     }
 
@@ -159,20 +160,29 @@ public class ResultController : ControllerBase
     /// </summary>
     /// <param name="results">采集结果实体列表</param>
     /// <param name="filePath">目标文件路径</param>
-    private static async Task WriteCsvAsync(List<Entities.CollectionResultEntity> results, string filePath)
+    private static async Task WriteCsvAsync(List<CollectionResultDto> results, string filePath, List<string>? fields = null)
     {
         using var writer = new StreamWriter(filePath);
-        if (results.Count == 0) return;
+        if (results.Count == 0)
+        {
+            return;
+        }
 
-        var fields = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object?>>(results[0].Fields);
-        if (fields == null) return;
+        var selectedFields = (fields ?? [])
+            .Where(f => !string.IsNullOrWhiteSpace(f))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
-        await writer.WriteLineAsync(string.Join(",", fields.Keys));
+        var headers = selectedFields.Count > 0
+            ? selectedFields
+            : results.SelectMany(x => x.Fields.Keys).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
+        await writer.WriteLineAsync(string.Join(",", headers.Select(EscapeCsv)));
+
         foreach (var result in results)
         {
-            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object?>>(result.Fields);
-            if (data == null) continue;
-            await writer.WriteLineAsync(string.Join(",", data.Values.Select(v => v?.ToString() ?? "")));
+            var row = headers.Select(h => result.Fields.TryGetValue(h, out var v) ? (v?.ToString() ?? string.Empty) : string.Empty);
+            await writer.WriteLineAsync(string.Join(",", row.Select(EscapeCsv)));
         }
     }
 
@@ -181,17 +191,36 @@ public class ResultController : ControllerBase
     /// </summary>
     /// <param name="results">采集结果实体列表</param>
     /// <param name="filePath">目标文件路径</param>
-    private static async Task WriteJsonAsync(List<Entities.CollectionResultEntity> results, string filePath)
+    private static async Task WriteJsonAsync(List<CollectionResultDto> results, string filePath, List<string>? fields = null)
     {
+        var selectedFields = (fields ?? [])
+            .Where(f => !string.IsNullOrWhiteSpace(f))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         var data = results.Select(r => new
         {
             r.ResultId,
             r.TaskId,
             r.SourceUrl,
-            Fields = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object?>>(r.Fields),
+            Fields = selectedFields.Count == 0
+                ? r.Fields
+                : r.Fields.Where(kv => selectedFields.Contains(kv.Key)).ToDictionary(kv => kv.Key, kv => kv.Value),
+            r.StorageEngine,
             r.CollectedAt
         });
+
         var json = Newtonsoft.Json.JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
         await System.IO.File.WriteAllTextAsync(filePath, json);
+    }
+
+    private static string EscapeCsv(string value)
+    {
+        if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
+        {
+            return $"\"{value.Replace("\"", "\"\"")}\"";
+        }
+
+        return value;
     }
 }

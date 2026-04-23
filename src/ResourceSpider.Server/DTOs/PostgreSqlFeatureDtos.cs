@@ -1,14 +1,13 @@
 namespace ResourceSpider.Server.DTOs;
 
-public record RedisFeatureStatusDto(
+public record PostgreSqlResultStorageStatusDto(
     bool Enabled,
     bool Configured,
     bool Connected,
-    int TaskContentTtlSeconds,
     string Status,
     string? LastError = null,
     string? LastConfigWriteError = null,
     string? EffectiveConfigFile = null
 );
 
-public record UpdateRedisFeatureRequest(bool Enabled);
+public record UpdatePostgreSqlResultStorageRequest(bool Enabled);

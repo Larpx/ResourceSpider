@@ -1,75 +1,39 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Observability;
 using ResourceSpider.Server.Repositories;
 using ResourceSpider.Server.Services;
-using StackExchange.Redis;
 
 namespace ResourceSpider.Server.Controllers;
 
-/// <summary>
-/// 系统控制器，提供系统健康检查和日志查询功能
-/// 用于监控系统运行状态和排查问题
-/// </summary>
 [ApiController]
 [Route("api/admin/system")]
 [Authorize]
 public class SystemController : ControllerBase
 {
-    /// <summary>
-    /// 系统日志服务实例，处理日志的查询逻辑
-    /// </summary>
     private readonly ISystemLogService _systemLogService;
-
-    /// <summary>
-    /// Agent 仓储实例
-    /// </summary>
     private readonly IAgentRepository _agentRepository;
-
-    /// <summary>
-    /// 日志记录器实例
-    /// </summary>
     private readonly ILogger<SystemController> _logger;
-
-    /// <summary>
-    /// 启动阶段状态
-    /// </summary>
     private readonly StartupState _startupState;
-
-    /// <summary>
-    /// 主机环境信息
-    /// </summary>
     private readonly IHostEnvironment _hostEnvironment;
-
-    /// <summary>
-    /// 系统启动时间，用于计算运行时长
-    /// </summary>
     private static readonly DateTime _startedAt = DateTime.UtcNow;
-
-    /// <summary>
-    /// Redis 功能开关服务
-    /// </summary>
     private readonly IRedisFeatureService _redisFeatureService;
+    private readonly IPostgreSqlResultStorageFeatureService _postgreFeatureService;
+    private readonly ISystemRuntimeSwitchService _runtimeSwitchService;
 
-    /// <summary>
-    /// 初始化系统控制器
-    /// </summary>
-    /// <param name="systemLogService">系统日志服务</param>
-    /// <param name="agentRepository">Agent 仓储</param>
-    /// <param name="startupState">启动状态</param>
-    /// <param name="hostEnvironment">主机环境</param>
-    /// <param name="redisFeatureService">Redis 功能开关服务</param>
-    /// <param name="logger">日志记录器</param>
     public SystemController(
         ISystemLogService systemLogService,
         IAgentRepository agentRepository,
         StartupState startupState,
         IHostEnvironment hostEnvironment,
         IRedisFeatureService redisFeatureService,
+        IPostgreSqlResultStorageFeatureService postgreFeatureService,
+        ISystemRuntimeSwitchService runtimeSwitchService,
         ILogger<SystemController> logger)
     {
         _systemLogService = systemLogService;
@@ -77,6 +41,8 @@ public class SystemController : ControllerBase
         _startupState = startupState;
         _hostEnvironment = hostEnvironment;
         _redisFeatureService = redisFeatureService;
+        _postgreFeatureService = postgreFeatureService;
+        _runtimeSwitchService = runtimeSwitchService;
         _logger = logger;
     }
 
@@ -93,11 +59,13 @@ public class SystemController : ControllerBase
             : $"Unavailable: {_startupState.DatabaseInitializationError}";
 
         var redisStatus = BuildRedisStatusText();
+        var postgreStatus = BuildPostgreSqlResultStorageStatus().Status;
 
         var components = new Dictionary<string, string>
         {
             { "database", dbStatus },
             { "redis", redisStatus },
+            { "postgreSqlResultStorage", postgreStatus },
             { "startup", _startupState.DatabaseInitializationSucceeded ? "Ready" : "Partial" }
         };
 
@@ -137,11 +105,35 @@ public class SystemController : ControllerBase
     /// <returns>更新后的 Redis 功能开关状态</returns>
     [HttpPut("redis")]
     [ProducesResponseType(typeof(ApiResponse<RedisFeatureStatusDto>), 200)]
-    public IActionResult UpdateRedisStatus([FromBody] UpdateRedisFeatureRequest request)
+    public async Task<IActionResult> UpdateRedisStatus([FromBody] UpdateRedisFeatureRequest request)
     {
-        _redisFeatureService.SetEnabled(request.Enabled);
-        var dto = BuildRedisFeatureStatus();
+        var dto = await _runtimeSwitchService.UpdateRedisEnabledAsync(request.Enabled);
         return Ok(ApiResponse<RedisFeatureStatusDto>.Success(dto, "Redis 开关更新成功"));
+    }
+
+    /// <summary>
+    /// 获取 PostgreSQL 结果存储功能开关的当前状态
+    /// </summary>
+    /// <returns>PostgreSQL 结果存储功能开关状态信息</returns>
+    [HttpGet("postgresql-results")]
+    [ProducesResponseType(typeof(ApiResponse<PostgreSqlResultStorageStatusDto>), 200)]
+    public IActionResult GetPostgreSqlResultStorageStatus()
+    {
+        var dto = BuildPostgreSqlResultStorageStatus();
+        return Ok(ApiResponse<PostgreSqlResultStorageStatusDto>.Success(dto));
+    }
+
+    /// <summary>
+    /// 更新 PostgreSQL 结果存储功能开关的状态
+    /// </summary>
+    /// <param name="request">更新请求，包含启用/禁用信息</param>
+    /// <returns>更新后的 PostgreSQL 结果存储功能开关状态</returns>
+    [HttpPut("postgresql-results")]
+    [ProducesResponseType(typeof(ApiResponse<PostgreSqlResultStorageStatusDto>), 200)]
+    public async Task<IActionResult> UpdatePostgreSqlResultStorageStatus([FromBody] UpdatePostgreSqlResultStorageRequest request)
+    {
+        var dto = await _runtimeSwitchService.UpdatePostgreSqlResultStorageEnabledAsync(request.Enabled);
+        return Ok(ApiResponse<PostgreSqlResultStorageStatusDto>.Success(dto, "PostgreSQL 结果存储开关更新成功"));
     }
 
     /// <summary>
@@ -286,11 +278,79 @@ public class SystemController : ControllerBase
     {
         try
         {
-            var lines = await System.IO.File.ReadAllLinesAsync(path);
-            return lines
-                .TakeLast(take)
-                .Where(line => !string.IsNullOrWhiteSpace(line))
-                .ToList();
+            if (take <= 0)
+            {
+                return [];
+            }
+
+            // 允许日志文件被写入进程共享读取，避免读取时发生文件占用冲突
+            await using var stream = new FileStream(
+                path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite,
+                bufferSize: 4096,
+                useAsync: true);
+
+            if (stream.Length == 0)
+            {
+                return [];
+            }
+
+            // 从文件尾部开始，按窗口逐步扩大读取范围。
+            // 这样在日志很大时，通常只需读取最后一小段即可拿到需要的尾部行，避免全量读取导致超时。
+            var fileLength = stream.Length;
+            long windowSize = 16 * 1024; // 16KB 起步
+            var tailQueue = new Queue<string>(take);
+
+            while (true)
+            {
+                var start = Math.Max(0, fileLength - windowSize);
+                stream.Seek(start, SeekOrigin.Begin);
+
+                using var reader = new StreamReader(
+                    stream,
+                    Encoding.UTF8,
+                    detectEncodingFromByteOrderMarks: true,
+                    bufferSize: 4096,
+                    leaveOpen: true);
+
+                // 非文件开头时先丢弃首个不完整行，避免截断导致脏数据
+                if (start > 0)
+                {
+                    _ = await reader.ReadLineAsync();
+                }
+
+                tailQueue.Clear();
+                while (true)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (line is null)
+                    {
+                        break;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        continue;
+                    }
+
+                    if (tailQueue.Count == take)
+                    {
+                        tailQueue.Dequeue();
+                    }
+
+                    tailQueue.Enqueue(line);
+                }
+
+                // 已拿到足够行，或已经扩展到文件开头，则结束
+                if (tailQueue.Count >= take || start == 0)
+                {
+                    return tailQueue.ToList();
+                }
+
+                windowSize = Math.Min(fileLength, windowSize * 2);
+            }
         }
         catch
         {
@@ -313,7 +373,30 @@ public class SystemController : ControllerBase
             Configured: _redisFeatureService.IsConfigured,
             Connected: _redisFeatureService.IsConnected,
             TaskContentTtlSeconds: _redisFeatureService.TaskContentTtlSeconds,
-            Status: status);
+            Status: status,
+            LastError: _redisFeatureService.LastError,
+            LastConfigWriteError: _redisFeatureService.LastConfigWriteError,
+            EffectiveConfigFile: _redisFeatureService.EffectiveConfigFile);
+    }
+
+    private PostgreSqlResultStorageStatusDto BuildPostgreSqlResultStorageStatus()
+    {
+        var status = !_postgreFeatureService.IsConfigured
+            ? "NotConfigured"
+            : !_postgreFeatureService.IsEnabled
+                ? "Disabled"
+                : _postgreFeatureService.IsConnected
+                    ? "Connected"
+                    : "Unavailable";
+
+        return new PostgreSqlResultStorageStatusDto(
+            Enabled: _postgreFeatureService.IsEnabled,
+            Configured: _postgreFeatureService.IsConfigured,
+            Connected: _postgreFeatureService.IsConnected,
+            Status: status,
+            LastError: _postgreFeatureService.LastError,
+            LastConfigWriteError: _postgreFeatureService.LastConfigWriteError,
+            EffectiveConfigFile: _postgreFeatureService.EffectiveConfigFile);
     }
 
     private string BuildRedisStatusText()

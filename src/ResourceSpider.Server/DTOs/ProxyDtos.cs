@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ResourceSpider.Server.DTOs;
 
+
 /// <summary>
 /// 创建代理服务器请求
 /// </summary>
@@ -16,6 +17,24 @@ public record CreateProxyRequest(
     [StringLength(16)] string Protocol = "HTTP",
     string? Username = null,
     string? Password = null
+);
+
+/// <summary>
+/// 更新代理服务器请求
+/// </summary>
+/// <param name="Host">代理主机地址，可选，最大长度 255</param>
+/// <param name="Port">代理端口，可选，范围 1-65535</param>
+/// <param name="Protocol">代理协议，可选，最大长度 16</param>
+/// <param name="Username">认证用户名，可选</param>
+/// <param name="Password">认证密码，可选</param>
+/// <param name="Status">代理状态，可选</param>
+public record UpdateProxyRequest(
+    [StringLength(255)] string? Host,
+    [Range(1, 65535)] int? Port,
+    [StringLength(16)] string? Protocol,
+    string? Username,
+    string? Password,
+    int? Status
 );
 
 /// <summary>
@@ -42,6 +61,20 @@ public record ProxyDto(
     int FailureCount,
     DateTime? LastCheckedAt,
     DateTime? NextCheckAt
+);
+
+/// <summary>
+/// 代理列表响应，包含分页信息
+/// </summary>
+/// <param name="Proxies">代理列表</param>
+/// <param name="Total">总数</param>
+/// <param name="PageIndex">当前页码</param>
+/// <param name="PageSize">每页数量</param>
+public record ProxyListResponse(
+    List<ProxyDto> Proxies,
+    int Total,
+    int PageIndex,
+    int PageSize
 );
 
 /// <summary>

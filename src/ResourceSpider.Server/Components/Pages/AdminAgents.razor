@@ -3,11 +3,13 @@
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
 
-<PageTitle>Agent 配置</PageTitle>
+<PageTitle>Agent 配置 - ResourceSpider</PageTitle>
 
 @if (!_ready)
 {
-    <p>正在加载 Agent 列表...</p>
+    <div class="loading">
+        <p>正在加载 Agent 列表...</p>
+    </div>
 }
 else
 {
@@ -15,20 +17,39 @@ else
 
     @if (_agents.Count == 0)
     {
-        <p>暂无 Agent 数据。</p>
+        <p class="empty-state">暂无 Agent 数据。</p>
     }
     else
     {
-        <div class="card-grid">
+        <div class="agents-grid">
             @foreach (var agent in _agents)
             {
-                <section class="card">
-                    <h2>@agent.AgentName</h2>
-                    <p>ID：<code>@agent.AgentId</code></p>
-                    <p>地址：@agent.IpAddress:@agent.Port</p>
-                    <p>状态：@agent.Status</p>
-                    <p>任务数：@agent.TaskCount</p>
-                    <p>最后心跳：@agent.LastHeartbeat</p>
+                <section class="card agent-card">
+                    <div class="agent-header">
+                        <div class="agent-icon">🤖</div>
+                        <div class="agent-title">
+                            <h2>@agent.AgentName</h2>
+                            <code class="agent-id">@agent.AgentId</code>
+                        </div>
+                    </div>
+                    <div class="agent-body">
+                        <div class="agent-info-row">
+                            <span class="agent-info-label">地址：</span>
+                            <span class="agent-info-value">@agent.IpAddress:@agent.Port</span>
+                        </div>
+                        <div class="agent-info-row">
+                            <span class="agent-info-label">状态：</span>
+                            <span class="status-badge @GetAgentStatusBadgeClass(agent.Status)">@agent.Status</span>
+                        </div>
+                        <div class="agent-info-row">
+                            <span class="agent-info-label">任务数：</span>
+                            <span class="agent-info-value">@agent.TaskCount</span>
+                        </div>
+                        <div class="agent-info-row">
+                            <span class="agent-info-label">最后心跳：</span>
+                            <span class="agent-info-value">@agent.LastHeartbeat</span>
+                        </div>
+                    </div>
                 </section>
             }
         </div>
@@ -49,5 +70,16 @@ else
 
         _agents = await ApiClient.GetAgentsAsync();
         _ready = true;
+    }
+
+    private static string GetAgentStatusBadgeClass(int status)
+    {
+        return status switch
+        {
+            1 or 2 => "running",
+            0 => "idle",
+            3 => "error",
+            _ => "pending"
+        };
     }
 }

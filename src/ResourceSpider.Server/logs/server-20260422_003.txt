@@ -490,3 +490,520 @@ StackExchange.Redis.RedisConnectionException: It was not possible to connect to 
 2026-04-22 14:56:05.819 +08:00 [INF] Executing endpoint 'Health checks'
 2026-04-22 14:56:05.845 +08:00 [INF] Executed endpoint 'Health checks'
 2026-04-22 14:56:05.850 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/health - 200 null application/json 38.0958ms
+2026-04-22 19:26:32.344 +08:00 [INF] ResourceSpider Server 正在启动
+2026-04-22 19:26:34.450 +08:00 [INF] 数据库初始化完成
+2026-04-22 19:26:34.487 +08:00 [INF] User profile is available. Using 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-22 19:26:34.871 +08:00 [INF] ResourceSpider Server 启动，地址：https://localhost:64422;http://localhost:64423
+2026-04-22 19:26:35.379 +08:00 [INF] Now listening on: https://localhost:64422
+2026-04-22 19:26:35.382 +08:00 [INF] Now listening on: http://localhost:64423
+2026-04-22 19:26:35.448 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-22 19:26:35.451 +08:00 [INF] Hosting environment: Development
+2026-04-22 19:26:35.453 +08:00 [INF] Content root path: D:\Work\repos\ResourceSpider\src\ResourceSpider.Server
+2026-04-22 19:26:36.359 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/ - null null
+2026-04-22 19:26:36.667 +08:00 [INF] Executing endpoint '/ (/)'
+2026-04-22 19:26:36.948 +08:00 [INF] Executed endpoint '/ (/)'
+2026-04-22 19:26:36.962 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/ - 200 null text/html; charset=utf-8 612.3174ms
+2026-04-22 19:26:36.999 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/app.css - null null
+2026-04-22 19:26:36.999 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - null null
+2026-04-22 19:26:37.005 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_vs/browserLink - null null
+2026-04-22 19:26:37.426 +08:00 [INF] The file /app.css was not modified
+2026-04-22 19:26:37.427 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - 200 14947 application/javascript; charset=utf-8 427.6667ms
+2026-04-22 19:26:37.431 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/app.css - 304 null text/css 432.4791ms
+2026-04-22 19:26:37.503 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_blazor/initializers - null null
+2026-04-22 19:26:37.532 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_vs/browserLink - 200 null text/javascript; charset=UTF-8 527.1597ms
+2026-04-22 19:26:37.534 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:26:37.548 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:26:37.551 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_blazor/initializers - 200 null application/json; charset=utf-8 47.9303ms
+2026-04-22 19:26:37.675 +08:00 [INF] Request starting HTTP/2 POST https://localhost:64422/_blazor/negotiate?negotiateVersion=1 - null 0
+2026-04-22 19:26:37.687 +08:00 [INF] CORS policy execution successful.
+2026-04-22 19:26:37.694 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:26:37.708 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:26:37.710 +08:00 [INF] Request finished HTTP/2 POST https://localhost:64422/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 35.9752ms
+2026-04-22 19:26:37.793 +08:00 [INF] Request starting HTTP/2 CONNECT https://localhost:64422/_blazor?id=NARkwH1vDKwuu9QKqRpGHA - null null
+2026-04-22 19:26:37.801 +08:00 [INF] CORS policy execution successful.
+2026-04-22 19:26:37.803 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:26:48.357 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger - null null
+2026-04-22 19:26:48.368 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger - 302 null null 11.4433ms
+2026-04-22 19:26:48.375 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/index.html - null null
+2026-04-22 19:26:48.387 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/index.html - 200 null text/html; charset=utf-8 11.9902ms
+2026-04-22 19:26:48.432 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/index.css - null null
+2026-04-22 19:26:48.432 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/swagger-ui.css - null null
+2026-04-22 19:26:48.433 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/swagger-ui-bundle.js - null null
+2026-04-22 19:26:48.433 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/swagger-ui-standalone-preset.js - null null
+2026-04-22 19:26:48.435 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - null null
+2026-04-22 19:26:48.438 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_vs/browserLink - null null
+2026-04-22 19:26:48.442 +08:00 [INF] The file /swagger-ui-bundle.js was not modified
+2026-04-22 19:26:48.478 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - 200 14947 application/javascript; charset=utf-8 15.0847ms
+2026-04-22 19:26:48.481 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/swagger-ui-bundle.js - 304 null text/javascript 48.4285ms
+2026-04-22 19:26:48.439 +08:00 [INF] The file /index.css was not modified
+2026-04-22 19:26:48.440 +08:00 [INF] The file /swagger-ui.css was not modified
+2026-04-22 19:26:48.445 +08:00 [INF] The file /swagger-ui-standalone-preset.js was not modified
+2026-04-22 19:26:48.489 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_vs/browserLink - 200 null text/javascript; charset=UTF-8 50.2537ms
+2026-04-22 19:26:48.494 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/index.css - 304 null text/css 61.676ms
+2026-04-22 19:26:48.495 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/swagger-ui.css - 304 null text/css 62.8989ms
+2026-04-22 19:26:48.496 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/swagger-ui-standalone-preset.js - 304 null text/javascript 63.3189ms
+2026-04-22 19:26:48.752 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/v1/swagger.json - null null
+2026-04-22 19:26:48.907 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 154.9445ms
+2026-04-22 19:27:05.132 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger - null null
+2026-04-22 19:27:05.139 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger - 302 null null 6.5309ms
+2026-04-22 19:27:05.144 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/index.html - null null
+2026-04-22 19:27:05.149 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/index.html - 200 null text/html; charset=utf-8 4.2975ms
+2026-04-22 19:27:05.204 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - null null
+2026-04-22 19:27:05.207 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_vs/browserLink - null null
+2026-04-22 19:27:05.212 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - 200 14947 application/javascript; charset=utf-8 7.8858ms
+2026-04-22 19:27:05.223 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_vs/browserLink - 200 null text/javascript; charset=UTF-8 15.9889ms
+2026-04-22 19:27:05.439 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/swagger/v1/swagger.json - null null
+2026-04-22 19:27:05.445 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 6.158ms
+2026-04-22 19:27:12.968 +08:00 [INF] Start processing HTTP request POST https://localhost:64422/api/admin/auth/login
+2026-04-22 19:27:12.972 +08:00 [INF] Sending HTTP request POST https://localhost:64422/api/admin/auth/login
+2026-04-22 19:27:12.989 +08:00 [INF] Request starting HTTP/1.1 POST https://localhost:64422/api/admin/auth/login - application/json; charset=utf-8 null
+2026-04-22 19:27:12.993 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.AuthController.Login (ResourceSpider.Server)'
+2026-04-22 19:27:13.010 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(ResourceSpider.Server.DTOs.LoginRequest) on controller ResourceSpider.Server.Controllers.AuthController (ResourceSpider.Server).
+2026-04-22 19:27:13.324 +08:00 [INF] 用户 admin 登录成功
+2026-04-22 19:27:13.331 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.AuthResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:13.344 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.AuthController.Login (ResourceSpider.Server) in 328.1803ms
+2026-04-22 19:27:13.344 +08:00 [INF] Received HTTP response headers after 368.9745ms - 200
+2026-04-22 19:27:13.346 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.AuthController.Login (ResourceSpider.Server)'
+2026-04-22 19:27:13.347 +08:00 [INF] End processing HTTP request after 381.1478ms - 200
+2026-04-22 19:27:13.348 +08:00 [INF] Request finished HTTP/1.1 POST https://localhost:64422/api/admin/auth/login - 200 null application/json; charset=utf-8 358.6161ms
+2026-04-22 19:27:13.365 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/statistics/system
+2026-04-22 19:27:13.367 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/statistics/system
+2026-04-22 19:27:13.370 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/statistics/system - null null
+2026-04-22 19:27:13.439 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.StatisticsController.GetSystemStatistics (ResourceSpider.Server)'
+2026-04-22 19:27:13.446 +08:00 [INF] Route matched with {action = "GetSystemStatistics", controller = "Statistics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetSystemStatistics() on controller ResourceSpider.Server.Controllers.StatisticsController (ResourceSpider.Server).
+2026-04-22 19:27:13.498 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemStatisticsDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:13.510 +08:00 [INF] Received HTTP response headers after 141.6982ms - 200
+2026-04-22 19:27:13.510 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.StatisticsController.GetSystemStatistics (ResourceSpider.Server) in 62.74ms
+2026-04-22 19:27:13.512 +08:00 [INF] End processing HTTP request after 147.0013ms - 200
+2026-04-22 19:27:13.513 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.StatisticsController.GetSystemStatistics (ResourceSpider.Server)'
+2026-04-22 19:27:13.515 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/statistics/system - 200 null application/json; charset=utf-8 145.5895ms
+2026-04-22 19:27:13.522 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:27:13.523 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:27:13.525 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/health - null null
+2026-04-22 19:27:13.528 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:27:13.530 +08:00 [INF] Route matched with {action = "Health", controller = "System"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Health() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:27:13.567 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemHealthDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:13.587 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server) in 54.9854ms
+2026-04-22 19:27:13.588 +08:00 [INF] Received HTTP response headers after 63.0414ms - 200
+2026-04-22 19:27:13.589 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:27:13.590 +08:00 [INF] End processing HTTP request after 67.9419ms - 200
+2026-04-22 19:27:13.593 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/health - 200 null application/json; charset=utf-8 67.806ms
+2026-04-22 19:27:27.603 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:27:27.606 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:27:27.608 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/agents - null null
+2026-04-22 19:27:27.614 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:27.628 +08:00 [INF] Route matched with {action = "GetList", controller = "AgentManagement"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(ResourceSpider.Server.Repositories.IAgentRepository) on controller ResourceSpider.Server.Controllers.AgentManagementController (ResourceSpider.Server).
+2026-04-22 19:27:27.652 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[System.Collections.Generic.List`1[[ResourceSpider.Server.DTOs.AgentDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-22 19:27:27.665 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server) in 33.3725ms
+2026-04-22 19:27:27.665 +08:00 [INF] Received HTTP response headers after 57.9678ms - 200
+2026-04-22 19:27:27.667 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:27.668 +08:00 [INF] End processing HTTP request after 64.849ms - 200
+2026-04-22 19:27:27.670 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/agents - 200 null application/json; charset=utf-8 61.769ms
+2026-04-22 19:27:31.500 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:27:31.501 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:27:31.503 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:27:31.507 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:31.517 +08:00 [INF] Route matched with {action = "GetList", controller = "Task"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.TaskController (ResourceSpider.Server).
+2026-04-22 19:27:31.546 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.TaskListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:31.557 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server) in 37.2169ms
+2026-04-22 19:27:31.558 +08:00 [INF] Received HTTP response headers after 55.1024ms - 200
+2026-04-22 19:27:31.559 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:31.560 +08:00 [INF] End processing HTTP request after 59.8016ms - 200
+2026-04-22 19:27:31.561 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 57.453ms
+2026-04-22 19:27:33.865 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:27:33.867 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:27:33.870 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:27:33.873 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:33.882 +08:00 [INF] Route matched with {action = "GetList", controller = "Expression"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.ExpressionController (ResourceSpider.Server).
+2026-04-22 19:27:33.916 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.ExpressionListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:33.925 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server) in 39.1382ms
+2026-04-22 19:27:33.925 +08:00 [INF] Received HTTP response headers after 56.1693ms - 200
+2026-04-22 19:27:33.926 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:33.927 +08:00 [INF] End processing HTTP request after 61.4276ms - 200
+2026-04-22 19:27:33.928 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 58.2409ms
+2026-04-22 19:27:38.541 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/proxies?*
+2026-04-22 19:27:38.543 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/proxies?*
+2026-04-22 19:27:38.547 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/proxies?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:27:38.554 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.ProxyController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:38.567 +08:00 [INF] Route matched with {action = "GetList", controller = "Proxy"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32) on controller ResourceSpider.Server.Controllers.ProxyController (ResourceSpider.Server).
+2026-04-22 19:27:38.591 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[System.Collections.Generic.List`1[[ResourceSpider.Server.DTOs.ProxyDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-22 19:27:38.602 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.ProxyController.GetList (ResourceSpider.Server) in 29.293ms
+2026-04-22 19:27:38.602 +08:00 [INF] Received HTTP response headers after 56.2125ms - 200
+2026-04-22 19:27:38.605 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.ProxyController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:38.607 +08:00 [INF] End processing HTTP request after 66.5157ms - 200
+2026-04-22 19:27:38.610 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/proxies?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 62.6679ms
+2026-04-22 19:27:40.875 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:27:40.877 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:27:40.879 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:27:40.883 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:40.885 +08:00 [INF] Route matched with {action = "GetList", controller = "Expression"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.ExpressionController (ResourceSpider.Server).
+2026-04-22 19:27:40.894 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.ExpressionListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:40.897 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server) in 9.8277ms
+2026-04-22 19:27:40.897 +08:00 [INF] Received HTTP response headers after 19.0625ms - 200
+2026-04-22 19:27:40.900 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:27:40.901 +08:00 [INF] End processing HTTP request after 26.5319ms - 200
+2026-04-22 19:27:40.903 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 24.0234ms
+2026-04-22 19:27:44.273 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:27:44.277 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:27:44.278 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/health - null null
+2026-04-22 19:27:44.283 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:27:44.284 +08:00 [INF] Route matched with {action = "Health", controller = "System"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Health() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:27:44.300 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemHealthDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:44.302 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server) in 15.8631ms
+2026-04-22 19:27:44.302 +08:00 [INF] Received HTTP response headers after 24.3037ms - 200
+2026-04-22 19:27:44.304 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:27:44.305 +08:00 [INF] End processing HTTP request after 32.0542ms - 200
+2026-04-22 19:27:44.307 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/health - 200 null application/json; charset=utf-8 28.3871ms
+2026-04-22 19:27:44.310 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/redis
+2026-04-22 19:27:44.313 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/redis
+2026-04-22 19:27:44.315 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/redis - null null
+2026-04-22 19:27:44.318 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.GetRedisStatus (ResourceSpider.Server)'
+2026-04-22 19:27:44.320 +08:00 [INF] Route matched with {action = "GetRedisStatus", controller = "System"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetRedisStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:27:44.323 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.RedisFeatureStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:44.326 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.GetRedisStatus (ResourceSpider.Server) in 3.8307ms
+2026-04-22 19:27:44.326 +08:00 [INF] Received HTTP response headers after 11.753ms - 200
+2026-04-22 19:27:44.327 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.GetRedisStatus (ResourceSpider.Server)'
+2026-04-22 19:27:44.328 +08:00 [INF] End processing HTTP request after 17.6895ms - 200
+2026-04-22 19:27:44.329 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/redis - 200 null application/json; charset=utf-8 14.3036ms
+2026-04-22 19:27:44.333 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/logs?*
+2026-04-22 19:27:44.334 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/logs?*
+2026-04-22 19:27:44.335 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/logs?pageIndex=1&pageSize=10 - null null
+2026-04-22 19:27:44.338 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.GetLogs (ResourceSpider.Server)'
+2026-04-22 19:27:44.345 +08:00 [INF] Route matched with {action = "GetLogs", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetLogs(Int32, Int32, System.String, System.String, System.Nullable`1[System.DateTime], System.Nullable`1[System.DateTime]) on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:27:44.357 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemLogListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:44.360 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.GetLogs (ResourceSpider.Server) in 13.1756ms
+2026-04-22 19:27:44.360 +08:00 [INF] Received HTTP response headers after 24.8766ms - 200
+2026-04-22 19:27:44.361 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.GetLogs (ResourceSpider.Server)'
+2026-04-22 19:27:44.362 +08:00 [INF] End processing HTTP request after 29.5459ms - 200
+2026-04-22 19:27:44.363 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/logs?pageIndex=1&pageSize=10 - 200 null application/json; charset=utf-8 27.6061ms
+2026-04-22 19:27:57.189 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:27:57.191 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:27:57.192 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:27:57.196 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:27:57.206 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:27:57.300 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:57.312 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 101.8584ms
+2026-04-22 19:27:57.312 +08:00 [INF] Received HTTP response headers after 120.2576ms - 200
+2026-04-22 19:27:57.313 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:27:57.314 +08:00 [INF] End processing HTTP request after 125.1916ms - 200
+2026-04-22 19:27:57.315 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 122.4548ms
+2026-04-22 19:27:59.332 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:27:59.333 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:27:59.334 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:27:59.337 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:27:59.338 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:27:59.375 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:27:59.377 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 38.324ms
+2026-04-22 19:27:59.377 +08:00 [INF] Received HTTP response headers after 43.3871ms - 200
+2026-04-22 19:27:59.379 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:27:59.380 +08:00 [INF] End processing HTTP request after 48.2256ms - 200
+2026-04-22 19:27:59.381 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 46.499ms
+2026-04-22 19:28:01.382 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:01.385 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:01.387 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:01.390 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:01.390 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:01.462 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:01.464 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 72.5525ms
+2026-04-22 19:28:01.465 +08:00 [INF] Received HTTP response headers after 78.8115ms - 200
+2026-04-22 19:28:01.466 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:01.467 +08:00 [INF] End processing HTTP request after 84.74ms - 200
+2026-04-22 19:28:01.468 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 81.2966ms
+2026-04-22 19:28:03.478 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:03.481 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:03.483 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:03.485 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:03.486 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:03.525 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:03.527 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 39.3521ms
+2026-04-22 19:28:03.527 +08:00 [INF] Received HTTP response headers after 45.2961ms - 200
+2026-04-22 19:28:03.529 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:03.530 +08:00 [INF] End processing HTTP request after 51.4003ms - 200
+2026-04-22 19:28:03.530 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 47.7084ms
+2026-04-22 19:28:05.537 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:05.539 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:05.540 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:05.547 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:05.548 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:05.588 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:05.589 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 39.7127ms
+2026-04-22 19:28:05.590 +08:00 [INF] Received HTTP response headers after 50.2702ms - 200
+2026-04-22 19:28:05.591 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:05.592 +08:00 [INF] End processing HTTP request after 54.5207ms - 200
+2026-04-22 19:28:05.593 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 52.4146ms
+2026-04-22 19:28:07.607 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:07.609 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:07.610 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:07.613 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:07.614 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:07.656 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:07.658 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 41.8784ms
+2026-04-22 19:28:07.658 +08:00 [INF] Received HTTP response headers after 48.1859ms - 200
+2026-04-22 19:28:07.659 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:07.660 +08:00 [INF] End processing HTTP request after 53.1783ms - 200
+2026-04-22 19:28:07.661 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 50.8295ms
+2026-04-22 19:28:09.666 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:09.668 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:09.670 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:09.673 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:09.674 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:09.709 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:09.711 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 35.7579ms
+2026-04-22 19:28:09.711 +08:00 [INF] Received HTTP response headers after 41.6337ms - 200
+2026-04-22 19:28:09.712 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:09.713 +08:00 [INF] End processing HTTP request after 47.0459ms - 200
+2026-04-22 19:28:09.714 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 44.1774ms
+2026-04-22 19:28:11.725 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:11.726 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:11.728 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:11.730 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:11.732 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:11.767 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:11.769 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 35.3464ms
+2026-04-22 19:28:11.769 +08:00 [INF] Received HTTP response headers after 41.3627ms - 200
+2026-04-22 19:28:11.770 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:11.771 +08:00 [INF] End processing HTTP request after 46.8117ms - 200
+2026-04-22 19:28:11.772 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 44.0111ms
+2026-04-22 19:28:13.783 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:13.784 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:13.785 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:13.787 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:13.788 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:13.823 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:13.825 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 35.3107ms
+2026-04-22 19:28:13.825 +08:00 [INF] Received HTTP response headers after 40.0948ms - 200
+2026-04-22 19:28:13.826 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:13.827 +08:00 [INF] End processing HTTP request after 44.065ms - 200
+2026-04-22 19:28:13.828 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 42.5339ms
+2026-04-22 19:28:14.153 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/health - null null
+2026-04-22 19:28:14.160 +08:00 [INF] Executing endpoint 'Health checks'
+2026-04-22 19:28:14.187 +08:00 [INF] Executed endpoint 'Health checks'
+2026-04-22 19:28:14.188 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/health - 200 null application/json 34.6633ms
+2026-04-22 19:28:15.831 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:15.832 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:15.835 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:15.838 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:15.839 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:15.886 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:15.888 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 47.0347ms
+2026-04-22 19:28:15.889 +08:00 [INF] Received HTTP response headers after 54.2677ms - 200
+2026-04-22 19:28:15.890 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:15.891 +08:00 [INF] End processing HTTP request after 60.7801ms - 200
+2026-04-22 19:28:15.892 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 57.6838ms
+2026-04-22 19:28:17.895 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:17.896 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/runtime
+2026-04-22 19:28:17.898 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - null null
+2026-04-22 19:28:17.901 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:17.902 +08:00 [INF] Route matched with {action = "RuntimeStatus", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RuntimeStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:28:17.937 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemRuntimeStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:17.938 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server) in 35.3184ms
+2026-04-22 19:28:17.939 +08:00 [INF] Received HTTP response headers after 41.0767ms - 200
+2026-04-22 19:28:17.939 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.RuntimeStatus (ResourceSpider.Server)'
+2026-04-22 19:28:17.941 +08:00 [INF] End processing HTTP request after 46.0665ms - 200
+2026-04-22 19:28:17.942 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/runtime - 200 null application/json; charset=utf-8 43.617ms
+2026-04-22 19:28:17.974 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:28:17.976 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:28:17.978 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/agents - null null
+2026-04-22 19:28:17.981 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:28:18.035 +08:00 [INF] Route matched with {action = "GetList", controller = "AgentManagement"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(ResourceSpider.Server.Repositories.IAgentRepository) on controller ResourceSpider.Server.Controllers.AgentManagementController (ResourceSpider.Server).
+2026-04-22 19:28:18.039 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[System.Collections.Generic.List`1[[ResourceSpider.Server.DTOs.AgentDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-22 19:28:18.040 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server) in 3.237ms
+2026-04-22 19:28:18.040 +08:00 [INF] Received HTTP response headers after 63.1699ms - 200
+2026-04-22 19:28:18.041 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:28:18.042 +08:00 [INF] End processing HTTP request after 68.0587ms - 200
+2026-04-22 19:28:18.043 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/agents - 200 null application/json; charset=utf-8 65.637ms
+2026-04-22 19:28:20.141 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:28:20.143 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:28:20.146 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:28:20.150 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:28:20.152 +08:00 [INF] Route matched with {action = "GetList", controller = "Task"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.TaskController (ResourceSpider.Server).
+2026-04-22 19:28:20.164 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.TaskListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:28:20.166 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server) in 12.2429ms
+2026-04-22 19:28:20.167 +08:00 [INF] Received HTTP response headers after 21.3101ms - 200
+2026-04-22 19:28:20.168 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:28:20.169 +08:00 [INF] End processing HTTP request after 28.1782ms - 200
+2026-04-22 19:28:20.170 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 24.6701ms
+2026-04-22 19:35:56.439 +08:00 [INF] ResourceSpider Server 正在启动
+2026-04-22 19:35:58.147 +08:00 [INF] 数据库初始化完成
+2026-04-22 19:35:58.187 +08:00 [INF] User profile is available. Using 'C:\Users\HZhao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-22 19:35:58.491 +08:00 [INF] ResourceSpider Server 启动，地址：https://localhost:64422;http://localhost:64423
+2026-04-22 19:35:58.913 +08:00 [INF] Now listening on: https://localhost:64422
+2026-04-22 19:35:58.916 +08:00 [INF] Now listening on: http://localhost:64423
+2026-04-22 19:35:59.001 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-22 19:35:59.004 +08:00 [INF] Hosting environment: Development
+2026-04-22 19:35:59.005 +08:00 [INF] Content root path: D:\Work\repos\ResourceSpider\src\ResourceSpider.Server
+2026-04-22 19:36:00.114 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/ - null null
+2026-04-22 19:36:00.391 +08:00 [INF] Executing endpoint '/ (/)'
+2026-04-22 19:36:00.673 +08:00 [INF] Executed endpoint '/ (/)'
+2026-04-22 19:36:00.689 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/ - 200 null text/html; charset=utf-8 587.6313ms
+2026-04-22 19:36:00.774 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_vs/browserLink - null null
+2026-04-22 19:36:00.774 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - null null
+2026-04-22 19:36:00.802 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_framework/aspnetcore-browser-refresh.js - 200 14947 application/javascript; charset=utf-8 27.9479ms
+2026-04-22 19:36:00.825 +08:00 [INF] Request starting HTTP/2 GET https://localhost:64422/_blazor/initializers - null null
+2026-04-22 19:36:00.841 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:36:00.847 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_vs/browserLink - 200 null text/javascript; charset=UTF-8 73.1568ms
+2026-04-22 19:36:00.848 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:36:00.857 +08:00 [INF] Request finished HTTP/2 GET https://localhost:64422/_blazor/initializers - 200 null application/json; charset=utf-8 31.39ms
+2026-04-22 19:36:00.995 +08:00 [INF] Request starting HTTP/2 POST https://localhost:64422/_blazor/negotiate?negotiateVersion=1 - null 0
+2026-04-22 19:36:01.009 +08:00 [INF] CORS policy execution successful.
+2026-04-22 19:36:01.017 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:36:01.034 +08:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:36:01.037 +08:00 [INF] Request finished HTTP/2 POST https://localhost:64422/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 41.2772ms
+2026-04-22 19:36:01.089 +08:00 [INF] Request starting HTTP/2 CONNECT https://localhost:64422/_blazor?id=BskOCsdLexcBaN9Fghjt0g - null null
+2026-04-22 19:36:01.096 +08:00 [INF] CORS policy execution successful.
+2026-04-22 19:36:01.098 +08:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+2026-04-22 19:36:03.586 +08:00 [INF] Start processing HTTP request POST https://localhost:64422/api/admin/auth/login
+2026-04-22 19:36:03.591 +08:00 [INF] Sending HTTP request POST https://localhost:64422/api/admin/auth/login
+2026-04-22 19:36:03.614 +08:00 [INF] Request starting HTTP/1.1 POST https://localhost:64422/api/admin/auth/login - application/json; charset=utf-8 null
+2026-04-22 19:36:03.620 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.AuthController.Login (ResourceSpider.Server)'
+2026-04-22 19:36:03.647 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(ResourceSpider.Server.DTOs.LoginRequest) on controller ResourceSpider.Server.Controllers.AuthController (ResourceSpider.Server).
+2026-04-22 19:36:04.018 +08:00 [INF] 用户 admin 登录成功
+2026-04-22 19:36:04.027 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.AuthResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:04.042 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.AuthController.Login (ResourceSpider.Server) in 388.7714ms
+2026-04-22 19:36:04.044 +08:00 [INF] Received HTTP response headers after 448.1282ms - 200
+2026-04-22 19:36:04.044 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.AuthController.Login (ResourceSpider.Server)'
+2026-04-22 19:36:04.047 +08:00 [INF] Request finished HTTP/1.1 POST https://localhost:64422/api/admin/auth/login - 200 null application/json; charset=utf-8 433.2901ms
+2026-04-22 19:36:04.047 +08:00 [INF] End processing HTTP request after 462.615ms - 200
+2026-04-22 19:36:04.070 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/statistics/system
+2026-04-22 19:36:04.072 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/statistics/system
+2026-04-22 19:36:04.077 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/statistics/system - null null
+2026-04-22 19:36:04.153 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.StatisticsController.GetSystemStatistics (ResourceSpider.Server)'
+2026-04-22 19:36:04.160 +08:00 [INF] Route matched with {action = "GetSystemStatistics", controller = "Statistics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetSystemStatistics() on controller ResourceSpider.Server.Controllers.StatisticsController (ResourceSpider.Server).
+2026-04-22 19:36:04.213 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemStatisticsDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:04.221 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.StatisticsController.GetSystemStatistics (ResourceSpider.Server) in 58.854ms
+2026-04-22 19:36:04.221 +08:00 [INF] Received HTTP response headers after 147.1302ms - 200
+2026-04-22 19:36:04.223 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.StatisticsController.GetSystemStatistics (ResourceSpider.Server)'
+2026-04-22 19:36:04.224 +08:00 [INF] End processing HTTP request after 154.1261ms - 200
+2026-04-22 19:36:04.228 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/statistics/system - 200 null application/json; charset=utf-8 151.0393ms
+2026-04-22 19:36:04.236 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:36:04.237 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:36:04.239 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/health - null null
+2026-04-22 19:36:04.243 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:36:04.246 +08:00 [INF] Route matched with {action = "Health", controller = "System"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Health() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:36:04.269 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemHealthDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:04.284 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server) in 36.5029ms
+2026-04-22 19:36:04.285 +08:00 [INF] Received HTTP response headers after 45.7966ms - 200
+2026-04-22 19:36:04.286 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:36:04.287 +08:00 [INF] End processing HTTP request after 51.9646ms - 200
+2026-04-22 19:36:04.290 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/health - 200 null application/json; charset=utf-8 50.3947ms
+2026-04-22 19:36:06.157 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:36:06.160 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:36:06.163 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/agents - null null
+2026-04-22 19:36:06.172 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:06.184 +08:00 [INF] Route matched with {action = "GetList", controller = "AgentManagement"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(ResourceSpider.Server.Repositories.IAgentRepository) on controller ResourceSpider.Server.Controllers.AgentManagementController (ResourceSpider.Server).
+2026-04-22 19:36:06.205 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[System.Collections.Generic.List`1[[ResourceSpider.Server.DTOs.AgentDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-22 19:36:06.219 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server) in 31.0726ms
+2026-04-22 19:36:06.219 +08:00 [INF] Received HTTP response headers after 57.7329ms - 200
+2026-04-22 19:36:06.221 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:06.222 +08:00 [INF] End processing HTTP request after 65.8631ms - 200
+2026-04-22 19:36:06.224 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/agents - 200 null application/json; charset=utf-8 60.6431ms
+2026-04-22 19:36:08.229 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:36:08.232 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:36:08.235 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:36:08.239 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:08.249 +08:00 [INF] Route matched with {action = "GetList", controller = "Task"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.TaskController (ResourceSpider.Server).
+2026-04-22 19:36:08.281 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.TaskListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:08.294 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server) in 41.8923ms
+2026-04-22 19:36:08.294 +08:00 [INF] Received HTTP response headers after 60.6659ms - 200
+2026-04-22 19:36:08.296 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:08.297 +08:00 [INF] End processing HTTP request after 67.5114ms - 200
+2026-04-22 19:36:08.298 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 63.699ms
+2026-04-22 19:36:10.844 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:36:10.846 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:36:10.848 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:36:10.853 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:10.864 +08:00 [INF] Route matched with {action = "GetList", controller = "Expression"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.ExpressionController (ResourceSpider.Server).
+2026-04-22 19:36:10.896 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.ExpressionListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:10.904 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server) in 37.2861ms
+2026-04-22 19:36:10.905 +08:00 [INF] Received HTTP response headers after 57.2645ms - 200
+2026-04-22 19:36:10.906 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:10.907 +08:00 [INF] End processing HTTP request after 62.6254ms - 200
+2026-04-22 19:36:10.908 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 59.6417ms
+2026-04-22 19:36:11.974 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:36:11.976 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:36:11.978 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:36:11.982 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:11.984 +08:00 [INF] Route matched with {action = "GetList", controller = "Task"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.TaskController (ResourceSpider.Server).
+2026-04-22 19:36:11.991 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.TaskListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:11.993 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server) in 7.3157ms
+2026-04-22 19:36:11.993 +08:00 [INF] Received HTTP response headers after 16.3809ms - 200
+2026-04-22 19:36:11.996 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:11.998 +08:00 [INF] End processing HTTP request after 23.9656ms - 200
+2026-04-22 19:36:12.000 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 22.1726ms
+2026-04-22 19:36:12.564 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:36:12.566 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/agents
+2026-04-22 19:36:12.568 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/agents - null null
+2026-04-22 19:36:12.572 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:12.573 +08:00 [INF] Route matched with {action = "GetList", controller = "AgentManagement"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(ResourceSpider.Server.Repositories.IAgentRepository) on controller ResourceSpider.Server.Controllers.AgentManagementController (ResourceSpider.Server).
+2026-04-22 19:36:12.579 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[System.Collections.Generic.List`1[[ResourceSpider.Server.DTOs.AgentDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-22 19:36:12.581 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server) in 5.6548ms
+2026-04-22 19:36:12.582 +08:00 [INF] Received HTTP response headers after 14.2221ms - 200
+2026-04-22 19:36:12.583 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.AgentManagementController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:12.586 +08:00 [INF] End processing HTTP request after 21.4931ms - 200
+2026-04-22 19:36:12.588 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/agents - 200 null application/json; charset=utf-8 20.3975ms
+2026-04-22 19:36:13.131 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:36:13.133 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/tasks?*
+2026-04-22 19:36:13.135 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:36:13.138 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:13.140 +08:00 [INF] Route matched with {action = "GetList", controller = "Task"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.TaskController (ResourceSpider.Server).
+2026-04-22 19:36:13.158 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.TaskListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:13.160 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server) in 17.9213ms
+2026-04-22 19:36:13.161 +08:00 [INF] Received HTTP response headers after 26.5012ms - 200
+2026-04-22 19:36:13.162 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.TaskController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:13.164 +08:00 [INF] End processing HTTP request after 33.1615ms - 200
+2026-04-22 19:36:13.166 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/tasks?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 30.8525ms
+2026-04-22 19:36:13.470 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:36:13.472 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/expressions?*
+2026-04-22 19:36:13.473 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:36:13.477 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:13.478 +08:00 [INF] Route matched with {action = "GetList", controller = "Expression"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32, System.Nullable`1[System.Int32]) on controller ResourceSpider.Server.Controllers.ExpressionController (ResourceSpider.Server).
+2026-04-22 19:36:13.492 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.ExpressionListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:13.498 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server) in 17.6264ms
+2026-04-22 19:36:13.499 +08:00 [INF] Received HTTP response headers after 26.0279ms - 200
+2026-04-22 19:36:13.501 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.ExpressionController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:13.502 +08:00 [INF] End processing HTTP request after 32.2959ms - 200
+2026-04-22 19:36:13.504 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/expressions?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 31.0761ms
+2026-04-22 19:36:14.010 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/proxies?*
+2026-04-22 19:36:14.012 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/proxies?*
+2026-04-22 19:36:14.016 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/proxies?pageIndex=1&pageSize=20 - null null
+2026-04-22 19:36:14.021 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.ProxyController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:14.030 +08:00 [INF] Route matched with {action = "GetList", controller = "Proxy"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetList(Int32, Int32) on controller ResourceSpider.Server.Controllers.ProxyController (ResourceSpider.Server).
+2026-04-22 19:36:14.043 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[System.Collections.Generic.List`1[[ResourceSpider.Server.DTOs.ProxyDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-22 19:36:14.052 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.ProxyController.GetList (ResourceSpider.Server) in 18.8307ms
+2026-04-22 19:36:14.052 +08:00 [INF] Received HTTP response headers after 36.9524ms - 200
+2026-04-22 19:36:14.054 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.ProxyController.GetList (ResourceSpider.Server)'
+2026-04-22 19:36:14.055 +08:00 [INF] End processing HTTP request after 45.2291ms - 200
+2026-04-22 19:36:14.057 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/proxies?pageIndex=1&pageSize=20 - 200 null application/json; charset=utf-8 41.2826ms
+2026-04-22 19:36:22.467 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:36:22.469 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/health
+2026-04-22 19:36:22.472 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/health - null null
+2026-04-22 19:36:22.476 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:36:22.477 +08:00 [INF] Route matched with {action = "Health", controller = "System"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Health() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:36:22.490 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemHealthDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:22.492 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server) in 12.8153ms
+2026-04-22 19:36:22.493 +08:00 [INF] Received HTTP response headers after 22.5176ms - 200
+2026-04-22 19:36:22.494 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.Health (ResourceSpider.Server)'
+2026-04-22 19:36:22.496 +08:00 [INF] End processing HTTP request after 28.8551ms - 200
+2026-04-22 19:36:22.497 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/health - 200 null application/json; charset=utf-8 25.7987ms
+2026-04-22 19:36:22.500 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/redis
+2026-04-22 19:36:22.504 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/redis
+2026-04-22 19:36:22.505 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/redis - null null
+2026-04-22 19:36:22.508 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.GetRedisStatus (ResourceSpider.Server)'
+2026-04-22 19:36:22.510 +08:00 [INF] Route matched with {action = "GetRedisStatus", controller = "System"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetRedisStatus() on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:36:22.513 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.RedisFeatureStatusDto, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:22.517 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.GetRedisStatus (ResourceSpider.Server) in 4.808ms
+2026-04-22 19:36:22.517 +08:00 [INF] Received HTTP response headers after 12.059ms - 200
+2026-04-22 19:36:22.518 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.GetRedisStatus (ResourceSpider.Server)'
+2026-04-22 19:36:22.520 +08:00 [INF] End processing HTTP request after 19.3918ms - 200
+2026-04-22 19:36:22.521 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/redis - 200 null application/json; charset=utf-8 15.5503ms
+2026-04-22 19:36:22.525 +08:00 [INF] Start processing HTTP request GET https://localhost:64422/api/admin/system/logs?*
+2026-04-22 19:36:22.526 +08:00 [INF] Sending HTTP request GET https://localhost:64422/api/admin/system/logs?*
+2026-04-22 19:36:22.527 +08:00 [INF] Request starting HTTP/1.1 GET https://localhost:64422/api/admin/system/logs?pageIndex=1&pageSize=10 - null null
+2026-04-22 19:36:22.530 +08:00 [INF] Executing endpoint 'ResourceSpider.Server.Controllers.SystemController.GetLogs (ResourceSpider.Server)'
+2026-04-22 19:36:22.537 +08:00 [INF] Route matched with {action = "GetLogs", controller = "System"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetLogs(Int32, Int32, System.String, System.String, System.Nullable`1[System.DateTime], System.Nullable`1[System.DateTime]) on controller ResourceSpider.Server.Controllers.SystemController (ResourceSpider.Server).
+2026-04-22 19:36:22.552 +08:00 [INF] Executing OkObjectResult, writing value of type 'ResourceSpider.Core.Models.ApiResponse`1[[ResourceSpider.Server.DTOs.SystemLogListResponse, ResourceSpider.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-22 19:36:22.556 +08:00 [INF] Executed action ResourceSpider.Server.Controllers.SystemController.GetLogs (ResourceSpider.Server) in 16.5086ms
+2026-04-22 19:36:22.557 +08:00 [INF] Received HTTP response headers after 29.5031ms - 200
+2026-04-22 19:36:22.558 +08:00 [INF] Executed endpoint 'ResourceSpider.Server.Controllers.SystemController.GetLogs (ResourceSpider.Server)'
+2026-04-22 19:36:22.559 +08:00 [INF] End processing HTTP request after 33.4838ms - 200
+2026-04-22 19:36:22.560 +08:00 [INF] Request finished HTTP/1.1 GET https://localhost:64422/api/admin/system/logs?pageIndex=1&pageSize=10 - 200 null application/json; charset=utf-8 32.1397ms

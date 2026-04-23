@@ -28,13 +28,15 @@ public enum ExportFormat
 /// <param name="StartTime">起始时间筛选，可选</param>
 /// <param name="EndTime">结束时间筛选，可选</param>
 /// <param name="Fields">导出字段列表，可选</param>
+/// <param name="OnlyDisplayedColumns">仅导出当前显示列</param>
 public record ExportRequest(
     string TaskId,
     ExportFormat Format,
     string? StepId = null,
     DateTime? StartTime = null,
     DateTime? EndTime = null,
-    List<string>? Fields = null
+    List<string>? Fields = null,
+    bool OnlyDisplayedColumns = false
 );
 
 /// <summary>

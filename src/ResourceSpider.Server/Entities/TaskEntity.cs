@@ -141,6 +141,12 @@ public class TaskEntity
     public string? CreatedBy { get; set; }
 
     /// <summary>
+    /// 任务结果存储引擎（MySQL/PostgreSQL）
+    /// </summary>
+    [SugarColumn(Length = 32, IsNullable = true)]
+    public string? ResultStorageEngine { get; set; }
+
+    /// <summary>
     /// 任务创建时间
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
