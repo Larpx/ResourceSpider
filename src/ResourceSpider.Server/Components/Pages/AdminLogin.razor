@@ -3,28 +3,66 @@
 @inject AdminSessionState Session
 @inject NavigationManager Navigation
 
-<PageTitle>后台登录</PageTitle>
+<PageTitle>登录 - ResourceSpider</PageTitle>
 
-<h1>后台管理登录</h1>
+<div class="login-page">
+    <div class="login-background">
+        <div class="login-grid-line line-1"></div>
+        <div class="login-grid-line line-2"></div>
+        <div class="login-grid-line line-3"></div>
+        <div class="login-circle circle-1"></div>
+        <div class="login-circle circle-2"></div>
+    </div>
 
-<div class="form-card">
-    <EditForm Model="_model" OnValidSubmit="HandleLoginAsync">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <span class="logo-icon">⬡</span>
+                </div>
+                <h1 class="login-title">ResourceSpider</h1>
+                <p class="login-subtitle">后台管理系统</p>
+            </div>
 
-        <label for="username">用户名</label>
-        <InputText id="username" class="input" @bind-Value="_model.Username" />
+            <EditForm Model="_model" OnValidSubmit="HandleLoginAsync" class="login-form">
+                <DataAnnotationsValidator />
+                
+                <div class="form-group">
+                    <label for="username" class="form-label">用户名</label>
+                    <InputText id="username" class="form-input" @bind-Value="_model.Username" placeholder="请输入用户名" />
+                </div>
 
-        <label for="password">密码</label>
-        <InputText id="password" class="input" type="password" @bind-Value="_model.Password" />
+                <div class="form-group">
+                    <label for="password" class="form-label">密码</label>
+                    <InputText id="password" class="form-input" type="password" @bind-Value="_model.Password" placeholder="请输入密码" />
+                </div>
 
-        @if (!string.IsNullOrWhiteSpace(_errorMessage))
-        {
-            <p class="error-text">@_errorMessage</p>
-        }
+                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <div class="error-alert">
+                        <span class="error-icon">⚠</span>
+                        <span>@_errorMessage</span>
+                    </div>
+                }
 
-        <button type="submit" class="btn" disabled="@_isSubmitting">@(_isSubmitting ? "登录中..." : "登录")</button>
-    </EditForm>
+                <button type="submit" class="login-button" disabled="@_isSubmitting">
+                    @if (_isSubmitting)
+                    {
+                        <span class="loading-spinner"></span>
+                        <span>登录中...</span>
+                    }
+                    else
+                    {
+                        <span>登 录</span>
+                    }
+                </button>
+            </EditForm>
+
+            <div class="login-footer">
+                <a href="/welcome">返回首页</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {

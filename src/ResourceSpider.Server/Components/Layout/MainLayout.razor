@@ -27,32 +27,14 @@
         </div>
     </header>
 
-    @if (Session.IsAuthenticated)
-    {
-        <div class="admin-layout">
-            <aside class="admin-sidebar">
-                <div class="sidebar-header">系统管理</div>
-                <nav class="sidebar-nav">
-                    <NavLink href="/admin" Match="NavLinkMatch.All">后台首页</NavLink>
-                    <NavLink href="/admin/agents">Agent管理</NavLink>
-                    <NavLink href="/admin/tasks">任务管理</NavLink>
-                    <NavLink href="/admin/expressions">表达式管理</NavLink>
-                    <NavLink href="/admin/proxies">代理管理</NavLink>
-                    <NavLink href="/admin/system">系统设置</NavLink>
-                    <NavLink href="/admin/runtime">运行监控</NavLink>
-                </nav>
-            </aside>
-            <main class="content">
-                @Body
-            </main>
-        </div>
-    }
-    else
-    {
-        <main class="content">
-            @Body
-        </main>
-    }
+    <main class="content">
+        @Body
+    </main>
+
+    <footer class="site-footer">
+        <span>ResourceSpider © 2024</span>
+        <span>技术支持：ResourceSpider Team</span>
+    </footer>
 </div>
 
 @code {

@@ -1,0 +1,121 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+
+<div class="admin-app">
+    <!-- 顶部 Logo 栏 -->
+    <header class="admin-topbar">
+        <div class="admin-topbar-left">
+            <button class="sidebar-toggle" @onclick="ToggleSidebar" title="折叠菜单">
+                <span class="toggle-icon">@(_sidebarCollapsed ? "☰" : "✕")</span>
+            </button>
+            <div class="admin-logo">
+                <span class="logo-symbol">⬡</span>
+                <span class="logo-text">ResourceSpider</span>
+            </div>
+        </div>
+        <div class="admin-topbar-right">
+            <div class="status-indicator">
+                <span class="status-dot online"></span>
+                <span class="status-text">系统正常</span>
+            </div>
+            <button class="topbar-btn" title="通知">
+                <span>🔔</span>
+                <span class="notification-badge">0</span>
+            </button>
+            <div class="user-dropdown">
+                <span class="user-avatar">@Session.Username?.Substring(0, 1).ToUpper()</span>
+                <span class="user-name">@Session.Username</span>
+                <button class="topbar-btn" @onclick="Logout" title="退出登录">退出</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-body">
+        <!-- 左侧导航菜单 -->
+        <aside class="admin-sidebar @(_sidebarCollapsed ? "collapsed" : "")">
+            <nav class="sidebar-menu">
+                <NavLink href="/admin" Match="NavLinkMatch.All" class="sidebar-menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span class="menu-text">后台首页</span>
+                </NavLink>
+                <NavLink href="/admin/agents" class="sidebar-menu-item">
+                    <span class="menu-icon">🤖</span>
+                    <span class="menu-text">Agent管理</span>
+                </NavLink>
+                <NavLink href="/admin/tasks" class="sidebar-menu-item">
+                    <span class="menu-icon">📋</span>
+                    <span class="menu-text">任务管理</span>
+                </NavLink>
+                <NavLink href="/admin/expressions" class="sidebar-menu-item">
+                    <span class="menu-icon">🔧</span>
+                    <span class="menu-text">表达式管理</span>
+                </NavLink>
+                <NavLink href="/admin/proxies" class="sidebar-menu-item">
+                    <span class="menu-icon">🌐</span>
+                    <span class="menu-text">代理管理</span>
+                </NavLink>
+                <div class="menu-divider"></div>
+                <div class="menu-section-title">系统</div>
+                <NavLink href="/admin/system" class="sidebar-menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span class="menu-text">系统设置</span>
+                </NavLink>
+                <NavLink href="/admin/runtime" class="sidebar-menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span class="menu-text">运行监控</span>
+                </NavLink>
+            </nav>
+        </aside>
+
+        <!-- 中间工作区 -->
+        <main class="admin-workspace">
+            <div class="admin-workspace-content">
+                @Body
+            </div>
+            <footer class="admin-statusbar">
+                <div class="statusbar-left">
+                    <span>运行状态：<span class="status-ok">正常</span></span>
+                    <span class="divider">|</span>
+                    <span>最后更新：@_lastUpdate</span>
+                </div>
+                <div class="statusbar-right">
+                    <span>ResourceSpider Admin v1.0</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+</div>
+
+@code {
+    private bool _sidebarCollapsed;
+    private string _lastUpdate = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+
+    protected override void OnInitialized()
+    {
+        Session.OnChange += HandleSessionChanged;
+    }
+
+    private void ToggleSidebar()
+    {
+        _sidebarCollapsed = !_sidebarCollapsed;
+    }
+
+    private void Logout()
+    {
+        ApiClient.Logout();
+        Navigation.NavigateTo("/welcome", replace: true);
+    }
+
+    private void HandleSessionChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Session.OnChange -= HandleSessionChanged;
+    }
+}

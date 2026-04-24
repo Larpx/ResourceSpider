@@ -1,4 +1,5 @@
 @page "/admin"
+@layout AdminLayout
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
@@ -14,94 +15,90 @@
 else
 {
     <h1>后台管理首页</h1>
-    
-    <div class="user-info">
-        <span>当前用户：</span>
-        <strong>@Session.Username</strong>
-        <span>（@Session.Role）</span>
-    </div>
 
-    <div class="card-grid">
+    <div class="admin-stats-grid">
         @if (_statistics != null)
         {
-            <section class="card stat-card">
-                <div class="card-icon">📊</div>
-                <div class="stat-value">@_statistics.OnlineAgents / @_statistics.TotalAgents</div>
-                <div class="stat-label">在线 Agent</div>
-            </section>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">@_statistics.OnlineAgents / @_statistics.TotalAgents</div>
+                <div class="admin-stat-label">在线 Agent</div>
+            </div>
 
-            <section class="card stat-card">
-                <div class="card-icon">⚙️</div>
-                <div class="stat-value">@_statistics.RunningTasks</div>
-                <div class="stat-label">运行中任务</div>
-            </section>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">@_statistics.RunningTasks</div>
+                <div class="admin-stat-label">运行中任务</div>
+            </div>
 
-            <section class="card stat-card">
-                <div class="card-icon">⏳</div>
-                <div class="stat-value">@_statistics.PendingTasks</div>
-                <div class="stat-label">待执行任务</div>
-            </section>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">@_statistics.PendingTasks</div>
+                <div class="admin-stat-label">待执行任务</div>
+            </div>
 
-            <section class="card stat-card">
-                <div class="card-icon">✅</div>
-                <div class="stat-value">@_statistics.CompletedTasks</div>
-                <div class="stat-label">已完成任务</div>
-            </section>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">@_statistics.CompletedTasks</div>
+                <div class="admin-stat-label">已完成任务</div>
+            </div>
 
-            <section class="card stat-card">
-                <div class="card-icon">💾</div>
-                <div class="stat-value">@_statistics.TotalDataVolume</div>
-                <div class="stat-label">总数据量</div>
-            </section>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">@_statistics.TotalDataVolume</div>
+                <div class="admin-stat-label">总数据量</div>
+            </div>
         }
+    </div>
 
-        @if (_health != null)
-        {
-            <section class="card">
-                <h2>系统健康</h2>
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2 class="admin-panel-title">系统健康</h2>
+        </div>
+        <div class="admin-panel-body">
+            @if (_health != null)
+            {
                 <p>状态：<strong class="health-status">@_health.Status</strong></p>
                 <p>版本：@_health.Version</p>
                 <p>运行时长：@_health.Uptime</p>
-            </section>
-        }
+            }
+        </div>
     </div>
 
-    <section class="card runtime-section">
-        <h2>管理入口</h2>
-        <div class="admin-links">
-            <a class="admin-link" href="/admin/agents">
-                <div class="admin-link-icon">🤖</div>
-                <span>Agent 配置</span>
-            </a>
-            <a class="admin-link" href="/admin/tasks">
-                <div class="admin-link-icon">📋</div>
-                <span>任务配置</span>
-            </a>
-            <a class="admin-link" href="/admin/expressions">
-                <div class="admin-link-icon">🔧</div>
-                <span>表达式配置</span>
-            </a>
-            <a class="admin-link" href="/admin/proxies">
-                <div class="admin-link-icon">🌐</div>
-                <span>代理池配置</span>
-            </a>
-            <a class="admin-link" href="/admin/system">
-                <div class="admin-link-icon">⚙️</div>
-                <span>系统配置</span>
-            </a>
-            <a class="admin-link" href="/admin/runtime">
-                <div class="admin-link-icon">📈</div>
-                <span>运行监控</span>
-            </a>
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2 class="admin-panel-title">管理入口</h2>
         </div>
-    </section>
+        <div class="admin-panel-body">
+            <div class="admin-link-grid">
+                <a class="admin-link-item" href="/admin/agents">
+                    <span class="admin-link-icon">🤖</span>
+                    <span class="admin-link-text">Agent 配置</span>
+                </a>
+                <a class="admin-link-item" href="/admin/tasks">
+                    <span class="admin-link-icon">📋</span>
+                    <span class="admin-link-text">任务配置</span>
+                </a>
+                <a class="admin-link-item" href="/admin/expressions">
+                    <span class="admin-link-icon">🔧</span>
+                    <span class="admin-link-text">表达式配置</span>
+                </a>
+                <a class="admin-link-item" href="/admin/proxies">
+                    <span class="admin-link-icon">🌐</span>
+                    <span class="admin-link-text">代理池配置</span>
+                </a>
+                <a class="admin-link-item" href="/admin/system">
+                    <span class="admin-link-icon">⚙️</span>
+                    <span class="admin-link-text">系统配置</span>
+                </a>
+                <a class="admin-link-item" href="/admin/runtime">
+                    <span class="admin-link-icon">📈</span>
+                    <span class="admin-link-text">运行监控</span>
+                </a>
+            </div>
+        </div>
+    </div>
 }
 
 @code {
     private bool _ready;
     private SystemStatisticsDto? _statistics;
     private SystemHealthDto? _health;
-    // 在初始化阶段仅记录“需要跳转”的状态，避免预渲染阶段直接 NavigateTo 抛出异常。
     private bool _shouldRedirectToLogin;
 
     protected override async Task OnInitializedAsync()
