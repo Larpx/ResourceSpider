@@ -109,8 +109,7 @@ public record TaskDto(
     DateTime CreatedAt,
     string? ExpressionId = null,
     ExpressionConfigDto? ExpressionConfig = null,
-    List<TaskStepDto>? Steps = null,
-    string? ResultStorageEngine = null
+    List<TaskStepDto>? Steps = null
 );
 
 /// <summary>

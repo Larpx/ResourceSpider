@@ -215,59 +215,6 @@ public class AdminApiClient
         return result.Payload?.Data;
     }
 
-    public async Task<PostgreSqlResultStorageStatusDto?> GetPostgreSqlResultStorageStatusAsync()
-    {
-        var payload = await GetAuthorizedAsync<PostgreSqlResultStorageStatusDto>("api/admin/system/postgresql-results");
-        return payload?.Data;
-    }
-
-    public async Task<PostgreSqlResultStorageStatusDto?> UpdatePostgreSqlResultStorageStatusAsync(bool enabled)
-    {
-        var result = await SendAuthorizedAsync<PostgreSqlResultStorageStatusDto>(
-            HttpMethod.Put,
-            "api/admin/system/postgresql-results",
-            new UpdatePostgreSqlResultStorageRequest(enabled));
-
-        return result.Payload?.Data;
-    }
-
-    public async Task<CollectionResultListResponse?> GetTaskResultsAsync(string taskId, int pageIndex = 1, int pageSize = 20, string? keyword = null)
-    {
-        var query = $"api/admin/results?taskId={Uri.EscapeDataString(taskId)}&pageIndex={pageIndex}&pageSize={pageSize}";
-        if (!string.IsNullOrWhiteSpace(keyword))
-        {
-            query += $"&keyword={Uri.EscapeDataString(keyword)}";
-        }
-
-        var payload = await GetAuthorizedAsync<CollectionResultListResponse>(query);
-        return payload?.Data;
-    }
-
-    public async Task<CollectionResultDto?> GetTaskResultByIdAsync(string resultId)
-    {
-        var payload = await GetAuthorizedAsync<CollectionResultDto>($"api/admin/results/{Uri.EscapeDataString(resultId)}");
-        return payload?.Data;
-    }
-
-    public async Task<ExportResultDto?> ExportTaskResultsAsync(
-        string taskId,
-        ExportFormat format,
-        DateTime? startTime = null,
-        DateTime? endTime = null,
-        List<string>? fields = null)
-    {
-        var request = new ExportRequest(
-            TaskId: taskId,
-            Format: format,
-            StepId: null,
-            StartTime: startTime,
-            EndTime: endTime,
-            Fields: fields);
-
-        var result = await SendAuthorizedAsync<ExportResultDto>(HttpMethod.Post, "api/admin/results/export", request);
-        return result.Payload?.Data;
-    }
-
     private async Task<ApiResponse<T>?> GetAuthorizedAsync<T>(string url)
     {
         var result = await SendAuthorizedAsync<T>(HttpMethod.Get, url);

@@ -28,36 +28,10 @@ public interface IRedisFeatureService
     int TaskContentTtlSeconds { get; }
 
     /// <summary>
-    /// 获取 Redis 最近的运行时错误信息。
-    /// </summary>
-    string? LastError { get; }
-
-    /// <summary>
-    /// 获取 Redis 最近一次配置写入错误信息。
-    /// </summary>
-    string? LastConfigWriteError { get; }
-
-    /// <summary>
-    /// 获取当前生效的配置文件路径。
-    /// </summary>
-    string? EffectiveConfigFile { get; }
-
-    /// <summary>
     /// 动态设置 Redis 模块启用状态。
     /// </summary>
     /// <param name="enabled">true 表示启用，false 表示停用。</param>
     void SetEnabled(bool enabled);
-
-    /// <summary>
-    /// 更新 Redis 模块的运行时状态。
-    /// </summary>
-    /// <param name="enabled">启用状态。</param>
-    /// <param name="configured">连接信息配置状态。</param>
-    /// <param name="connected">连接状态。</param>
-    /// <param name="lastError">最近一次运行时错误信息。</param>
-    /// <param name="lastConfigWriteError">最近一次配置写入错误信息。</param>
-    /// <param name="effectiveConfigFile">当前生效的配置文件路径。</param>
-    void UpdateState(bool enabled, bool configured, bool connected, string? lastError = null, string? lastConfigWriteError = null, string? effectiveConfigFile = null);
 }
 
 /// <summary>
@@ -66,13 +40,9 @@ public interface IRedisFeatureService
 /// </summary>
 public sealed class RedisFeatureService : IRedisFeatureService
 {
+    private readonly IConnectionMultiplexer? _redis;
     private readonly int _taskContentTtlSeconds;
     private volatile bool _enabled;
-    private volatile bool _configured;
-    private volatile bool _connected;
-    private string? _lastError;
-    private string? _lastConfigWriteError;
-    private string? _effectiveConfigFile;
 
     /// <summary>
     /// 初始化 Redis 功能开关服务。
@@ -88,46 +58,26 @@ public sealed class RedisFeatureService : IRedisFeatureService
         IConnectionMultiplexer? redis)
     {
         _enabled = enabled;
-        _configured = configured;
-        _connected = redis?.IsConnected == true;
+        IsConfigured = configured;
         _taskContentTtlSeconds = Math.Clamp(taskContentTtlSeconds, 30, 3600);
+        _redis = redis;
     }
 
     /// <inheritdoc />
     public bool IsEnabled => _enabled;
 
     /// <inheritdoc />
-    public bool IsConfigured => _configured;
+    public bool IsConfigured { get; }
 
     /// <inheritdoc />
-    public bool IsConnected => _connected;
+    public bool IsConnected => _redis?.IsConnected == true;
 
     /// <inheritdoc />
     public int TaskContentTtlSeconds => _taskContentTtlSeconds;
 
     /// <inheritdoc />
-    public string? LastError => _lastError;
-
-    /// <inheritdoc />
-    public string? LastConfigWriteError => _lastConfigWriteError;
-
-    /// <inheritdoc />
-    public string? EffectiveConfigFile => _effectiveConfigFile;
-
-    /// <inheritdoc />
     public void SetEnabled(bool enabled)
     {
         _enabled = enabled;
-    }
-
-    /// <inheritdoc />
-    public void UpdateState(bool enabled, bool configured, bool connected, string? lastError = null, string? lastConfigWriteError = null, string? effectiveConfigFile = null)
-    {
-        _enabled = enabled;
-        _configured = configured;
-        _connected = connected;
-        _lastError = lastError;
-        _lastConfigWriteError = lastConfigWriteError;
-        _effectiveConfigFile = effectiveConfigFile;
     }
 }

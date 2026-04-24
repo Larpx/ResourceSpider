@@ -12,33 +12,47 @@
         <nav class="menu">
             <NavLink href="/welcome" Match="NavLinkMatch.All">欢迎</NavLink>
             <NavLink href="/overview">系统概览</NavLink>
-
-            @if (Session.IsAuthenticated)
-            {
-                <NavLink href="/admin" Match="NavLinkMatch.All">后台首页</NavLink>
-                <NavLink href="/admin/agents">Agent</NavLink>
-                <NavLink href="/admin/tasks">任务</NavLink>
-                <NavLink href="/admin/expressions">表达式</NavLink>
-                <NavLink href="/admin/proxies">代理</NavLink>
-                <NavLink href="/admin/system">系统</NavLink>
-                <NavLink href="/admin/runtime">监控</NavLink>
-                <button class="menu-button" type="button" @onclick="Logout">
-                    <span>退出</span>
-                </button>
-            }
-            else
-            {
-                <NavLink href="/admin/login">后台登录</NavLink>
-            }
-
             <a href="/swagger" target="_blank" class="menu-external">API 文档</a>
             <a href="/health" target="_blank" class="menu-external">健康检查</a>
         </nav>
+        <div class="user-actions">
+            @if (Session.IsAuthenticated)
+            {
+                <button class="menu-button" type="button" @onclick="Logout">退出</button>
+            }
+            else
+            {
+                <NavLink href="/admin/login" class="btn-login">后台登录</NavLink>
+            }
+        </div>
     </header>
 
-    <main class="content">
-        @Body
-    </main>
+    @if (Session.IsAuthenticated)
+    {
+        <div class="admin-layout">
+            <aside class="admin-sidebar">
+                <div class="sidebar-header">系统管理</div>
+                <nav class="sidebar-nav">
+                    <NavLink href="/admin" Match="NavLinkMatch.All">后台首页</NavLink>
+                    <NavLink href="/admin/agents">Agent管理</NavLink>
+                    <NavLink href="/admin/tasks">任务管理</NavLink>
+                    <NavLink href="/admin/expressions">表达式管理</NavLink>
+                    <NavLink href="/admin/proxies">代理管理</NavLink>
+                    <NavLink href="/admin/system">系统设置</NavLink>
+                    <NavLink href="/admin/runtime">运行监控</NavLink>
+                </nav>
+            </aside>
+            <main class="content">
+                @Body
+            </main>
+        </div>
+    }
+    else
+    {
+        <main class="content">
+            @Body
+        </main>
+    }
 </div>
 
 @code {

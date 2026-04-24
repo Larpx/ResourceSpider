@@ -101,17 +101,27 @@ else
     private bool _ready;
     private SystemStatisticsDto? _statistics;
     private SystemHealthDto? _health;
+    // 在初始化阶段仅记录“需要跳转”的状态，避免预渲染阶段直接 NavigateTo 抛出异常。
+    private bool _shouldRedirectToLogin;
 
     protected override async Task OnInitializedAsync()
     {
         if (!Session.IsAuthenticated)
         {
-            Navigation.NavigateTo("/admin/login", replace: true);
+            _shouldRedirectToLogin = true;
             return;
         }
 
         _statistics = await ApiClient.GetSystemStatisticsAsync();
         _health = await ApiClient.GetSystemHealthAsync();
         _ready = true;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && _shouldRedirectToLogin)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+        }
     }
 }

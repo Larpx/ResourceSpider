@@ -52,8 +52,7 @@ public class TaskService : ITaskService
             Tags = request.Tags,
             AgentGroupId = request.AgentGroupId,
             ExpressionId = request.ExpressionId,
-            CreatedBy = createdBy,
-            ResultStorageEngine = "MySQL"
+            CreatedBy = createdBy
         };
 
         await _taskRepository.AddAsync(entity);
@@ -245,10 +244,7 @@ public class TaskService : ITaskService
             entity.EndTime,
             entity.CreatedBy,
             entity.CreatedAt,
-            entity.ExpressionId,
-            null,
-            null,
-            entity.ResultStorageEngine
+            entity.ExpressionId
         );
     }
 

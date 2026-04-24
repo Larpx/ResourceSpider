@@ -7,108 +7,109 @@ using ResourceSpider.Server.Repositories;
 
 namespace ResourceSpider.Server.Services;
 
+/// <summary>
+/// 采集结果服务接口，提供采集结果的存储、查询和统计功能
+/// </summary>
 public interface ICollectionResultService
 {
+    /// <summary>
+    /// 根据结果标识获取单条采集结果
+    /// </summary>
+    /// <param name="resultId">结果唯一标识</param>
+    /// <returns>采集结果 DTO，若不存在返回 null</returns>
     Task<CollectionResultDto?> GetByIdAsync(string resultId);
-    Task<CollectionResultListResponse> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize, string? keyword = null);
+
+    /// <summary>
+    /// 根据任务标识分页查询采集结果
+    /// </summary>
+    /// <param name="taskId">任务唯一标识</param>
+    /// <param name="pageIndex">页码（从 1 开始）</param>
+    /// <param name="pageSize">每页数量</param>
+    /// <returns>采集结果列表响应</returns>
+    Task<CollectionResultListResponse> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize);
+
+    /// <summary>
+    /// 根据表达式标识分页查询采集结果
+    /// </summary>
+    /// <param name="expressionId">表达式唯一标识</param>
+    /// <param name="pageIndex">页码（从 1 开始）</param>
+    /// <param name="pageSize">每页数量</param>
+    /// <returns>采集结果列表响应</returns>
     Task<CollectionResultListResponse> GetByExpressionIdAsync(string expressionId, int pageIndex, int pageSize);
+
+    /// <summary>
+    /// 批量存储 Agent 上报的采集结果数据
+    /// </summary>
+    /// <param name="taskId">任务唯一标识</param>
+    /// <param name="expressionId">关联的表达式标识</param>
+    /// <param name="agentId">上报结果的 Agent 标识</param>
+    /// <param name="results">采集结果项列表</param>
     Task StoreResultsAsync(string taskId, string? expressionId, string agentId, List<CollectionResultItemDto> results);
+
+    /// <summary>
+    /// 获取指定任务的采集结果总数
+    /// </summary>
+    /// <param name="taskId">任务唯一标识</param>
+    /// <returns>结果总数</returns>
     Task<int> GetResultCountByTaskIdAsync(string taskId);
 }
 
+/// <summary>
+/// 采集结果服务实现，管理采集结果的持久化存储、查询和统计
+/// </summary>
 public class CollectionResultService : ICollectionResultService
 {
-    private readonly ICollectionResultRepository _mysqlResultRepository;
-    private readonly IPostgreCollectionResultRepository _postgreResultRepository;
-    private readonly ITaskRepository _taskRepository;
+    private readonly ICollectionResultRepository _resultRepository;
+    private readonly IExpressionRepository _expressionRepository;
     private readonly IStepResourceRepository _stepResourceRepository;
     private readonly IStorageStrategyService _storageStrategyService;
-    private readonly IPostgreSqlResultStorageFeatureService _postgreFeatureService;
     private readonly ILogger<CollectionResultService> _logger;
 
     public CollectionResultService(
-        ICollectionResultRepository mysqlResultRepository,
-        IPostgreCollectionResultRepository postgreResultRepository,
-        ITaskRepository taskRepository,
+        ICollectionResultRepository resultRepository,
+        IExpressionRepository expressionRepository,
         IStepResourceRepository stepResourceRepository,
         IStorageStrategyService storageStrategyService,
-        IPostgreSqlResultStorageFeatureService postgreFeatureService,
         ILogger<CollectionResultService> logger)
     {
-        _mysqlResultRepository = mysqlResultRepository;
-        _postgreResultRepository = postgreResultRepository;
-        _taskRepository = taskRepository;
+        _resultRepository = resultRepository;
+        _expressionRepository = expressionRepository;
         _stepResourceRepository = stepResourceRepository;
         _storageStrategyService = storageStrategyService;
-        _postgreFeatureService = postgreFeatureService;
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<CollectionResultDto?> GetByIdAsync(string resultId)
     {
-        var mysqlEntity = await _mysqlResultRepository.GetByIdAsync(resultId);
-        if (mysqlEntity != null)
-        {
-            return MapToDto(mysqlEntity);
-        }
-
-        if (_postgreFeatureService.IsConfigured && _postgreFeatureService.IsConnected)
-        {
-            var postgreEntity = await _postgreResultRepository.GetByIdAsync(resultId);
-            if (postgreEntity != null)
-            {
-                return MapToDto(postgreEntity);
-            }
-        }
-
-        return null;
+        var entity = await _resultRepository.GetByIdAsync(resultId);
+        return entity != null ? MapToDto(entity) : null;
     }
 
-    public async Task<CollectionResultListResponse> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize, string? keyword = null)
+    /// <inheritdoc />
+    public async Task<CollectionResultListResponse> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize)
     {
-        var repository = await ResolveReadRepositoryByTaskAsync(taskId);
-        var normalizedKeyword = string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim();
-
-        if (string.IsNullOrWhiteSpace(normalizedKeyword))
-        {
-            var results = await repository.GetByTaskIdAsync(taskId, pageIndex, pageSize);
-            var total = await repository.CountByTaskIdAsync(taskId);
-
-            return new CollectionResultListResponse(
-                results.Select(MapToDto).ToList(),
-                (int)total,
-                pageIndex,
-                pageSize);
-        }
-
-        var allResults = await repository.GetAllByTaskIdAsync(taskId);
-        var filtered = allResults
-            .Where(result => MatchesKeyword(result, normalizedKeyword))
-            .ToList();
-
-        var paged = filtered
-            .Skip((pageIndex - 1) * pageSize)
-            .Take(pageSize)
-            .Select(MapToDto)
-            .ToList();
-
-        return new CollectionResultListResponse(paged, filtered.Count, pageIndex, pageSize);
-    }
-
-    public async Task<CollectionResultListResponse> GetByExpressionIdAsync(string expressionId, int pageIndex, int pageSize)
-    {
-        var results = await _mysqlResultRepository.GetByExpressionIdAsync(expressionId, pageIndex, pageSize);
-        var total = await _mysqlResultRepository.CountByExpressionIdAsync(expressionId);
+        var results = await _resultRepository.GetByTaskIdAsync(taskId, pageIndex, pageSize);
+        var total = await _resultRepository.CountByTaskIdAsync(taskId);
         return new CollectionResultListResponse(
             results.Select(MapToDto).ToList(),
-            (int)total,
-            pageIndex,
-            pageSize);
+            (int)total, pageIndex, pageSize);
     }
 
+    /// <inheritdoc />
+    public async Task<CollectionResultListResponse> GetByExpressionIdAsync(string expressionId, int pageIndex, int pageSize)
+    {
+        var results = await _resultRepository.GetByExpressionIdAsync(expressionId, pageIndex, pageSize);
+        var total = await _resultRepository.CountByExpressionIdAsync(expressionId);
+        return new CollectionResultListResponse(
+            results.Select(MapToDto).ToList(),
+            (int)total, pageIndex, pageSize);
+    }
+
+    /// <inheritdoc />
     public async Task StoreResultsAsync(string taskId, string? expressionId, string agentId, List<CollectionResultItemDto> results)
     {
-        var storageEngine = _storageStrategyService.GetCurrentEngineName();
+        var storageEngine = _storageStrategyService.GetCurrentEngine().ToString();
 
         var entities = results.Select(r => new CollectionResultEntity
         {
@@ -127,13 +128,6 @@ public class CollectionResultService : ICollectionResultService
         }).ToList();
 
         await _storageStrategyService.StoreResultsAsync(entities);
-
-        var task = await _taskRepository.GetByIdAsync(taskId);
-        if (task != null && !string.Equals(task.ResultStorageEngine, storageEngine, StringComparison.OrdinalIgnoreCase))
-        {
-            task.ResultStorageEngine = storageEngine;
-            await _taskRepository.UpdateAsync(task);
-        }
 
         var stepResources = entities
             .Where(e => !string.IsNullOrWhiteSpace(e.StepId))
@@ -154,28 +148,21 @@ public class CollectionResultService : ICollectionResultService
         await _stepResourceRepository.AddRangeAsync(stepResources);
 
         _logger.LogInformation(
-            "Stored {Count} results for task {TaskId}, expression {ExpressionId}, storage {StorageEngine}",
-            entities.Count, taskId, expressionId, storageEngine);
+            "Stored {Count} results for task {TaskId}, expression {ExpressionId}",
+            entities.Count, taskId, expressionId);
     }
 
+    /// <inheritdoc />
     public async Task<int> GetResultCountByTaskIdAsync(string taskId)
     {
-        var repository = await ResolveReadRepositoryByTaskAsync(taskId);
-        return (int)await repository.CountByTaskIdAsync(taskId);
+        return (int)await _resultRepository.CountByTaskIdAsync(taskId);
     }
 
-    private async Task<ICollectionResultReadRepository> ResolveReadRepositoryByTaskAsync(string taskId)
-    {
-        var task = await _taskRepository.GetByIdAsync(taskId);
-        var usePostgre = string.Equals(task?.ResultStorageEngine, "PostgreSQL", StringComparison.OrdinalIgnoreCase)
-                         && _postgreFeatureService.IsConfigured
-                         && _postgreFeatureService.IsConnected;
-
-        return usePostgre
-            ? new PostgreCollectionResultReadAdapter(_postgreResultRepository)
-            : new MySqlCollectionResultReadAdapter(_mysqlResultRepository);
-    }
-
+    /// <summary>
+    /// 将采集结果实体映射为采集结果 DTO
+    /// </summary>
+    /// <param name="entity">采集结果实体</param>
+    /// <returns>采集结果 DTO</returns>
     private static CollectionResultDto MapToDto(CollectionResultEntity entity)
     {
         var fields = JsonSerializer.Deserialize<Dictionary<string, object?>>(entity.Fields)
@@ -194,11 +181,15 @@ public class CollectionResultService : ICollectionResultService
             fieldExpressionMap ?? new Dictionary<string, string>(),
             entity.StepId,
             entity.CollectedAt,
-            entity.CreatedAt,
-            entity.StorageEngine
+            entity.CreatedAt
         );
     }
 
+    /// <summary>
+    /// 标准化字段，将输入的领域模型转换为一致的存储格式
+    /// </summary>
+    /// <param name="fields">输入的字段字典</param>
+    /// <returns>标准化后的字段字典</returns>
     private static Dictionary<string, object?> NormalizeFields(Dictionary<string, object?> fields)
     {
         var result = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
@@ -220,6 +211,11 @@ public class CollectionResultService : ICollectionResultService
         return result;
     }
 
+    /// <summary>
+    /// 标准化 JSON 元素的值，将其转换为可存储的基本类型
+    /// </summary>
+    /// <param name="element">输入的 JSON 元素</param>
+    /// <returns>标准化后的元素值</returns>
     private static object? NormalizeJsonElement(JsonElement element)
     {
         return element.ValueKind switch
@@ -235,100 +231,14 @@ public class CollectionResultService : ICollectionResultService
         };
     }
 
+    /// <summary>
+    /// 计算给定负载的 SHA256 哈希值
+    /// </summary>
+    /// <param name="payload">输入的字符串负载</param>
+    /// <returns>计算得到的哈希值（十六进制字符串）</returns>
     private static string ComputeHash(string payload)
     {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(payload));
         return Convert.ToHexString(bytes).ToLowerInvariant();
-    }
-
-    private static bool MatchesKeyword(CollectionResultEntity entity, string keyword)
-    {
-        if (!string.IsNullOrWhiteSpace(entity.ResultId) && entity.ResultId.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (!string.IsNullOrWhiteSpace(entity.SourceUrl) && entity.SourceUrl.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (string.IsNullOrWhiteSpace(entity.Fields))
-        {
-            return false;
-        }
-
-        try
-        {
-            var fields = JsonSerializer.Deserialize<Dictionary<string, object?>>(entity.Fields);
-            if (fields == null)
-            {
-                return entity.Fields.Contains(keyword, StringComparison.OrdinalIgnoreCase);
-            }
-
-            foreach (var pair in fields)
-            {
-                if (pair.Key.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-
-                if (pair.Value?.ToString()?.Contains(keyword, StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    return true;
-                }
-            }
-        }
-        catch
-        {
-            return entity.Fields.Contains(keyword, StringComparison.OrdinalIgnoreCase);
-        }
-
-        return false;
-    }
-
-    private interface ICollectionResultReadRepository
-    {
-        Task<List<CollectionResultEntity>> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize);
-        Task<List<CollectionResultEntity>> GetAllByTaskIdAsync(string taskId);
-        Task<long> CountByTaskIdAsync(string taskId);
-    }
-
-    private sealed class MySqlCollectionResultReadAdapter : ICollectionResultReadRepository
-    {
-        private readonly ICollectionResultRepository _repository;
-
-        public MySqlCollectionResultReadAdapter(ICollectionResultRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public Task<List<CollectionResultEntity>> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize)
-            => _repository.GetByTaskIdAsync(taskId, pageIndex, pageSize);
-
-        public Task<List<CollectionResultEntity>> GetAllByTaskIdAsync(string taskId)
-            => _repository.GetAllByTaskIdAsync(taskId);
-
-        public Task<long> CountByTaskIdAsync(string taskId)
-            => _repository.CountByTaskIdAsync(taskId);
-    }
-
-    private sealed class PostgreCollectionResultReadAdapter : ICollectionResultReadRepository
-    {
-        private readonly IPostgreCollectionResultRepository _repository;
-
-        public PostgreCollectionResultReadAdapter(IPostgreCollectionResultRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public Task<List<CollectionResultEntity>> GetByTaskIdAsync(string taskId, int pageIndex, int pageSize)
-            => _repository.GetByTaskIdAsync(taskId, pageIndex, pageSize);
-
-        public Task<List<CollectionResultEntity>> GetAllByTaskIdAsync(string taskId)
-            => _repository.GetAllByTaskIdAsync(taskId);
-
-        public Task<long> CountByTaskIdAsync(string taskId)
-            => _repository.CountByTaskIdAsync(taskId);
     }
 }

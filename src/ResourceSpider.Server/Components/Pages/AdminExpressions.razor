@@ -21,7 +21,12 @@ else
     <section class="form-card">
         <h2>新增表达式</h2>
         <input class="input" placeholder="表达式名称" @bind="_newName" />
-        <input class="input" placeholder="选择器类型（xpath/cssselector/regex/jsonpath）" @bind="_newSelectorType" />
+        <select class="input" @bind="_newSelectorType">
+            <option value="xpath">XPath</option>
+            <option value="cssselector">CSS Selector</option>
+            <option value="regex">正则表达式</option>
+            <option value="jsonpath">JSON Path</option>
+        </select>
         <input class="input" placeholder="描述（可选）" @bind="_newDescription" />
         <input class="input" placeholder="容器表达式（可选）" @bind="_newContainerExpression" />
         <div class="action-row">
@@ -77,8 +82,21 @@ else
                             @if (_editingExpressionId == expression.ExpressionId)
                             {
                                 <td><input class="input" @bind="_editName" /></td>
-                                <td><input class="input" @bind="_editSelectorType" /></td>
-                                <td><input class="input" type="number" min="0" max="2" @bind="_editStatus" /></td>
+                                <td>
+                                    <select class="input" @bind="_editSelectorType">
+                                        <option value="xpath">XPath</option>
+                                        <option value="cssselector">CSS Selector</option>
+                                        <option value="regex">正则表达式</option>
+                                        <option value="jsonpath">JSON Path</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="input" @bind="_editStatus">
+                                        <option value="0">草稿/未启用</option>
+                                        <option value="1">启用</option>
+                                        <option value="2">失效</option>
+                                    </select>
+                                </td>
                                 <td>@expression.Fields.Count</td>
                                 <td>@expression.SuccessCount / @expression.FailureCount</td>
                                 <td>@expression.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>

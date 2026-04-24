@@ -39,7 +39,7 @@ else
                         </div>
                         <div class="agent-info-row">
                             <span class="agent-info-label">状态：</span>
-                            <span class="status-badge @GetAgentStatusBadgeClass(agent.Status)">@agent.Status</span>
+                            <span class="status-badge @GetAgentStatusBadgeClass(agent.Status)">@GetAgentStatusLabel(agent.Status)</span>
                         </div>
                         <div class="agent-info-row">
                             <span class="agent-info-label">任务数：</span>
@@ -76,10 +76,21 @@ else
     {
         return status switch
         {
-            1 or 2 => "running",
-            0 => "idle",
-            3 => "error",
-            _ => "pending"
+            1 => "running",
+            2 => "idle",
+            0 => "pending",
+            _ => "error"
+        };
+    }
+
+    private static string GetAgentStatusLabel(int status)
+    {
+        return status switch
+        {
+            0 => "离线",
+            1 => "在线",
+            2 => "空闲",
+            _ => $"未知({status})"
         };
     }
 }

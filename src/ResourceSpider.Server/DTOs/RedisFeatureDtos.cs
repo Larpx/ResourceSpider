@@ -5,10 +5,7 @@ public record RedisFeatureStatusDto(
     bool Configured,
     bool Connected,
     int TaskContentTtlSeconds,
-    string Status,
-    string? LastError = null,
-    string? LastConfigWriteError = null,
-    string? EffectiveConfigFile = null
+    string Status
 );
 
 public record UpdateRedisFeatureRequest(bool Enabled);

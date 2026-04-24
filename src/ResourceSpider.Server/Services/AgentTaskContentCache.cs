@@ -15,31 +15,30 @@ public sealed class RedisAgentTaskContentCache : IAgentTaskContentCache
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    private readonly IRuntimeRedisConnectionAccessor _redisAccessor;
+    private readonly IConnectionMultiplexer _redis;
     private readonly IRedisFeatureService _redisFeatureService;
     private readonly ILogger<RedisAgentTaskContentCache> _logger;
 
     public RedisAgentTaskContentCache(
-        IRuntimeRedisConnectionAccessor redisAccessor,
+        IConnectionMultiplexer redis,
         IRedisFeatureService redisFeatureService,
         ILogger<RedisAgentTaskContentCache> logger)
     {
-        _redisAccessor = redisAccessor;
+        _redis = redis;
         _redisFeatureService = redisFeatureService;
         _logger = logger;
     }
 
     public async Task<TaskDto?> GetAsync(string taskId, CancellationToken cancellationToken = default)
     {
-        var redis = _redisAccessor.Connection;
-        if (!_redisFeatureService.IsEnabled || !_redisFeatureService.IsConnected || redis == null)
+        if (!_redisFeatureService.IsEnabled || !_redisFeatureService.IsConnected)
         {
             return null;
         }
 
         try
         {
-            var value = await redis.GetDatabase().StringGetAsync(BuildKey(taskId));
+            var value = await _redis.GetDatabase().StringGetAsync(BuildKey(taskId));
             if (!value.HasValue)
             {
                 return null;
@@ -56,8 +55,7 @@ public sealed class RedisAgentTaskContentCache : IAgentTaskContentCache
 
     public async Task SetAsync(TaskDto task, CancellationToken cancellationToken = default)
     {
-        var redis = _redisAccessor.Connection;
-        if (!_redisFeatureService.IsEnabled || !_redisFeatureService.IsConnected || redis == null)
+        if (!_redisFeatureService.IsEnabled || !_redisFeatureService.IsConnected)
         {
             return;
         }
@@ -65,7 +63,7 @@ public sealed class RedisAgentTaskContentCache : IAgentTaskContentCache
         try
         {
             var payload = JsonSerializer.Serialize(task, JsonOptions);
-            await redis.GetDatabase().StringSetAsync(
+            await _redis.GetDatabase().StringSetAsync(
                 BuildKey(task.TaskId),
                 payload,
                 TimeSpan.FromSeconds(_redisFeatureService.TaskContentTtlSeconds));
@@ -78,15 +76,14 @@ public sealed class RedisAgentTaskContentCache : IAgentTaskContentCache
 
     public async Task RemoveAsync(string taskId, CancellationToken cancellationToken = default)
     {
-        var redis = _redisAccessor.Connection;
-        if (!_redisFeatureService.IsConnected || redis == null)
+        if (!_redisFeatureService.IsConnected)
         {
             return;
         }
 
         try
         {
-            await redis.GetDatabase().KeyDeleteAsync(BuildKey(taskId));
+            await _redis.GetDatabase().KeyDeleteAsync(BuildKey(taskId));
         }
         catch (Exception ex)
         {

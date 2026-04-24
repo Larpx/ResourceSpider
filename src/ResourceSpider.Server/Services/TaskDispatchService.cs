@@ -342,10 +342,7 @@ public class TaskDispatchService : ITaskDispatchService
             entity.EndTime,
             entity.CreatedBy,
             entity.CreatedAt,
-            entity.ExpressionId,
-            null,
-            null,
-            entity.ResultStorageEngine
+            entity.ExpressionId
         );
     }
 

@@ -67,14 +67,16 @@ public class RateLimitingMiddleware
     {
         var clientKey = GetClientKey(context);
         var limiter = GetLimiter(clientKey);
-        
-        using var lease = await limiter.AcquireAsync(1);
-        
+
+        // 这里改为“立即尝试获取许可”，避免进入排队等待。
+        // 之前使用 AcquireAsync 可能在高并发下等待较长时间，最终拖到客户端 HttpClient 100 秒超时。
+        using var lease = limiter.AttemptAcquire(1);
+
         if (!lease.IsAcquired)
         {
             context.Response.StatusCode = 429;
             context.Response.ContentType = "application/json";
-            
+
             var response = new
             {
                 code = 429,
@@ -82,7 +84,7 @@ public class RateLimitingMiddleware
                 data = (object?)null,
                 timestamp = DateTime.UtcNow
             };
-            
+
             var json = System.Text.Json.JsonSerializer.Serialize(response);
             await context.Response.WriteAsync(json);
             return;

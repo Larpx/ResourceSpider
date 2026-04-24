@@ -22,7 +22,10 @@ else
         <h2>新增代理</h2>
         <input class="input" placeholder="主机" @bind="_newHost" />
         <input class="input" type="number" min="1" max="65535" placeholder="端口" @bind="_newPort" />
-        <input class="input" placeholder="协议（HTTP/HTTPS）" @bind="_newProtocol" />
+        <select class="input" @bind="_newProtocol">
+            <option value="HTTP">HTTP</option>
+            <option value="HTTPS">HTTPS</option>
+        </select>
         <input class="input" placeholder="用户名（可选）" @bind="_newUsername" />
         <input class="input" placeholder="密码（可选）" @bind="_newPassword" />
         <div class="action-row">
@@ -80,8 +83,20 @@ else
                             {
                                 <td><input class="input" @bind="_editHost" /></td>
                                 <td><input class="input" type="number" min="1" max="65535" @bind="_editPort" /></td>
-                                <td><input class="input" @bind="_editProtocol" /></td>
-                                <td><input class="input" type="number" min="0" max="3" @bind="_editStatus" /></td>
+                                <td>
+                                    <select class="input" @bind="_editProtocol">
+                                        <option value="HTTP">HTTP</option>
+                                        <option value="HTTPS">HTTPS</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="input" @bind="_editStatus">
+                                        <option value="0">待检测</option>
+                                        <option value="1">可用</option>
+                                        <option value="2">不可用</option>
+                                        <option value="3">禁用</option>
+                                    </select>
+                                </td>
                                 <td><input class="input" @bind="_editUsername" /></td>
                                 <td>@proxy.SuccessCount / @proxy.FailureCount</td>
                                 <td>
