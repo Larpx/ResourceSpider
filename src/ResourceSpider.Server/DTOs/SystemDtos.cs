@@ -79,15 +79,19 @@ public record RuntimeAgentStatusDto(
 );
 
 /// <summary>
-/// 日志文件输出项
+/// 运行时输出日志项
 /// </summary>
-/// <param name="FileName">日志文件名</param>
-/// <param name="LastWriteTimeUtc">最后写入时间（UTC）</param>
-/// <param name="TailLines">尾部日志行</param>
-public record RuntimeLogFileDto(
-    string FileName,
-    DateTime LastWriteTimeUtc,
-    List<string> TailLines
+/// <param name="Sequence">日志序号（用于前端排序和去重）</param>
+/// <param name="TimestampUtc">时间戳（UTC）</param>
+/// <param name="Level">日志级别</param>
+/// <param name="Source">日志来源</param>
+/// <param name="Message">日志消息</param>
+public record RuntimeOutputLogDto(
+    long Sequence,
+    DateTime TimestampUtc,
+    string Level,
+    string Source,
+    string Message
 );
 
 /// <summary>
@@ -105,7 +109,7 @@ public record RuntimeLogFileDto(
 /// <param name="AgentLoad">Agent 负载聚合</param>
 /// <param name="Agents">Agent 详情列表</param>
 /// <param name="RecentLogs">最近系统日志</param>
-/// <param name="OutputLogs">输出日志尾部</param>
+/// <param name="RuntimeOutputLogs">程序运行时输出（内存缓冲）</param>
 /// <param name="TimestampUtc">响应时间戳（UTC）</param>
 public record SystemRuntimeStatusDto(
     string Status,
@@ -120,7 +124,7 @@ public record SystemRuntimeStatusDto(
     AgentLoadSnapshotDto AgentLoad,
     List<RuntimeAgentStatusDto> Agents,
     List<SystemLogDto> RecentLogs,
-    List<RuntimeLogFileDto> OutputLogs,
+    List<RuntimeOutputLogDto> RuntimeOutputLogs,
     DateTime TimestampUtc
 );
 

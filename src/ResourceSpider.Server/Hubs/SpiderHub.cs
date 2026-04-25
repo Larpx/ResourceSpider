@@ -1,4 +1,7 @@
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
+using ResourceSpider.Server.Observability;
 using ResourceSpider.Server.Services;
 
 namespace ResourceSpider.Server.Hubs;
@@ -20,13 +23,23 @@ public class SpiderHub : Hub
     private readonly ILogger<SpiderHub> _logger;
 
     /// <summary>
+    /// 运行时监控相关配置
+    /// </summary>
+    private readonly RuntimeMonitoringOptions _runtimeOptions;
+
+    /// <summary>
     /// 初始化 SpiderHub
     /// </summary>
     /// <param name="agentRegisterService">代理注册服务</param>
+    /// <param name="runtimeOptions">运行时监控配置</param>
     /// <param name="logger">日志记录器</param>
-    public SpiderHub(IAgentRegisterService agentRegisterService, ILogger<SpiderHub> logger)
+    public SpiderHub(
+        IAgentRegisterService agentRegisterService,
+        IOptions<RuntimeMonitoringOptions> runtimeOptions,
+        ILogger<SpiderHub> logger)
     {
         _agentRegisterService = agentRegisterService;
+        _runtimeOptions = runtimeOptions.Value;
         _logger = logger;
     }
 
@@ -50,6 +63,9 @@ public class SpiderHub : Hub
     {
         var agentId = Context.UserIdentifier ?? Context.ConnectionId;
         _logger.LogInformation("Agent {AgentId} 断开 SignalR 连接", agentId);
+
+        SpiderHubMethods.AdminRuntimeSnapshotIntervals.TryRemove(Context.ConnectionId, out _);
+
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -83,6 +99,53 @@ public class SpiderHub : Hub
     {
         _logger.LogDebug("收到消息确认：{MessageId}", messageId);
     }
+
+    /// <summary>
+    /// 管理端加入运行监控日志分组。
+    /// </summary>
+    public async Task JoinAdminRuntimeGroup()
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, SpiderHubMethods.AdminRuntimeGroup);
+
+        var defaultInterval = NormalizeSnapshotInterval(_runtimeOptions.DefaultSnapshotPushIntervalSeconds);
+        SpiderHubMethods.AdminRuntimeSnapshotIntervals[Context.ConnectionId] = defaultInterval;
+
+        _logger.LogDebug("连接 {ConnectionId} 加入管理运行监控分组，默认推送策略 {Interval}s", Context.ConnectionId, defaultInterval);
+    }
+
+    /// <summary>
+    /// 管理端离开运行监控日志分组。
+    /// </summary>
+    public async Task LeaveAdminRuntimeGroup()
+    {
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, SpiderHubMethods.AdminRuntimeGroup);
+        SpiderHubMethods.AdminRuntimeSnapshotIntervals.TryRemove(Context.ConnectionId, out _);
+    }
+
+    /// <summary>
+    /// 设置当前连接的快照推送策略。
+    /// </summary>
+    /// <param name="intervalSeconds">推送间隔（秒）</param>
+    /// <returns>最终生效的推送间隔（秒）</returns>
+    public Task<int> SetAdminRuntimeSnapshotInterval(int intervalSeconds)
+    {
+        var normalized = NormalizeSnapshotInterval(intervalSeconds);
+        SpiderHubMethods.AdminRuntimeSnapshotIntervals[Context.ConnectionId] = normalized;
+        return Task.FromResult(normalized);
+    }
+
+    private int NormalizeSnapshotInterval(int intervalSeconds)
+    {
+        var allowed = _runtimeOptions.SnapshotPushIntervalsSeconds;
+        if (allowed.Count == 0)
+        {
+            return 1;
+        }
+
+        return allowed.Contains(intervalSeconds)
+            ? intervalSeconds
+            : _runtimeOptions.DefaultSnapshotPushIntervalSeconds;
+    }
 }
 
 /// <summary>
@@ -91,6 +154,16 @@ public class SpiderHub : Hub
 /// </summary>
 public static class SpiderHubMethods
 {
+    /// <summary>
+    /// 管理端运行时日志分组名。
+    /// </summary>
+    public const string AdminRuntimeGroup = "admin-runtime";
+
+    /// <summary>
+    /// 管理端连接的快照推送策略（按连接保存，单位秒）。
+    /// </summary>
+    public static ConcurrentDictionary<string, int> AdminRuntimeSnapshotIntervals { get; } = new();
+
     /// <summary>
     /// 向指定代理推送任务分配消息
     /// </summary>

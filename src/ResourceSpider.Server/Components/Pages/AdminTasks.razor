@@ -1,8 +1,11 @@
 @page "/admin/tasks"
+@using Microsoft.JSInterop
 @layout AdminLayout
+@implements IAsyncDisposable
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
 
 <PageTitle>任务配置</PageTitle>
 
@@ -19,16 +22,10 @@ else
         <p>@_message</p>
     }
 
-    <section class="form-card">
-        <h2>新增任务</h2>
-        <input class="input" placeholder="任务名称" @bind="_newTaskName" />
-        <input class="input" placeholder="任务类型" @bind="_newTaskType" />
-        <input class="input" type="number" min="1" max="10" @bind="_newTaskPriority" />
-        <div class="action-row">
-            <button class="btn" type="button" @onclick="CreateTaskAsync">新增</button>
-            <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
-        </div>
-    </section>
+    <div class="action-row">
+        <button class="btn" type="button" @onclick="OpenCreateDrawer">新增任务</button>
+        <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
+    </div>
 
     <section class="card runtime-section">
         <h2>查询过滤</h2>
@@ -134,10 +131,32 @@ else
             </div>
         </div>
     </section>
+
+    @if (_showCreateDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseCreateDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>新增任务</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <input class="input" placeholder="任务名称" @bind="_newTaskName" />
+                    <input class="input" placeholder="任务类型" @bind="_newTaskType" />
+                    <input class="input" type="number" min="1" max="10" @bind="_newTaskPriority" />
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="CreateTaskAsync">确认新增</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    }
 }
 
 @code {
     private bool _ready;
+    private bool _showCreateDrawer;
     private string _newTaskName = string.Empty;
     private string _newTaskType = "Generic";
     private int _newTaskPriority = 5;
@@ -282,6 +301,16 @@ else
         await LoadPageAsync();
     }
 
+    private void OpenCreateDrawer()
+    {
+        _showCreateDrawer = true;
+    }
+
+    private void CloseCreateDrawer()
+    {
+        _showCreateDrawer = false;
+    }
+
     private async Task CreateTaskAsync()
     {
         if (string.IsNullOrWhiteSpace(_newTaskName) || string.IsNullOrWhiteSpace(_newTaskType))
@@ -304,6 +333,7 @@ else
         _newTaskName = string.Empty;
         _newTaskType = "Generic";
         _newTaskPriority = 5;
+        _showCreateDrawer = false;
         await SearchAsync();
     }
 
@@ -387,5 +417,21 @@ else
             6 => "已终止",
             _ => $"未知({status})"
         };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("drawerUx.forceClose");
+        }
+        catch
+        {
+        }
     }
 }

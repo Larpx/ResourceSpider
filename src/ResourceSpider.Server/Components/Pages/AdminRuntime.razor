@@ -1,9 +1,12 @@
 @page "/admin/runtime"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.JSInterop
 @layout AdminLayout
 @implements IAsyncDisposable
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
 
 <PageTitle>运行监控</PageTitle>
 
@@ -21,17 +24,15 @@ else
 {
     <div class="action-row">
         <button class="btn" type="button" @onclick="LoadAsync">立即刷新</button>
-        <button class="btn btn-secondary" type="button" @onclick="ToggleAutoRefresh">@(_autoRefreshEnabled ? "暂停自动刷新" : "开启自动刷新")</button>
         <label class="inline-setting">
-            刷新间隔
-            <select class="input interval-select" @bind="_refreshIntervalSeconds">
+            推送策略
+            <select class="input interval-select" @bind="_selectedPushIntervalSeconds" @bind:after="OnPushIntervalChangedAsync">
                 <option value="1">1 秒</option>
                 <option value="2">2 秒</option>
                 <option value="5">5 秒</option>
-                <option value="10">10 秒</option>
             </select>
         </label>
-        <span class="refresh-badge">自动刷新：@(_autoRefreshEnabled ? "开启" : "暂停")，最近刷新：@_lastRefreshedAtText</span>
+        <span class="refresh-badge">实时推送：@(_runtimeConnection?.State == HubConnectionState.Connected ? "已连接" : "未连接")，最近更新：@_lastRefreshedAtText</span>
         <a class="btn btn-secondary" href="/admin/system">返回系统配置</a>
     </div>
 
@@ -129,18 +130,19 @@ else
     </section>
 
     <section class="card runtime-section">
-        <h2>输出日志（文件尾部，实时）</h2>
-        @if (_runtime.OutputLogs.Count == 0)
+        <h2>程序输出（SignalR 推送，最多 1000 条滚动）</h2>
+        @if (_runtime.RuntimeOutputLogs.Count == 0)
         {
-            <p>未检测到输出日志文件。</p>
+            <p>暂无程序输出。</p>
         }
         else
         {
-            @foreach (var output in _runtime.OutputLogs)
-            {
-                <h3>@output.FileName (@output.LastWriteTimeUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss"))</h3>
-                <pre class="log-box">@string.Join(Environment.NewLine, output.TailLines)</pre>
-            }
+            <div id="runtime-output-box" class="log-box runtime-output-box">
+                @foreach (var output in _runtime.RuntimeOutputLogs)
+                {
+                    <div class="runtime-output-line">[@output.TimestampUtc.ToLocalTime().ToString("HH:mm:ss")] [@output.Level] (@output.Source) @output.Message</div>
+                }
+            </div>
         }
     </section>
 }
@@ -148,12 +150,10 @@ else
 @code {
     private bool _ready;
     private bool _loading;
-    private bool _autoRefreshEnabled = true;
-    private int _refreshIntervalSeconds = 2;
     private string _lastRefreshedAtText = "-";
     private SystemRuntimeStatusDto? _runtime;
-    private CancellationTokenSource? _refreshCts;
-    private Task? _refreshTask;
+    private HubConnection? _runtimeConnection;
+    private int _selectedPushIntervalSeconds = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,8 +164,72 @@ else
         }
 
         await LoadAsync();
+        await ConnectRuntimeStreamAsync();
         _ready = true;
-        StartRefreshLoop();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_runtime?.RuntimeOutputLogs.Count > 0)
+        {
+            await JsRuntime.InvokeVoidAsync("runtimeLogScroller.scrollToBottom", "runtime-output-box");
+        }
+    }
+
+    private async Task ConnectRuntimeStreamAsync()
+    {
+        _runtimeConnection = await ApiClient.ConnectRuntimeStreamAsync(
+            async snapshot =>
+            {
+                await InvokeAsync(() =>
+                {
+                    _runtime = snapshot;
+                    _lastRefreshedAtText = DateTime.Now.ToString("HH:mm:ss");
+                    StateHasChanged();
+                    return Task.CompletedTask;
+                });
+            },
+            async log =>
+            {
+                await InvokeAsync(() =>
+                {
+                    if (_runtime == null)
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    var logs = _runtime.RuntimeOutputLogs;
+                    if (logs.Count > 0 && logs[^1].Sequence >= log.Sequence)
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    logs.Add(log);
+                    if (logs.Count > 1000)
+                    {
+                        logs.RemoveRange(0, logs.Count - 1000);
+                    }
+
+                    _lastRefreshedAtText = DateTime.Now.ToString("HH:mm:ss");
+                    StateHasChanged();
+                    return Task.CompletedTask;
+                });
+            });
+
+        if (_runtimeConnection != null)
+        {
+            _selectedPushIntervalSeconds = await ApiClient.SetRuntimeSnapshotIntervalAsync(_runtimeConnection, _selectedPushIntervalSeconds);
+        }
+    }
+
+    private async Task OnPushIntervalChangedAsync()
+    {
+        if (_runtimeConnection == null || _runtimeConnection.State != HubConnectionState.Connected)
+        {
+            return;
+        }
+
+        _selectedPushIntervalSeconds = await ApiClient.SetRuntimeSnapshotIntervalAsync(_runtimeConnection, _selectedPushIntervalSeconds);
     }
 
     private async Task LoadAsync()
@@ -187,65 +251,16 @@ else
         }
     }
 
-    private void ToggleAutoRefresh()
-    {
-        _autoRefreshEnabled = !_autoRefreshEnabled;
-    }
-
-    private void StartRefreshLoop()
-    {
-        if (_refreshTask is { IsCompleted: false })
-        {
-            return;
-        }
-
-        _refreshCts = new CancellationTokenSource();
-        _refreshTask = RefreshLoopAsync(_refreshCts.Token);
-    }
-
-    private async Task RefreshLoopAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(_refreshIntervalSeconds), cancellationToken);
-
-                if (!_autoRefreshEnabled)
-                {
-                    continue;
-                }
-
-                await InvokeAsync(async () =>
-                {
-                    await LoadAsync();
-                    StateHasChanged();
-                });
-            }
-        }
-        catch (OperationCanceledException)
-        {
-        }
-        catch (ObjectDisposedException)
-        {
-        }
-    }
-
     public async ValueTask DisposeAsync()
     {
-        if (_refreshCts != null)
-        {
-            await _refreshCts.CancelAsync();
-            _refreshCts.Dispose();
-        }
-
-        if (_refreshTask != null)
+        if (_runtimeConnection != null)
         {
             try
             {
-                await _refreshTask;
+                await _runtimeConnection.InvokeAsync("LeaveAdminRuntimeGroup");
+                await _runtimeConnection.DisposeAsync();
             }
-            catch (OperationCanceledException)
+            catch
             {
             }
         }

@@ -300,6 +300,10 @@ public class Startup
         services.AddScoped<IStepResourcePoolService, StepResourcePoolService>();
         services.AddScoped<IDataEncryptionService, DataEncryptionService>();
         services.AddScoped<IStorageStrategyService, StorageStrategyService>();
+        services.AddScoped<IRuntimeSnapshotService, RuntimeSnapshotService>();
+
+        services.AddHostedService<RuntimeOutputBroadcastService>();
+        services.AddHostedService<RuntimeSnapshotBroadcastService>();
     }
 
     /// <summary>
@@ -324,6 +328,7 @@ public class Startup
     {
         services.Configure<DownloaderOptions>(Configuration.GetSection("Downloader"));
         services.Configure<PlaywrightOptions>(Configuration.GetSection("Playwright"));
+        services.Configure<RuntimeMonitoringOptions>(Configuration.GetSection("RuntimeMonitoring"));
     }
 
     /// <summary>

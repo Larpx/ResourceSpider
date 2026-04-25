@@ -1,8 +1,11 @@
 @page "/admin/proxies"
+@using Microsoft.JSInterop
 @layout AdminLayout
+@implements IAsyncDisposable
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
 
 <PageTitle>代理池配置</PageTitle>
 
@@ -19,21 +22,10 @@ else
         <p>@_message</p>
     }
 
-    <section class="form-card">
-        <h2>新增代理</h2>
-        <input class="input" placeholder="主机" @bind="_newHost" />
-        <input class="input" type="number" min="1" max="65535" placeholder="端口" @bind="_newPort" />
-        <select class="input" @bind="_newProtocol">
-            <option value="HTTP">HTTP</option>
-            <option value="HTTPS">HTTPS</option>
-        </select>
-        <input class="input" placeholder="用户名（可选）" @bind="_newUsername" />
-        <input class="input" placeholder="密码（可选）" @bind="_newPassword" />
-        <div class="action-row">
-            <button class="btn" type="button" @onclick="CreateProxyAsync">新增</button>
-            <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
-        </div>
-    </section>
+    <div class="action-row">
+        <button class="btn" type="button" @onclick="OpenCreateDrawer">新增代理</button>
+        <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
+    </div>
 
     <section class="card runtime-section">
         <h2>查询过滤</h2>
@@ -149,10 +141,37 @@ else
             </div>
         </div>
     </section>
+
+    @if (_showCreateDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseCreateDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>新增代理</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <input class="input" placeholder="主机" @bind="_newHost" />
+                    <input class="input" type="number" min="1" max="65535" placeholder="端口" @bind="_newPort" />
+                    <select class="input" @bind="_newProtocol">
+                        <option value="HTTP">HTTP</option>
+                        <option value="HTTPS">HTTPS</option>
+                    </select>
+                    <input class="input" placeholder="用户名（可选）" @bind="_newUsername" />
+                    <input class="input" placeholder="密码（可选）" @bind="_newPassword" />
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="CreateProxyAsync">确认新增</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    }
 }
 
 @code {
     private bool _ready;
+    private bool _showCreateDrawer;
     private List<ProxyDto> _proxies = new();
     private string _message = string.Empty;
 
@@ -302,6 +321,16 @@ else
         await LoadPageAsync();
     }
 
+    private void OpenCreateDrawer()
+    {
+        _showCreateDrawer = true;
+    }
+
+    private void CloseCreateDrawer()
+    {
+        _showCreateDrawer = false;
+    }
+
     private async Task CreateProxyAsync()
     {
         if (string.IsNullOrWhiteSpace(_newHost))
@@ -328,6 +357,7 @@ else
         _newProtocol = "HTTP";
         _newUsername = string.Empty;
         _newPassword = string.Empty;
+        _showCreateDrawer = false;
         await SearchAsync();
     }
 
@@ -406,5 +436,21 @@ else
             3 => "禁用",
             _ => $"未知({status})"
         };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("drawerUx.forceClose");
+        }
+        catch
+        {
+        }
     }
 }

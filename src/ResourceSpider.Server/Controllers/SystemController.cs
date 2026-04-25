@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Observability;
-using ResourceSpider.Server.Repositories;
 using ResourceSpider.Server.Services;
 using StackExchange.Redis;
 
@@ -24,11 +23,6 @@ public class SystemController : ControllerBase
     /// 系统日志服务实例，处理日志的查询逻辑
     /// </summary>
     private readonly ISystemLogService _systemLogService;
-
-    /// <summary>
-    /// Agent 仓储实例
-    /// </summary>
-    private readonly IAgentRepository _agentRepository;
 
     /// <summary>
     /// 日志记录器实例
@@ -56,27 +50,32 @@ public class SystemController : ControllerBase
     private readonly IRedisFeatureService _redisFeatureService;
 
     /// <summary>
+    /// 运行快照服务
+    /// </summary>
+    private readonly IRuntimeSnapshotService _runtimeSnapshotService;
+
+    /// <summary>
     /// 初始化系统控制器
     /// </summary>
     /// <param name="systemLogService">系统日志服务</param>
-    /// <param name="agentRepository">Agent 仓储</param>
     /// <param name="startupState">启动状态</param>
     /// <param name="hostEnvironment">主机环境</param>
     /// <param name="redisFeatureService">Redis 功能开关服务</param>
+    /// <param name="runtimeSnapshotService">运行快照服务</param>
     /// <param name="logger">日志记录器</param>
     public SystemController(
         ISystemLogService systemLogService,
-        IAgentRepository agentRepository,
         StartupState startupState,
         IHostEnvironment hostEnvironment,
         IRedisFeatureService redisFeatureService,
+        IRuntimeSnapshotService runtimeSnapshotService,
         ILogger<SystemController> logger)
     {
         _systemLogService = systemLogService;
-        _agentRepository = agentRepository;
         _startupState = startupState;
         _hostEnvironment = hostEnvironment;
         _redisFeatureService = redisFeatureService;
+        _runtimeSnapshotService = runtimeSnapshotService;
         _logger = logger;
     }
 
@@ -152,51 +151,7 @@ public class SystemController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<SystemRuntimeStatusDto>), 200)]
     public async Task<IActionResult> RuntimeStatus()
     {
-        var agents = await _agentRepository.GetAllAsync();
-        var onlineAgents = agents.Where(a => a.Status is 1 or 2).ToList();
-
-        var agentLoad = new AgentLoadSnapshotDto(
-            TotalAgents: agents.Count,
-            OnlineAgents: onlineAgents.Count,
-            BusyAgents: agents.Count(a => a.Status == 2),
-            TotalRunningTasks: agents.Sum(a => a.TaskCount),
-            AverageCpuUsage: onlineAgents.Count == 0 ? 0 : decimal.Round(onlineAgents.Average(a => a.CpuUsage ?? 0), 2),
-            AverageMemoryUsage: onlineAgents.Count == 0 ? 0 : decimal.Round(onlineAgents.Average(a => a.MemoryUsage ?? 0), 2));
-
-        var runtimeAgents = agents
-            .OrderByDescending(a => a.LastHeartbeat)
-            .Take(20)
-            .Select(a => new RuntimeAgentStatusDto(
-                a.AgentId,
-                a.AgentName,
-                MapAgentStatus(a.Status),
-                a.CpuUsage,
-                a.MemoryUsage,
-                a.TaskCount,
-                a.LastHeartbeat))
-            .ToList();
-
-        var recentLogs = await _systemLogService.GetListAsync(pageIndex: 1, pageSize: 20);
-        var outputLogs = await ReadOutputLogsAsync();
-
-        var overall = _startupState.DatabaseInitializationSucceeded ? "Healthy" : "Degraded";
-
-        var payload = new SystemRuntimeStatusDto(
-            Status: overall,
-            Version: GetAppVersion(),
-            Environment: _hostEnvironment.EnvironmentName,
-            MachineName: Environment.MachineName,
-            Framework: RuntimeInformation.FrameworkDescription,
-            OsDescription: RuntimeInformation.OSDescription,
-            ProcessId: Environment.ProcessId,
-            Uptime: DateTime.UtcNow - _startedAt,
-            CurrentLoad: BuildLoadSnapshot(),
-            AgentLoad: agentLoad,
-            Agents: runtimeAgents,
-            RecentLogs: recentLogs.Logs,
-            OutputLogs: outputLogs,
-            TimestampUtc: DateTime.UtcNow);
-
+        var payload = await _runtimeSnapshotService.GetSnapshotAsync();
         return Ok(ApiResponse<SystemRuntimeStatusDto>.Success(payload));
     }
 
@@ -245,57 +200,6 @@ public class SystemController : ControllerBase
             ThreadPoolAvailableWorkers: availableWorkers,
             ThreadPoolMaxWorkers: maxWorkers,
             PendingWorkItems: ThreadPool.PendingWorkItemCount);
-    }
-
-    private static string MapAgentStatus(int status)
-    {
-        return status switch
-        {
-            1 => "Online",
-            2 => "Busy",
-            3 => "Error",
-            _ => "Offline"
-        };
-    }
-
-    private async Task<List<RuntimeLogFileDto>> ReadOutputLogsAsync()
-    {
-        var logsPath = Path.Combine(_hostEnvironment.ContentRootPath, "logs");
-        if (!Directory.Exists(logsPath))
-        {
-            return [];
-        }
-
-        var files = new DirectoryInfo(logsPath)
-            .GetFiles("server-*.txt", SearchOption.TopDirectoryOnly)
-            .OrderByDescending(f => f.LastWriteTimeUtc)
-            .Take(2)
-            .ToList();
-
-        var result = new List<RuntimeLogFileDto>(files.Count);
-        foreach (var file in files)
-        {
-            var lines = await ReadTailLinesAsync(file.FullName, 80);
-            result.Add(new RuntimeLogFileDto(file.Name, file.LastWriteTimeUtc, lines));
-        }
-
-        return result;
-    }
-
-    private static async Task<List<string>> ReadTailLinesAsync(string path, int take)
-    {
-        try
-        {
-            var lines = await System.IO.File.ReadAllLinesAsync(path);
-            return lines
-                .TakeLast(take)
-                .Where(line => !string.IsNullOrWhiteSpace(line))
-                .ToList();
-        }
-        catch
-        {
-            return [];
-        }
     }
 
     private RedisFeatureStatusDto BuildRedisFeatureStatus()

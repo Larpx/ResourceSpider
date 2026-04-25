@@ -1,8 +1,11 @@
 @page "/admin/expressions"
+@using Microsoft.JSInterop
 @layout AdminLayout
+@implements IAsyncDisposable
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
 
 <PageTitle>表达式配置</PageTitle>
 
@@ -19,22 +22,10 @@ else
         <p>@_message</p>
     }
 
-    <section class="form-card">
-        <h2>新增表达式</h2>
-        <input class="input" placeholder="表达式名称" @bind="_newName" />
-        <select class="input" @bind="_newSelectorType">
-            <option value="xpath">XPath</option>
-            <option value="cssselector">CSS Selector</option>
-            <option value="regex">正则表达式</option>
-            <option value="jsonpath">JSON Path</option>
-        </select>
-        <input class="input" placeholder="描述（可选）" @bind="_newDescription" />
-        <input class="input" placeholder="容器表达式（可选）" @bind="_newContainerExpression" />
-        <div class="action-row">
-            <button class="btn" type="button" @onclick="CreateExpressionAsync">新增</button>
-            <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
-        </div>
-    </section>
+    <div class="action-row">
+        <button class="btn" type="button" @onclick="OpenCreateDrawer">新增表达式</button>
+        <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
+    </div>
 
     <section class="card runtime-section">
         <h2>查询过滤</h2>
@@ -150,10 +141,38 @@ else
             </div>
         </div>
     </section>
+
+    @if (_showCreateDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseCreateDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>新增表达式</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <input class="input" placeholder="表达式名称" @bind="_newName" />
+                    <select class="input" @bind="_newSelectorType">
+                        <option value="xpath">XPath</option>
+                        <option value="cssselector">CSS Selector</option>
+                        <option value="regex">正则表达式</option>
+                        <option value="jsonpath">JSON Path</option>
+                    </select>
+                    <input class="input" placeholder="描述（可选）" @bind="_newDescription" />
+                    <input class="input" placeholder="容器表达式（可选）" @bind="_newContainerExpression" />
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="CreateExpressionAsync">确认新增</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    }
 }
 
 @code {
     private bool _ready;
+    private bool _showCreateDrawer;
     private List<ExpressionDto> _expressions = new();
     private string _message = string.Empty;
 
@@ -302,6 +321,16 @@ else
         await LoadPageAsync();
     }
 
+    private void OpenCreateDrawer()
+    {
+        _showCreateDrawer = true;
+    }
+
+    private void CloseCreateDrawer()
+    {
+        _showCreateDrawer = false;
+    }
+
     private async Task CreateExpressionAsync()
     {
         if (string.IsNullOrWhiteSpace(_newName) || string.IsNullOrWhiteSpace(_newSelectorType))
@@ -327,6 +356,7 @@ else
         _newSelectorType = "xpath";
         _newDescription = string.Empty;
         _newContainerExpression = string.Empty;
+        _showCreateDrawer = false;
         await SearchAsync();
     }
 
@@ -404,5 +434,21 @@ else
             2 => "失效",
             _ => $"未知({status})"
         };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("drawerUx.forceClose");
+        }
+        catch
+        {
+        }
     }
 }

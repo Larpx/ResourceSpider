@@ -12,6 +12,10 @@ body {
     line-height: 1.5;
 }
 
+body.no-scroll {
+    overflow: hidden;
+}
+
 /* ===== 页面布局 ===== */
 .page {
     min-height: 100vh;
@@ -415,6 +419,32 @@ body {
     margin-top: 20px;
 }
 
+.log-box {
+    margin: 8px 0 16px;
+    padding: 10px;
+    border-radius: 6px;
+    background: #111827;
+    color: #e5e7eb;
+    max-height: 260px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.runtime-output-box {
+    max-height: 420px;
+    overflow-y: auto;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.runtime-output-line {
+    margin-bottom: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
 /* ===== 数据表格 ===== */
 .data-table {
     width: 100%;
@@ -487,8 +517,6 @@ body {
     overflow: auto;
     white-space: pre-wrap;
     word-break: break-word;
-    font-family: "Fira Code", "Consolas", monospace;
-    font-size: 13px;
 }
 
 .inline-setting {
@@ -1581,4 +1609,58 @@ body {
 .admin-link-text {
     font-size: 14px;
     font-weight: 500;
+}
+
+/* ===== 侧边抽屉 ===== */
+.drawer-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 1200;
+}
+
+.drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(460px, 90vw);
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    animation: drawerSlideIn 0.2s ease-out;
+}
+
+.drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.drawer-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.drawer-body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: auto;
+}
+
+@keyframes drawerSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0.8;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }

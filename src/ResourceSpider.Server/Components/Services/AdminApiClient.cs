@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using ResourceSpider.Server.DTOs;
 
 namespace ResourceSpider.Server.Components.Services;
@@ -213,6 +214,58 @@ public class AdminApiClient
     {
         var result = await SendAuthorizedAsync<RedisFeatureStatusDto>(HttpMethod.Put, "api/admin/system/redis", new UpdateRedisFeatureRequest(enabled));
         return result.Payload?.Data;
+    }
+
+    /// <summary>
+    /// 创建并启动运行监控 SignalR 连接，同时接收系统快照与日志推送。
+    /// </summary>
+    /// <param name="onRuntimeSnapshot">收到系统快照时的回调</param>
+    /// <param name="onRuntimeOutputLog">收到日志时的回调</param>
+    /// <returns>已启动的 Hub 连接，调用方负责释放</returns>
+    public async Task<HubConnection?> ConnectRuntimeStreamAsync(
+        Func<SystemRuntimeStatusDto, Task> onRuntimeSnapshot,
+        Func<RuntimeOutputLogDto, Task> onRuntimeOutputLog)
+    {
+        if (!_session.IsAuthenticated || string.IsNullOrWhiteSpace(_session.Token))
+        {
+            return null;
+        }
+
+        var hubUrl = new Uri(_httpClient.BaseAddress!, "hubs/spider").ToString();
+
+        var connection = new HubConnectionBuilder()
+            .WithUrl(hubUrl, options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(_session.Token)!;
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+        connection.On<SystemRuntimeStatusDto>("RuntimeSnapshot", async snapshot =>
+        {
+            await onRuntimeSnapshot(snapshot);
+        });
+
+        connection.On<RuntimeOutputLogDto>("RuntimeOutputLog", async log =>
+        {
+            await onRuntimeOutputLog(log);
+        });
+
+        await connection.StartAsync();
+        await connection.InvokeAsync("JoinAdminRuntimeGroup");
+
+        return connection;
+    }
+
+    /// <summary>
+    /// 设置当前 SignalR 连接的快照推送策略（秒）。
+    /// </summary>
+    /// <param name="connection">Hub 连接</param>
+    /// <param name="intervalSeconds">目标间隔秒数</param>
+    /// <returns>服务端最终生效间隔</returns>
+    public async Task<int> SetRuntimeSnapshotIntervalAsync(HubConnection connection, int intervalSeconds)
+    {
+        return await connection.InvokeAsync<int>("SetAdminRuntimeSnapshotInterval", intervalSeconds);
     }
 
     private async Task<ApiResponse<T>?> GetAuthorizedAsync<T>(string url)

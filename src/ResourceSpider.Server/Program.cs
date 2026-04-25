@@ -1,3 +1,4 @@
+using ResourceSpider.Server.Observability;
 using Serilog;
 
 namespace ResourceSpider.Server;
@@ -15,6 +16,7 @@ public class Program
     {
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
+            .WriteTo.Sink(new RuntimeOutputSink())
             .WriteTo.File("logs/server-.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 30)
             .MinimumLevel.Information()
             .Enrich.FromLogContext()
