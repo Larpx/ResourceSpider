@@ -358,7 +358,11 @@ else
 
         var (success, message) = await ApiClient.UpdateTaskAsync(_editingTaskId, new UpdateTaskRequest(
             _editTaskName,
+            null,
             _editTaskPriority,
+            null,
+            null,
+            null,
             null,
             null,
             null,

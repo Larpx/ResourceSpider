@@ -52,6 +52,16 @@ public interface ICollectionResultService
     /// <param name="taskId">任务唯一标识</param>
     /// <returns>结果总数</returns>
     Task<int> GetResultCountByTaskIdAsync(string taskId);
+
+    /// <summary>
+    /// 按综合条件分页查询结果。
+    /// </summary>
+    Task<CollectionResultListResponse> QueryAsync(CollectionResultQuery query);
+
+    /// <summary>
+    /// 导入本地结果文件内容。
+    /// </summary>
+    Task<ImportCollectionResultsResponse> ImportAsync(ImportCollectionResultsRequest request);
 }
 
 /// <summary>
@@ -63,6 +73,8 @@ public class CollectionResultService : ICollectionResultService
     private readonly IExpressionRepository _expressionRepository;
     private readonly IStepResourceRepository _stepResourceRepository;
     private readonly IStorageStrategyService _storageStrategyService;
+    private readonly ITaskRepository _taskRepository;
+    private readonly IAgentRepository _agentRepository;
     private readonly ILogger<CollectionResultService> _logger;
 
     public CollectionResultService(
@@ -70,12 +82,16 @@ public class CollectionResultService : ICollectionResultService
         IExpressionRepository expressionRepository,
         IStepResourceRepository stepResourceRepository,
         IStorageStrategyService storageStrategyService,
+        ITaskRepository taskRepository,
+        IAgentRepository agentRepository,
         ILogger<CollectionResultService> logger)
     {
         _resultRepository = resultRepository;
         _expressionRepository = expressionRepository;
         _stepResourceRepository = stepResourceRepository;
         _storageStrategyService = storageStrategyService;
+        _taskRepository = taskRepository;
+        _agentRepository = agentRepository;
         _logger = logger;
     }
 
@@ -110,22 +126,37 @@ public class CollectionResultService : ICollectionResultService
     public async Task StoreResultsAsync(string taskId, string? expressionId, string agentId, List<CollectionResultItemDto> results)
     {
         var storageEngine = _storageStrategyService.GetCurrentEngine().ToString();
+        var task = await _taskRepository.GetByIdAsync(taskId);
+        var taskName = task?.TaskName;
+        var taskStatus = task == null ? null : task.Status.ToString();
 
-        var entities = results.Select(r => new CollectionResultEntity
+        var entities = new List<CollectionResultEntity>(results.Count);
+        foreach (var result in results)
         {
-            ResultId = r.ResultId ?? Guid.NewGuid().ToString("N"),
-            TaskId = taskId,
-            StepId = r.StepId,
-            ExpressionId = expressionId,
-            AgentId = agentId,
-            SourceUrl = r.SourceUrl,
-            Fields = JsonSerializer.Serialize(NormalizeFields(r.Fields)),
-            FieldExpressionMap = r.FieldExpressionMap != null
-                ? JsonSerializer.Serialize(r.FieldExpressionMap)
-                : null,
-            StorageEngine = storageEngine,
-            CollectedAt = r.CollectedAt ?? DateTime.UtcNow
-        }).ToList();
+            var normalizedFields = NormalizeFields(result.Fields);
+            var fingerprint = ComputeFingerprint(taskId, agentId, normalizedFields);
+            var isDuplicate = await _resultRepository.ExistsByFingerprintAsync(taskId, agentId, fingerprint);
+
+            entities.Add(new CollectionResultEntity
+            {
+                ResultId = result.ResultId ?? Guid.NewGuid().ToString("N"),
+                TaskId = taskId,
+                TaskName = taskName,
+                TaskStatus = taskStatus,
+                StepId = result.StepId,
+                ExpressionId = expressionId,
+                AgentId = agentId,
+                SourceUrl = result.SourceUrl,
+                Fields = JsonSerializer.Serialize(normalizedFields),
+                FieldExpressionMap = result.FieldExpressionMap != null
+                    ? JsonSerializer.Serialize(result.FieldExpressionMap)
+                    : null,
+                DataFingerprint = fingerprint,
+                IsDuplicate = isDuplicate,
+                StorageEngine = storageEngine,
+                CollectedAt = result.CollectedAt ?? DateTime.UtcNow
+            });
+        }
 
         await _storageStrategyService.StoreResultsAsync(entities);
 
@@ -158,6 +189,91 @@ public class CollectionResultService : ICollectionResultService
         return (int)await _resultRepository.CountByTaskIdAsync(taskId);
     }
 
+    /// <inheritdoc />
+    public async Task<CollectionResultListResponse> QueryAsync(CollectionResultQuery query)
+    {
+        var results = await _resultRepository.QueryAsync(
+            query.TaskId,
+            query.StepId,
+            query.AgentId,
+            query.Keyword,
+            query.StartTime,
+            query.EndTime,
+            query.IsDuplicate,
+            query.PageIndex,
+            query.PageSize);
+
+        var total = await _resultRepository.CountAsync(
+            query.TaskId,
+            query.StepId,
+            query.AgentId,
+            query.Keyword,
+            query.StartTime,
+            query.EndTime,
+            query.IsDuplicate);
+
+        return new CollectionResultListResponse(results.Select(MapToDto).ToList(), (int)total, query.PageIndex, query.PageSize);
+    }
+
+    /// <inheritdoc />
+    public async Task<ImportCollectionResultsResponse> ImportAsync(ImportCollectionResultsRequest request)
+    {
+        var errors = new List<string>();
+        var items = new List<CollectionResultItemDto>();
+        string taskId = "local-import";
+        string agentId = "local-import";
+        string? expressionId = null;
+
+        try
+        {
+            var normalizedContent = request.Content?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(normalizedContent))
+            {
+                return new ImportCollectionResultsResponse(0, 0, 0, 1, ["导入内容为空。"]);
+            }
+
+            if (request.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                ParseJsonImport(normalizedContent, items, ref taskId, ref agentId, ref expressionId);
+            }
+            else if (request.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+            {
+                ParseCsvImport(normalizedContent, items, ref taskId, ref agentId);
+            }
+            else if (request.FileName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+            {
+                ParseTxtImport(normalizedContent, items, ref taskId, ref agentId);
+            }
+            else
+            {
+                return new ImportCollectionResultsResponse(0, 0, 0, 1, ["仅支持 TXT、CSV、JSON 导入。"]);
+            }
+
+            if (request.ValidateAgent)
+            {
+                var agent = await _agentRepository.GetByIdAsync(agentId);
+                if (agent == null)
+                {
+                    errors.Add($"Agent {agentId} 未注册。");
+                    return new ImportCollectionResultsResponse(items.Count, 0, 0, items.Count, errors);
+                }
+            }
+
+            await StoreResultsAsync(taskId, expressionId, agentId, items);
+            var duplicates = items.Count == 0
+                ? 0
+                : (await _resultRepository.QueryAsync(taskId, null, agentId, null, null, null, true, 1, items.Count)).Count;
+
+            return new ImportCollectionResultsResponse(items.Count, items.Count, duplicates, 0, errors);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "导入本地结果失败：{FileName}", request.FileName);
+            errors.Add(ex.Message);
+            return new ImportCollectionResultsResponse(items.Count, 0, 0, Math.Max(1, items.Count), errors);
+        }
+    }
+
     /// <summary>
     /// 将采集结果实体映射为采集结果 DTO
     /// </summary>
@@ -180,6 +296,11 @@ public class CollectionResultService : ICollectionResultService
             fields,
             fieldExpressionMap ?? new Dictionary<string, string>(),
             entity.StepId,
+            entity.TaskName,
+            entity.TaskStatus,
+            entity.DataFingerprint,
+            entity.IsDuplicate,
+            entity.StorageEngine,
             entity.CollectedAt,
             entity.CreatedAt
         );
@@ -240,5 +361,132 @@ public class CollectionResultService : ICollectionResultService
     {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(payload));
         return Convert.ToHexString(bytes).ToLowerInvariant();
+    }
+
+    private static string ComputeFingerprint(string taskId, string agentId, Dictionary<string, object?> fields)
+    {
+        var payload = JsonSerializer.Serialize(new { taskId, agentId, fields });
+        return ComputeHash(payload);
+    }
+
+    private static void ParseJsonImport(string content, List<CollectionResultItemDto> items, ref string taskId, ref string agentId, ref string? expressionId)
+    {
+        using var document = JsonDocument.Parse(content);
+        var root = document.RootElement;
+
+        if (root.TryGetProperty("TaskInfo", out var taskInfo))
+        {
+            taskId = taskInfo.TryGetProperty("TaskId", out var taskIdProperty) ? taskIdProperty.GetString() ?? taskId : taskId;
+        }
+
+        if (root.TryGetProperty("AgentInfo", out var agentInfo))
+        {
+            agentId = agentInfo.TryGetProperty("AgentId", out var agentIdProperty) ? agentIdProperty.GetString() ?? agentId : agentId;
+        }
+
+        if (!root.TryGetProperty("Data", out var dataArray) || dataArray.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        foreach (var item in dataArray.EnumerateArray())
+        {
+            var fields = item.TryGetProperty("Fields", out var fieldsElement)
+                ? JsonSerializer.Deserialize<Dictionary<string, object?>>(fieldsElement.GetRawText()) ?? new Dictionary<string, object?>()
+                : new Dictionary<string, object?>();
+
+            items.Add(new CollectionResultItemDto(
+                item.TryGetProperty("ResultId", out var resultId) ? resultId.GetString() : null,
+                item.TryGetProperty("SourceUrl", out var sourceUrl) ? sourceUrl.GetString() : null,
+                fields,
+                null,
+                item.TryGetProperty("StepId", out var stepId) ? stepId.GetString() : null,
+                item.TryGetProperty("CollectedAt", out var collectedAt) && collectedAt.ValueKind == JsonValueKind.String ? collectedAt.GetDateTime() : null));
+        }
+    }
+
+    private static void ParseCsvImport(string content, List<CollectionResultItemDto> items, ref string taskId, ref string agentId)
+    {
+        var lines = content.Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
+        if (lines.Length <= 1)
+        {
+            return;
+        }
+
+        var headers = lines[0].Split(',');
+        var fieldStartIndex = Array.IndexOf(headers, "Status") + 1;
+        fieldStartIndex = fieldStartIndex <= 0 ? Math.Min(headers.Length, 8) : fieldStartIndex;
+
+        for (var i = 1; i < lines.Length; i++)
+        {
+            var cells = lines[i].Split(',');
+            if (cells.Length == 0)
+            {
+                continue;
+            }
+
+            if (cells.Length > 0) agentId = cells[0];
+            if (cells.Length > 4) taskId = cells[4];
+
+            var fields = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+            for (var cellIndex = fieldStartIndex; cellIndex < Math.Min(headers.Length, cells.Length); cellIndex++)
+            {
+                fields[headers[cellIndex]] = cells[cellIndex];
+            }
+
+            items.Add(new CollectionResultItemDto(null, cells.Length > 6 ? cells[6] : null, fields, null, null, DateTime.UtcNow));
+        }
+    }
+
+    private static void ParseTxtImport(string content, List<CollectionResultItemDto> items, ref string taskId, ref string agentId)
+    {
+        var fields = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+        string? sourceUrl = null;
+
+        foreach (var line in content.Split(["\r\n", "\n"], StringSplitOptions.None))
+        {
+            if (line.StartsWith("AgentId:", StringComparison.OrdinalIgnoreCase))
+            {
+                agentId = line[8..].Trim();
+                continue;
+            }
+
+            if (line.StartsWith("TaskId:", StringComparison.OrdinalIgnoreCase))
+            {
+                taskId = line[7..].Trim();
+                continue;
+            }
+
+            if (line.StartsWith("Url:", StringComparison.OrdinalIgnoreCase))
+            {
+                sourceUrl = line[4..].Trim();
+                continue;
+            }
+
+            var separatorIndex = line.IndexOf(':');
+            if (separatorIndex <= 0)
+            {
+                continue;
+            }
+
+            var key = line[..separatorIndex].Trim();
+            var value = line[(separatorIndex + 1)..].Trim();
+            if (key.Equals("AgentName", StringComparison.OrdinalIgnoreCase)
+                || key.Equals("HostName", StringComparison.OrdinalIgnoreCase)
+                || key.Equals("Mode", StringComparison.OrdinalIgnoreCase)
+                || key.Equals("CollectTime", StringComparison.OrdinalIgnoreCase)
+                || key.Equals("TaskName", StringComparison.OrdinalIgnoreCase)
+                || key.Equals("Status", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            fields[key] = value;
+        }
+
+        if (fields.Count > 0)
+        {
+            items.Add(new CollectionResultItemDto(null, sourceUrl, fields, null, null, DateTime.UtcNow));
+        }
     }
 }

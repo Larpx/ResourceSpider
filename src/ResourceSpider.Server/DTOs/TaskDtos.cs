@@ -29,7 +29,8 @@ public record CreateTaskRequest(
     string? Tags = null,
     string? AgentGroupId = null,
     string? ExpressionId = null,
-    List<CreateTaskStepRequest>? Steps = null
+    List<CreateTaskStepRequest>? Steps = null,
+    string? ChangeDescription = null
 );
 
 /// <summary>
@@ -46,6 +47,7 @@ public record CreateTaskRequest(
 /// <param name="AgentGroupId">代理分组 ID，可选</param>
 public record UpdateTaskRequest(
     string? TaskName,
+    string? TaskType,
     int? Priority,
     string? RequestConfig,
     string? ScheduleConfig,
@@ -53,7 +55,10 @@ public record UpdateTaskRequest(
     string? AntiCrawlConfig,
     string? GlobalConfig,
     string? Tags,
-    string? AgentGroupId
+    string? AgentGroupId,
+    string? ExpressionId,
+    List<CreateTaskStepRequest>? Steps,
+    string? ChangeDescription
 );
 
 /// <summary>
@@ -124,4 +129,51 @@ public record TaskListResponse(
     int Total,
     int PageIndex,
     int PageSize
+);
+
+/// <summary>
+/// 任务配置快照，用于版本记录与回滚。
+/// </summary>
+public record TaskConfigurationSnapshot(
+    TaskConfigurationTaskSnapshot Task,
+    List<TaskConfigurationStepSnapshot> Steps
+);
+
+/// <summary>
+/// 任务级配置快照。
+/// </summary>
+public record TaskConfigurationTaskSnapshot(
+    string TaskId,
+    string TaskName,
+    string TaskType,
+    int Priority,
+    string RequestConfig,
+    string? ScheduleConfig,
+    string? RetryPolicy,
+    string? AntiCrawlConfig,
+    string? GlobalConfig,
+    string? Tags,
+    string? AgentGroupId,
+    string? ExpressionId
+);
+
+/// <summary>
+/// 步骤级配置快照。
+/// </summary>
+public record TaskConfigurationStepSnapshot(
+    string StepId,
+    int StepOrder,
+    string StepName,
+    string CollectionMode,
+    string? AgentGroupId,
+    string RequestConfig,
+    string ExtractionRules,
+    string? VariableMappings,
+    string? PaginationConfig,
+    string? OutputConfig,
+    string? StartCondition,
+    string? EndCondition,
+    List<string>? DependsOnStepIds,
+    string? StepConfig,
+    int State
 );

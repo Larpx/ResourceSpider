@@ -32,9 +32,12 @@ public record ExportRequest(
     string TaskId,
     ExportFormat Format,
     string? StepId = null,
+    string? AgentId = null,
+    string? Keyword = null,
     DateTime? StartTime = null,
     DateTime? EndTime = null,
-    List<string>? Fields = null
+    List<string>? Fields = null,
+    bool? IsDuplicate = null
 );
 
 /// <summary>

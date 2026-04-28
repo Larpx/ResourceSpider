@@ -1,7 +1,7 @@
-using Newtonsoft.Json;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Entities;
 using ResourceSpider.Server.Repositories;
+using System.Text.Json;
 
 namespace ResourceSpider.Server.Services;
 
@@ -52,6 +52,11 @@ public class ConfigVersionService : IConfigVersionService
     private readonly ITaskRepository _taskRepository;
 
     /// <summary>
+    /// 任务步骤仓储，用于在回滚时恢复完整步骤配置。
+    /// </summary>
+    private readonly ITaskStepRepository _taskStepRepository;
+
+    /// <summary>
     /// 日志记录器，用于记录配置版本操作相关事件
     /// </summary>
     private readonly ILogger<ConfigVersionService> _logger;
@@ -65,10 +70,12 @@ public class ConfigVersionService : IConfigVersionService
     public ConfigVersionService(
         IConfigVersionRepository repository,
         ITaskRepository taskRepository,
+        ITaskStepRepository taskStepRepository,
         ILogger<ConfigVersionService> logger)
     {
         _repository = repository;
         _taskRepository = taskRepository;
+        _taskStepRepository = taskStepRepository;
         _logger = logger;
     }
 
@@ -117,9 +124,55 @@ public class ConfigVersionService : IConfigVersionService
         var task = await _taskRepository.GetByIdAsync(taskId);
         if (task == null) return false;
 
-        task.RequestConfig = versionEntity.ConfigContent;
+        var snapshot = DeserializeSnapshot(versionEntity.ConfigContent);
+        if (snapshot == null)
+        {
+            task.RequestConfig = versionEntity.ConfigContent;
+            task.ConfigVersion = version;
+            await _taskRepository.UpdateAsync(task);
+            _logger.LogInformation("任务 {TaskId} 以兼容模式回滚到旧配置版本 {Version}", taskId, version);
+            return true;
+        }
+
+        task.TaskName = snapshot.Task.TaskName;
+        task.TaskType = snapshot.Task.TaskType;
+        task.Priority = snapshot.Task.Priority;
+        task.RequestConfig = snapshot.Task.RequestConfig;
+        task.ScheduleConfig = snapshot.Task.ScheduleConfig;
+        task.RetryPolicy = snapshot.Task.RetryPolicy;
+        task.AntiCrawlConfig = snapshot.Task.AntiCrawlConfig;
+        task.GlobalConfig = snapshot.Task.GlobalConfig;
+        task.Tags = snapshot.Task.Tags;
+        task.AgentGroupId = snapshot.Task.AgentGroupId;
+        task.ExpressionId = snapshot.Task.ExpressionId;
         task.ConfigVersion = version;
         await _taskRepository.UpdateAsync(task);
+
+        await _taskStepRepository.DeleteByTaskIdAsync(taskId);
+        if (snapshot.Steps.Count > 0)
+        {
+            var steps = snapshot.Steps.Select(step => new TaskStepEntity
+            {
+                StepId = string.IsNullOrWhiteSpace(step.StepId) ? Guid.NewGuid().ToString("N") : step.StepId,
+                TaskId = taskId,
+                StepOrder = step.StepOrder,
+                StepName = step.StepName,
+                CollectionMode = step.CollectionMode,
+                AgentGroupId = step.AgentGroupId,
+                RequestConfig = step.RequestConfig,
+                ExtractionRules = step.ExtractionRules,
+                VariableMappings = step.VariableMappings,
+                PaginationConfig = step.PaginationConfig,
+                OutputConfig = step.OutputConfig,
+                StartCondition = step.StartCondition,
+                EndCondition = step.EndCondition,
+                DependsOnStepIds = step.DependsOnStepIds == null ? null : System.Text.Json.JsonSerializer.Serialize(step.DependsOnStepIds),
+                StepConfig = step.StepConfig,
+                State = step.State
+            }).ToList();
+
+            await _taskStepRepository.AddRangeAsync(steps);
+        }
 
         _logger.LogInformation("任务 {TaskId} 回滚到配置版本 {Version}", taskId, version);
         return true;
@@ -140,5 +193,17 @@ public class ConfigVersionService : IConfigVersionService
             entity.ChangeDescription,
             entity.CreatedBy,
             entity.CreatedAt);
+    }
+
+    private static TaskConfigurationSnapshot? DeserializeSnapshot(string content)
+    {
+        try
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<TaskConfigurationSnapshot>(content);
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return null;
+        }
     }
 }

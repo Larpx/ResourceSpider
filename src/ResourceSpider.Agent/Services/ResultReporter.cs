@@ -127,6 +127,15 @@ public class ResultReporter : IResultReporter
 
         try
         {
+            foreach (var record in result.DataRecords)
+            {
+                record.TaskId ??= result.TaskId;
+                if (!record.Fields.ContainsKey("TaskName") && !string.IsNullOrWhiteSpace(result.TaskName))
+                {
+                    record.Fields["TaskName"] = result.TaskName;
+                }
+            }
+
             await _storage.StoreAsync(result.DataRecords, ct);
             _logger.LogInformation("已本地存储任务 {TaskId} 的 {Count} 条记录",
                 result.TaskId, result.DataRecords.Count);

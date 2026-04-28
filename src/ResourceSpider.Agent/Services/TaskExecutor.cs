@@ -39,6 +39,7 @@ public class TaskExecutor : ITaskExecutor
         var result = new ExecutionResult
         {
             TaskId = task.TaskId,
+            TaskName = task.TaskName,
             ExpressionId = task.ExpressionId,
             StartTime = DateTime.UtcNow
         };
@@ -287,7 +288,11 @@ public class TaskExecutor : ITaskExecutor
                         TaskId = task.TaskId,
                         StepId = step.StepId,
                         SourceUrl = response.Url,
-                        Fields = new Dictionary<string, object?> { [rule.FieldName] = value }
+                            Fields = new Dictionary<string, object?>
+                            {
+                                ["TaskName"] = task.TaskName,
+                                [rule.FieldName] = value
+                            }
                     }));
                 }
                 else
@@ -517,6 +522,8 @@ public class TaskExecutor : ITaskExecutor
 public class ExecutionResult
 {
     public string TaskId { get; set; } = string.Empty;
+
+    public string? TaskName { get; set; }
 
     public string? ExpressionId { get; set; }
 

@@ -49,6 +49,21 @@ public interface ICollectionResultRepository
     Task<long> CountByExpressionIdAsync(string expressionId);
 
     /// <summary>
+    /// 按条件分页查询采集结果。
+    /// </summary>
+    Task<List<CollectionResultEntity>> QueryAsync(string? taskId, string? stepId, string? agentId, string? keyword, DateTime? startTime, DateTime? endTime, bool? isDuplicate, int pageIndex, int pageSize);
+
+    /// <summary>
+    /// 统计符合条件的采集结果数量。
+    /// </summary>
+    Task<long> CountAsync(string? taskId, string? stepId, string? agentId, string? keyword, DateTime? startTime, DateTime? endTime, bool? isDuplicate);
+
+    /// <summary>
+    /// 根据数据指纹判断记录是否已存在。
+    /// </summary>
+    Task<bool> ExistsByFingerprintAsync(string taskId, string agentId, string fingerprint);
+
+    /// <summary>
     /// 新增单条采集结果
     /// </summary>
     /// <param name="entity">采集结果实体</param>
@@ -132,6 +147,33 @@ public class CollectionResultRepository : ICollectionResultRepository
     }
 
     /// <inheritdoc/>
+    public async Task<List<CollectionResultEntity>> QueryAsync(string? taskId, string? stepId, string? agentId, string? keyword, DateTime? startTime, DateTime? endTime, bool? isDuplicate, int pageIndex, int pageSize)
+    {
+        var query = BuildFilteredQuery(taskId, stepId, agentId, keyword, startTime, endTime, isDuplicate);
+
+        return await query
+            .OrderByDescending(x => x.CollectedAt)
+            .OrderByDescending(x => x.CreatedAt)
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<long> CountAsync(string? taskId, string? stepId, string? agentId, string? keyword, DateTime? startTime, DateTime? endTime, bool? isDuplicate)
+    {
+        var query = BuildFilteredQuery(taskId, stepId, agentId, keyword, startTime, endTime, isDuplicate);
+        return await query.CountAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> ExistsByFingerprintAsync(string taskId, string agentId, string fingerprint)
+    {
+        return await _db.Queryable<CollectionResultEntity>()
+            .AnyAsync(x => x.TaskId == taskId && x.AgentId == agentId && x.DataFingerprint == fingerprint);
+    }
+
+    /// <inheritdoc/>
     public async Task AddAsync(CollectionResultEntity entity)
     {
         await _db.Insertable(entity).ExecuteCommandAsync();
@@ -149,5 +191,49 @@ public class CollectionResultRepository : ICollectionResultRepository
         await _db.Deleteable<CollectionResultEntity>()
             .Where(x => x.TaskId == taskId)
             .ExecuteCommandAsync();
+    }
+
+    private ISugarQueryable<CollectionResultEntity> BuildFilteredQuery(string? taskId, string? stepId, string? agentId, string? keyword, DateTime? startTime, DateTime? endTime, bool? isDuplicate)
+    {
+        var query = _db.Queryable<CollectionResultEntity>();
+
+        if (!string.IsNullOrWhiteSpace(taskId))
+        {
+            query = query.Where(x => x.TaskId == taskId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(stepId))
+        {
+            query = query.Where(x => x.StepId == stepId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(agentId))
+        {
+            query = query.Where(x => x.AgentId == agentId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => (x.SourceUrl != null && x.SourceUrl.Contains(keyword))
+                || (x.TaskName != null && x.TaskName.Contains(keyword))
+                || x.Fields.Contains(keyword));
+        }
+
+        if (startTime.HasValue)
+        {
+            query = query.Where(x => x.CollectedAt >= startTime.Value || x.CreatedAt >= startTime.Value);
+        }
+
+        if (endTime.HasValue)
+        {
+            query = query.Where(x => x.CollectedAt <= endTime.Value || x.CreatedAt <= endTime.Value);
+        }
+
+        if (isDuplicate.HasValue)
+        {
+            query = query.Where(x => x.IsDuplicate == isDuplicate.Value);
+        }
+
+        return query;
     }
 }

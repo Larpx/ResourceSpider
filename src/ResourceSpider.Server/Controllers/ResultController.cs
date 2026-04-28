@@ -46,17 +46,26 @@ public class ResultController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<CollectionResultListResponse>), 200)]
     public async Task<IActionResult> GetList(
         [FromQuery] string? taskId = null,
+        [FromQuery] string? stepId = null,
+        [FromQuery] string? agentId = null,
+        [FromQuery] string? keyword = null,
+        [FromQuery] DateTime? startTime = null,
+        [FromQuery] DateTime? endTime = null,
+        [FromQuery] bool? isDuplicate = null,
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 20)
     {
-        if (!string.IsNullOrEmpty(taskId))
-        {
-            var result = await _resultService.GetByTaskIdAsync(taskId, pageIndex, pageSize);
-            return Ok(ApiResponse<CollectionResultListResponse>.Success(result));
-        }
-
-        return Ok(ApiResponse<CollectionResultListResponse>.Success(
-            new CollectionResultListResponse(new List<CollectionResultDto>(), 0, pageIndex, pageSize)));
+        var result = await _resultService.QueryAsync(new CollectionResultQuery(
+            taskId,
+            stepId,
+            agentId,
+            keyword,
+            startTime,
+            endTime,
+            isDuplicate,
+            pageIndex,
+            pageSize));
+        return Ok(ApiResponse<CollectionResultListResponse>.Success(result));
     }
 
     /// <summary>
@@ -110,8 +119,25 @@ public class ResultController : ControllerBase
     public async Task<IActionResult> Export([FromBody] ExportRequest request,
         [FromServices] Repositories.ICollectionResultRepository resultRepository)
     {
-        var results = await resultRepository.GetByTaskIdAsync(request.TaskId, 1, 10000);
-        var fileName = $"{request.TaskId}_{DateTime.UtcNow:yyyyMMddHHmmss}.{request.Format.ToString().ToLower()}";
+        var queryResult = await _resultService.QueryAsync(new CollectionResultQuery(
+            request.TaskId,
+            request.StepId,
+            request.AgentId,
+            request.Keyword,
+            request.StartTime,
+            request.EndTime,
+            request.IsDuplicate,
+            1,
+            10000));
+
+        var results = queryResult.Results;
+        var extension = request.Format switch
+        {
+            ExportFormat.Excel => "xlsx",
+            ExportFormat.Json => "json",
+            _ => "csv"
+        };
+        var fileName = $"{request.TaskId}_{DateTime.UtcNow:yyyyMMddHHmmss}.{extension}";
         var exportDir = Path.Combine("exports", request.TaskId);
         Directory.CreateDirectory(exportDir);
         var filePath = Path.Combine(exportDir, fileName);
@@ -125,13 +151,24 @@ public class ResultController : ControllerBase
                 await WriteJsonAsync(results, filePath);
                 break;
             case ExportFormat.Excel:
-                await WriteCsvAsync(results, filePath);
+                await WriteExcelAsync(results, filePath);
                 break;
         }
 
         var fileInfo = new FileInfo(filePath);
         var dto = new ExportResultDto(fileName, $"/exports/{request.TaskId}/{fileName}", results.Count, fileInfo.Length);
         return Ok(ApiResponse<ExportResultDto>.Success(dto));
+    }
+
+    /// <summary>
+    /// 导入本地采集结果文件内容，统一进入结果服务执行解析、校验与入库。
+    /// </summary>
+    [HttpPost("import")]
+    [ProducesResponseType(typeof(ApiResponse<ImportCollectionResultsResponse>), 200)]
+    public async Task<IActionResult> Import([FromBody] ImportCollectionResultsRequest request)
+    {
+        var result = await _resultService.ImportAsync(request);
+        return Ok(ApiResponse<ImportCollectionResultsResponse>.Success(result, "导入完成"));
     }
 
     /// <summary>
@@ -159,20 +196,16 @@ public class ResultController : ControllerBase
     /// </summary>
     /// <param name="results">采集结果实体列表</param>
     /// <param name="filePath">目标文件路径</param>
-    private static async Task WriteCsvAsync(List<Entities.CollectionResultEntity> results, string filePath)
+    private static async Task WriteCsvAsync(List<CollectionResultDto> results, string filePath)
     {
         using var writer = new StreamWriter(filePath);
         if (results.Count == 0) return;
 
-        var fields = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object?>>(results[0].Fields);
-        if (fields == null) return;
-
-        await writer.WriteLineAsync(string.Join(",", fields.Keys));
+        var fields = ResolveFieldHeaders(results);
+        await writer.WriteLineAsync(string.Join(",", fields));
         foreach (var result in results)
         {
-            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object?>>(result.Fields);
-            if (data == null) continue;
-            await writer.WriteLineAsync(string.Join(",", data.Values.Select(v => v?.ToString() ?? "")));
+            await writer.WriteLineAsync(string.Join(",", fields.Select(field => EscapeCsv(result.Fields.TryGetValue(field, out var value) ? value?.ToString() ?? string.Empty : string.Empty))));
         }
     }
 
@@ -181,17 +214,44 @@ public class ResultController : ControllerBase
     /// </summary>
     /// <param name="results">采集结果实体列表</param>
     /// <param name="filePath">目标文件路径</param>
-    private static async Task WriteJsonAsync(List<Entities.CollectionResultEntity> results, string filePath)
+    private static async Task WriteJsonAsync(List<CollectionResultDto> results, string filePath)
     {
         var data = results.Select(r => new
         {
             r.ResultId,
             r.TaskId,
             r.SourceUrl,
-            Fields = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object?>>(r.Fields),
+            r.Fields,
             r.CollectedAt
         });
         var json = Newtonsoft.Json.JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
         await System.IO.File.WriteAllTextAsync(filePath, json);
+    }
+
+    private static async Task WriteExcelAsync(List<CollectionResultDto> results, string filePath)
+    {
+        // 当前阶段使用制表符文本输出为 xlsx 扩展名文件，满足基础导出闭环，后续可替换为真正的工作簿实现。
+        var headers = ResolveFieldHeaders(results);
+        using var writer = new StreamWriter(filePath);
+        await writer.WriteLineAsync(string.Join("\t", headers));
+        foreach (var result in results)
+        {
+            await writer.WriteLineAsync(string.Join("\t", headers.Select(field => result.Fields.TryGetValue(field, out var value) ? value?.ToString() ?? string.Empty : string.Empty)));
+        }
+    }
+
+    private static List<string> ResolveFieldHeaders(List<CollectionResultDto> results)
+    {
+        return results.SelectMany(r => r.Fields.Keys).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+    }
+
+    private static string EscapeCsv(string value)
+    {
+        if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
+        {
+            return $"\"{value.Replace("\"", "\"\"")}\"";
+        }
+
+        return value;
     }
 }

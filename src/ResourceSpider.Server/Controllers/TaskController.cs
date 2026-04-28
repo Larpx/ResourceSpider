@@ -147,6 +147,23 @@ public class TaskController : ControllerBase
     }
 
     /// <summary>
+    /// 获取任务的完整配置快照，用于管理端审查当前配置与需求是否对齐。
+    /// </summary>
+    [HttpGet("{taskId}/config/snapshot")]
+    [ProducesResponseType(typeof(ApiResponse<TaskConfigurationSnapshot>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> GetConfigurationSnapshot(string taskId)
+    {
+        var snapshot = await _taskService.GetConfigurationSnapshotAsync(taskId);
+        if (snapshot == null)
+        {
+            return NotFound(ApiResponse<object>.Error(10001, "任务不存在"));
+        }
+
+        return Ok(ApiResponse<TaskConfigurationSnapshot>.Success(snapshot));
+    }
+
+    /// <summary>
     /// 暂停指定任务的执行
     /// </summary>
     /// <param name="taskId">任务 ID</param>

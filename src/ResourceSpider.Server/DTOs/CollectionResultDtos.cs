@@ -22,6 +22,11 @@ public record CollectionResultDto(
     Dictionary<string, object?> Fields,
     Dictionary<string, string> FieldExpressionMap,
     string? StepId,
+    string? TaskName,
+    string? TaskStatus,
+    string? DataFingerprint,
+    bool IsDuplicate,
+    string? StorageEngine,
     DateTime? CollectedAt,
     DateTime CreatedAt
 );
@@ -38,6 +43,42 @@ public record CollectionResultListResponse(
     int Total,
     int PageIndex,
     int PageSize
+);
+
+/// <summary>
+/// 采集结果查询条件。
+/// </summary>
+public record CollectionResultQuery(
+    string? TaskId,
+    string? StepId,
+    string? AgentId,
+    string? Keyword,
+    DateTime? StartTime,
+    DateTime? EndTime,
+    bool? IsDuplicate,
+    int PageIndex,
+    int PageSize
+);
+
+/// <summary>
+/// 本地结果导入请求。
+/// </summary>
+public record ImportCollectionResultsRequest(
+    string FileName,
+    string Content,
+    string? ContentType = null,
+    bool ValidateAgent = false
+);
+
+/// <summary>
+/// 本地结果导入响应。
+/// </summary>
+public record ImportCollectionResultsResponse(
+    int TotalRecords,
+    int ImportedRecords,
+    int DuplicateRecords,
+    int FailedRecords,
+    List<string> Errors
 );
 
 /// <summary>

@@ -34,6 +34,18 @@ public class CollectionResultEntity
     public string? StepId { get; set; }
 
     /// <summary>
+    /// 任务名称快照，便于结果浏览与导出。
+    /// </summary>
+    [SugarColumn(Length = 256, IsNullable = true)]
+    public string? TaskName { get; set; }
+
+    /// <summary>
+    /// 任务状态快照。
+    /// </summary>
+    [SugarColumn(Length = 64, IsNullable = true)]
+    public string? TaskStatus { get; set; }
+
+    /// <summary>
     /// 关联的表达式 ID，标识该结果使用的采集表达式
     /// </summary>
     [SugarColumn(Length = 64, IsNullable = true)]
@@ -62,6 +74,17 @@ public class CollectionResultEntity
     /// </summary>
     [SugarColumn(ColumnDataType = "json", IsNullable = true)]
     public string? FieldExpressionMap { get; set; }
+
+    /// <summary>
+    /// 数据指纹，用于去重判断。
+    /// </summary>
+    [SugarColumn(Length = 128, IsNullable = true)]
+    public string? DataFingerprint { get; set; }
+
+    /// <summary>
+    /// 是否被判定为重复数据。
+    /// </summary>
+    public bool IsDuplicate { get; set; }
 
     /// <summary>
     /// 存储引擎信息，标识结果数据的存储方式

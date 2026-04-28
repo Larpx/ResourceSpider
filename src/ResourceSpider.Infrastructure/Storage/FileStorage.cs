@@ -116,6 +116,7 @@ public class FileStorage : IStorage
         var recordList = records.ToList();
         if (!recordList.Any()) return;
 
+        ApplyTaskMetadata(recordList);
         Directory.CreateDirectory(_outputDirectory);
         
         var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
@@ -154,7 +155,7 @@ public class FileStorage : IStorage
         
         var headers = new List<string> 
         { 
-            "AgentId", "AgentName", "HostName", "CollectTime", "TaskId", "TaskName", "Url", "Status"
+            "AgentId", "AgentName", "HostName", "Mode", "CollectTime", "TaskId", "TaskName", "Url", "Status"
         };
         headers.AddRange(allFields);
 
@@ -170,6 +171,7 @@ public class FileStorage : IStorage
                 EscapeCsv(_options.AgentId),
                 EscapeCsv(_options.AgentName),
                 EscapeCsv(_options.HostName),
+                EscapeCsv(_options.Mode),
                 collectTime,
                 EscapeCsv(_options.TaskId),
                 EscapeCsv(_options.TaskName),
@@ -290,5 +292,23 @@ public class FileStorage : IStorage
             return $"\"{value.Replace("\"", "\"\"")}\"";
         }
         return value;
+    }
+
+    /// <summary>
+    /// 当调用方未提前写入任务元信息时，自动从记录中补齐本地文件头需要的任务标识。
+    /// 这样可以保证本地模式输出文件稳定满足需求文档的必填字段格式。
+    /// </summary>
+    private void ApplyTaskMetadata(List<DataRecord> records)
+    {
+        if (string.IsNullOrWhiteSpace(_options.TaskId))
+        {
+            _options.TaskId = records.FirstOrDefault()?.TaskId ?? string.Empty;
+        }
+
+        if (string.IsNullOrWhiteSpace(_options.TaskName)
+            && records.FirstOrDefault()?.Fields.TryGetValue("TaskName", out var taskName) == true)
+        {
+            _options.TaskName = taskName?.ToString() ?? string.Empty;
+        }
     }
 }

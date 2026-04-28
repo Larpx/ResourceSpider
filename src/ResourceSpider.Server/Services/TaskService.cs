@@ -16,21 +16,25 @@ public interface ITaskService
     Task<bool> StopAsync(string taskId);
     Task<bool> DeleteAsync(string taskId);
     Task<bool> TriggerExecutionAsync(string taskId);
+    Task<TaskConfigurationSnapshot?> GetConfigurationSnapshotAsync(string taskId);
 }
 
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
     private readonly ITaskStepRepository _taskStepRepository;
+    private readonly IConfigVersionService _configVersionService;
     private readonly ILogger<TaskService> _logger;
 
     public TaskService(
         ITaskRepository taskRepository,
         ITaskStepRepository taskStepRepository,
+        IConfigVersionService configVersionService,
         ILogger<TaskService> logger)
     {
         _taskRepository = taskRepository;
         _taskStepRepository = taskStepRepository;
+        _configVersionService = configVersionService;
         _logger = logger;
     }
 
@@ -57,38 +61,17 @@ public class TaskService : ITaskService
 
         await _taskRepository.AddAsync(entity);
 
-        if (request.Steps != null && request.Steps.Count > 0)
-        {
-            var stepEntities = request.Steps.Select((s, i) => new TaskStepEntity
-            {
-                StepId = Guid.NewGuid().ToString("N"),
-                TaskId = taskId,
-                StepOrder = s.StepOrder > 0 ? s.StepOrder : i + 1,
-                StepName = s.StepName,
-                CollectionMode = s.CollectionMode,
-                AgentGroupId = s.AgentGroupId,
-                RequestConfig = s.RequestConfig ?? "{}",
-                ExtractionRules = s.ExtractionRules ?? "[]",
-                VariableMappings = s.VariableMappings,
-                PaginationConfig = s.PaginationConfig,
-                OutputConfig = s.OutputConfig,
-                StartCondition = s.StartCondition,
-                EndCondition = s.EndCondition,
-                DependsOnStepIds = s.DependsOnStepIds == null ? null : System.Text.Json.JsonSerializer.Serialize(s.DependsOnStepIds),
-                StepConfig = s.StepConfig,
-                State = 0
-            }).ToList();
+        var stepEntities = await ReplaceStepsAsync(taskId, request.Steps);
 
-            if (stepEntities.Count > 0)
-            {
-                stepEntities.OrderBy(s => s.StepOrder).First().State = 1;
-            }
-
-            await _taskStepRepository.AddRangeAsync(stepEntities);
-        }
+        var createdTask = await BuildTaskDtoAsync(entity, stepEntities);
+        await _configVersionService.CreateVersionAsync(
+            taskId,
+            SerializeConfigurationSnapshot(ToConfigurationSnapshot(createdTask)),
+            request.ChangeDescription ?? "创建任务配置",
+            createdBy);
 
         _logger.LogInformation("任务 {TaskId} 创建成功：{TaskName}", taskId, request.TaskName);
-        return MapToDto(entity);
+        return createdTask;
     }
 
     public async Task<TaskDto?> GetByIdAsync(string taskId)
@@ -128,6 +111,7 @@ public class TaskService : ITaskService
         if (entity == null) return false;
 
         if (request.TaskName != null) entity.TaskName = request.TaskName;
+        if (request.TaskType != null) entity.TaskType = request.TaskType;
         if (request.Priority.HasValue) entity.Priority = request.Priority.Value;
         if (request.RequestConfig != null) entity.RequestConfig = request.RequestConfig;
         if (request.ScheduleConfig != null) entity.ScheduleConfig = request.ScheduleConfig;
@@ -136,8 +120,23 @@ public class TaskService : ITaskService
         if (request.GlobalConfig != null) entity.GlobalConfig = request.GlobalConfig;
         if (request.Tags != null) entity.Tags = request.Tags;
         if (request.AgentGroupId != null) entity.AgentGroupId = request.AgentGroupId;
+        if (request.ExpressionId != null) entity.ExpressionId = request.ExpressionId;
 
         await _taskRepository.UpdateAsync(entity);
+
+        List<TaskStepEntity>? stepEntities = null;
+        if (request.Steps != null)
+        {
+            stepEntities = await ReplaceStepsAsync(taskId, request.Steps);
+        }
+
+        var updatedTask = await BuildTaskDtoAsync(entity, stepEntities);
+        await _configVersionService.CreateVersionAsync(
+            taskId,
+            SerializeConfigurationSnapshot(ToConfigurationSnapshot(updatedTask)),
+            request.ChangeDescription ?? "更新任务配置",
+            entity.CreatedBy);
+
         _logger.LogInformation("任务 {TaskId} 更新成功", taskId);
         return true;
     }
@@ -219,6 +218,18 @@ public class TaskService : ITaskService
         return true;
     }
 
+    public async Task<TaskConfigurationSnapshot?> GetConfigurationSnapshotAsync(string taskId)
+    {
+        var entity = await _taskRepository.GetByIdAsync(taskId);
+        if (entity == null)
+        {
+            return null;
+        }
+
+        var dto = await BuildTaskDtoAsync(entity);
+        return ToConfigurationSnapshot(dto);
+    }
+
     private static TaskDto MapToDto(TaskEntity entity)
     {
         return new TaskDto(
@@ -246,6 +257,100 @@ public class TaskService : ITaskService
             entity.CreatedAt,
             entity.ExpressionId
         );
+    }
+
+    private async Task<TaskDto> BuildTaskDtoAsync(TaskEntity entity, List<TaskStepEntity>? stepEntities = null)
+    {
+        var dto = MapToDto(entity);
+        var steps = stepEntities ?? await _taskStepRepository.GetByTaskIdAsync(entity.TaskId);
+        if (steps.Count > 0)
+        {
+            dto = dto with
+            {
+                Steps = steps.Select(MapStepToDto).ToList()
+            };
+        }
+
+        return dto;
+    }
+
+    private async Task<List<TaskStepEntity>> ReplaceStepsAsync(string taskId, List<CreateTaskStepRequest>? steps)
+    {
+        await _taskStepRepository.DeleteByTaskIdAsync(taskId);
+
+        if (steps == null || steps.Count == 0)
+        {
+            return [];
+        }
+
+        var stepEntities = steps.Select((s, i) => new TaskStepEntity
+        {
+            StepId = Guid.NewGuid().ToString("N"),
+            TaskId = taskId,
+            StepOrder = s.StepOrder > 0 ? s.StepOrder : i + 1,
+            StepName = s.StepName,
+            CollectionMode = s.CollectionMode,
+            AgentGroupId = s.AgentGroupId,
+            RequestConfig = s.RequestConfig ?? "{}",
+            ExtractionRules = s.ExtractionRules ?? "[]",
+            VariableMappings = s.VariableMappings,
+            PaginationConfig = s.PaginationConfig,
+            OutputConfig = s.OutputConfig,
+            StartCondition = s.StartCondition,
+            EndCondition = s.EndCondition,
+            DependsOnStepIds = s.DependsOnStepIds == null ? null : System.Text.Json.JsonSerializer.Serialize(s.DependsOnStepIds),
+            StepConfig = s.StepConfig,
+            State = 0
+        }).OrderBy(s => s.StepOrder).ToList();
+
+        if (stepEntities.Count > 0)
+        {
+            stepEntities[0].State = 1;
+            await _taskStepRepository.AddRangeAsync(stepEntities);
+        }
+
+        return stepEntities;
+    }
+
+    private static TaskConfigurationSnapshot ToConfigurationSnapshot(TaskDto task)
+    {
+        var taskSnapshot = new TaskConfigurationTaskSnapshot(
+            task.TaskId,
+            task.TaskName,
+            task.TaskType,
+            task.Priority,
+            task.RequestConfig,
+            task.ScheduleConfig,
+            task.RetryPolicy,
+            task.AntiCrawlConfig,
+            task.GlobalConfig,
+            task.Tags,
+            task.AgentGroupId,
+            task.ExpressionId);
+
+        var stepSnapshots = task.Steps?.Select(step => new TaskConfigurationStepSnapshot(
+            step.StepId,
+            step.StepOrder,
+            step.StepName,
+            step.CollectionMode,
+            step.AgentGroupId,
+            step.RequestConfig,
+            step.ExtractionRules,
+            step.VariableMappings,
+            step.PaginationConfig,
+            step.OutputConfig,
+            step.StartCondition,
+            step.EndCondition,
+            step.DependsOnStepIds,
+            step.StepConfig,
+            step.State)).ToList() ?? [];
+
+        return new TaskConfigurationSnapshot(taskSnapshot, stepSnapshots);
+    }
+
+    private static string SerializeConfigurationSnapshot(TaskConfigurationSnapshot snapshot)
+    {
+        return System.Text.Json.JsonSerializer.Serialize(snapshot);
     }
 
     private static TaskStepDto MapStepToDto(TaskStepEntity entity)

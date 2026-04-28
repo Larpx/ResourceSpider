@@ -128,6 +128,36 @@ public class AdminApiClient
         return (result.Success, result.Message);
     }
 
+    public async Task<CollectionResultListResponse?> GetResultsAsync(
+        string? taskId = null,
+        string? stepId = null,
+        string? agentId = null,
+        string? keyword = null,
+        DateTime? startTime = null,
+        DateTime? endTime = null,
+        bool? isDuplicate = null,
+        int pageIndex = 1,
+        int pageSize = 20)
+    {
+        var query = $"api/admin/results?pageIndex={pageIndex}&pageSize={pageSize}";
+        if (!string.IsNullOrWhiteSpace(taskId)) query += $"&taskId={Uri.EscapeDataString(taskId)}";
+        if (!string.IsNullOrWhiteSpace(stepId)) query += $"&stepId={Uri.EscapeDataString(stepId)}";
+        if (!string.IsNullOrWhiteSpace(agentId)) query += $"&agentId={Uri.EscapeDataString(agentId)}";
+        if (!string.IsNullOrWhiteSpace(keyword)) query += $"&keyword={Uri.EscapeDataString(keyword)}";
+        if (startTime.HasValue) query += $"&startTime={Uri.EscapeDataString(startTime.Value.ToString("O"))}";
+        if (endTime.HasValue) query += $"&endTime={Uri.EscapeDataString(endTime.Value.ToString("O"))}";
+        if (isDuplicate.HasValue) query += $"&isDuplicate={isDuplicate.Value.ToString().ToLowerInvariant()}";
+
+        var payload = await GetAuthorizedAsync<CollectionResultListResponse>(query);
+        return payload?.Data;
+    }
+
+    public async Task<(bool Success, string Message)> ImportResultsAsync(ImportCollectionResultsRequest request)
+    {
+        var result = await SendAuthorizedForMessageAsync<ImportCollectionResultsResponse>(HttpMethod.Post, "api/admin/results/import", request);
+        return (result.Success, result.Message);
+    }
+
     public async Task<ExpressionListResponse?> GetExpressionsAsync(int pageIndex = 1, int pageSize = 20, int? status = null, string? keyword = null)
     {
         var query = $"api/admin/expressions?pageIndex={pageIndex}&pageSize={pageSize}";
