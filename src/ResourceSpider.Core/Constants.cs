@@ -16,6 +16,7 @@ public static class Constants
         public const string AgentUnregister = "api/agent/unregister";
         public const string AgentTasks = "api/agent/tasks";
         public const string AgentPullTasks = "api/agent/tasks/pull";
+        public const string AgentTaskContent = "api/agent/tasks/content";
         public const string AgentReportTask = "api/agent/tasks/report";
         public const string AgentPullExpression = "api/agent/expressions/pull";
         public const string AgentActiveExpressions = "api/agent/expressions/active";

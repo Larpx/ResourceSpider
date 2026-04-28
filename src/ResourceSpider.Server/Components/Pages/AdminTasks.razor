@@ -6,6 +6,7 @@
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
 @inject IJSRuntime JsRuntime
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>任务配置</PageTitle>
 
@@ -17,13 +18,8 @@ else
 {
     <h1>任务配置</h1>
 
-    @if (!string.IsNullOrWhiteSpace(_message))
-    {
-        <p>@_message</p>
-    }
-
     <div class="action-row">
-        <button class="btn" type="button" @onclick="OpenCreateDrawer">新增任务</button>
+        <button id="task-create-button" class="btn" type="button" @onclick="OpenCreateDrawer">新增任务</button>
         <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
     </div>
 
@@ -293,7 +289,7 @@ else
     {
         if (_jumpPageIndex < 1 || _jumpPageIndex > TotalPages)
         {
-            _message = $"页码范围应为 1 到 {TotalPages}。";
+            NotificationService.Warning("页码无效", $"页码范围应为 1 到 {TotalPages}。");
             return;
         }
 
@@ -315,7 +311,7 @@ else
     {
         if (string.IsNullOrWhiteSpace(_newTaskName) || string.IsNullOrWhiteSpace(_newTaskType))
         {
-            _message = "任务名称和任务类型不能为空。";
+            NotificationService.Warning("新增失败", "任务名称和任务类型不能为空。");
             return;
         }
 
@@ -324,12 +320,13 @@ else
             _newTaskType.Trim(),
             _newTaskPriority));
 
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("新增失败", message);
             return;
         }
 
+        NotificationService.Success("新增成功", string.IsNullOrWhiteSpace(message) ? "任务已创建。" : message);
         _newTaskName = string.Empty;
         _newTaskType = "Generic";
         _newTaskPriority = 5;
@@ -370,12 +367,13 @@ else
             null,
             null));
 
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("保存失败", message);
             return;
         }
 
+        NotificationService.Success("保存成功", string.IsNullOrWhiteSpace(message) ? "任务已更新。" : message);
         CancelTaskEdit();
         await LoadPageAsync();
     }
@@ -394,12 +392,13 @@ else
     private async Task DeleteTaskAsync(string taskId)
     {
         var (success, message) = await ApiClient.DeleteTaskAsync(taskId);
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("删除失败", message);
             return;
         }
 
+        NotificationService.Success("删除成功", string.IsNullOrWhiteSpace(message) ? "任务已删除。" : message);
         _confirmDeleteTaskId = null;
         await LoadPageAsync();
     }
@@ -421,7 +420,7 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JsRuntime.InvokeVoidAsync("drawerUx.syncState");
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showCreateDrawer ? "task-create-button" : null);
     }
 
     public async ValueTask DisposeAsync()

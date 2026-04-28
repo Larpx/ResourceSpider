@@ -31,8 +31,24 @@ public class RuntimeSnapshotBroadcastService : BackgroundService
 
         try
         {
-            while (await timer.WaitForNextTickAsync(stoppingToken))
+            while (true)
             {
+                bool hasNextTick;
+                try
+                {
+                    hasNextTick = await timer.WaitForNextTickAsync(stoppingToken);
+                }
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+                {
+                    // 主机正在停止，正常退出后台循环
+                    break;
+                }
+
+                if (!hasNextTick)
+                {
+                    break;
+                }
+
                 tick++;
 
                 try
@@ -62,8 +78,9 @@ public class RuntimeSnapshotBroadcastService : BackgroundService
                             .SendAsync("RuntimeSnapshot", snapshot, stoppingToken);
                     }
                 }
-                catch (OperationCanceledException)
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {
+                    // 停机时可能在抓取快照或发送消息阶段收到取消信号，直接退出
                     break;
                 }
                 catch (Exception ex)

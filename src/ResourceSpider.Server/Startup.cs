@@ -79,6 +79,7 @@ public class Startup
         services.AddHttpClient();
         services.AddScoped<AdminSessionState>();
         services.AddScoped<AdminApiClient>();
+        services.AddScoped<AdminNotificationService>();
     }
 
     /// <summary>

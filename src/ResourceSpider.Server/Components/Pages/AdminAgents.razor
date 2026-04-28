@@ -3,6 +3,7 @@
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>Agent 配置 - ResourceSpider</PageTitle>
 
@@ -71,6 +72,11 @@ else
 
         _agents = await ApiClient.GetAgentsAsync();
         _ready = true;
+
+        if (_agents.Count == 0)
+        {
+            NotificationService.Info("暂无数据", "当前没有可展示的 Agent 记录。");
+        }
     }
 
     private static string GetAgentStatusBadgeClass(int status)

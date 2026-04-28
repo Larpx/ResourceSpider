@@ -34,7 +34,7 @@ public class ResultReporter : IResultReporter
     private readonly IOfflineTaskStore? _offlineStore;
     private readonly ILogger<ResultReporter> _logger;
     private readonly string _agentId;
-    private readonly string _agentToken;
+    private readonly Agent.Config.OnlineModeOptions? _onlineOptions;
 
     public ResultReporter(
         IServerApiClient? serverApiClient,
@@ -48,8 +48,8 @@ public class ResultReporter : IResultReporter
         _storage = storage;
         _offlineStore = offlineStore;
         _logger = logger;
+        _onlineOptions = serverConfig;
         _agentId = serverConfig?.AgentId ?? localConfig?.TaskFilePath ?? "local-agent";
-        _agentToken = serverConfig?.AgentToken ?? string.Empty;
     }
 
     public async Task ReportAsync(ExecutionResult result, CancellationToken ct = default)
@@ -63,9 +63,11 @@ public class ResultReporter : IResultReporter
         try
         {
             var status = result.Status == Constants.ExecutionStatus.Success ? 2 : 3;
+            var currentToken = _onlineOptions?.AgentToken ?? string.Empty;
+
             await _serverApiClient.ReportTaskAsync(new ReportTaskRequest(
                 AgentId: _agentId,
-                AgentToken: _agentToken,
+                AgentToken: currentToken,
                 TaskId: result.TaskId,
                 Status: status,
                 DataCount: result.DataRecords.Count,
@@ -77,7 +79,7 @@ public class ResultReporter : IResultReporter
                 var storeRequest = new StoreResultsRequest
                 {
                     AgentId = _agentId,
-                    AgentToken = _agentToken,
+                    AgentToken = currentToken,
                     TaskId = result.TaskId,
                     ExpressionId = result.ExpressionId,
                     Results = result.DataRecords.Select(r => new ResultItemDto

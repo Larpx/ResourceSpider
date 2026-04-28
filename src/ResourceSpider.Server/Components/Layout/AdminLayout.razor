@@ -3,9 +3,9 @@
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <div class="admin-app">
-    <!-- 顶部 Logo 栏 -->
     <header class="admin-topbar">
         <div class="admin-topbar-left">
             <button class="sidebar-toggle" @onclick="ToggleSidebar" title="折叠菜单">
@@ -21,10 +21,60 @@
                 <span class="status-dot online"></span>
                 <span class="status-text">系统正常</span>
             </div>
-            <button class="topbar-btn" title="通知">
-                <span>🔔</span>
-                <span class="notification-badge">0</span>
-            </button>
+            <div class="notification-container">
+                <button class="topbar-btn" @onclick="ToggleNotificationPanel" title="通知">
+                    <span>🔔</span>
+                    <span class="notification-badge">@NotificationService.Items.Count</span>
+                </button>
+                @if (_notificationPanelExpanded)
+                {
+                    <div class="notification-panel">
+                        <div class="notification-panel-header">
+                            <strong>通知中心</strong>
+                            <div class="table-actions">
+                                <button class="btn btn-secondary btn-sm" type="button" @onclick="ToggleNotificationPanel">折叠</button>
+                                <button class="btn btn-secondary btn-sm" type="button" @onclick="ClearNotifications">清空</button>
+                            </div>
+                        </div>
+
+                        <div class="notification-filter-row">
+                            <button class="btn btn-secondary btn-sm" type="button" @onclick='() => SetNotificationFilter(string.Empty)'>全部</button>
+                            <button class="btn btn-secondary btn-sm" type="button" @onclick='() => SetNotificationFilter("success")'>成功</button>
+                            <button class="btn btn-secondary btn-sm" type="button" @onclick='() => SetNotificationFilter("info")'>信息</button>
+                            <button class="btn btn-secondary btn-sm" type="button" @onclick='() => SetNotificationFilter("warning")'>警告</button>
+                            <button class="btn btn-secondary btn-sm" type="button" @onclick='() => SetNotificationFilter("error")'>错误</button>
+                        </div>
+
+                        @if (!FilteredNotifications.Any())
+                        {
+                            <p class="empty-state">暂无通知。</p>
+                        }
+                        else
+                        {
+                            <div class="notification-list">
+                                @foreach (var item in FilteredNotifications.Take(10))
+                                {
+                                    <div class="notification-item @item.Level">
+                                        <div class="notification-item-header">
+                                            <div class="notification-title-group">
+                                                <span class="notification-icon">@GetNotificationIcon(item.Level)</span>
+                                                <strong>@item.Title</strong>
+                                                @if (item.RepeatCount > 1)
+                                                {
+                                                    <span class="notification-repeat-badge">x @item.RepeatCount</span>
+                                                }
+                                            </div>
+                                            <button class="topbar-btn notification-close" @onclick="() => RemoveNotification(item.Id)" title="关闭">✕</button>
+                                        </div>
+                                        <div class="notification-item-message">@item.Message</div>
+                                        <div class="notification-item-time">@item.CreatedAt.ToString("HH:mm:ss")</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
             <div class="user-dropdown">
                 <span class="user-avatar">@Session.Username?.Substring(0, 1).ToUpper()</span>
                 <span class="user-name">@Session.Username</span>
@@ -34,7 +84,6 @@
     </header>
 
     <div class="admin-body">
-        <!-- 左侧导航菜单 -->
         <aside class="admin-sidebar @(_sidebarCollapsed ? "collapsed" : "")">
             <nav class="sidebar-menu">
                 <NavLink href="/admin" Match="NavLinkMatch.All" class="sidebar-menu-item">
@@ -70,7 +119,6 @@
             </nav>
         </aside>
 
-        <!-- 中间工作区 -->
         <main class="admin-workspace">
             <div class="admin-workspace-content">
                 @Body
@@ -91,11 +139,19 @@
 
 @code {
     private bool _sidebarCollapsed;
+    private bool _notificationPanelExpanded;
+    private string _notificationFilter = string.Empty;
     private string _lastUpdate = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+
+    private IEnumerable<ResourceSpider.Server.Components.Services.AdminNotificationItem> FilteredNotifications =>
+        string.IsNullOrWhiteSpace(_notificationFilter)
+            ? NotificationService.Items
+            : NotificationService.Items.Where(x => x.Level == _notificationFilter);
 
     protected override void OnInitialized()
     {
         Session.OnChange += HandleSessionChanged;
+        NotificationService.OnChange += HandleSessionChanged;
     }
 
     private void ToggleSidebar()
@@ -103,10 +159,42 @@
         _sidebarCollapsed = !_sidebarCollapsed;
     }
 
+    private void ToggleNotificationPanel()
+    {
+        _notificationPanelExpanded = !_notificationPanelExpanded;
+    }
+
+    private void SetNotificationFilter(string level)
+    {
+        _notificationFilter = level;
+    }
+
+    private void ClearNotifications()
+    {
+        NotificationService.Clear();
+    }
+
+    private void RemoveNotification(Guid id)
+    {
+        NotificationService.Remove(id);
+    }
+
     private void Logout()
     {
         ApiClient.Logout();
         Navigation.NavigateTo("/welcome", replace: true);
+    }
+
+    private static string GetNotificationIcon(string level)
+    {
+        return level switch
+        {
+            "success" => "✅",
+            "info" => "ℹ️",
+            "warning" => "⚠️",
+            "error" => "⛔",
+            _ => "🔔"
+        };
     }
 
     private void HandleSessionChanged()
@@ -117,5 +205,6 @@
     public void Dispose()
     {
         Session.OnChange -= HandleSessionChanged;
+        NotificationService.OnChange -= HandleSessionChanged;
     }
 }

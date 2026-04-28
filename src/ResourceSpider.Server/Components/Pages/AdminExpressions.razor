@@ -6,6 +6,7 @@
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
 @inject IJSRuntime JsRuntime
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>表达式配置</PageTitle>
 
@@ -17,13 +18,8 @@ else
 {
     <h1>表达式配置</h1>
 
-    @if (!string.IsNullOrWhiteSpace(_message))
-    {
-        <p>@_message</p>
-    }
-
     <div class="action-row">
-        <button class="btn" type="button" @onclick="OpenCreateDrawer">新增表达式</button>
+        <button id="expression-create-button" class="btn" type="button" @onclick="OpenCreateDrawer">新增表达式</button>
         <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
     </div>
 
@@ -212,6 +208,16 @@ else
         _ready = true;
     }
 
+    private void OpenCreateDrawer()
+    {
+        _showCreateDrawer = true;
+    }
+
+    private void CloseCreateDrawer()
+    {
+        _showCreateDrawer = false;
+    }
+
     private void LoadFiltersFromUri()
     {
         var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
@@ -313,7 +319,7 @@ else
     {
         if (_jumpPageIndex < 1 || _jumpPageIndex > TotalPages)
         {
-            _message = $"页码范围应为 1 到 {TotalPages}。";
+            NotificationService.Warning("页码无效", $"页码范围应为 1 到 {TotalPages}。");
             return;
         }
 
@@ -321,21 +327,11 @@ else
         await LoadPageAsync();
     }
 
-    private void OpenCreateDrawer()
-    {
-        _showCreateDrawer = true;
-    }
-
-    private void CloseCreateDrawer()
-    {
-        _showCreateDrawer = false;
-    }
-
     private async Task CreateExpressionAsync()
     {
         if (string.IsNullOrWhiteSpace(_newName) || string.IsNullOrWhiteSpace(_newSelectorType))
         {
-            _message = "表达式名称和选择器类型不能为空。";
+            NotificationService.Warning("新增失败", "表达式名称和选择器类型不能为空。");
             return;
         }
 
@@ -346,12 +342,13 @@ else
             string.IsNullOrWhiteSpace(_newContainerExpression) ? null : _newContainerExpression.Trim(),
             null));
 
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("新增失败", message);
             return;
         }
 
+        NotificationService.Success("新增成功", string.IsNullOrWhiteSpace(message) ? "表达式已创建。" : message);
         _newName = string.Empty;
         _newSelectorType = "xpath";
         _newDescription = string.Empty;
@@ -391,12 +388,13 @@ else
             _editStatus,
             null));
 
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("保存失败", message);
             return;
         }
 
+        NotificationService.Success("保存成功", string.IsNullOrWhiteSpace(message) ? "表达式已更新。" : message);
         CancelEdit();
         await LoadPageAsync();
     }
@@ -415,12 +413,13 @@ else
     private async Task DeleteExpressionAsync(string expressionId)
     {
         var (success, message) = await ApiClient.DeleteExpressionAsync(expressionId);
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("删除失败", message);
             return;
         }
 
+        NotificationService.Success("删除成功", string.IsNullOrWhiteSpace(message) ? "表达式已删除。" : message);
         _confirmDeleteExpressionId = null;
         await LoadPageAsync();
     }
@@ -438,7 +437,7 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JsRuntime.InvokeVoidAsync("drawerUx.syncState");
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showCreateDrawer ? "expression-create-button" : null);
     }
 
     public async ValueTask DisposeAsync()

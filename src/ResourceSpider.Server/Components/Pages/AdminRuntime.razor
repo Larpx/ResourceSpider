@@ -7,6 +7,7 @@
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
 @inject IJSRuntime JsRuntime
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>运行监控</PageTitle>
 
@@ -23,7 +24,7 @@ else if (_runtime == null)
 else
 {
     <div class="action-row">
-        <button class="btn" type="button" @onclick="LoadAsync">立即刷新</button>
+        <button class="btn" type="button" @onclick="HandleManualRefreshAsync">立即刷新</button>
         <label class="inline-setting">
             推送策略
             <select class="input interval-select" @bind="_selectedPushIntervalSeconds" @bind:after="OnPushIntervalChangedAsync">
@@ -226,10 +227,18 @@ else
     {
         if (_runtimeConnection == null || _runtimeConnection.State != HubConnectionState.Connected)
         {
+            NotificationService.Warning("切换失败", "实时连接未建立，无法更新推送策略。");
             return;
         }
 
         _selectedPushIntervalSeconds = await ApiClient.SetRuntimeSnapshotIntervalAsync(_runtimeConnection, _selectedPushIntervalSeconds);
+        NotificationService.Info("推送策略已更新", $"当前快照推送间隔：{_selectedPushIntervalSeconds} 秒。");
+    }
+
+    private async Task HandleManualRefreshAsync()
+    {
+        await LoadAsync();
+        NotificationService.Success("刷新成功", "运行监控数据已手动刷新。");
     }
 
     private async Task LoadAsync()

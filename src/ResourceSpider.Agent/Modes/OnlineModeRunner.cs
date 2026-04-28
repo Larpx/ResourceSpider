@@ -79,11 +79,12 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
         _offlineSyncTimer = new Timer(
             SyncOfflineResults, null,
             TimeSpan.FromMinutes(1),
-            TimeSpan.FromMinutes(5));
+            TimeSpan.FromMinutes(_options.OfflineSyncIntervalMinutes));
 
-        _signalRClient.OnTaskReceived += (_, message) =>
+        _signalRClient.OnTaskReceived += async (_, message) =>
         {
             _logger.LogInformation("通过 SignalR 收到任务分配：{TaskId}", message.TaskId);
+            await ExecuteAssignedTaskAsync(message.TaskId);
         };
 
         _signalRClient.OnControlCommand += (_, message) =>
@@ -110,10 +111,19 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
                 AgentName: _options.AgentName,
                 IpAddress: GetLocalIpAddress(),
                 Port: 0,
-                Capabilities: ["HttpClient", "Playwright"]);
+                Capabilities: ["HttpClient", "Playwright", "BrowserAutomation"],
+                OS: Environment.OSVersion.ToString(),
+                Version: typeof(Program).Assembly.GetName().Version?.ToString());
 
             var response = await _serverApi.RegisterAsync(request);
             _agentToken = response.AgentToken;
+            _options.AgentToken = response.AgentToken;
+
+            if (response.HeartbeatInterval > 0)
+            {
+                _options.HeartbeatInterval = response.HeartbeatInterval;
+            }
+
             _isRegistered = true;
 
             _logger.LogInformation("Agent 注册成功，Token: {Token}",
@@ -135,7 +145,9 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
                 CpuUsage: 0,
                 MemoryUsage: 0,
                 TaskCount: 0,
-                Status: (int)AgentStatus.Online);
+                Status: (int)AgentStatus.Online,
+                OS: Environment.OSVersion.ToString(),
+                Version: typeof(Program).Assembly.GetName().Version?.ToString());
 
             await _serverApi.HeartbeatAsync(request);
         }
@@ -177,22 +189,13 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
             var request = new PullTasksRequest(
                 AgentId: _options.AgentId,
                 AgentToken: _agentToken,
-                MaxCount: 5);
+                MaxCount: _options.MaxConcurrentTasks);
 
             var response = await _serverApi.PullTasksAsync(request);
 
             foreach (var taskDto in response.Tasks)
             {
-                var task = MapTask(taskDto);
-                await ResolveExpressionConfig(taskDto, task);
-
-                _logger.LogInformation("执行任务：{TaskName}", task.TaskName);
-                var result = await _taskExecutor.ExecuteAsync(task);
-
-                await ReportStepResultsAsync(result);
-                await _resultReporter.ReportAsync(result);
-
-                await ReportExpressionAvailabilityIfNeeded(result);
+                await ExecuteTaskDtoAsync(taskDto);
             }
         }
         catch (Exception ex)
@@ -203,6 +206,53 @@ public class OnlineModeRunner : IHostedService, IAsyncDisposable
         {
             _taskExecutionLock.Release();
         }
+    }
+
+    private async Task ExecuteAssignedTaskAsync(string taskId)
+    {
+        if (string.IsNullOrWhiteSpace(taskId))
+        {
+            return;
+        }
+
+        if (!await _taskExecutionLock.WaitAsync(0))
+        {
+            _logger.LogInformation("当前已有任务执行中，SignalR 下发任务 {TaskId} 将等待下一轮拉取补偿", taskId);
+            return;
+        }
+
+        try
+        {
+            var taskDto = await _serverApi.GetTaskContentAsync(taskId);
+            if (taskDto == null)
+            {
+                _logger.LogWarning("服务端未返回任务 {TaskId} 的完整内容", taskId);
+                return;
+            }
+
+            await ExecuteTaskDtoAsync(taskDto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "执行 SignalR 下发任务 {TaskId} 失败", taskId);
+        }
+        finally
+        {
+            _taskExecutionLock.Release();
+        }
+    }
+
+    private async Task ExecuteTaskDtoAsync(TaskDto taskDto)
+    {
+        var task = MapTask(taskDto);
+        await ResolveExpressionConfig(taskDto, task);
+
+        _logger.LogInformation("执行任务：{TaskName}", task.TaskName);
+        var result = await _taskExecutor.ExecuteAsync(task);
+
+        await ReportStepResultsAsync(result);
+        await _resultReporter.ReportAsync(result);
+        await ReportExpressionAvailabilityIfNeeded(result);
     }
 
     private async Task ReportStepResultsAsync(ExecutionResult result)

@@ -1,4 +1,7 @@
+@using ResourceSpider.Server.Components.Services
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
+@implements IDisposable
+@inject AdminNotificationService NotificationService
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -10,9 +13,66 @@
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 <body>
+    <div class="toast-stack" aria-live="polite" aria-atomic="false">
+        @foreach (var item in NotificationService.VisibleToastItems)
+        {
+            <div class="toast-item @item.Level">
+                <div class="toast-item-header">
+                    <div class="notification-title-group">
+                        <span class="notification-icon">@GetNotificationIcon(item.Level)</span>
+                        <strong>@item.Title</strong>
+                        @if (item.RepeatCount > 1)
+                        {
+                            <span class="notification-repeat-badge">x @item.RepeatCount</span>
+                        }
+                    </div>
+                    <button class="topbar-btn notification-close" @onclick="() => RemoveNotification(item.Id)" title="关闭">✕</button>
+                </div>
+                <div class="toast-item-message">@item.Message</div>
+                <div class="toast-progress">
+                    <div class="toast-progress-bar @item.Level" style="width:@($"{item.ToastRemainingPercent:F2}%")"></div>
+                </div>
+            </div>
+        }
+    </div>
+
     <Routes @rendermode="InteractiveServer" />
     <script src="runtime-log-scroller.js"></script>
     <script src="drawer-ux.js"></script>
     <script src="_framework/blazor.web.js"></script>
 </body>
 </html>
+
+@code {
+    protected override void OnInitialized()
+    {
+        NotificationService.OnChange += HandleNotificationChanged;
+    }
+
+    private void RemoveNotification(Guid id)
+    {
+        NotificationService.Remove(id);
+    }
+
+    private static string GetNotificationIcon(string level)
+    {
+        return level switch
+        {
+            "success" => "✅",
+            "info" => "ℹ️",
+            "warning" => "⚠️",
+            "error" => "⛔",
+            _ => "🔔"
+        };
+    }
+
+    private void HandleNotificationChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        NotificationService.OnChange -= HandleNotificationChanged;
+    }
+}

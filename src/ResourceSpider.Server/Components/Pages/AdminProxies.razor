@@ -6,6 +6,7 @@
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
 @inject IJSRuntime JsRuntime
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>代理池配置</PageTitle>
 
@@ -17,13 +18,8 @@ else
 {
     <h1>代理池配置</h1>
 
-    @if (!string.IsNullOrWhiteSpace(_message))
-    {
-        <p>@_message</p>
-    }
-
     <div class="action-row">
-        <button class="btn" type="button" @onclick="OpenCreateDrawer">新增代理</button>
+        <button id="proxy-create-button" class="btn" type="button" @onclick="OpenCreateDrawer">新增代理</button>
         <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
     </div>
 
@@ -212,6 +208,16 @@ else
         _ready = true;
     }
 
+    private void OpenCreateDrawer()
+    {
+        _showCreateDrawer = true;
+    }
+
+    private void CloseCreateDrawer()
+    {
+        _showCreateDrawer = false;
+    }
+
     private void LoadFiltersFromUri()
     {
         var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
@@ -313,7 +319,7 @@ else
     {
         if (_jumpPageIndex < 1 || _jumpPageIndex > TotalPages)
         {
-            _message = $"页码范围应为 1 到 {TotalPages}。";
+            NotificationService.Warning("页码无效", $"页码范围应为 1 到 {TotalPages}。");
             return;
         }
 
@@ -321,21 +327,11 @@ else
         await LoadPageAsync();
     }
 
-    private void OpenCreateDrawer()
-    {
-        _showCreateDrawer = true;
-    }
-
-    private void CloseCreateDrawer()
-    {
-        _showCreateDrawer = false;
-    }
-
     private async Task CreateProxyAsync()
     {
         if (string.IsNullOrWhiteSpace(_newHost))
         {
-            _message = "代理主机不能为空。";
+            NotificationService.Warning("新增失败", "代理主机不能为空。");
             return;
         }
 
@@ -346,12 +342,13 @@ else
             string.IsNullOrWhiteSpace(_newUsername) ? null : _newUsername.Trim(),
             string.IsNullOrWhiteSpace(_newPassword) ? null : _newPassword));
 
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("新增失败", message);
             return;
         }
 
+        NotificationService.Success("新增成功", string.IsNullOrWhiteSpace(message) ? "代理已创建。" : message);
         _newHost = string.Empty;
         _newPort = 8080;
         _newProtocol = "HTTP";
@@ -392,12 +389,13 @@ else
             null,
             _editStatus));
 
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("保存失败", message);
             return;
         }
 
+        NotificationService.Success("保存成功", string.IsNullOrWhiteSpace(message) ? "代理已更新。" : message);
         CancelEdit();
         await LoadPageAsync();
     }
@@ -416,12 +414,13 @@ else
     private async Task DeleteProxyAsync(string proxyId)
     {
         var (success, message) = await ApiClient.DeleteProxyAsync(proxyId);
-        _message = message;
         if (!success)
         {
+            NotificationService.Error("删除失败", message);
             return;
         }
 
+        NotificationService.Success("删除成功", string.IsNullOrWhiteSpace(message) ? "代理已删除。" : message);
         _confirmDeleteProxyId = null;
         await LoadPageAsync();
     }
@@ -440,7 +439,7 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JsRuntime.InvokeVoidAsync("drawerUx.syncState");
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showCreateDrawer ? "proxy-create-button" : null);
     }
 
     public async ValueTask DisposeAsync()

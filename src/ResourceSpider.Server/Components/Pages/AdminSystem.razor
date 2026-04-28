@@ -3,6 +3,7 @@
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>系统配置</PageTitle>
 
@@ -15,7 +16,7 @@ else
     <h1>系统配置</h1>
 
     <div class="action-row">
-        <button class="btn" type="button" @onclick="RefreshAsync">刷新健康状态</button>
+        <button class="btn" type="button" @onclick="RefreshFromButtonAsync">刷新健康状态</button>
         <a class="btn btn-secondary" href="/admin/runtime">打开运行监控页</a>
     </div>
 
@@ -123,26 +124,39 @@ else
             return;
         }
 
-        await RefreshAsync();
+        await RefreshAsync(showNotification: false);
         _ready = true;
     }
 
-    private async Task RefreshAsync()
+    private Task RefreshFromButtonAsync()
+    {
+        return RefreshAsync();
+    }
+
+    private async Task RefreshAsync(bool showNotification = true)
     {
         _health = await ApiClient.GetSystemHealthAsync();
         _redisStatus = await ApiClient.GetRedisFeatureStatusAsync();
         var logsResponse = await ApiClient.GetSystemLogsAsync();
         _logs = logsResponse?.Logs ?? new List<SystemLogDto>();
+
+        if (showNotification)
+        {
+            NotificationService.Success("刷新成功", "系统配置与健康状态已更新。");
+        }
     }
 
     private async Task ToggleRedisAsync()
     {
         if (_redisStatus == null)
         {
+            NotificationService.Warning("操作失败", "当前暂无 Redis 状态可供切换。");
             return;
         }
 
-        _redisStatus = await ApiClient.UpdateRedisFeatureStatusAsync(!_redisStatus.Enabled) ?? _redisStatus;
+        var targetEnabled = !_redisStatus.Enabled;
+        _redisStatus = await ApiClient.UpdateRedisFeatureStatusAsync(targetEnabled) ?? _redisStatus;
         _health = await ApiClient.GetSystemHealthAsync();
+        NotificationService.Success("Redis 开关已更新", targetEnabled ? "已启用 Redis 功能。" : "已停用 Redis 功能。");
     }
 }

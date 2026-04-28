@@ -3,6 +3,7 @@
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>后台首页 - ResourceSpider</PageTitle>
 
@@ -112,6 +113,11 @@ else
         _statistics = await ApiClient.GetSystemStatisticsAsync();
         _health = await ApiClient.GetSystemHealthAsync();
         _ready = true;
+
+        if (_statistics == null || _health == null)
+        {
+            NotificationService.Warning("部分数据未加载", "后台首页存在部分统计或健康信息未成功获取。");
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)

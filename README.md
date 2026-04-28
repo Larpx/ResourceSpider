@@ -15,9 +15,12 @@ ResourceSpider 是一个轻量、灵活、高性能、跨平台的分布式网�
 - **任务调度**: 广度优先/深度优先调度器，支持请求去重（HashSet/布隆过滤器/Redis）
 - **消息队列**: 可切换内存/RabbitMQ 消息队列
 - **RESTful API**: 完整的任务管理、Agent 管理、表达式管理、统计接口
+- **Web 管理界面**: Blazor Web UI 提供可视化的任务管理、Agent 监控、数据统计
 - **实时通信**: SignalR 支持 Agent 实时任务分配和控制指令
 - **安全认证**: JWT Bearer Token 认证，BCrypt 密码哈希
 - **配置版本**: 任务配置版本管理，支持回滚
+- **健康检查**: 数据库、Redis 连接健康监控
+- **运行时监控**: 实时监控 Agent 运行状态、任务执行进度、系统资源使用
 - **容器化部署**: 提供 Docker 和 docker-compose 配置
 
 ## 技术栈
@@ -26,6 +29,7 @@ ResourceSpider 是一个轻量、灵活、高性能、跨平台的分布式网�
 |------|----------|
 | 运行时 | .NET 10.0 |
 | 服务端框架 | ASP.NET Core |
+| Web UI | Blazor Server |
 | ORM | SqlSugar.Core |
 | 缓存 | StackExchange.Redis |
 | 消息队列 | MassTransit + RabbitMQ / InMemory |
@@ -37,6 +41,8 @@ ResourceSpider 是一个轻量、灵活、高性能、跨平台的分布式网�
 | 日志 | Serilog |
 | 认证 | JWT Bearer + BCrypt |
 | 实时通信 | SignalR + MessagePack |
+| API 文档 | NSwag (OpenAPI/Swagger) |
+| 健康检查 | AspNetCore.HealthChecks |
 | 数据库 | MySQL 8.0+ |
 | 测试框架 | xUnit + Shouldly + Moq |
 
@@ -68,13 +74,18 @@ ResourceSpider/
 │   │   ├── Storage/                      # 存储（文件CSV/TXT/JSON、数据库）
 │   │   └── Utils/                        # 工具（哈希轮定时器、请求指纹）
 │   │
-│   ├── ResourceSpider.Server/            # 服务端：ASP.NET Core Web API
+│   ├── ResourceSpider.Server/            # 服务端：ASP.NET Core Web API + Blazor UI
+│   │   ├── Components/                   # Blazor 组件
+│   │   │   ├── Layout/                   # 布局组件（AdminLayout、MainLayout）
+│   │   │   ├── Pages/                    # 页面组件（Dashboard、Tasks、Agents等）
+│   │   │   └── Services/                 # Blazor 服务（API客户端、通知、状态管理）
 │   │   ├── Controllers/                  # API 控制器（14个）
 │   │   ├── DTOs/                         # 数据传输对象
 │   │   ├── Entities/                     # 数据库实体（SqlSugar）
 │   │   ├── Filters/                      # 过滤器（ApiResponse自动包装）
 │   │   ├── Hubs/                         # SignalR Hub
 │   │   ├── Middleware/                   # 中间件（限流、安全头、异常处理）
+│   │   ├── Observability/                # 可观测性（健康检查、运行时监控）
 │   │   ├── Repositories/                 # 数据仓储层（15个）
 │   │   └── Services/                     # 业务服务层（12个）
 │   │
@@ -132,6 +143,11 @@ ResourceSpider/
    ```
    服务端默认监听 `http://localhost:5000`
 
+   访问以下地址：
+   - **Web 管理界面**: http://localhost:5000
+   - **API 文档 (Swagger)**: http://localhost:5000/swagger
+   - **健康检查**: http://localhost:5000/health
+
 5. 启动 Agent（本地模式）
    ```bash
    cd src/ResourceSpider.Agent
@@ -150,8 +166,14 @@ docker-compose up -d
 - **mysql**: MySQL 8.0 数据库
 - **redis**: Redis 7 缓存
 - **rabbitmq**: RabbitMQ 消息队列（含管理界面）
-- **server**: 服务端 API
+- **server**: 服务端 API + Web UI
 - **agent**: 采集 Agent
+
+访问地址：
+- **Web 管理界面**: http://localhost:5000
+- **API 文档**: http://localhost:5000/swagger
+- **健康检查**: http://localhost:5000/health
+- **RabbitMQ 管理界面**: http://localhost:15672 (guest/guest)
 
 ## 配置说明
 
@@ -212,6 +234,28 @@ docker-compose up -d
 **模式说明**：
 - `Local`: 本地模式，扫描本地任务文件执行，结果存储到本地文件
 - `Online`: 在线模式，连接服务端拉取任务，通过 SignalR 接收实时指令
+
+## Web 管理界面
+
+ResourceSpider 提供基于 Blazor Server 的 Web 管理界面，支持以下功能：
+
+### 主要页面
+
+| 页面 | 功能 |
+|------|------|
+| 仪表盘 | 系统概览、Agent 状态、任务统计、实时监控 |
+| 任务管理 | 任务创建、编辑、执行、暂停、恢复、删除、配置版本管理 |
+| Agent 管理 | Agent 列表、状态监控、分组管理、在线状态 |
+| 表达式管理 | 表达式配置、字段提取规则、可用性检测 |
+| 代理管理 | 代理池管理、健康检测、代理测试 |
+| 运行时监控 | 实时日志、任务执行进度、系统资源监控 |
+| 系统设置 | 用户管理、系统配置、日志查看 |
+
+### 实时功能
+
+- **实时监控**: 通过 SignalR 实时推送 Agent 状态、任务进度、系统日志
+- **实时日志**: Web 界面实时显示服务端和 Agent 运行日志
+- **实时通知**: 任务完成、Agent 上线/下线、异常告警等通知
 
 ## API 接口
 
@@ -313,7 +357,78 @@ dotnet test src/ResourceSpider.Tests.Integration
 | `Agent__Mode` | Agent 运行模式 | Local |
 | `Agent__ServerConfig__ServerUrl` | 服务端地址 | http://localhost:5000 |
 
+## 健康检查
+
+系统提供健康检查接口，用于监控服务状态：
+
+| 端点 | 说明 |
+|------|------|
+| /health | 综合健康检查 |
+| /health/ready | 就绪检查 |
+| /health/live | 存活检查 |
+
+健康检查包括：
+- 数据库连接状态
+- Redis 连接状态
+- 系统资源使用情况
+
+## 监控与日志
+
+### 日志系统
+
+- **服务端日志**: `logs/server-<date>.txt`
+- **Agent 日志**: `logs/agent-<date>.txt`
+- **日志级别**: Debug / Information / Warning / Error
+- **日志轮转**: 按天轮转，保留 30 天
+
+### 运行时监控
+
+通过 SignalR 实时推送以下监控数据：
+
+- **Agent 状态**: 在线/离线、心跳时间、执行任务数
+- **任务进度**: 执行中、已完成、失败的任务数量
+- **系统资源**: CPU 使用率、内存使用量、网络流量
+- **实时日志**: 服务端和 Agent 的实时日志流
+
+### Web 界面监控
+
+访问 Web 管理界面的"运行时监控"页面，可以：
+- 查看所有 Agent 的实时状态
+- 监控任务执行进度
+- 查看实时日志流
+- 查看系统资源使用情况
+
 ## 架构设计
+
+### 系统整体架构
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Web 管理界面 (Blazor)                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │ Dashboard│  │  Tasks   │  │  Agents  │  │  Monitor  │   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ SignalR + REST API
+┌───────────────────────────┴─────────────────────────────────┐
+│                      ResourceSpider Server                    │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │Controllers│  │ Services │  │Repositories│  │ SignalR Hub│ │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+   ┌────▼────┐        ┌────▼────┐        ┌────▼────┐
+   │  MySQL  │        │  Redis  │        │RabbitMQ │
+   └─────────┘        └─────────┘        └─────────┘
+                            │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+   ┌────▼────┐        ┌────▼────┐        ┌────▼────┐
+   │ Agent 1 │        │ Agent 2 │        │ Agent N │
+   └─────────┘        └─────────┘        └─────────┘
+```
 
 ### Agent-Server 通信流程
 
@@ -346,6 +461,17 @@ SpiderTask
 └── 多步任务: 步骤1 → 变量映射 → 步骤2 → ... → 存储
                   ↑                    ↑
             分页处理              表达式配置
+```
+
+### 监控数据流
+
+```
+┌─────────┐    日志/状态      ┌─────────┐    SignalR     ┌──────────┐
+│  Agent  │ ──────────────→ │  Server │ ───────────→ │   Web UI │
+└─────────┘                 └─────────┘              └──────────┘
+     │                           │
+     │                           │
+     └─────── RuntimeOutputBroadcastService ──────┘
 ```
 
 ## 许可证

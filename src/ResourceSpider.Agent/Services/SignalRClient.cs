@@ -102,7 +102,7 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
             {
                 options.AccessTokenProvider = () => Task.FromResult<string?>(_options.AgentToken);
             })
-            .WithAutomaticReconnect(new[] { TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30) })
+            .WithAutomaticReconnect(new ExponentialBackoffRetryPolicy())
             .Build();
 
         _hubConnection.On<TaskSignalMessage>(Constants.Hub.MethodTaskAssign, message =>
@@ -184,28 +184,29 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
 }
 
 /// <summary>
+/// SignalR 重连指数退避策略：1s → 2s → 4s → 8s，之后封顶为 60s。
+/// 该策略对应需求文档中的断线自动重连要求。
+/// </summary>
+internal sealed class ExponentialBackoffRetryPolicy : IRetryPolicy
+{
+    private static readonly TimeSpan MaxDelay = TimeSpan.FromSeconds(60);
+
+    public TimeSpan? NextRetryDelay(RetryContext retryContext)
+    {
+        var retryCount = retryContext.PreviousRetryCount;
+        var seconds = Math.Min(Math.Pow(2, retryCount), MaxDelay.TotalSeconds);
+        return TimeSpan.FromSeconds(seconds);
+    }
+}
+
+/// <summary>
 /// 任务分配信号消息，由服务端通过 SignalR 下发给 Agent
 /// </summary>
 public class TaskSignalMessage
 {
-    /// <summary>
-    /// 任务唯一标识
-    /// </summary>
     public string TaskId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 任务名称
-    /// </summary>
     public string TaskName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 任务类型
-    /// </summary>
     public string TaskType { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 关联的表达式标识
-    /// </summary>
     public string? ExpressionId { get; set; }
 }
 
@@ -214,14 +215,7 @@ public class TaskSignalMessage
 /// </summary>
 public class ConfigSignalMessage
 {
-    /// <summary>
-    /// 目标 Agent 标识，null 表示广播给所有 Agent
-    /// </summary>
     public string? AgentId { get; set; }
-
-    /// <summary>
-    /// 配置更新内容字典
-    /// </summary>
     public Dictionary<string, object>? Config { get; set; }
 }
 
@@ -230,13 +224,6 @@ public class ConfigSignalMessage
 /// </summary>
 public class ControlSignalMessage
 {
-    /// <summary>
-    /// 控制指令类型（如 Pause、Resume、Stop）
-    /// </summary>
     public string Command { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 指令附加数据
-    /// </summary>
     public object? Data { get; set; }
 }

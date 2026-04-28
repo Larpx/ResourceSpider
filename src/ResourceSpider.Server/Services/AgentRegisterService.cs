@@ -90,6 +90,8 @@ public class AgentRegisterService : IAgentRegisterService
             existing.Capabilities = request.Capabilities != null
                 ? System.Text.Json.JsonSerializer.Serialize(request.Capabilities)
                 : null;
+            existing.OS = request.OS;
+            existing.Version = request.Version;
             existing.Status = 1;
             existing.LastHeartbeat = DateTime.UtcNow;
             await _agentRepository.UpdateAsync(existing);
@@ -108,6 +110,8 @@ public class AgentRegisterService : IAgentRegisterService
                 Capabilities = request.Capabilities != null
                     ? System.Text.Json.JsonSerializer.Serialize(request.Capabilities)
                     : null,
+                OS = request.OS,
+                Version = request.Version,
                 Status = 1,
                 LastHeartbeat = DateTime.UtcNow
             };
@@ -141,6 +145,8 @@ public class AgentRegisterService : IAgentRegisterService
         agent.MemoryUsage = request.MemoryUsage;
         agent.TaskCount = request.TaskCount;
         agent.Status = request.Status;
+        agent.OS = request.OS ?? agent.OS;
+        agent.Version = request.Version ?? agent.Version;
         agent.LastHeartbeat = DateTime.UtcNow;
         await _agentRepository.UpdateAsync(agent);
 

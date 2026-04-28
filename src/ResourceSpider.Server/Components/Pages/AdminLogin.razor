@@ -2,6 +2,7 @@
 @inject AdminApiClient ApiClient
 @inject AdminSessionState Session
 @inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <PageTitle>登录 - ResourceSpider</PageTitle>
 
@@ -36,14 +37,6 @@
                     <label for="password" class="form-label">密码</label>
                     <InputText id="password" class="form-input" type="password" @bind-Value="_model.Password" placeholder="请输入密码" />
                 </div>
-
-                @if (!string.IsNullOrWhiteSpace(_errorMessage))
-                {
-                    <div class="error-alert">
-                        <span class="error-icon">⚠</span>
-                        <span>@_errorMessage</span>
-                    </div>
-                }
 
                 <button type="submit" class="login-button" disabled="@_isSubmitting">
                     @if (_isSubmitting)
@@ -88,10 +81,11 @@
 
         if (!success)
         {
-            _errorMessage = message;
+            NotificationService.Error("登录失败", message);
             return;
         }
 
+        NotificationService.Success("登录成功", string.IsNullOrWhiteSpace(message) ? "欢迎进入后台管理系统。" : message);
         Navigation.NavigateTo("/admin", replace: true);
     }
 
