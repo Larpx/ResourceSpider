@@ -9,16 +9,13 @@ namespace ResourceSpider.Agent.Services;
 public interface IOfflineTaskStore
 {
     Task SavePendingResultAsync(ExecutionResult result);
-
     Task<List<ExecutionResult>> GetPendingResultsAsync();
-
     Task MarkResultUploadedAsync(string taskId);
-
     Task SaveTaskCheckpointAsync(string taskId, string stepId, int dataCount, Dictionary<string, object?> variables);
-
     Task<TaskCheckpoint?> GetCheckpointAsync(string taskId);
-
     Task ClearCheckpointAsync(string taskId);
+    void Remove(string taskId);
+    List<KeyValuePair<string, string>> GetAll();
 }
 
 public class OfflineTaskStore : IOfflineTaskStore
@@ -146,6 +143,41 @@ public class OfflineTaskStore : IOfflineTaskStore
         }
 
         return Task.CompletedTask;
+    }
+
+    public void Remove(string taskId)
+    {
+        var files = Directory.GetFiles(_offlineDir, $"{taskId}_*.json");
+        foreach (var file in files)
+        {
+            try { File.Delete(file); } catch { }
+        }
+
+        var checkpointFile = Path.Combine(_checkpointDir, $"{taskId}.json");
+        if (File.Exists(checkpointFile))
+        {
+            try { File.Delete(checkpointFile); } catch { }
+        }
+    }
+
+    public List<KeyValuePair<string, string>> GetAll()
+    {
+        var result = new List<KeyValuePair<string, string>>();
+        var files = Directory.GetFiles(_offlineDir, "*.json");
+
+        foreach (var file in files)
+        {
+            try
+            {
+                var fileName = Path.GetFileNameWithoutExtension(file);
+                var taskId = fileName.Contains('_') ? fileName.Split('_')[0] : fileName;
+                var content = File.ReadAllText(file);
+                result.Add(new KeyValuePair<string, string>(taskId, content));
+            }
+            catch { }
+        }
+
+        return result;
     }
 }
 

@@ -36,6 +36,11 @@ public interface ISystemLogRepository
     /// </summary>
     /// <param name="entity">系统日志实体</param>
     Task AddAsync(SystemLogEntity entity);
+
+    /// <summary>
+    /// 按分类前缀分页获取日志
+    /// </summary>
+    Task<List<SystemLogEntity>> GetPagedAsync(int pageIndex, int pageSize, string? categoryPrefix = null);
 }
 
 /// <summary>
@@ -95,5 +100,17 @@ public class SystemLogRepository : ISystemLogRepository
     public async Task AddAsync(SystemLogEntity entity)
     {
         await _db.Insertable(entity).ExecuteCommandAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<List<SystemLogEntity>> GetPagedAsync(int pageIndex, int pageSize, string? categoryPrefix = null)
+    {
+        var query = _db.Queryable<SystemLogEntity>();
+        if (!string.IsNullOrEmpty(categoryPrefix))
+            query = query.Where(l => l.Category.StartsWith(categoryPrefix));
+
+        return await query
+            .OrderByDescending(l => l.CreatedAt)
+            .ToPageListAsync(pageIndex, pageSize);
     }
 }

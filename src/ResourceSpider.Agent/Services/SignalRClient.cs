@@ -4,98 +4,42 @@ using ResourceSpider.Core;
 
 namespace ResourceSpider.Agent.Services;
 
-/// <summary>
-/// SignalR 客户端接口，定义与服务端实时通信的方法
-/// </summary>
 public interface ISignalRClient
 {
-    /// <summary>
-    /// 启动 SignalR 连接，注册消息处理器并连接到服务端 Hub
-    /// </summary>
-    /// <param name="ct">取消令牌</param>
-    Task StartAsync(CancellationToken ct = default);
-
-    /// <summary>
-    /// 停止 SignalR 连接
-    /// </summary>
+    Task ConnectAsync(string serverUrl, string agentId, CancellationToken ct = default);
     Task StopAsync();
-
-    /// <summary>
-    /// 向服务端发送消息
-    /// </summary>
-    /// <param name="method">Hub 方法名称</param>
-    /// <param name="arg">方法参数</param>
     Task SendAsync(string method, object? arg = null);
-
-    /// <summary>
-    /// 获取当前是否已连接到服务端
-    /// </summary>
+    Task SendHeartbeatAsync(object metrics, CancellationToken ct = default);
     bool IsConnected { get; }
 
-    /// <summary>
-    /// 收到任务分配信号时触发
-    /// </summary>
-    event EventHandler<TaskSignalMessage>? OnTaskReceived;
-
-    /// <summary>
-    /// 收到配置更新信号时触发
-    /// </summary>
-    event EventHandler<ConfigSignalMessage>? OnConfigReceived;
-
-    /// <summary>
-    /// 收到控制指令信号时触发
-    /// </summary>
-    event EventHandler<ControlSignalMessage>? OnControlCommand;
+    event Action<string, string>? OnTaskAssigned;
+    event Action<string, string?>? OnControlCommand;
+    event Action<string>? OnConfigUpdate;
+    event Action? OnReconnected;
 }
 
-/// <summary>
-/// SignalR 客户端实现，负责与服务端建立 WebSocket 连接并处理消息收发
-/// 支持自动重连、心跳检测和消息确认机制
-/// </summary>
 public class SignalRClient : ISignalRClient, IAsyncDisposable
 {
-    /// <summary>
-    /// 在线模式配置选项
-    /// </summary>
     private readonly OnlineModeOptions _options;
-
-    /// <summary>
-    /// 日志记录器
-    /// </summary>
     private readonly ILogger<SignalRClient> _logger;
-
-    /// <summary>
-    /// SignalR 连接实例
-    /// </summary>
     private HubConnection? _hubConnection;
 
-    /// <inheritdoc />
     public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
 
-    /// <inheritdoc />
-    public event EventHandler<TaskSignalMessage>? OnTaskReceived;
+    public event Action<string, string>? OnTaskAssigned;
+    public event Action<string, string?>? OnControlCommand;
+    public event Action<string>? OnConfigUpdate;
+    public event Action? OnReconnected;
 
-    /// <inheritdoc />
-    public event EventHandler<ConfigSignalMessage>? OnConfigReceived;
-
-    /// <inheritdoc />
-    public event EventHandler<ControlSignalMessage>? OnControlCommand;
-
-    /// <summary>
-    /// 初始化 SignalR 客户端实例
-    /// </summary>
-    /// <param name="options">在线模式配置选项</param>
-    /// <param name="logger">日志记录器</param>
     public SignalRClient(OnlineModeOptions options, ILogger<SignalRClient> logger)
     {
         _options = options;
         _logger = logger;
     }
 
-    /// <inheritdoc />
-    public async Task StartAsync(CancellationToken ct = default)
+    public async Task ConnectAsync(string serverUrl, string agentId, CancellationToken ct = default)
     {
-        var hubUrl = $"{_options.ServerUrl.TrimEnd('/')}{Constants.Hub.SpiderHubPath}";
+        var hubUrl = $"{serverUrl.TrimEnd('/')}{Constants.Hub.SpiderHubPath}";
 
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(hubUrl, options =>
@@ -108,19 +52,19 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
         _hubConnection.On<TaskSignalMessage>(Constants.Hub.MethodTaskAssign, message =>
         {
             _logger.LogInformation("收到任务分配信号：{TaskId}", message.TaskId);
-            OnTaskReceived?.Invoke(this, message);
+            OnTaskAssigned?.Invoke(message.TaskId, System.Text.Json.JsonSerializer.Serialize(message));
         });
 
         _hubConnection.On<ConfigSignalMessage>(Constants.Hub.MethodConfigUpdate, message =>
         {
             _logger.LogInformation("收到配置更新信号");
-            OnConfigReceived?.Invoke(this, message);
+            OnConfigUpdate?.Invoke(System.Text.Json.JsonSerializer.Serialize(message.Config));
         });
 
         _hubConnection.On<ControlSignalMessage>(Constants.Hub.MethodControlCommand, message =>
         {
             _logger.LogInformation("收到控制指令：{Command}", message.Command);
-            OnControlCommand?.Invoke(this, message);
+            OnControlCommand?.Invoke(message.Command, message.Data?.ToString());
         });
 
         _hubConnection.Reconnecting += error =>
@@ -132,7 +76,8 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
         _hubConnection.Reconnected += connectionId =>
         {
             _logger.LogInformation("SignalR 重连成功：{ConnectionId}", connectionId);
-            return _hubConnection.InvokeAsync(Constants.Hub.MethodJoinAgentGroup, _options.AgentId);
+            OnReconnected?.Invoke();
+            return _hubConnection.InvokeAsync(Constants.Hub.MethodJoinAgentGroup, agentId);
         };
 
         _hubConnection.Closed += error =>
@@ -144,7 +89,7 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
         try
         {
             await _hubConnection.StartAsync(ct);
-            await _hubConnection.InvokeAsync(Constants.Hub.MethodJoinAgentGroup, _options.AgentId, cancellationToken: ct);
+            await _hubConnection.InvokeAsync(Constants.Hub.MethodJoinAgentGroup, agentId, cancellationToken: ct);
             _logger.LogInformation("SignalR 连接成功：{HubUrl}", hubUrl);
         }
         catch (Exception ex)
@@ -153,7 +98,21 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
         }
     }
 
-    /// <inheritdoc />
+    public async Task SendHeartbeatAsync(object metrics, CancellationToken ct = default)
+    {
+        if (_hubConnection?.State == HubConnectionState.Connected)
+        {
+            try
+            {
+                await _hubConnection.SendAsync("Heartbeat", metrics, cancellationToken: ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "发送心跳失败");
+            }
+        }
+    }
+
     public async Task StopAsync()
     {
         if (_hubConnection != null)
@@ -162,7 +121,6 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
         }
     }
 
-    /// <inheritdoc />
     public async Task SendAsync(string method, object? arg = null)
     {
         if (_hubConnection?.State == HubConnectionState.Connected)
@@ -171,9 +129,6 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// 异步释放资源，断开 SignalR 连接
-    /// </summary>
     public async ValueTask DisposeAsync()
     {
         if (_hubConnection != null)
@@ -183,10 +138,6 @@ public class SignalRClient : ISignalRClient, IAsyncDisposable
     }
 }
 
-/// <summary>
-/// SignalR 重连指数退避策略：1s → 2s → 4s → 8s，之后封顶为 60s。
-/// 该策略对应需求文档中的断线自动重连要求。
-/// </summary>
 internal sealed class ExponentialBackoffRetryPolicy : IRetryPolicy
 {
     private static readonly TimeSpan MaxDelay = TimeSpan.FromSeconds(60);
@@ -199,9 +150,6 @@ internal sealed class ExponentialBackoffRetryPolicy : IRetryPolicy
     }
 }
 
-/// <summary>
-/// 任务分配信号消息，由服务端通过 SignalR 下发给 Agent
-/// </summary>
 public class TaskSignalMessage
 {
     public string TaskId { get; set; } = string.Empty;
@@ -210,18 +158,12 @@ public class TaskSignalMessage
     public string? ExpressionId { get; set; }
 }
 
-/// <summary>
-/// 配置更新信号消息，通知 Agent 采集规则已变更
-/// </summary>
 public class ConfigSignalMessage
 {
     public string? AgentId { get; set; }
     public Dictionary<string, object>? Config { get; set; }
 }
 
-/// <summary>
-/// 控制指令信号消息，用于远程控制 Agent（暂停/恢复/终止等）
-/// </summary>
 public class ControlSignalMessage
 {
     public string Command { get; set; } = string.Empty;

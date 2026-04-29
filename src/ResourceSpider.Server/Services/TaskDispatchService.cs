@@ -17,6 +17,8 @@ public interface ITaskDispatchService
     Task<(bool IsValid, List<StepResourceDto> Resources)> PullStepResourcesAsync(string agentId, string agentToken, string taskId, string stepId, int take);
     Task<(bool IsValid, AgentStatusDto? Status)> GetAgentStatusAsync(string agentId, string agentToken);
     Task<bool> PrefetchTasksAsync(string agentId, string agentToken, int count);
+    Task<bool> DispatchTaskAsync(string taskId);
+    Task<string?> SelectBestAgentAsync(string? agentGroupId);
 }
 
 public class TaskDispatchService : ITaskDispatchService
@@ -379,5 +381,60 @@ public class TaskDispatchService : ITaskDispatchService
         }
 
         return dto;
+    }
+
+    public async Task<bool> DispatchTaskAsync(string taskId)
+    {
+        var task = await _taskRepository.GetByIdAsync(taskId);
+        if (task == null)
+        {
+            _logger.LogWarning("调度任务 {TaskId} 不存在", taskId);
+            return false;
+        }
+
+        if (task.Status != 0)
+        {
+            _logger.LogWarning("任务 {TaskId} 状态不是待执行: {Status}", taskId, task.Status);
+            return false;
+        }
+
+        var bestAgentId = await SelectBestAgentAsync(task.AgentGroupId);
+        if (bestAgentId == null)
+        {
+            _logger.LogWarning("任务 {TaskId} 无可用 Agent，加入待分配队列", taskId);
+            return false;
+        }
+
+        task.AssignedAgentId = bestAgentId;
+        task.Status = 1;
+        task.StartTime = DateTime.UtcNow;
+        await _taskRepository.UpdateAsync(task);
+
+        var dto = await BuildTaskDtoAsync(task);
+        await _taskContentCache.SetAsync(dto);
+
+        _logger.LogInformation("任务 {TaskId} 已分配给 Agent {AgentId}", taskId, bestAgentId);
+        return true;
+    }
+
+    public async Task<string?> SelectBestAgentAsync(string? agentGroupId)
+    {
+        var onlineAgents = await _agentRepository.GetOnlineAgentsAsync();
+
+        if (!string.IsNullOrEmpty(agentGroupId))
+        {
+            onlineAgents = onlineAgents
+                .Where(a => a.GroupId == agentGroupId || string.IsNullOrEmpty(a.GroupId))
+                .ToList();
+        }
+
+        if (onlineAgents.Count == 0) return null;
+
+        var selected = onlineAgents
+            .OrderBy(a => a.TaskCount)
+            .ThenByDescending(a => a.OS)
+            .FirstOrDefault();
+
+        return selected?.AgentId;
     }
 }

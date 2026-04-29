@@ -54,4 +54,9 @@ public class DataRecord
     /// 执行采集的代理节点标识
     /// </summary>
     public string? AgentId { get; set; }
+
+    /// <summary>
+    /// 数据提取时间
+    /// </summary>
+    public DateTime ExtractedAt { get; set; } = DateTime.UtcNow;
 }

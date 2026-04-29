@@ -8,56 +8,25 @@ using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Infrastructure.Downloader;
 
-/// <summary>
-/// Playwright 浏览器下载器配置选项
-/// </summary>
 public class PlaywrightOptions
 {
-    /// <summary>
-    /// 浏览器类型（Chromium、Firefox、WebKit）
-    /// </summary>
     public string BrowserType { get; set; } = Constants.Defaults.DefaultBrowserType;
 
-    /// <summary>
-    /// 是否使用无头模式
-    /// </summary>
     public bool Headless { get; set; } = true;
 
-    /// <summary>
-    /// 视口宽度（像素）
-    /// </summary>
     public int ViewportWidth { get; set; } = Constants.Defaults.DefaultViewportWidth;
 
-    /// <summary>
-    /// 视口高度（像素）
-    /// </summary>
     public int ViewportHeight { get; set; } = Constants.Defaults.DefaultViewportHeight;
 
-    /// <summary>
-    /// 页面超时时间（毫秒）
-    /// </summary>
     public int Timeout { get; set; } = Constants.Defaults.DefaultPlaywrightTimeout;
 
-    /// <summary>
-    /// 等待页面加载完成的状态（NetworkIdle、DOMContentLoaded、Load）
-    /// </summary>
     public string WaitUntil { get; set; } = Constants.Defaults.DefaultWaitUntil;
 
-    /// <summary>
-    /// 最大浏览器实例数
-    /// </summary>
     public int MaxInstances { get; set; } = Constants.Defaults.DefaultMaxInstances;
 
-    /// <summary>
-    /// 浏览器实例最大存活时间（分钟）
-    /// </summary>
     public int MaxLifetimeMinutes { get; set; } = Constants.Defaults.DefaultMaxLifetimeMinutes;
 }
 
-/// <summary>
-/// 基于 Playwright 的浏览器下载器，支持 JavaScript 渲染的页面采集
-/// 使用信号量控制并发浏览器实例数，确保资源合理使用
-/// </summary>
 public class PlaywrightDownloader : IDownloader, IAsyncDisposable
 {
     private readonly PlaywrightOptions _options;
@@ -76,9 +45,6 @@ public class PlaywrightDownloader : IDownloader, IAsyncDisposable
         _semaphore = new SemaphoreSlim(_options.MaxInstances, _options.MaxInstances);
     }
 
-    /// <summary>
-    /// 获取或创建浏览器实例（懒加载，首次使用时初始化）
-    /// </summary>
     private async Task<IBrowser> GetBrowserAsync()
     {
         if (_browser != null && _browser.IsConnected)
@@ -105,9 +71,6 @@ public class PlaywrightDownloader : IDownloader, IAsyncDisposable
         return _browser;
     }
 
-    /// <summary>
-    /// 使用 Playwright 浏览器下载页面内容，支持 JavaScript 渲染
-    /// </summary>
     public async Task<Response> DownloadAsync(Request request, CancellationToken ct = default)
     {
         await _semaphore.WaitAsync(ct);
@@ -121,9 +84,6 @@ public class PlaywrightDownloader : IDownloader, IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// 内部下载实现：创建浏览器上下文 → 打开页面 → 导航到 URL → 提取内容
-    /// </summary>
     private async Task<Response> DownloadInternalAsync(Request request, CancellationToken ct)
     {
         var response = new Response
@@ -138,17 +98,50 @@ public class PlaywrightDownloader : IDownloader, IAsyncDisposable
         try
         {
             browser = await GetBrowserAsync();
-            context = await browser.NewContextAsync(new BrowserNewContextOptions
+
+            var contextOptions = new BrowserNewContextOptions
             {
                 ViewportSize = new ViewportSize
                 {
                     Width = _options.ViewportWidth,
                     Height = _options.ViewportHeight
                 }
-            });
+            };
+
+            var playwrightConfig = ExtractPlaywrightConfig(request);
+
+            if (playwrightConfig != null)
+            {
+                if (!string.IsNullOrEmpty(playwrightConfig.UserAgent))
+                    contextOptions.UserAgent = playwrightConfig.UserAgent;
+
+                if (playwrightConfig.ProxyConfig != null)
+                {
+                    contextOptions.Proxy = new Microsoft.Playwright.Proxy
+                    {
+                        Server = $"http://{playwrightConfig.ProxyConfig.Host}:{playwrightConfig.ProxyConfig.Port}"
+                    };
+                    if (!string.IsNullOrEmpty(playwrightConfig.ProxyConfig.Username))
+                        contextOptions.Proxy.Username = playwrightConfig.ProxyConfig.Username;
+                    if (!string.IsNullOrEmpty(playwrightConfig.ProxyConfig.Password))
+                        contextOptions.Proxy.Password = playwrightConfig.ProxyConfig.Password;
+                }
+            }
+
+            context = await browser.NewContextAsync(contextOptions);
+
+            if (request.Headers.Count > 0)
+            {
+                await context.SetExtraHTTPHeadersAsync(request.Headers);
+            }
 
             var page = await context.NewPageAsync();
             page.SetDefaultTimeout(_options.Timeout);
+
+            if (playwrightConfig != null)
+            {
+                await ConfigureResourceBlockingAsync(page, playwrightConfig);
+            }
 
             var waitUntil = _options.WaitUntil.ToLowerInvariant() switch
             {
@@ -162,6 +155,30 @@ public class PlaywrightDownloader : IDownloader, IAsyncDisposable
             {
                 WaitUntil = waitUntil
             });
+
+            if (playwrightConfig != null)
+            {
+                if (!string.IsNullOrEmpty(playwrightConfig.WaitForSelector))
+                {
+                    await page.WaitForSelectorAsync(playwrightConfig.WaitForSelector, new PageWaitForSelectorOptions
+                    {
+                        Timeout = playwrightConfig.WaitForNetworkIdleTimeout
+                    });
+                }
+
+                if (playwrightConfig.Actions != null && playwrightConfig.Actions.Count > 0)
+                {
+                    await ExecuteBrowserActionsAsync(page, playwrightConfig.Actions);
+                }
+
+                if (playwrightConfig.Scripts != null && playwrightConfig.Scripts.Count > 0)
+                {
+                    foreach (var script in playwrightConfig.Scripts)
+                    {
+                        await page.EvaluateAsync(script);
+                    }
+                }
+            }
 
             response.Duration = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
             response.StatusCode = pageResponse?.Status ?? 0;
@@ -190,9 +207,96 @@ public class PlaywrightDownloader : IDownloader, IAsyncDisposable
         return response;
     }
 
-    /// <summary>
-    /// 异步释放资源，关闭浏览器和 Playwright 实例
-    /// </summary>
+    private static PlaywrightConfig? ExtractPlaywrightConfig(Request request)
+    {
+        if (request.Metadata.TryGetValue("PlaywrightConfig", out var configObj) && configObj is PlaywrightConfig config)
+        {
+            return config;
+        }
+        return null;
+    }
+
+    private static async Task ConfigureResourceBlockingAsync(IPage page, PlaywrightConfig config)
+    {
+        if (!config.DisableImages && !config.DisableCss && !config.DisableFonts) return;
+
+        await page.RouteAsync("**/*", async route =>
+        {
+            var resourceType = route.Request.ResourceType;
+            if (config.DisableImages && resourceType == "image")
+            {
+                await route.AbortAsync();
+                return;
+            }
+            if (config.DisableCss && resourceType == "stylesheet")
+            {
+                await route.AbortAsync();
+                return;
+            }
+            if (config.DisableFonts && resourceType == "font")
+            {
+                await route.AbortAsync();
+                return;
+            }
+            await route.ContinueAsync();
+        });
+    }
+
+    private static async Task ExecuteBrowserActionsAsync(IPage page, List<BrowserAction> actions)
+    {
+        foreach (var action in actions)
+        {
+            if (action.WaitAfterMs.HasValue && action.WaitAfterMs.Value > 0)
+            {
+                await Task.Delay(action.WaitAfterMs.Value);
+            }
+
+            switch (action.ActionType.ToLowerInvariant())
+            {
+                case "click":
+                    if (!string.IsNullOrEmpty(action.Selector))
+                        await page.ClickAsync(action.Selector);
+                    break;
+
+                case "fill":
+                case "input":
+                    if (!string.IsNullOrEmpty(action.Selector) && action.Value != null)
+                        await page.FillAsync(action.Selector, action.Value);
+                    break;
+
+                case "select":
+                    if (!string.IsNullOrEmpty(action.Selector) && action.OptionValue != null)
+                        await page.SelectOptionAsync(action.Selector, action.OptionValue);
+                    break;
+
+                case "hover":
+                    if (!string.IsNullOrEmpty(action.Selector))
+                        await page.HoverAsync(action.Selector);
+                    break;
+
+                case "scroll":
+                    var scrollPixels = action.ScrollPixels ?? 300;
+                    await page.EvaluateAsync($"window.scrollBy(0, {scrollPixels})");
+                    break;
+
+                case "press":
+                    if (!string.IsNullOrEmpty(action.Value))
+                        await page.Keyboard.PressAsync(action.Value);
+                    break;
+
+                case "waitforselector":
+                    if (!string.IsNullOrEmpty(action.Selector))
+                        await page.WaitForSelectorAsync(action.Selector);
+                    break;
+
+                case "evaluate":
+                    if (!string.IsNullOrEmpty(action.Script))
+                        await page.EvaluateAsync(action.Script);
+                    break;
+            }
+        }
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_disposed) return;

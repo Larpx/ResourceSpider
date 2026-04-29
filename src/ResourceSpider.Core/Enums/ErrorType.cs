@@ -28,5 +28,10 @@ public enum ErrorType
     /// <summary>
     /// 业务逻辑错误，如配置无效、参数校验失败等
     /// </summary>
-    BusinessError
+    BusinessError,
+
+    /// <summary>
+    /// 请求超时错误
+    /// </summary>
+    Timeout
 }

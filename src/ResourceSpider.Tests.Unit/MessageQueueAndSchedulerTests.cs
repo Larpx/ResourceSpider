@@ -242,7 +242,7 @@ public class ModelTests
         task.Status.ShouldBe(Core.Enums.TaskStatus.Pending);
         task.Priority.ShouldBe(5);
         task.ConfigVersion.ShouldBe(1);
-        task.RequestConfig.ShouldNotBeNull();
+        task.RequestConfig.ShouldBeNull();
     }
 
     [Fact]

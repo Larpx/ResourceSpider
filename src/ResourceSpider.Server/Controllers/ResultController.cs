@@ -230,14 +230,32 @@ public class ResultController : ControllerBase
 
     private static async Task WriteExcelAsync(List<CollectionResultDto> results, string filePath)
     {
-        // 当前阶段使用制表符文本输出为 xlsx 扩展名文件，满足基础导出闭环，后续可替换为真正的工作簿实现。
+        if (results.Count == 0)
+        {
+            MiniExcelLibs.MiniExcel.SaveAs(filePath, new List<Dictionary<string, object?>>());
+            return;
+        }
+
         var headers = ResolveFieldHeaders(results);
-        using var writer = new StreamWriter(filePath);
-        await writer.WriteLineAsync(string.Join("\t", headers));
+        var rows = new List<Dictionary<string, object?>>();
+
         foreach (var result in results)
         {
-            await writer.WriteLineAsync(string.Join("\t", headers.Select(field => result.Fields.TryGetValue(field, out var value) ? value?.ToString() ?? string.Empty : string.Empty)));
+            var row = new Dictionary<string, object?>
+            {
+                ["ResultId"] = result.ResultId,
+                ["TaskId"] = result.TaskId,
+                ["SourceUrl"] = result.SourceUrl,
+                ["CollectedAt"] = result.CollectedAt
+            };
+            foreach (var header in headers)
+            {
+                row[header] = result.Fields.TryGetValue(header, out var value) ? value : null;
+            }
+            rows.Add(row);
         }
+
+        await Task.Run(() => MiniExcelLibs.MiniExcel.SaveAs(filePath, rows));
     }
 
     private static List<string> ResolveFieldHeaders(List<CollectionResultDto> results)

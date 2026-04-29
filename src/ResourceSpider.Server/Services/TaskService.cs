@@ -1,3 +1,4 @@
+using ResourceSpider.Core.Enums;
 using ResourceSpider.Core.Models;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Entities;
@@ -17,6 +18,7 @@ public interface ITaskService
     Task<bool> DeleteAsync(string taskId);
     Task<bool> TriggerExecutionAsync(string taskId);
     Task<TaskConfigurationSnapshot?> GetConfigurationSnapshotAsync(string taskId);
+    Task<List<SpiderTask>> GetScheduledTasksAsync();
 }
 
 public class TaskService : ITaskService
@@ -376,5 +378,34 @@ public class TaskService : ITaskService
             entity.State,
             entity.CreatedAt
         );
+    }
+
+    public async Task<List<SpiderTask>> GetScheduledTasksAsync()
+    {
+        var entities = await _taskRepository.GetPendingTasksAsync(100);
+        var tasks = new List<SpiderTask>();
+
+        foreach (var entity in entities)
+        {
+            var scheduleConfig = !string.IsNullOrEmpty(entity.ScheduleConfig)
+                ? System.Text.Json.JsonSerializer.Deserialize<TaskScheduleConfig>(entity.ScheduleConfig)
+                : null;
+
+            if (scheduleConfig == null || !scheduleConfig.Enabled) continue;
+
+            var task = new SpiderTask
+            {
+                TaskId = entity.TaskId,
+                TaskName = entity.TaskName,
+                TaskType = Enum.TryParse<TaskType>(entity.TaskType, out var t) ? t : TaskType.SinglePage,
+                Priority = entity.Priority,
+                ScheduleConfig = scheduleConfig,
+                AgentGroupId = entity.AgentGroupId
+            };
+
+            tasks.Add(task);
+        }
+
+        return tasks;
     }
 }

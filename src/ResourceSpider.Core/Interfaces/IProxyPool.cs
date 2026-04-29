@@ -48,4 +48,12 @@ public interface IProxyPool
     /// <param name="ct">取消令牌</param>
     /// <returns>代理列表</returns>
     Task<IEnumerable<Proxy>> GetAllProxiesAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// 检测代理是否可用
+    /// </summary>
+    /// <param name="proxy">代理对象</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>代理是否可用</returns>
+    Task<bool> IsAvailableAsync(Proxy proxy, CancellationToken ct = default);
 }

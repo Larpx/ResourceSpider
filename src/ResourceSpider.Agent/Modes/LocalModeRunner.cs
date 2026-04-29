@@ -1,141 +1,237 @@
+using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ResourceSpider.Agent.Config;
 using ResourceSpider.Agent.Services;
 using ResourceSpider.Core;
-using ResourceSpider.Core.Interfaces;
 using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Agent.Modes;
 
-/// <summary>
-/// 本地模式运行器，定时扫描本地任务目录中的 JSON 文件并执行采集任务
-/// 适用于无需服务端的独立运行场景
-/// </summary>
-public class LocalModeRunner : IHostedService, IDisposable
+public class LocalModeRunner : BackgroundService
 {
-    /// <summary>
-    /// 本地模式配置选项
-    /// </summary>
-    private readonly LocalModeOptions _options;
-
-    /// <summary>
-    /// 任务执行器
-    /// </summary>
     private readonly ITaskExecutor _taskExecutor;
-
-    /// <summary>
-    /// 结果上报器
-    /// </summary>
-    private readonly IResultReporter _resultReporter;
-
-    /// <summary>
-    /// 日志记录器
-    /// </summary>
+    private readonly AgentOptions _agentOptions;
     private readonly ILogger<LocalModeRunner> _logger;
 
-    /// <summary>
-    /// 任务扫描定时器
-    /// </summary>
-    private Timer? _timer;
-
-    /// <summary>
-    /// 资源是否已释放
-    /// </summary>
-    private bool _disposed;
-
-    /// <summary>
-    /// 任务执行信号量，防止并发执行
-    /// </summary>
-    private readonly SemaphoreSlim _executionLock = new(1, 1);
-
-    /// <summary>
-    /// 初始化本地模式运行器实例
-    /// </summary>
-    /// <param name="options">本地模式配置选项</param>
-    /// <param name="taskExecutor">任务执行器</param>
-    /// <param name="resultReporter">结果上报器</param>
-    /// <param name="logger">日志记录器</param>
     public LocalModeRunner(
-        LocalModeOptions options,
         ITaskExecutor taskExecutor,
-        IResultReporter resultReporter,
+        IOptions<AgentOptions> agentOptions,
         ILogger<LocalModeRunner> logger)
     {
-        _options = options;
         _taskExecutor = taskExecutor;
-        _resultReporter = resultReporter;
+        _agentOptions = agentOptions.Value;
         _logger = logger;
     }
 
-    /// <summary>
-    /// 启动本地模式，初始化任务扫描定时器
-    /// </summary>
-    /// <param name="cancellationToken">取消令牌</param>
-    public Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("启动本地模式 Agent");
-        _timer = new Timer(ProcessTasks, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// 定时处理本地任务文件，使用信号量防止并发执行
-    /// </summary>
-    /// <param name="state">定时器状态对象</param>
-    private async void ProcessTasks(object? state)
-    {
-        if (!await _executionLock.WaitAsync(0)) return;
+        _logger.LogInformation("Local 模式启动，任务配置目录: {TaskDir}", _agentOptions.LocalMode?.TaskDirectory);
 
         try
         {
-            if (!Directory.Exists(_options.TaskFilePath))
+            var tasks = LoadLocalTasks();
+            if (tasks.Count == 0)
             {
-                _logger.LogWarning("任务目录不存在: {Path}", _options.TaskFilePath);
+                _logger.LogWarning("未找到本地任务配置");
                 return;
             }
 
-            var taskFiles = Directory.GetFiles(_options.TaskFilePath, $"*{Constants.FileExtensions.Json}");
-
-            foreach (var file in taskFiles)
+            foreach (var task in tasks)
             {
-                var json = await File.ReadAllTextAsync(file);
-                var task = System.Text.Json.JsonSerializer.Deserialize<SpiderTask>(json);
+                if (stoppingToken.IsCancellationRequested) break;
 
-                if (task == null) continue;
+                _logger.LogInformation("执行本地任务: {TaskName}", task.TaskName);
+                task.AssignedAgentId = $"{Constants.Agent.LocalAgentIdPrefix}{Environment.MachineName}";
 
-                _logger.LogInformation("处理本地任务: {TaskName}", task.TaskName);
-                var result = await _taskExecutor.ExecuteAsync(task);
-                await _resultReporter.StoreLocalAsync(result);
+                var result = await _taskExecutor.ExecuteAsync(task, stoppingToken);
+
+                await SaveResultAsync(task, result);
             }
+
+            _logger.LogInformation("所有本地任务执行完成");
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+            _logger.LogWarning("本地任务执行被取消");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "处理本地任务时出错");
+            _logger.LogError(ex, "本地任务执行出错");
         }
-        finally
+    }
+
+    private List<SpiderTask> LoadLocalTasks()
+    {
+        var tasks = new List<SpiderTask>();
+        var taskDir = _agentOptions.LocalMode?.TaskDirectory;
+
+        if (string.IsNullOrEmpty(taskDir) || !Directory.Exists(taskDir))
         {
-            _executionLock.Release();
+            _logger.LogWarning("任务配置目录不存在: {TaskDir}", taskDir);
+            return tasks;
         }
+
+        foreach (var file in Directory.GetFiles(taskDir, "*.json"))
+        {
+            try
+            {
+                var json = File.ReadAllText(file);
+                var task = JsonSerializer.Deserialize<SpiderTask>(json);
+                if (task != null)
+                {
+                    tasks.Add(task);
+                    _logger.LogInformation("加载任务: {TaskName} 来自 {File}", task.TaskName, Path.GetFileName(file));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "加载任务配置失败: {File}", file);
+            }
+        }
+
+        return tasks;
     }
 
-    /// <summary>
-    /// 停止本地模式，释放定时器
-    /// </summary>
-    /// <param name="cancellationToken">取消令牌</param>
-    public Task StopAsync(CancellationToken cancellationToken)
+    private async Task SaveResultAsync(SpiderTask task, ExecutionResult result)
     {
-        _logger.LogInformation("停止本地模式 Agent");
-        _timer?.Change(Timeout.Infinite, 0);
-        return Task.CompletedTask;
+        var outputDir = BuildOutputDirectory(task);
+        Directory.CreateDirectory(outputDir);
+
+        var format = _agentOptions.LocalMode?.OutputFormat ?? Constants.Defaults.DefaultOutputFormat;
+        var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+
+        switch (format.ToLowerInvariant())
+        {
+            case "json":
+                await SaveAsJsonAsync(task, result, outputDir, timestamp);
+                break;
+            case "csv":
+                await SaveAsCsvAsync(task, result, outputDir, timestamp);
+                break;
+            case "txt":
+            default:
+                await SaveAsTxtAsync(task, result, outputDir, timestamp);
+                break;
+        }
+
+        _logger.LogInformation("结果已保存到: {OutputDir}", outputDir);
     }
 
-    /// <summary>
-    /// 释放托管资源
-    /// </summary>
-    public void Dispose()
+    private string BuildOutputDirectory(SpiderTask task)
     {
-        if (_disposed) return;
-        _timer?.Dispose();
-        _executionLock.Dispose();
-        _disposed = true;
+        var baseDir = _agentOptions.LocalMode?.OutputDirectory ?? "results";
+        var agentId = $"{Constants.Agent.LocalAgentIdPrefix}{Environment.MachineName}";
+        var dateDir = DateTime.UtcNow.ToString("yyyyMMdd");
+
+        return Path.Combine(baseDir, agentId, dateDir, task.TaskId);
+    }
+
+    private static async Task SaveAsJsonAsync(SpiderTask task, ExecutionResult result, string outputDir, string timestamp)
+    {
+        var outputFile = Path.Combine(outputDir, $"result_{timestamp}.json");
+
+        var output = new
+        {
+            task.TaskId,
+            task.TaskName,
+            result.Status,
+            result.TotalRequests,
+            result.SuccessRequests,
+            result.FailedRequests,
+            result.Duration,
+            StartTime = result.StartTime.ToString("O"),
+            EndTime = result.EndTime?.ToString("O"),
+            DataCount = result.DataRecords.Count,
+            Records = result.DataRecords.Select(r => new
+            {
+                r.SourceUrl,
+                Fields = r.Fields,
+                ExtractedAt = r.ExtractedAt.ToString("O")
+            }),
+            Errors = result.Errors
+        };
+
+        var json = JsonSerializer.Serialize(output, new JsonSerializerOptions { WriteIndented = true });
+        await File.WriteAllTextAsync(outputFile, json);
+    }
+
+    private static async Task SaveAsCsvAsync(SpiderTask task, ExecutionResult result, string outputDir, string timestamp)
+    {
+        var outputFile = Path.Combine(outputDir, $"result_{timestamp}.csv");
+
+        if (result.DataRecords.Count == 0)
+        {
+            await File.WriteAllTextAsync(outputFile, string.Empty);
+            return;
+        }
+
+        var allKeys = result.DataRecords
+            .SelectMany(r => r.Fields.Keys)
+            .Distinct()
+            .ToList();
+
+        var header = string.Join(",", allKeys.Select(EscapeCsvField));
+        var sb = new StringBuilder();
+        sb.AppendLine(header);
+
+        foreach (var record in result.DataRecords)
+        {
+            var values = allKeys.Select(key =>
+            {
+                record.Fields.TryGetValue(key, out var value);
+                return EscapeCsvField(value?.ToString() ?? string.Empty);
+            });
+            sb.AppendLine(string.Join(",", values));
+        }
+
+        await File.WriteAllTextAsync(outputFile, sb.ToString());
+    }
+
+    private static async Task SaveAsTxtAsync(SpiderTask task, ExecutionResult result, string outputDir, string timestamp)
+    {
+        var outputFile = Path.Combine(outputDir, $"result_{timestamp}.txt");
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"任务: {task.TaskName}");
+        sb.AppendLine($"状态: {result.Status}");
+        sb.AppendLine($"总请求数: {result.TotalRequests}");
+        sb.AppendLine($"成功: {result.SuccessRequests}");
+        sb.AppendLine($"失败: {result.FailedRequests}");
+        sb.AppendLine($"耗时: {result.Duration}ms");
+        sb.AppendLine($"数据量: {result.DataRecords.Count}");
+        sb.AppendLine(new string('-', 80));
+
+        foreach (var record in result.DataRecords)
+        {
+            sb.AppendLine($"来源: {record.SourceUrl}");
+            foreach (var field in record.Fields)
+            {
+                sb.AppendLine($"  {field.Key}: {field.Value}");
+            }
+            sb.AppendLine();
+        }
+
+        if (result.Errors.Count > 0)
+        {
+            sb.AppendLine("错误:");
+            foreach (var error in result.Errors)
+            {
+                sb.AppendLine($"  - {error}");
+            }
+        }
+
+        await File.WriteAllTextAsync(outputFile, sb.ToString());
+    }
+
+    private static string EscapeCsvField(string field)
+    {
+        if (field.Contains(',') || field.Contains('"') || field.Contains('\n') || field.Contains('\r'))
+        {
+            return $"\"{field.Replace("\"", "\"\"")}\"";
+        }
+        return field;
     }
 }

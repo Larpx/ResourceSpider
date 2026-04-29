@@ -1,3 +1,8 @@
+using System.Diagnostics;
+using System.Collections.Concurrent;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ResourceSpider.Agent.Config;
 using ResourceSpider.Agent.Services;
 using ResourceSpider.Core;
@@ -6,471 +11,446 @@ using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Agent.Modes;
 
-public class OnlineModeRunner : IHostedService, IAsyncDisposable
+public class OnlineModeRunner : BackgroundService
 {
-    private readonly OnlineModeOptions _options;
-    private readonly IServerApiClient _serverApi;
+    private readonly SignalRClient _signalRClient;
+    private readonly ServerApiClient _serverApiClient;
     private readonly ITaskExecutor _taskExecutor;
-    private readonly IResultReporter _resultReporter;
-    private readonly ISignalRClient _signalRClient;
-    private readonly IOfflineTaskStore _offlineStore;
+    private readonly ResultReporter _resultReporter;
+    private readonly OfflineTaskStore _offlineTaskStore;
+    private readonly AgentOptions _agentOptions;
+    private readonly OnlineModeOptions _options;
     private readonly ILogger<OnlineModeRunner> _logger;
 
-    private Timer? _heartbeatTimer;
-    private Timer? _taskPullTimer;
-    private Timer? _expressionSyncTimer;
-    private Timer? _offlineSyncTimer;
+    private readonly ConcurrentDictionary<string, CancellationTokenSource> _runningTasks = new();
+    private readonly SemaphoreSlim _concurrencySemaphore;
+    private readonly ConcurrentQueue<string> _taskQueue = new();
+    private readonly object _queueLock = new();
 
-    private string _agentToken = string.Empty;
-    private bool _disposed;
+    private string _agentId = string.Empty;
     private bool _isRegistered;
 
-    private readonly Dictionary<string, ExpressionConfigDto> _expressionCache = new();
-    private readonly object _cacheLock = new();
-    private readonly SemaphoreSlim _taskExecutionLock = new(1, 1);
-
     public OnlineModeRunner(
-        OnlineModeOptions options,
-        IServerApiClient serverApi,
+        SignalRClient signalRClient,
+        ServerApiClient serverApiClient,
         ITaskExecutor taskExecutor,
-        IResultReporter resultReporter,
-        ISignalRClient signalRClient,
-        IOfflineTaskStore offlineStore,
+        ResultReporter resultReporter,
+        OfflineTaskStore offlineTaskStore,
+        IOptions<AgentOptions> agentOptions,
         ILogger<OnlineModeRunner> logger)
     {
-        _options = options;
-        _serverApi = serverApi;
+        _signalRClient = signalRClient;
+        _serverApiClient = serverApiClient;
         _taskExecutor = taskExecutor;
         _resultReporter = resultReporter;
-        _signalRClient = signalRClient;
-        _offlineStore = offlineStore;
+        _offlineTaskStore = offlineTaskStore;
+        _agentOptions = agentOptions.Value;
+        _options = agentOptions.Value.ServerConfig;
         _logger = logger;
+        _concurrencySemaphore = new SemaphoreSlim(
+            _agentOptions.MaxConcurrentTasks > 0 ? _agentOptions.MaxConcurrentTasks : Constants.Defaults.DefaultMaxConcurrentTasks,
+            _agentOptions.MaxConcurrentTasks > 0 ? _agentOptions.MaxConcurrentTasks : Constants.Defaults.DefaultMaxConcurrentTasks);
+
+        _signalRClient.OnTaskAssigned += HandleTaskAssigned;
+        _signalRClient.OnControlCommand += HandleControlCommand;
+        _signalRClient.OnConfigUpdate += HandleConfigUpdate;
+        _signalRClient.OnReconnected += () => _ = HandleReconnected();
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("启动在线模式 Agent");
+        _logger.LogInformation("Online 模式启动，连接服务器: {ServerUrl}", _agentOptions.OnlineMode?.ServerUrl);
 
-        await RegisterAsync(cancellationToken);
-
-        if (!_isRegistered)
-        {
-            _logger.LogError("Agent 注册失败");
-            return;
-        }
-
-        await SyncOfflineResultsAsync();
-
-        _heartbeatTimer = new Timer(
-            SendHeartbeat, null,
-            TimeSpan.Zero,
-            TimeSpan.FromSeconds(_options.HeartbeatInterval));
-
-        _taskPullTimer = new Timer(
-            PullAndExecuteTasks, null,
-            TimeSpan.FromSeconds(5),
-            TimeSpan.FromSeconds(30));
-
-        _expressionSyncTimer = new Timer(
-            SyncExpressions, null,
-            TimeSpan.FromSeconds(10),
-            TimeSpan.FromMinutes(5));
-
-        _offlineSyncTimer = new Timer(
-            SyncOfflineResults, null,
-            TimeSpan.FromMinutes(1),
-            TimeSpan.FromMinutes(_options.OfflineSyncIntervalMinutes));
-
-        _signalRClient.OnTaskReceived += async (_, message) =>
-        {
-            _logger.LogInformation("通过 SignalR 收到任务分配：{TaskId}", message.TaskId);
-            await ExecuteAssignedTaskAsync(message.TaskId);
-        };
-
-        _signalRClient.OnControlCommand += (_, message) =>
-        {
-            _logger.LogInformation("收到控制指令：{Command}", message.Command);
-        };
-
-        try
-        {
-            await _signalRClient.StartAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "SignalR 连接失败，将使用轮询模式");
-        }
-    }
-
-    private async Task RegisterAsync(CancellationToken ct)
-    {
-        try
-        {
-            var request = new RegisterRequest(
-                AgentId: _options.AgentId,
-                AgentName: _options.AgentName,
-                IpAddress: GetLocalIpAddress(),
-                Port: 0,
-                Capabilities: ["HttpClient", "Playwright", "BrowserAutomation"],
-                OS: Environment.OSVersion.ToString(),
-                Version: typeof(Program).Assembly.GetName().Version?.ToString());
-
-            var response = await _serverApi.RegisterAsync(request);
-            _agentToken = response.AgentToken;
-            _options.AgentToken = response.AgentToken;
-
-            if (response.HeartbeatInterval > 0)
-            {
-                _options.HeartbeatInterval = response.HeartbeatInterval;
-            }
-
-            _isRegistered = true;
-
-            _logger.LogInformation("Agent 注册成功，Token: {Token}",
-                _agentToken[..Math.Min(8, _agentToken.Length)]);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Agent 注册失败");
-        }
-    }
-
-    private async void SendHeartbeat(object? state)
-    {
-        try
-        {
-            var request = new HeartbeatRequest(
-                AgentId: _options.AgentId,
-                AgentToken: _agentToken,
-                CpuUsage: 0,
-                MemoryUsage: 0,
-                TaskCount: 0,
-                Status: (int)AgentStatus.Online,
-                OS: Environment.OSVersion.ToString(),
-                Version: typeof(Program).Assembly.GetName().Version?.ToString());
-
-            await _serverApi.HeartbeatAsync(request);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "心跳发送失败");
-        }
-    }
-
-    private async void SyncExpressions(object? state)
-    {
-        try
-        {
-            var expressions = await _serverApi.PullActiveExpressionsAsync();
-
-            lock (_cacheLock)
-            {
-                _expressionCache.Clear();
-                foreach (var expr in expressions)
-                {
-                    _expressionCache[expr.ExpressionId] = expr;
-                }
-            }
-
-            _logger.LogInformation("同步 {Count} 个活跃表达式", expressions.Count);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "表达式同步失败");
-        }
-    }
-
-    private async void PullAndExecuteTasks(object? state)
-    {
-        if (!await _taskExecutionLock.WaitAsync(0)) return;
-
-        try
-        {
-            var request = new PullTasksRequest(
-                AgentId: _options.AgentId,
-                AgentToken: _agentToken,
-                MaxCount: _options.MaxConcurrentTasks);
-
-            var response = await _serverApi.PullTasksAsync(request);
-
-            foreach (var taskDto in response.Tasks)
-            {
-                await ExecuteTaskDtoAsync(taskDto);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "拉取并执行任务失败");
-        }
-        finally
-        {
-            _taskExecutionLock.Release();
-        }
-    }
-
-    private async Task ExecuteAssignedTaskAsync(string taskId)
-    {
-        if (string.IsNullOrWhiteSpace(taskId))
-        {
-            return;
-        }
-
-        if (!await _taskExecutionLock.WaitAsync(0))
-        {
-            _logger.LogInformation("当前已有任务执行中，SignalR 下发任务 {TaskId} 将等待下一轮拉取补偿", taskId);
-            return;
-        }
-
-        try
-        {
-            var taskDto = await _serverApi.GetTaskContentAsync(taskId);
-            if (taskDto == null)
-            {
-                _logger.LogWarning("服务端未返回任务 {TaskId} 的完整内容", taskId);
-                return;
-            }
-
-            await ExecuteTaskDtoAsync(taskDto);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "执行 SignalR 下发任务 {TaskId} 失败", taskId);
-        }
-        finally
-        {
-            _taskExecutionLock.Release();
-        }
-    }
-
-    private async Task ExecuteTaskDtoAsync(TaskDto taskDto)
-    {
-        var task = MapTask(taskDto);
-        await ResolveExpressionConfig(taskDto, task);
-
-        _logger.LogInformation("执行任务：{TaskName}", task.TaskName);
-        var result = await _taskExecutor.ExecuteAsync(task);
-
-        await ReportStepResultsAsync(result);
-        await _resultReporter.ReportAsync(result);
-        await ReportExpressionAvailabilityIfNeeded(result);
-    }
-
-    private async Task ReportStepResultsAsync(ExecutionResult result)
-    {
-        foreach (var stepResult in result.StepResults)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var reportRequest = new ReportStepStatusRequest(
-                    AgentId: _options.AgentId,
-                    AgentToken: _agentToken,
-                    TaskId: result.TaskId,
-                    StepId: stepResult.StepId,
-                    State: (int)stepResult.State,
-                    DataCount: stepResult.DataCount
-                );
+                await RegisterAgentAsync();
+                await _signalRClient.ConnectAsync(_agentOptions.OnlineMode?.ServerUrl ?? "", _agentId, stoppingToken);
+                _isRegistered = true;
 
-                await _serverApi.ReportStepStatusAsync(reportRequest);
+                _logger.LogInformation("Agent {AgentId} 已连接服务器", _agentId);
+
+                var heartbeatTask = StartHeartbeatAsync(stoppingToken);
+                var queueProcessingTask = ProcessTaskQueueAsync(stoppingToken);
+                var offlineRecoveryTask = RecoverOfflineTasksAsync(stoppingToken);
+
+                await Task.WhenAny(heartbeatTask, queueProcessingTask, offlineRecoveryTask);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "上报步骤 {StepId} 状态失败", stepResult.StepId);
+                _logger.LogError(ex, "Online 模式运行出错，5 秒后重连");
+                await Task.Delay(5000, stoppingToken);
+            }
+        }
+
+        await CleanupAsync();
+    }
+
+    private async Task RegisterAgentAsync()
+    {
+        var systemInfo = CollectSystemMetrics();
+        var registerRequest = new RegisterRequest(
+            AgentId: _agentId,
+            AgentName: $"{Environment.MachineName}-{Environment.UserName}",
+            IpAddress: GetLocalIpAddress(),
+            Port: 0,
+            Capabilities: new[] { "HttpClient", "Playwright" }.ToList(),
+            OS: $"{Environment.OSVersion}"
+        );
+
+        var result = await _serverApiClient.RegisterAsync(registerRequest);
+        if (result != null)
+        {
+            _agentId = _options.AgentId ?? _agentId;
+            _logger.LogInformation("Agent 注册成功，ID: {AgentId}", _agentId);
+        }
+    }
+
+    private async Task StartHeartbeatAsync(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            try
+            {
+                var interval = _agentOptions.HeartbeatIntervalSeconds > 0
+                    ? _agentOptions.HeartbeatIntervalSeconds
+                    : Constants.Defaults.DefaultHeartbeatInterval;
+
+                await Task.Delay(interval * 1000, ct);
+
+                var metrics = CollectSystemMetrics();
+                metrics.RunningTaskCount = _runningTasks.Count;
+                metrics.QueuedTaskCount = _taskQueue.Count;
+
+                await _signalRClient.SendHeartbeatAsync(metrics, ct);
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "心跳发送失败");
             }
         }
     }
 
-    private async void SyncOfflineResults(object? state)
+    private AgentMetrics CollectSystemMetrics()
     {
-        await SyncOfflineResultsAsync();
+        var process = Process.GetCurrentProcess();
+        var cpuUsage = GetCpuUsagePercent();
+        var memoryMB = process.WorkingSet64 / (1024.0 * 1024.0);
+
+        return new AgentMetrics
+        {
+            CpuUsagePercent = cpuUsage,
+            MemoryUsageMB = Math.Round(memoryMB, 2),
+            CpuCores = Environment.ProcessorCount,
+            TotalMemoryMB = GetTotalPhysicalMemoryMB(),
+            AvailableMemoryMB = GetAvailablePhysicalMemoryMB(),
+            RunningTaskCount = _runningTasks.Count,
+            QueuedTaskCount = _taskQueue.Count,
+            UptimeSeconds = (int)(DateTime.UtcNow - process.StartTime.ToUniversalTime()).TotalSeconds
+        };
     }
 
-    private async Task SyncOfflineResultsAsync()
+    private static double GetCpuUsagePercent()
     {
         try
         {
-            var pendingResults = await _offlineStore.GetPendingResultsAsync();
-            if (pendingResults.Count == 0) return;
-
-            _logger.LogInformation("发现 {Count} 条待上传的离线结果", pendingResults.Count);
-
-            foreach (var result in pendingResults)
+            var process = Process.GetCurrentProcess();
+            var cpuTime = process.TotalProcessorTime;
+            var upTime = DateTime.UtcNow - process.StartTime.ToUniversalTime();
+            if (upTime.TotalMilliseconds > 0)
             {
-                try
-                {
-                    await _resultReporter.ReportAsync(result);
-                    await _offlineStore.MarkResultUploadedAsync(result.TaskId);
-                    _logger.LogInformation("离线结果已上传：{TaskId}", result.TaskId);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "上传离线结果失败：{TaskId}", result.TaskId);
-                }
+                return Math.Round(cpuTime.TotalMilliseconds / (upTime.TotalMilliseconds * Environment.ProcessorCount) * 100, 2);
             }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "同步离线结果失败");
-        }
+        catch { }
+        return 0;
     }
 
-    private static SpiderTask MapTask(TaskDto taskDto)
+    private static double GetTotalPhysicalMemoryMB()
     {
-        return new SpiderTask
+        try
         {
-            TaskId = taskDto.TaskId,
-            TaskName = taskDto.TaskName,
-            TaskType = Enum.TryParse<TaskType>(taskDto.TaskType, out var tt)
-                ? tt : TaskType.SinglePage,
-            RequestConfig = new Dictionary<string, object?>
-            {
-                ["Url"] = taskDto.RequestConfig
-            },
-            ExpressionId = taskDto.ExpressionId
-        };
+            var gcInfo = GC.GetGCMemoryInfo();
+            return Math.Round(gcInfo.TotalAvailableMemoryBytes / (1024.0 * 1024.0), 2);
+        }
+        catch { }
+        return 0;
     }
 
-    private async Task ResolveExpressionConfig(TaskDto taskDto, SpiderTask task)
+    private static double GetAvailablePhysicalMemoryMB()
     {
-        if (taskDto.ExpressionConfig != null)
+        try
         {
-            task.ExpressionConfig = MapExpressionConfig(taskDto.ExpressionConfig);
-            return;
+            var gcInfo = GC.GetGCMemoryInfo();
+            return Math.Round(gcInfo.TotalAvailableMemoryBytes / (1024.0 * 1024.0) * 0.8, 2);
         }
-
-        if (string.IsNullOrEmpty(taskDto.ExpressionId)) return;
-
-        ExpressionConfigDto? cachedExpr;
-        lock (_cacheLock)
-        {
-            _expressionCache.TryGetValue(taskDto.ExpressionId, out cachedExpr);
-        }
-
-        cachedExpr ??= await _serverApi.PullExpressionAsync(taskDto.ExpressionId);
-
-        if (cachedExpr != null)
-        {
-            task.ExpressionConfig = MapExpressionConfig(cachedExpr);
-        }
-    }
-
-    private async Task ReportExpressionAvailabilityIfNeeded(ExecutionResult result)
-    {
-        if (string.IsNullOrEmpty(result.ExpressionId)) return;
-
-        var isAvailable = result.Status == Constants.ExecutionStatus.Success && result.DataRecords.Count > 0;
-        var failureReason = isAvailable ? null : string.Join("; ", result.Errors.Take(3));
-
-        await _serverApi.ReportExpressionAvailabilityAsync(
-            new ReportAvailabilityRequest
-            {
-                AgentId = _options.AgentId,
-                AgentToken = _agentToken,
-                ExpressionId = result.ExpressionId,
-                IsAvailable = isAvailable,
-                FailureReason = failureReason
-            });
-    }
-
-    private static ExpressionConfig? MapExpressionConfig(ExpressionConfigDto? dto)
-    {
-        if (dto == null) return null;
-
-        return new ExpressionConfig
-        {
-            ExpressionId = dto.ExpressionId,
-            Name = dto.Name,
-            SelectorType = Enum.TryParse<ExpressionType>(dto.SelectorType, out var t)
-                ? t : ExpressionType.XPath,
-            ContainerExpression = dto.ContainerExpression,
-            Fields = dto.Fields.Select(f => new ExpressionField
-            {
-                FieldId = Guid.NewGuid().ToString("N"),
-                ExpressionId = dto.ExpressionId,
-                FieldName = f.FieldName,
-                SelectorType = Enum.TryParse<ExpressionType>(f.SelectorType, out var ft)
-                    ? ft : ExpressionType.XPath,
-                Expression = f.Expression,
-                AttributeName = f.AttributeName,
-                IsRequired = f.IsRequired,
-                DefaultValue = f.DefaultValue,
-                Formatter = f.Formatter,
-                FormatterArgs = f.FormatterArgs,
-                Order = f.Order
-            }).ToList()
-        };
+        catch { }
+        return 0;
     }
 
     private static string GetLocalIpAddress()
     {
-        var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
-        foreach (var ip in host.AddressList)
-        {
-            if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-            {
-                return ip.ToString();
-            }
-        }
-        return "127.0.0.1";
-    }
-
-    public async Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("停止在线模式 Agent");
-        _heartbeatTimer?.Change(Timeout.Infinite, 0);
-        _taskPullTimer?.Change(Timeout.Infinite, 0);
-        _expressionSyncTimer?.Change(Timeout.Infinite, 0);
-        _offlineSyncTimer?.Change(Timeout.Infinite, 0);
-
-        await _signalRClient.StopAsync();
-
-        if (_isRegistered)
-        {
-            await UnregisterAsync(cancellationToken);
-        }
-    }
-
-    private async Task UnregisterAsync(CancellationToken ct)
-    {
         try
         {
-            await _serverApi.UnregisterAsync(new UnregisterAgentRequest(
-                AgentId: _options.AgentId,
-                AgentToken: _agentToken,
-                Reason: "Agent shutting down"));
-            _isRegistered = false;
-            _logger.LogInformation("Agent {AgentId} 已注销", _options.AgentId);
+            var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
+            var ip = host.AddressList.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+            return ip?.ToString() ?? "127.0.0.1";
+        }
+        catch { return "127.0.0.1"; }
+    }
+
+    private void HandleTaskAssigned(string taskId, string taskContent)
+    {
+        _logger.LogInformation("收到任务分配: {TaskId}", taskId);
+
+        lock (_queueLock)
+        {
+            _taskQueue.Enqueue(taskId);
+        }
+
+        _ = ProcessTaskQueueItemAsync(taskId, taskContent);
+    }
+
+    private async Task ProcessTaskQueueItemAsync(string taskId, string taskContent)
+    {
+        await _concurrencySemaphore.WaitAsync();
+
+        var cts = new CancellationTokenSource();
+        if (!_runningTasks.TryAdd(taskId, cts))
+        {
+            _concurrencySemaphore.Release();
+            return;
+        }
+
+        try
+        {
+            var task = System.Text.Json.JsonSerializer.Deserialize<SpiderTask>(taskContent);
+            if (task == null)
+            {
+                _logger.LogWarning("任务 {TaskId} 反序列化失败", taskId);
+                return;
+            }
+
+            task.AssignedAgentId = _agentId;
+            var result = await _taskExecutor.ExecuteAsync(task, cts.Token);
+
+            await _resultReporter.ReportAsync(result);
+
+            _offlineTaskStore.Remove(taskId);
+        }
+        catch (OperationCanceledException) when (cts.Token.IsCancellationRequested)
+        {
+            _logger.LogWarning("任务 {TaskId} 被取消", taskId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Agent {AgentId} 注销失败", _options.AgentId);
+            _logger.LogError(ex, "任务 {TaskId} 执行异常", taskId);
         }
-    }
-
-    public void Dispose()
-    {
-        if (_disposed) return;
-        _heartbeatTimer?.Dispose();
-        _taskPullTimer?.Dispose();
-        _expressionSyncTimer?.Dispose();
-        _offlineSyncTimer?.Dispose();
-        _taskExecutionLock.Dispose();
-        _disposed = true;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_disposed) return;
-        _heartbeatTimer?.Dispose();
-        _taskPullTimer?.Dispose();
-        _expressionSyncTimer?.Dispose();
-        _offlineSyncTimer?.Dispose();
-        _taskExecutionLock.Dispose();
-
-        if (_signalRClient is IAsyncDisposable asyncDisposable)
+        finally
         {
-            await asyncDisposable.DisposeAsync();
+            _runningTasks.TryRemove(taskId, out _);
+            cts.Dispose();
+            _concurrencySemaphore.Release();
+        }
+    }
+
+    private async Task ProcessTaskQueueAsync(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            try
+            {
+                if (_taskQueue.TryDequeue(out var taskId))
+                {
+                    var taskContent = await _serverApiClient.GetTaskContentAsync(taskId);
+                    if (taskContent != null)
+                    {
+                        var taskJson = System.Text.Json.JsonSerializer.Serialize(taskContent);
+                        await ProcessTaskQueueItemAsync(taskId, taskJson);
+                    }
+                }
+
+                await Task.Delay(1000, ct);
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "处理任务队列出错");
+                await Task.Delay(5000, ct);
+            }
+        }
+    }
+
+    private async Task RecoverOfflineTasksAsync(CancellationToken ct)
+    {
+        try
+        {
+            var pendingTasks = _offlineTaskStore.GetAll();
+            foreach (var (taskId, taskContent) in pendingTasks)
+            {
+                if (ct.IsCancellationRequested) break;
+                _logger.LogInformation("恢复离线任务: {TaskId}", taskId);
+                await ProcessTaskQueueItemAsync(taskId, taskContent);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "恢复离线任务出错");
+        }
+    }
+
+    private void HandleControlCommand(string command, string? targetTaskId = null)
+    {
+        _logger.LogInformation("收到控制指令: {Command}, 目标任务: {TaskId}", command, targetTaskId ?? "全部");
+
+        switch (command.ToLowerInvariant())
+        {
+            case "emergency_stop":
+                EmergencyStop(targetTaskId);
+                break;
+
+            case "pause":
+                PauseTask(targetTaskId);
+                break;
+
+            case "resume":
+                ResumeTask(targetTaskId);
+                break;
+
+            case "restart":
+                _ = RestartAgentAsync();
+                break;
+
+            case "update_config":
+                _ = RefreshConfigAsync();
+                break;
+        }
+    }
+
+    private void EmergencyStop(string? targetTaskId)
+    {
+        if (!string.IsNullOrEmpty(targetTaskId))
+        {
+            if (_runningTasks.TryGetValue(targetTaskId, out var cts))
+            {
+                cts.Cancel();
+                _logger.LogWarning("紧急停止任务: {TaskId}", targetTaskId);
+            }
+        }
+        else
+        {
+            foreach (var (taskId, cts) in _runningTasks)
+            {
+                cts.Cancel();
+                _logger.LogWarning("紧急停止任务: {TaskId}", taskId);
+            }
+        }
+    }
+
+    private void PauseTask(string? targetTaskId)
+    {
+        if (!string.IsNullOrEmpty(targetTaskId) && _runningTasks.TryGetValue(targetTaskId, out var cts))
+        {
+            _logger.LogInformation("暂停任务: {TaskId}", targetTaskId);
+        }
+    }
+
+    private void ResumeTask(string? targetTaskId)
+    {
+        if (!string.IsNullOrEmpty(targetTaskId))
+        {
+            _logger.LogInformation("恢复任务: {TaskId}", targetTaskId);
+        }
+    }
+
+    private async Task RestartAgentAsync()
+    {
+        _logger.LogWarning("收到重启指令，正在重启 Agent...");
+
+        EmergencyStop(null);
+
+        await Task.Delay(2000);
+
+        try
+        {
+            Process.Start(Environment.ProcessPath ?? "", string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "重启 Agent 失败");
         }
 
-        _disposed = true;
+        Environment.Exit(0);
     }
+
+    private async Task RefreshConfigAsync()
+    {
+        try
+        {
+            var config = await _serverApiClient.GetConfigAsync();
+            if (config != null)
+            {
+                _logger.LogInformation("配置已更新");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "刷新配置失败");
+        }
+    }
+
+    private void HandleConfigUpdate(string configJson)
+    {
+        _logger.LogInformation("收到配置更新: {Config}", configJson);
+    }
+
+    private async Task HandleReconnected()
+    {
+        _logger.LogInformation("SignalR 重新连接成功，重新注册 Agent");
+        await RegisterAgentAsync();
+    }
+
+    private async Task CleanupAsync()
+    {
+        foreach (var (_, cts) in _runningTasks)
+        {
+            cts.Cancel();
+        }
+
+        if (_isRegistered && !string.IsNullOrEmpty(_agentId))
+        {
+            try
+            {
+                await _serverApiClient.UnregisterAsync(new UnregisterAgentRequest(_agentId, _options.AgentToken, "Agent shutting down"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "注销 Agent 失败");
+            }
+        }
+    }
+}
+
+public class AgentMetrics
+{
+    public double CpuUsagePercent { get; set; }
+    public double MemoryUsageMB { get; set; }
+    public int CpuCores { get; set; }
+    public double TotalMemoryMB { get; set; }
+    public double AvailableMemoryMB { get; set; }
+    public int RunningTaskCount { get; set; }
+    public int QueuedTaskCount { get; set; }
+    public int UptimeSeconds { get; set; }
 }

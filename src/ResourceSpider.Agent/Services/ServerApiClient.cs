@@ -24,6 +24,8 @@ public interface IServerApiClient
     Task<bool> ReportStepStatusAsync(ReportStepStatusRequest request);
     Task<List<StepResourceItem>> PullStepResourcesAsync(string taskId, string stepId, int take);
     Task<bool> PrefetchTasksAsync(int count);
+    Task<object?> GetConfigAsync();
+    Task<RegisterResponse?> RegisterAsync(object request);
 }
 
 /// <summary>
@@ -154,6 +156,36 @@ public class ServerApiClient : IServerApiClient
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
         return result?.Code == 200;
+    }
+
+    public async Task<object?> GetConfigAsync()
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync("/api/config/agent");
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+            return result?.Data;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<RegisterResponse?> RegisterAsync(object request)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(Constants.ApiRoutes.AgentRegister, request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<ApiResponse<RegisterResponse>>();
+            return result?.Data;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
 

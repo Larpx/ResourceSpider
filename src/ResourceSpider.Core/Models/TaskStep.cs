@@ -12,11 +12,13 @@ public class TaskStep
 
     public string StepName { get; set; } = string.Empty;
 
+    public string StepType { get; set; } = "DataCollection";
+
     public CollectionMode CollectionMode { get; set; } = CollectionMode.HttpClient;
 
     public string? AgentGroupId { get; set; }
 
-    public Dictionary<string, object?> RequestConfig { get; set; } = new();
+    public StepRequestConfig? RequestConfig { get; set; }
 
     public List<ExtractionRule> ExtractionRules { get; set; } = new();
 
@@ -37,6 +39,10 @@ public class TaskStep
     public StepState State { get; set; } = StepState.Waiting;
 
     public string? StepConfig { get; set; }
+
+    public int Timeout { get; set; } = 0;
+
+    public StepRetryPolicy? RetryPolicy { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

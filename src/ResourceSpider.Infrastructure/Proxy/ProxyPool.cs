@@ -128,6 +128,32 @@ public class ProxyPool : IProxyPool
         return Task.FromResult<IEnumerable<ProxyModel>>(_proxies.Values.ToList());
     }
 
+    public async Task<bool> IsAvailableAsync(ProxyModel proxy, CancellationToken ct = default)
+    {
+        try
+        {
+            using var httpClient = new System.Net.Http.HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(10)
+            };
+
+            if (!string.IsNullOrEmpty(proxy.Username) && !string.IsNullOrEmpty(proxy.Password))
+            {
+                httpClient.DefaultRequestHeaders.ProxyAuthorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Basic",
+                        Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{proxy.Username}:{proxy.Password}")));
+            }
+
+            var testUrl = Core.Constants.ProxyValidation.DefaultTestUrl;
+            var response = await httpClient.GetAsync(testUrl, ct);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     /// <summary>
     /// 计算代理的健康分数，基于成功次数与总次数的比率
     /// 无请求记录时默认返回 1.0（满分）
