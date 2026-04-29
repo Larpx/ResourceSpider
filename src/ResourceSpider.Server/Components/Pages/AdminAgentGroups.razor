@@ -1,0 +1,256 @@
+@page "/admin/agent-groups"
+@using Microsoft.JSInterop
+@layout AdminLayout
+@implements IAsyncDisposable
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
+
+<PageTitle>Agent 分组管理 - ResourceSpider</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载分组列表...</p>
+}
+else
+{
+    <h1>Agent 分组管理</h1>
+
+    <div class="action-row">
+        <button id="group-create-button" class="btn" type="button" @onclick="OpenCreateDrawer">新增分组</button>
+        <button class="btn btn-secondary" type="button" @onclick="LoadGroupsAsync">刷新</button>
+    </div>
+
+    <section class="card runtime-section">
+        <h2>分组列表</h2>
+
+        @if (_groups.Count == 0)
+        {
+            <p class="empty-state">暂无分组数据。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>分组名称</th>
+                        <th>描述</th>
+                        <th>Agent 数量</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group in _groups)
+                    {
+                        <tr>
+                            @if (_editingGroupId == group.GroupId)
+                            {
+                                <td><input class="input" @bind="_editGroupName" /></td>
+                                <td><input class="input" @bind="_editDescription" /></td>
+                                <td>@group.AgentIds.Count</td>
+                                <td>@group.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>@group.UpdatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="btn" type="button" @onclick="SaveGroupAsync">保存</button>
+                                        <button class="btn btn-secondary" type="button" @onclick="CancelEdit">取消</button>
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@group.GroupName</td>
+                                <td>@(group.Description ?? "-")</td>
+                                <td>@group.AgentIds.Count</td>
+                                <td>@group.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>@group.UpdatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="btn btn-secondary" type="button" @onclick="() => BeginEdit(group)">编辑</button>
+                                        @if (_confirmDeleteGroupId == group.GroupId)
+                                        {
+                                            <button class="btn btn-danger" type="button" @onclick="() => DeleteGroupAsync(group.GroupId)">确认删除</button>
+                                            <button class="btn btn-secondary" type="button" @onclick="CancelDelete">取消</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-danger" type="button" @onclick="() => PrepareDelete(group.GroupId)">删除</button>
+                                        }
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    @if (_showCreateDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseCreateDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>新增分组</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <label class="form-label">分组名称 *</label>
+                    <input class="input" placeholder="请输入分组名称" @bind="_newGroupName" />
+                    <label class="form-label">描述</label>
+                    <input class="input" placeholder="请输入分组描述（可选）" @bind="_newDescription" />
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="CreateGroupAsync">确认新增</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseCreateDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    }
+}
+
+@code {
+    private bool _ready;
+    private bool _showCreateDrawer;
+    private List<AgentGroupDto> _groups = new();
+
+    private string _newGroupName = string.Empty;
+    private string _newDescription = string.Empty;
+
+    private string? _editingGroupId;
+    private string _editGroupName = string.Empty;
+    private string _editDescription = string.Empty;
+
+    private string? _confirmDeleteGroupId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        await LoadGroupsAsync();
+        _ready = true;
+    }
+
+    private async Task LoadGroupsAsync()
+    {
+        _groups = await ApiClient.GetAgentGroupsAsync();
+    }
+
+    private void OpenCreateDrawer()
+    {
+        _showCreateDrawer = true;
+    }
+
+    private void CloseCreateDrawer()
+    {
+        _showCreateDrawer = false;
+    }
+
+    private async Task CreateGroupAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_newGroupName))
+        {
+            NotificationService.Warning("新增失败", "分组名称不能为空。");
+            return;
+        }
+
+        var (success, message) = await ApiClient.CreateAgentGroupAsync(
+            new CreateAgentGroupRequest(
+                _newGroupName.Trim(),
+                string.IsNullOrWhiteSpace(_newDescription) ? null : _newDescription.Trim()));
+
+        if (!success)
+        {
+            NotificationService.Error("新增失败", message);
+            return;
+        }
+
+        NotificationService.Success("新增成功", string.IsNullOrWhiteSpace(message) ? "分组已创建。" : message);
+        _newGroupName = string.Empty;
+        _newDescription = string.Empty;
+        _showCreateDrawer = false;
+        await LoadGroupsAsync();
+    }
+
+    private void BeginEdit(AgentGroupDto group)
+    {
+        _editingGroupId = group.GroupId;
+        _editGroupName = group.GroupName;
+        _editDescription = group.Description ?? string.Empty;
+        _confirmDeleteGroupId = null;
+    }
+
+    private void CancelEdit()
+    {
+        _editingGroupId = null;
+    }
+
+    private async Task SaveGroupAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_editingGroupId)) return;
+
+        var (success, message) = await ApiClient.UpdateAgentGroupAsync(
+            _editingGroupId,
+            new UpdateAgentGroupRequest(
+                _editGroupName,
+                string.IsNullOrWhiteSpace(_editDescription) ? null : _editDescription,
+                null));
+
+        if (!success)
+        {
+            NotificationService.Error("保存失败", message);
+            return;
+        }
+
+        NotificationService.Success("保存成功", string.IsNullOrWhiteSpace(message) ? "分组已更新。" : message);
+        CancelEdit();
+        await LoadGroupsAsync();
+    }
+
+    private void PrepareDelete(string groupId)
+    {
+        _confirmDeleteGroupId = groupId;
+        _editingGroupId = null;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmDeleteGroupId = null;
+    }
+
+    private async Task DeleteGroupAsync(string groupId)
+    {
+        var (success, message) = await ApiClient.DeleteAgentGroupAsync(groupId);
+        if (!success)
+        {
+            NotificationService.Error("删除失败", message);
+            return;
+        }
+
+        NotificationService.Success("删除成功", string.IsNullOrWhiteSpace(message) ? "分组已删除。" : message);
+        _confirmDeleteGroupId = null;
+        await LoadGroupsAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showCreateDrawer ? "group-create-button" : null);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("drawerUx.forceClose");
+        }
+        catch { }
+    }
+}

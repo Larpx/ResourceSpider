@@ -1,0 +1,236 @@
+@page "/admin/statistics"
+@layout AdminLayout
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
+
+<PageTitle>统计分析 - ResourceSpider</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载统计数据...</p>
+}
+else
+{
+    <h1>统计分析</h1>
+
+    <section class="card runtime-section">
+        <h2>系统概览</h2>
+        @if (_systemStats != null)
+        {
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">@_systemStats.OnlineAgents / @_systemStats.TotalAgents</div>
+                    <div class="stat-label">在线/总 Agent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_systemStats.RunningTasks</div>
+                    <div class="stat-label">运行中任务</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_systemStats.PendingTasks</div>
+                    <div class="stat-label">待执行任务</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_systemStats.CompletedTasks</div>
+                    <div class="stat-label">已完成任务</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_systemStats.TotalDataVolume</div>
+                    <div class="stat-label">数据总量</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_systemStats.AvgSuccessRate.ToString("F1")%</div>
+                    <div class="stat-label">平均成功率</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p class="empty-state">暂无系统统计数据。</p>
+        }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>Agent 统计</h2>
+        @if (_agentStats.Count == 0)
+        {
+            <p class="empty-state">暂无 Agent 统计数据。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Agent 名称</th>
+                        <th>状态</th>
+                        <th>总任务</th>
+                        <th>已完成</th>
+                        <th>失败</th>
+                        <th>平均时长(ms)</th>
+                        <th>最后心跳</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stat in _agentStats)
+                    {
+                        <tr>
+                            <td>@stat.AgentName</td>
+                            <td>@GetAgentStatusLabel(stat.Status)</td>
+                            <td>@stat.TotalTasks</td>
+                            <td>@stat.CompletedTasks</td>
+                            <td>@stat.FailedTasks</td>
+                            <td>@(stat.AvgDuration.HasValue ? stat.AvgDuration.Value.ToString("F0") : "-")</td>
+                            <td>@(stat.LastHeartbeat.HasValue ? stat.LastHeartbeat.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>趋势数据</h2>
+        <div class="filter-row">
+            <label class="form-label">起始日期</label>
+            <input class="input" type="date" @bind="_trendStartDate" />
+            <label class="form-label">结束日期</label>
+            <input class="input" type="date" @bind="_trendEndDate" />
+            <button class="btn" type="button" @onclick="LoadTrendDataAsync">查询趋势</button>
+        </div>
+
+        @if (_trendData.Count > 0)
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>总请求</th>
+                        <th>成功请求</th>
+                        <th>失败请求</th>
+                        <th>数据量</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var point in _trendData)
+                    {
+                        <tr>
+                            <td>@point.Date.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                            <td>@point.TotalRequests</td>
+                            <td>@point.SuccessRequests</td>
+                            <td>@point.FailedRequests</td>
+                            <td>@point.DataVolume</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else if (_trendLoaded)
+        {
+            <p class="empty-state">所选时间范围内暂无趋势数据。</p>
+        }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>任务统计查询</h2>
+        <div class="filter-row">
+            <input class="input" placeholder="输入任务 ID" @bind="_taskStatsTaskId" />
+            <button class="btn" type="button" @onclick="LoadTaskStatsAsync">查询</button>
+        </div>
+
+        @if (_taskStats != null)
+        {
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">@_taskStats.TaskName</div>
+                    <div class="stat-label">任务名称</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_taskStats.TotalRequests</div>
+                    <div class="stat-label">总请求</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_taskStats.SuccessRequests</div>
+                    <div class="stat-label">成功</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_taskStats.FailedRequests</div>
+                    <div class="stat-label">失败</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@_taskStats.Progress.ToString("F1")%</div>
+                    <div class="stat-label">进度</div>
+                </div>
+            </div>
+        }
+    </section>
+}
+
+@code {
+    private bool _ready;
+    private SystemStatisticsDto? _systemStats;
+    private List<AgentStatisticsDto> _agentStats = new();
+    private List<TrendDataPoint> _trendData = new();
+    private bool _trendLoaded;
+    private TaskStatisticsDto? _taskStats;
+
+    private DateTime _trendStartDate = DateTime.UtcNow.AddDays(-7);
+    private DateTime _trendEndDate = DateTime.UtcNow;
+    private string _taskStatsTaskId = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        await LoadDataAsync();
+        _ready = true;
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var systemTask = ApiClient.GetSystemStatisticsAsync();
+        var agentTask = ApiClient.GetAgentStatisticsAsync();
+
+        await Task.WhenAll(systemTask, agentTask);
+
+        _systemStats = await systemTask;
+        _agentStats = await agentTask ?? new List<AgentStatisticsDto>();
+    }
+
+    private async Task LoadTrendDataAsync()
+    {
+        _trendLoaded = true;
+        _trendData = await ApiClient.GetTrendDataAsync(_trendStartDate, _trendEndDate) ?? new List<TrendDataPoint>();
+    }
+
+    private async Task LoadTaskStatsAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_taskStatsTaskId))
+        {
+            NotificationService.Warning("查询失败", "请输入任务 ID。");
+            return;
+        }
+
+        _taskStats = await ApiClient.GetTaskStatisticsAsync(_taskStatsTaskId.Trim());
+        if (_taskStats == null)
+        {
+            NotificationService.Warning("查询失败", "未找到指定任务的统计数据。");
+        }
+    }
+
+    private static string GetAgentStatusLabel(int status)
+    {
+        return status switch
+        {
+            0 => "离线",
+            1 => "在线",
+            2 => "空闲",
+            _ => $"未知({status})"
+        };
+    }
+}

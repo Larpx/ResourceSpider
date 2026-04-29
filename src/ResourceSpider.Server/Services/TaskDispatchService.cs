@@ -4,36 +4,154 @@ using ResourceSpider.Server.Repositories;
 
 namespace ResourceSpider.Server.Services;
 
+/// <summary>
+/// Agent 任务调度服务接口，定义 Agent 拉取任务、上报结果等通信操作
+/// 与管理接口分离，专用于 Agent 与服务端之间的任务调度通信
+/// </summary>
 public interface ITaskDispatchService
 {
+    /// <summary>
+    /// Agent 拉取待执行任务
+    /// </summary>
+    /// <param name="agentId">Agent ID</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="maxCount">最大任务数</param>
+    /// <returns>是否验证成功及任务列表</returns>
     Task<(bool IsValid, List<TaskDto> Tasks)> PullTasksAsync(string agentId, string agentToken, int maxCount);
+
+    /// <summary>
+    /// Agent 获取任务完整内容
+    /// </summary>
+    /// <param name="agentId">Agent ID</param>
+    /// <param name="agentToken">Agent 认证令牌</param>
+    /// <param name="taskId">任务 ID</param>
+    /// <returns>是否验证成功及任务内容</returns>
     Task<(bool IsValid, TaskDto? Task)> GetTaskContentAsync(string agentId, string agentToken, string taskId);
+
+    /// <summary>
+    /// Agent 上报任务执行结果
+    /// </summary>
     Task<bool> ReportTaskAsync(string agentId, string agentToken, string taskId, int status, int dataCount, int duration);
+
+    /// <summary>
+    /// Agent 上报步骤执行状态
+    /// </summary>
     Task<bool> ReportStepStatusAsync(string agentId, string agentToken, string taskId, string stepId, int state, int dataCount);
+
+    /// <summary>
+    /// Agent 拉取表达式配置
+    /// </summary>
     Task<(bool IsValid, ExpressionConfigDto? Expression)> PullExpressionAsync(string agentId, string agentToken, string expressionId);
+
+    /// <summary>
+    /// Agent 拉取所有激活的表达式
+    /// </summary>
     Task<(bool IsValid, List<ExpressionConfigDto> Expressions)> PullActiveExpressionsAsync(string agentId, string agentToken);
+
+    /// <summary>
+    /// Agent 存储采集结果
+    /// </summary>
     Task<bool> StoreResultsAsync(string agentId, string agentToken, StoreCollectionResultsRequest request);
+
+    /// <summary>
+    /// Agent 上报表达式可用性
+    /// </summary>
     Task<bool> ReportExpressionAvailabilityAsync(string agentId, string agentToken, string expressionId, bool isAvailable, string? failureReason);
+
+    /// <summary>
+    /// Agent 拉取步骤资源
+    /// </summary>
     Task<(bool IsValid, List<StepResourceDto> Resources)> PullStepResourcesAsync(string agentId, string agentToken, string taskId, string stepId, int take);
+
+    /// <summary>
+    /// Agent 获取自身状态
+    /// </summary>
     Task<(bool IsValid, AgentStatusDto? Status)> GetAgentStatusAsync(string agentId, string agentToken);
+
+    /// <summary>
+    /// Agent 预取任务
+    /// </summary>
     Task<bool> PrefetchTasksAsync(string agentId, string agentToken, int count);
+
+    /// <summary>
+    /// 调度指定任务到合适的 Agent
+    /// </summary>
     Task<bool> DispatchTaskAsync(string taskId);
+
+    /// <summary>
+    /// 为指定分组选择最优 Agent
+    /// </summary>
     Task<string?> SelectBestAgentAsync(string? agentGroupId);
 }
 
+/// <summary>
+/// Agent 任务调度服务实现，处理 Agent 的任务拉取、结果上报和调度逻辑
+/// </summary>
 public class TaskDispatchService : ITaskDispatchService
 {
+    /// <summary>
+    /// 任务仓储
+    /// </summary>
     private readonly ITaskRepository _taskRepository;
+
+    /// <summary>
+    /// 任务步骤仓储
+    /// </summary>
     private readonly ITaskStepRepository _taskStepRepository;
+
+    /// <summary>
+    /// Agent 注册服务
+    /// </summary>
     private readonly IAgentRegisterService _agentRegisterService;
+
+    /// <summary>
+    /// 表达式服务
+    /// </summary>
     private readonly IExpressionService _expressionService;
+
+    /// <summary>
+    /// 采集结果服务
+    /// </summary>
     private readonly ICollectionResultService _resultService;
+
+    /// <summary>
+    /// 任务内容缓存
+    /// </summary>
     private readonly IAgentTaskContentCache _taskContentCache;
+
+    /// <summary>
+    /// 步骤资源池服务
+    /// </summary>
     private readonly IStepResourcePoolService _resourcePoolService;
+
+    /// <summary>
+    /// 步骤状态机服务
+    /// </summary>
     private readonly IStepStateMachineService _stateMachineService;
+
+    /// <summary>
+    /// Agent 仓储
+    /// </summary>
     private readonly IAgentRepository _agentRepository;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<TaskDispatchService> _logger;
 
+    /// <summary>
+    /// 初始化任务调度服务
+    /// </summary>
+    /// <param name="taskRepository">任务仓储</param>
+    /// <param name="taskStepRepository">任务步骤仓储</param>
+    /// <param name="agentRegisterService">Agent注册服务</param>
+    /// <param name="expressionService">表达式服务</param>
+    /// <param name="resultService">采集结果服务</param>
+    /// <param name="taskContentCache">任务内容缓存</param>
+    /// <param name="resourcePoolService">步骤资源池服务</param>
+    /// <param name="stateMachineService">步骤状态机服务</param>
+    /// <param name="agentRepository">Agent仓储</param>
+    /// <param name="logger">日志记录器</param>
     public TaskDispatchService(
         ITaskRepository taskRepository,
         ITaskStepRepository taskStepRepository,
@@ -58,6 +176,9 @@ public class TaskDispatchService : ITaskDispatchService
         _logger = logger;
     }
 
+    /// <summary>
+    /// Agent 拉取待执行任务
+    /// </summary>
     public async Task<(bool IsValid, List<TaskDto> Tasks)> PullTasksAsync(string agentId, string agentToken, int maxCount)
     {
         var isValid = await _agentRegisterService.ValidateTokenAsync(agentId, agentToken);

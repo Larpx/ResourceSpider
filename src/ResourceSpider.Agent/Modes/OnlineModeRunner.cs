@@ -11,25 +11,92 @@ using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Agent.Modes;
 
+/// <summary>
+/// 在线模式运行器，继承 BackgroundService，用于连接服务端并接收任务调度
+/// 通过 SignalR 与服务端通信，支持任务分配、心跳上报、控制指令和配置更新
+/// </summary>
 public class OnlineModeRunner : BackgroundService
 {
+    /// <summary>
+    /// SignalR 客户端，用于与服务端实时通信
+    /// </summary>
     private readonly SignalRClient _signalRClient;
+
+    /// <summary>
+    /// 服务端 API 客户端，用于 HTTP API 调用
+    /// </summary>
     private readonly ServerApiClient _serverApiClient;
+
+    /// <summary>
+    /// 任务执行器
+    /// </summary>
     private readonly ITaskExecutor _taskExecutor;
+
+    /// <summary>
+    /// 结果上报器
+    /// </summary>
     private readonly ResultReporter _resultReporter;
+
+    /// <summary>
+    /// 离线任务存储
+    /// </summary>
     private readonly OfflineTaskStore _offlineTaskStore;
+
+    /// <summary>
+    /// Agent 配置选项
+    /// </summary>
     private readonly AgentOptions _agentOptions;
+
+    /// <summary>
+    /// 在线模式配置选项
+    /// </summary>
     private readonly OnlineModeOptions _options;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<OnlineModeRunner> _logger;
 
+    /// <summary>
+    /// 运行中的任务取消令牌的字典
+    /// </summary>
     private readonly ConcurrentDictionary<string, CancellationTokenSource> _runningTasks = new();
+
+    /// <summary>
+    /// 并发控制信号量
+    /// </summary>
     private readonly SemaphoreSlim _concurrencySemaphore;
+
+    /// <summary>
+    /// 待处理任务队列
+    /// </summary>
     private readonly ConcurrentQueue<string> _taskQueue = new();
+
+    /// <summary>
+    /// 任务队列锁
+    /// </summary>
     private readonly object _queueLock = new();
 
+    /// <summary>
+    /// Agent 标识符
+    /// </summary>
     private string _agentId = string.Empty;
+
+    /// <summary>
+    /// Agent 是否已注册到服务端
+    /// </summary>
     private bool _isRegistered;
 
+    /// <summary>
+    /// 初始化在线模式运行器
+    /// </summary>
+    /// <param name="signalRClient">SignalR 客户端</param>
+    /// <param name="serverApiClient">服务端 API 客户端</param>
+    /// <param name="taskExecutor">任务执行器</param>
+    /// <param name="resultReporter">结果上报器</param>
+    /// <param name="offlineTaskStore">离线任务存储</param>
+    /// <param name="agentOptions">Agent 配置选项</param>
+    /// <param name="logger">日志记录器</param>
     public OnlineModeRunner(
         SignalRClient signalRClient,
         ServerApiClient serverApiClient,
@@ -57,6 +124,10 @@ public class OnlineModeRunner : BackgroundService
         _signalRClient.OnReconnected += () => _ = HandleReconnected();
     }
 
+    /// <summary>
+    /// 后台服务主循环，连接服务端并启动心跳、任务队列处理和离线恢复任务
+    /// </summary>
+    /// <param name="stoppingToken">取消令牌</param>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Online 模式启动，连接服务器: {ServerUrl}", _agentOptions.OnlineMode?.ServerUrl);
@@ -91,6 +162,9 @@ public class OnlineModeRunner : BackgroundService
         await CleanupAsync();
     }
 
+    /// <summary>
+    /// 向服务端注册 Agent，上报系统信息和能力
+    /// </summary>
     private async Task RegisterAgentAsync()
     {
         var systemInfo = CollectSystemMetrics();
@@ -111,6 +185,10 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 定期发送心跳到服务端，上报系统指标和任务状态
+    /// </summary>
+    /// <param name="ct">取消令牌</param>
     private async Task StartHeartbeatAsync(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested)
@@ -140,6 +218,10 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 收集当前 Agent 的系统指标，包括 CPU、内存、运行任务数等
+    /// </summary>
+    /// <returns>Agent 指标数据</returns>
     private AgentMetrics CollectSystemMetrics()
     {
         var process = Process.GetCurrentProcess();
@@ -159,6 +241,10 @@ public class OnlineModeRunner : BackgroundService
         };
     }
 
+    /// <summary>
+    /// 获取 CPU 使用率百分比
+    /// </summary>
+    /// <returns>CPU 使用率</returns>
     private static double GetCpuUsagePercent()
     {
         try
@@ -175,6 +261,10 @@ public class OnlineModeRunner : BackgroundService
         return 0;
     }
 
+    /// <summary>
+    /// 获取总物理内存大小（MB）
+    /// </summary>
+    /// <returns>总物理内存大小</returns>
     private static double GetTotalPhysicalMemoryMB()
     {
         try
@@ -186,6 +276,10 @@ public class OnlineModeRunner : BackgroundService
         return 0;
     }
 
+    /// <summary>
+    /// 获取可用物理内存大小（MB）
+    /// </summary>
+    /// <returns>可用物理内存大小</returns>
     private static double GetAvailablePhysicalMemoryMB()
     {
         try
@@ -197,6 +291,10 @@ public class OnlineModeRunner : BackgroundService
         return 0;
     }
 
+    /// <summary>
+    /// 获取本机局域网 IP 地址
+    /// </summary>
+    /// <returns>IP 地址字符串</returns>
     private static string GetLocalIpAddress()
     {
         try
@@ -208,6 +306,11 @@ public class OnlineModeRunner : BackgroundService
         catch { return "127.0.0.1"; }
     }
 
+    /// <summary>
+    /// 处理服务端分配的任务，将任务加入队列并开始处理
+    /// </summary>
+    /// <param name="taskId">任务 ID</param>
+    /// <param name="taskContent">任务配置内容</param>
     private void HandleTaskAssigned(string taskId, string taskContent)
     {
         _logger.LogInformation("收到任务分配: {TaskId}", taskId);
@@ -220,6 +323,11 @@ public class OnlineModeRunner : BackgroundService
         _ = ProcessTaskQueueItemAsync(taskId, taskContent);
     }
 
+    /// <summary>
+    /// 处理单个任务项，包括反序列化、执行、结果上报和离线存储清理
+    /// </summary>
+    /// <param name="taskId">任务 ID</param>
+    /// <param name="taskContent">任务配置内容</param>
     private async Task ProcessTaskQueueItemAsync(string taskId, string taskContent)
     {
         await _concurrencySemaphore.WaitAsync();
@@ -263,6 +371,10 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 后台任务队列处理循环，从队列中取出任务并调用 API 获取任务内容
+    /// </summary>
+    /// <param name="ct">取消令牌</param>
     private async Task ProcessTaskQueueAsync(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested)
@@ -293,6 +405,10 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 恢复离线任务，重新处理之前因网络问题未能上报的任务
+    /// </summary>
+    /// <param name="ct">取消令牌</param>
     private async Task RecoverOfflineTasksAsync(CancellationToken ct)
     {
         try
@@ -311,6 +427,11 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 处理服务端下发的控制指令，如紧急停止、暂停、恢复、重启等
+    /// </summary>
+    /// <param name="command">控制命令</param>
+    /// <param name="targetTaskId">目标任务 ID，可为 null 表示全部</param>
     private void HandleControlCommand(string command, string? targetTaskId = null)
     {
         _logger.LogInformation("收到控制指令: {Command}, 目标任务: {TaskId}", command, targetTaskId ?? "全部");
@@ -339,6 +460,10 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 紧急停止指定任务或全部任务，通过取消令牌实现
+    /// </summary>
+    /// <param name="targetTaskId">目标任务 ID，为 null 时停止全部任务</param>
     private void EmergencyStop(string? targetTaskId)
     {
         if (!string.IsNullOrEmpty(targetTaskId))
@@ -359,6 +484,10 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 暂停指定任务（当前实现仅记录日志）
+    /// </summary>
+    /// <param name="targetTaskId">目标任务 ID</param>
     private void PauseTask(string? targetTaskId)
     {
         if (!string.IsNullOrEmpty(targetTaskId) && _runningTasks.TryGetValue(targetTaskId, out var cts))
@@ -367,6 +496,10 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 恢复指定任务（当前实现仅记录日志）
+    /// </summary>
+    /// <param name="targetTaskId">目标任务 ID</param>
     private void ResumeTask(string? targetTaskId)
     {
         if (!string.IsNullOrEmpty(targetTaskId))
@@ -375,6 +508,9 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 重启 Agent，先停止所有任务，然后启动新进程替换当前进程
+    /// </summary>
     private async Task RestartAgentAsync()
     {
         _logger.LogWarning("收到重启指令，正在重启 Agent...");
@@ -395,6 +531,9 @@ public class OnlineModeRunner : BackgroundService
         Environment.Exit(0);
     }
 
+    /// <summary>
+    /// 刷新 Agent 配置，从服务端获取最新配置
+    /// </summary>
     private async Task RefreshConfigAsync()
     {
         try
@@ -411,17 +550,27 @@ public class OnlineModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 处理配置更新信号
+    /// </summary>
+    /// <param name="configJson">配置 JSON 字符串</param>
     private void HandleConfigUpdate(string configJson)
     {
         _logger.LogInformation("收到配置更新: {Config}", configJson);
     }
 
+    /// <summary>
+    /// SignalR 重连成功后的处理，重新注册 Agent
+    /// </summary>
     private async Task HandleReconnected()
     {
         _logger.LogInformation("SignalR 重新连接成功，重新注册 Agent");
         await RegisterAgentAsync();
     }
 
+    /// <summary>
+    /// 清理资源，停止所有任务并从服务端注销 Agent
+    /// </summary>
     private async Task CleanupAsync()
     {
         foreach (var (_, cts) in _runningTasks)
@@ -443,14 +592,48 @@ public class OnlineModeRunner : BackgroundService
     }
 }
 
+/// <summary>
+/// Agent 指标数据模型，用于心跳上报和状态监控
+/// </summary>
 public class AgentMetrics
 {
+    /// <summary>
+    /// CPU 使用率百分比
+    /// </summary>
     public double CpuUsagePercent { get; set; }
+
+    /// <summary>
+    /// 内存使用量（MB）
+    /// </summary>
     public double MemoryUsageMB { get; set; }
+
+    /// <summary>
+    /// CPU 核心数
+    /// </summary>
     public int CpuCores { get; set; }
+
+    /// <summary>
+    /// 总物理内存（MB）
+    /// </summary>
     public double TotalMemoryMB { get; set; }
+
+    /// <summary>
+    /// 可用物理内存（MB）
+    /// </summary>
     public double AvailableMemoryMB { get; set; }
+
+    /// <summary>
+    /// 当前运行中的任务数
+    /// </summary>
     public int RunningTaskCount { get; set; }
+
+    /// <summary>
+    /// 队列中的任务数
+    /// </summary>
     public int QueuedTaskCount { get; set; }
+
+    /// <summary>
+    /// Agent 运行时间（秒）
+    /// </summary>
     public int UptimeSeconds { get; set; }
 }

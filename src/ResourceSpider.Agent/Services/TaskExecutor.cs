@@ -7,20 +7,65 @@ using ResourceSpider.Infrastructure.Parser;
 
 namespace ResourceSpider.Agent.Services;
 
+/// <summary>
+/// 任务执行器接口，定义爬虫任务的执行方法
+/// </summary>
 public interface ITaskExecutor
 {
+    /// <summary>
+    /// 执行爬虫任务，支持单步和多步骤任务
+    /// </summary>
+    /// <param name="task">待执行的爬虫任务</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>任务执行结果</returns>
     Task<ExecutionResult> ExecuteAsync(SpiderTask task, CancellationToken ct = default);
 }
 
+/// <summary>
+/// 任务执行器实现，负责爬虫任务的核心执行逻辑
+/// 支持单步任务和多步骤任务的执行，包含重试、分页、变量映射、条件判断等功能
+/// </summary>
 public class TaskExecutor : ITaskExecutor
 {
+    /// <summary>
+    /// 默认 HTTP 下载器
+    /// </summary>
     private readonly IDownloader _downloader;
+
+    /// <summary>
+    /// 下载器工厂，用于根据步骤类型创建对应的下载器
+    /// </summary>
     private readonly IDownloaderFactory _downloaderFactory;
+
+    /// <summary>
+    /// URL 调度器，管理待采集的 URL 队列
+    /// </summary>
     private readonly IScheduler _scheduler;
+
+    /// <summary>
+    /// 解析器工厂，用于创建不同类型的内容解析器
+    /// </summary>
     private readonly IParserFactory _parserFactory;
+
+    /// <summary>
+    /// 变量解析器，用于解析模板中的变量占位符
+    /// </summary>
     private readonly IVariableResolver _variableResolver;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<TaskExecutor> _logger;
 
+    /// <summary>
+    /// 初始化任务执行器
+    /// </summary>
+    /// <param name="downloader">默认 HTTP 下载器</param>
+    /// <param name="downloaderFactory">下载器工厂</param>
+    /// <param name="scheduler">URL 调度器</param>
+    /// <param name="parserFactory">解析器工厂</param>
+    /// <param name="variableResolver">变量解析器</param>
+    /// <param name="logger">日志记录器</param>
     public TaskExecutor(
         IDownloader downloader,
         IDownloaderFactory downloaderFactory,
@@ -37,6 +82,12 @@ public class TaskExecutor : ITaskExecutor
         _logger = logger;
     }
 
+    /// <summary>
+    /// 执行爬虫任务，根据任务是否包含步骤自动选择单步或多步骤执行模式
+    /// </summary>
+    /// <param name="task">待执行的爬虫任务</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>包含采集数据、请求统计和步骤结果的执行结果</returns>
     public async Task<ExecutionResult> ExecuteAsync(SpiderTask task, CancellationToken ct = default)
     {
         var result = new ExecutionResult
@@ -80,6 +131,12 @@ public class TaskExecutor : ITaskExecutor
         return result;
     }
 
+    /// <summary>
+    /// 执行单步任务，构建请求、下载内容并解析数据
+    /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果容器</param>
+    /// <param name="ct">取消令牌</param>
     private async Task ExecuteSingleTaskAsync(SpiderTask task, ExecutionResult result, CancellationToken ct)
     {
         var request = BuildRequestFromConfig(task.RequestConfig, task, null);
@@ -116,6 +173,12 @@ public class TaskExecutor : ITaskExecutor
         result.Progress = 100;
     }
 
+    /// <summary>
+    /// 执行多步骤任务，按步骤顺序执行，支持条件判断、变量映射和分页采集
+    /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果容器</param>
+    /// <param name="ct">取消令牌</param>
     private async Task ExecuteMultiStepTaskAsync(SpiderTask task, ExecutionResult result, CancellationToken ct)
     {
         var stepVariables = new Dictionary<string, object?>();
@@ -212,6 +275,14 @@ public class TaskExecutor : ITaskExecutor
         }
     }
 
+    /// <summary>
+    /// 带重试机制的下载方法，根据重试策略进行指数退避重试
+    /// </summary>
+    /// <param name="downloader">下载器实例</param>
+    /// <param name="request">下载请求</param>
+    /// <param name="retryPolicy">重试策略</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>下载响应结果</returns>
     private async Task<Response> DownloadWithRetryAsync(IDownloader downloader, Request request, StepRetryPolicy retryPolicy, CancellationToken ct)
     {
         var retries = 0;
@@ -260,6 +331,12 @@ public class TaskExecutor : ITaskExecutor
         }
     }
 
+    /// <summary>
+    /// 判断响应是否应该重试，根据重试策略和错误类型决定
+    /// </summary>
+    /// <param name="response">下载响应</param>
+    /// <param name="retryPolicy">重试策略</param>
+    /// <returns>需要重试返回 true，否则返回 false</returns>
     private static bool ShouldRetry(Response response, StepRetryPolicy retryPolicy)
     {
         if (response.Status == RequestStatus.Success) return false;
@@ -275,6 +352,13 @@ public class TaskExecutor : ITaskExecutor
         return response.StatusCode >= 500 || response.StatusCode == 0;
     }
 
+    /// <summary>
+    /// 评估步骤的开始条件，判断步骤是否应该执行
+    /// </summary>
+    /// <param name="step">任务步骤</param>
+    /// <param name="stepVariables">步骤间传递的变量字典</param>
+    /// <param name="stepDataCounts">各步骤已采集的数据量字典</param>
+    /// <returns>条件满足返回 true，否则返回 false</returns>
     private bool EvaluateStartCondition(TaskStep step, Dictionary<string, object?> stepVariables, Dictionary<string, int> stepDataCounts)
     {
         if (step.StartCondition == null)
@@ -299,6 +383,12 @@ public class TaskExecutor : ITaskExecutor
         return step.StartCondition.Evaluate(context);
     }
 
+    /// <summary>
+    /// 检查步骤的结束条件，判断是否应该停止采集
+    /// </summary>
+    /// <param name="step">任务步骤</param>
+    /// <param name="currentDataCount">当前已采集的数据量</param>
+    /// <returns>满足结束条件返回 true，否则返回 false</returns>
     private static bool CheckEndCondition(TaskStep step, int currentDataCount)
     {
         if (step.EndCondition == null) return false;
@@ -306,6 +396,12 @@ public class TaskExecutor : ITaskExecutor
         return step.EndCondition.IsSatisfied(currentDataCount, context);
     }
 
+    /// <summary>
+    /// 根据步骤的采集模式获取对应的下载器
+    /// Playwright 和 BrowserAutomation 模式使用 Playwright 下载器，其他使用默认 HTTP 下载器
+    /// </summary>
+    /// <param name="step">任务步骤</param>
+    /// <returns>对应的下载器实例</returns>
     private IDownloader GetDownloaderForStep(TaskStep step)
     {
         return step.CollectionMode switch
@@ -316,6 +412,13 @@ public class TaskExecutor : ITaskExecutor
         };
     }
 
+    /// <summary>
+    /// 从请求配置构建下载请求，解析 URL 模板中的变量占位符
+    /// </summary>
+    /// <param name="config">步骤请求配置</param>
+    /// <param name="task">所属爬虫任务</param>
+    /// <param name="variables">步骤变量字典</param>
+    /// <returns>构建完成的请求对象，配置无效时返回 null</returns>
     private Request? BuildRequestFromConfig(StepRequestConfig? config, SpiderTask task, Dictionary<string, object?>? variables)
     {
         if (config == null) return null;
@@ -368,6 +471,13 @@ public class TaskExecutor : ITaskExecutor
         return request;
     }
 
+    /// <summary>
+    /// 从任务步骤构建下载请求列表
+    /// </summary>
+    /// <param name="step">任务步骤</param>
+    /// <param name="variables">步骤变量字典</param>
+    /// <param name="task">所属爬虫任务</param>
+    /// <returns>下载请求列表</returns>
     private List<Request> BuildRequestsFromStep(TaskStep step, Dictionary<string, object?> variables, SpiderTask task)
     {
         var requests = new List<Request>();
@@ -385,6 +495,13 @@ public class TaskExecutor : ITaskExecutor
         return requests;
     }
 
+    /// <summary>
+    /// 处理单步任务的响应数据，使用表达式解析器或默认解析器提取数据记录
+    /// </summary>
+    /// <param name="response">下载响应</param>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="expressionParser">表达式解析器，可为 null</param>
+    /// <returns>提取的数据记录列表</returns>
     private List<DataRecord> ProcessResponse(Response response, SpiderTask task, IParser? expressionParser)
     {
         var records = new List<DataRecord>();
@@ -414,6 +531,13 @@ public class TaskExecutor : ITaskExecutor
         return records;
     }
 
+    /// <summary>
+    /// 处理多步骤任务的响应数据，根据提取规则或表达式配置提取数据记录
+    /// </summary>
+    /// <param name="response">下载响应</param>
+    /// <param name="step">任务步骤</param>
+    /// <param name="task">爬虫任务</param>
+    /// <returns>提取的数据记录列表</returns>
     private List<DataRecord> ProcessStepResponse(Response response, TaskStep step, SpiderTask task)
     {
         var records = new List<DataRecord>();
@@ -456,6 +580,12 @@ public class TaskExecutor : ITaskExecutor
         return records;
     }
 
+    /// <summary>
+    /// 应用步骤的变量映射，将数据记录中的字段值映射到步骤变量
+    /// </summary>
+    /// <param name="step">任务步骤</param>
+    /// <param name="records">数据记录列表</param>
+    /// <param name="stepVariables">步骤变量字典，会被修改</param>
     private static void ApplyVariableMappings(TaskStep step, List<DataRecord> records, Dictionary<string, object?> stepVariables)
     {
         if (step.VariableMappings.Count == 0 || records.Count == 0) return;
@@ -475,6 +605,12 @@ public class TaskExecutor : ITaskExecutor
         }
     }
 
+    /// <summary>
+    /// 根据提取规则从内容中提取数据，支持 XPath、CSS Selector、JsonPath 和 Regex 四种表达式类型
+    /// </summary>
+    /// <param name="content">待解析的文本内容</param>
+    /// <param name="rule">提取规则配置</param>
+    /// <returns>提取的结果列表</returns>
     private List<string> ExtractByRule(string? content, ExtractionRule rule)
     {
         var results = new List<string>();
@@ -526,6 +662,12 @@ public class TaskExecutor : ITaskExecutor
         return rule.IsArray ? results : results.Take(1).ToList();
     }
 
+    /// <summary>
+    /// 对提取的值应用转换规则，如 Trim、Replace、RegexReplace、LowerCase、UpperCase
+    /// </summary>
+    /// <param name="value">原始值</param>
+    /// <param name="transform">转换规则</param>
+    /// <returns>转换后的值</returns>
     private static string ApplyTransform(string value, TransformRule transform)
     {
         return transform.Type.ToLowerInvariant() switch
@@ -543,6 +685,19 @@ public class TaskExecutor : ITaskExecutor
         };
     }
 
+    /// <summary>
+    /// 处理分页采集，根据分页配置自动翻页直到满足条件
+    /// 支持页码翻页、偏移量翻页、下一页链接、点击翻页和无限滚动
+    /// </summary>
+    /// <param name="downloader">下载器实例</param>
+    /// <param name="step">任务步骤</param>
+    /// <param name="originalRequest">原始请求</param>
+    /// <param name="result">执行结果容器</param>
+    /// <param name="stepVariables">步骤变量字典</param>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="retryPolicy">重试策略</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>所有分页采集的数据记录</returns>
     private async Task<List<DataRecord>> HandlePaginationAsync(
         IDownloader downloader,
         TaskStep step,
@@ -647,6 +802,13 @@ public class TaskExecutor : ITaskExecutor
         return allRecords;
     }
 
+    /// <summary>
+    /// 构建页码翻页 URL，使用 URL 模板或参数方式
+    /// </summary>
+    /// <param name="baseUrl">基础 URL</param>
+    /// <param name="pagination">分页配置</param>
+    /// <param name="pageNum">目标页码</param>
+    /// <returns>构建后的分页 URL</returns>
     private static string? BuildPageUrl(string baseUrl, PaginationConfig pagination, int pageNum)
     {
         if (!string.IsNullOrEmpty(pagination.UrlPattern))
@@ -665,6 +827,13 @@ public class TaskExecutor : ITaskExecutor
         return baseUrl;
     }
 
+    /// <summary>
+    /// 构建偏移量翻页 URL，使用 URL 模板或参数方式
+    /// </summary>
+    /// <param name="baseUrl">基础 URL</param>
+    /// <param name="pagination">分页配置</param>
+    /// <param name="offset">偏移量</param>
+    /// <returns>构建后的分页 URL</returns>
     private static string? BuildOffsetUrl(string baseUrl, PaginationConfig pagination, int offset)
     {
         if (!string.IsNullOrEmpty(pagination.UrlPattern))
@@ -684,30 +853,114 @@ public class TaskExecutor : ITaskExecutor
     }
 }
 
+/// <summary>
+/// 任务执行结果模型，包含采集数据统计、错误信息和步骤执行详情
+/// </summary>
 public class ExecutionResult
 {
+    /// <summary>
+    /// 任务 ID
+    /// </summary>
     public string TaskId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 任务名称
+    /// </summary>
     public string? TaskName { get; set; }
+
+    /// <summary>
+    /// 关联的表达式 ID
+    /// </summary>
     public string? ExpressionId { get; set; }
+
+    /// <summary>
+    /// 执行状态，如 Success、Failed
+    /// </summary>
     public string Status { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 总请求数
+    /// </summary>
     public int TotalRequests { get; set; }
+
+    /// <summary>
+    /// 成功请求数
+    /// </summary>
     public int SuccessRequests { get; set; }
+
+    /// <summary>
+    /// 失败请求数
+    /// </summary>
     public int FailedRequests { get; set; }
+
+    /// <summary>
+    /// 采集到的数据记录列表
+    /// </summary>
     public List<DataRecord> DataRecords { get; set; } = [];
+
+    /// <summary>
+    /// 错误信息列表
+    /// </summary>
     public List<string> Errors { get; set; } = [];
+
+    /// <summary>
+    /// 执行进度百分比
+    /// </summary>
     public decimal Progress { get; set; }
+
+    /// <summary>
+    /// 开始时间（UTC）
+    /// </summary>
     public DateTime StartTime { get; set; }
+
+    /// <summary>
+    /// 结束时间（UTC）
+    /// </summary>
     public DateTime? EndTime { get; set; }
+
+    /// <summary>
+    /// 执行耗时（毫秒）
+    /// </summary>
     public int Duration { get; set; }
+
+    /// <summary>
+    /// 错误消息
+    /// </summary>
     public string? ErrorMessage { get; set; }
+
+    /// <summary>
+    /// 各步骤的执行结果列表
+    /// </summary>
     public List<StepExecutionResult> StepResults { get; set; } = [];
 }
 
+/// <summary>
+/// 步骤执行结果模型，记录单个步骤的执行状态和数据量
+/// </summary>
 public class StepExecutionResult
 {
+    /// <summary>
+    /// 步骤 ID
+    /// </summary>
     public string StepId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 步骤名称
+    /// </summary>
     public string StepName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 步骤状态，如 Waiting、Running、Completed、Skipped
+    /// </summary>
     public StepState State { get; set; } = StepState.Waiting;
+
+    /// <summary>
+    /// 该步骤采集的数据量
+    /// </summary>
     public int DataCount { get; set; }
+
+    /// <summary>
+    /// 步骤错误消息
+    /// </summary>
     public string? ErrorMessage { get; set; }
 }

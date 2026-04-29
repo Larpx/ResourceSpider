@@ -6,28 +6,125 @@ using ResourceSpider.Server.Repositories;
 
 namespace ResourceSpider.Server.Services;
 
+/// <summary>
+/// 任务管理服务接口，定义任务的创建、查询、更新、暂停、恢复、停止和删除操作
+/// </summary>
 public interface ITaskService
 {
+    /// <summary>
+    /// 创建新任务
+    /// </summary>
+    /// <param name="request">任务创建请求</param>
+    /// <param name="createdBy">创建者用户名</param>
+    /// <returns>创建的任务DTO</returns>
     Task<TaskDto> CreateAsync(CreateTaskRequest request, string? createdBy = null);
+
+    /// <summary>
+    /// 根据ID获取任务详情
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <returns>任务DTO，不存在返回null</returns>
     Task<TaskDto?> GetByIdAsync(string taskId);
+
+    /// <summary>
+    /// 分页获取任务列表
+    /// </summary>
+    /// <param name="pageIndex">页码</param>
+    /// <param name="pageSize">每页数量</param>
+    /// <param name="status">状态筛选，可选</param>
+    /// <param name="keyword">关键词筛选，可选</param>
+    /// <returns>任务列表响应</returns>
     Task<TaskListResponse> GetListAsync(int pageIndex, int pageSize, int? status = null, string? keyword = null);
+
+    /// <summary>
+    /// 更新任务配置
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <param name="request">更新请求</param>
+    /// <returns>更新是否成功</returns>
     Task<bool> UpdateAsync(string taskId, UpdateTaskRequest request);
+
+    /// <summary>
+    /// 暂停任务
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <returns>暂停是否成功</returns>
     Task<bool> PauseAsync(string taskId);
+
+    /// <summary>
+    /// 恢复任务
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <returns>恢复是否成功</returns>
     Task<bool> ResumeAsync(string taskId);
+
+    /// <summary>
+    /// 停止任务
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <returns>停止是否成功</returns>
     Task<bool> StopAsync(string taskId);
+
+    /// <summary>
+    /// 删除任务
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <returns>删除是否成功</returns>
     Task<bool> DeleteAsync(string taskId);
+
+    /// <summary>
+    /// 触发任务立即执行
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <returns>触发是否成功</returns>
     Task<bool> TriggerExecutionAsync(string taskId);
+
+    /// <summary>
+    /// 获取任务的配置快照
+    /// </summary>
+    /// <param name="taskId">任务ID</param>
+    /// <returns>配置快照，不存在返回null</returns>
     Task<TaskConfigurationSnapshot?> GetConfigurationSnapshotAsync(string taskId);
+
+    /// <summary>
+    /// 获取待调度的任务列表
+    /// </summary>
+    /// <returns>SpiderTask列表</returns>
     Task<List<SpiderTask>> GetScheduledTasksAsync();
 }
 
+/// <summary>
+/// 任务管理服务实现，负责任务的CRUD操作和调度触发
+/// </summary>
 public class TaskService : ITaskService
 {
+    /// <summary>
+    /// 任务仓储
+    /// </summary>
     private readonly ITaskRepository _taskRepository;
+
+    /// <summary>
+    /// 任务步骤仓储
+    /// </summary>
     private readonly ITaskStepRepository _taskStepRepository;
+
+    /// <summary>
+    /// 配置版本服务
+    /// </summary>
     private readonly IConfigVersionService _configVersionService;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<TaskService> _logger;
 
+    /// <summary>
+    /// 初始化任务服务
+    /// </summary>
+    /// <param name="taskRepository">任务仓储</param>
+    /// <param name="taskStepRepository">任务步骤仓储</param>
+    /// <param name="configVersionService">配置版本服务</param>
+    /// <param name="logger">日志记录器</param>
     public TaskService(
         ITaskRepository taskRepository,
         ITaskStepRepository taskStepRepository,
@@ -40,6 +137,9 @@ public class TaskService : ITaskService
         _logger = logger;
     }
 
+    /// <summary>
+    /// 创建新任务
+    /// </summary>
     public async Task<TaskDto> CreateAsync(CreateTaskRequest request, string? createdBy = null)
     {
         var taskId = Guid.NewGuid().ToString("N");

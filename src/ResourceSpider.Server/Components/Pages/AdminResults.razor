@@ -1,0 +1,491 @@
+@page "/admin/results"
+@using Microsoft.JSInterop
+@layout AdminLayout
+@implements IAsyncDisposable
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
+
+<PageTitle>采集结果 - ResourceSpider</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载采集结果...</p>
+}
+else
+{
+    <h1>采集结果管理</h1>
+
+    <div class="action-row">
+        <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
+        <button class="btn" type="button" @onclick="OpenExportDrawer">导出</button>
+        <button class="btn" type="button" @onclick="OpenImportDrawer">导入</button>
+        <button class="btn btn-secondary" type="button" @onclick="LoadStatsAsync">统计</button>
+        <button class="btn btn-danger" type="button" @onclick="BatchDeleteAsync" disabled="@(_selectedResultIds.Count == 0)">批量删除 (@_selectedResultIds.Count)</button>
+    </div>
+
+    @if (_showStats && _resultStats != null)
+    {
+        <section class="card runtime-section">
+            <h2>采集结果统计</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">@(_resultStats.TotalResults?.ToString() ?? "-")</div>
+                    <div class="stat-label">总结果数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@(_resultStats.TaskId ?? "-")</div>
+                    <div class="stat-label">任务 ID</div>
+                </div>
+            </div>
+        </section>
+    }
+
+    <section class="card runtime-section">
+        <h2>查询过滤</h2>
+        <div class="filter-row">
+            <input class="input" placeholder="任务 ID" @bind="_filterTaskId" />
+            <input class="input" placeholder="关键字" @bind="_filterKeyword" />
+            <select class="input" @bind="_filterDuplicate">
+                <option value="">全部</option>
+                <option value="false">非重复</option>
+                <option value="true">重复</option>
+            </select>
+            <select class="input" @bind="_pageSize">
+                <option value="10">10 / 页</option>
+                <option value="20">20 / 页</option>
+                <option value="50">50 / 页</option>
+            </select>
+            <button class="btn" type="button" @onclick="SearchAsync">查询</button>
+        </div>
+    </section>
+
+    <section class="card runtime-section">
+        <h2>结果列表</h2>
+
+        @if (_results.Count == 0)
+        {
+            <p class="empty-state">暂无采集结果数据。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" @onchange="ToggleSelectAll" /></th>
+                        <th>结果 ID</th>
+                        <th>任务 ID</th>
+                        <th>来源 URL</th>
+                        <th>字段数</th>
+                        <th>重复</th>
+                        <th>采集时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var result in _results)
+                    {
+                        <tr>
+                            <td><input type="checkbox" checked="@(_selectedResultIds.Contains(result.ResultId))" @onchange="() => ToggleSelect(result.ResultId)" /></td>
+                            <td><code>@result.ResultId.Substring(0, Math.Min(8, result.ResultId.Length))...</code></td>
+                            <td><code>@result.TaskId.Substring(0, Math.Min(8, result.TaskId.Length))...</code></td>
+                            <td title="@result.SourceUrl">@(result.SourceUrl.Length > 40 ? result.SourceUrl.Substring(0, 40) + "..." : result.SourceUrl)</td>
+                            <td>@result.Fields.Count</td>
+                            <td>@(result.IsDuplicate ? "是" : "否")</td>
+                            <td>@(result.CollectedAt.HasValue ? result.CollectedAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn btn-secondary" type="button" @onclick="() => ShowDetailAsync(result)">详情</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <div class="pagination-row">
+            <span>总数：@_total 条，当前第 @_pageIndex / @TotalPages 页</span>
+            <div class="table-actions">
+                <button class="btn btn-secondary" type="button" disabled="@(_pageIndex <= 1)" @onclick="PrevPageAsync">上一页</button>
+                <button class="btn btn-secondary" type="button" disabled="@(_pageIndex >= TotalPages)" @onclick="NextPageAsync">下一页</button>
+            </div>
+            <div class="page-jump">
+                <span>跳转到</span>
+                <input class="input" type="number" min="1" max="@TotalPages" @bind="_jumpPageIndex" />
+                <button class="btn btn-secondary" type="button" @onclick="JumpPageAsync">GO</button>
+            </div>
+        </div>
+    </section>
+
+    @if (_showDetailDrawer && _detailResult != null)
+    {
+        <div class="drawer-mask" @onclick="CloseDetailDrawer">
+            <aside class="drawer-panel drawer-panel-wide" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>采集结果详情</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseDetailDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <div class="detail-group">
+                        <label class="detail-label">结果 ID</label>
+                        <div class="detail-value"><code>@_detailResult.ResultId</code></div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">任务 ID</label>
+                        <div class="detail-value"><code>@_detailResult.TaskId</code></div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">表达式 ID</label>
+                        <div class="detail-value"><code>@_detailResult.ExpressionId</code></div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">Agent ID</label>
+                        <div class="detail-value"><code>@_detailResult.AgentId</code></div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">来源 URL</label>
+                        <div class="detail-value"><a href="@_detailResult.SourceUrl" target="_blank">@_detailResult.SourceUrl</a></div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">是否重复</label>
+                        <div class="detail-value">@(_detailResult.IsDuplicate ? "是" : "否")</div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">存储引擎</label>
+                        <div class="detail-value">@(_detailResult.StorageEngine ?? "-")</div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">采集时间</label>
+                        <div class="detail-value">@(_detailResult.CollectedAt.HasValue ? _detailResult.CollectedAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</div>
+                    </div>
+
+                    <h3 style="margin-top:1rem;">提取字段</h3>
+                    @if (_detailResult.Fields.Count == 0)
+                    {
+                        <p>无字段数据。</p>
+                    }
+                    else
+                    {
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>字段名</th>
+                                    <th>值</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var field in _detailResult.Fields)
+                                {
+                                    <tr>
+                                        <td><strong>@field.Key</strong></td>
+                                        <td>@(field.Value?.ToString() ?? "-")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </aside>
+        </div>
+    }
+
+    @if (_showExportDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseExportDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>导出采集结果</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseExportDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <label class="form-label">任务 ID *</label>
+                    <input class="input" placeholder="请输入要导出的任务 ID" @bind="_exportTaskId" />
+                    <label class="form-label">导出格式</label>
+                    <select class="input" @bind="_exportFormat">
+                        <option value="Csv">CSV</option>
+                        <option value="Json">JSON</option>
+                        <option value="Excel">Excel</option>
+                    </select>
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="ExportAsync">确认导出</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseExportDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    }
+
+    @if (_showImportDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseImportDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>导入采集结果</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseImportDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <label class="form-label">文件名</label>
+                    <input class="input" placeholder="导入文件名" @bind="_importFileName" />
+                    <label class="form-label">内容（JSON 格式）</label>
+                    <textarea class="input" rows="6" placeholder="粘贴 JSON 格式的采集结果数据" @bind="_importContent"></textarea>
+                    <label class="form-label">内容类型</label>
+                    <select class="input" @bind="_importContentType">
+                        <option value="application/json">JSON</option>
+                        <option value="text/csv">CSV</option>
+                    </select>
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="ImportAsync">确认导入</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseImportDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    }
+}
+
+@code {
+    private bool _ready;
+    private List<CollectionResultDto> _results = new();
+    private CollectionResultDto? _detailResult;
+    private HashSet<string> _selectedResultIds = new();
+
+    private int _pageIndex = 1;
+    private int _pageSize = 20;
+    private int _total;
+    private int _jumpPageIndex = 1;
+
+    private string _filterTaskId = string.Empty;
+    private string _filterKeyword = string.Empty;
+    private string _filterDuplicate = string.Empty;
+
+    private bool _showDetailDrawer;
+    private bool _showExportDrawer;
+    private bool _showImportDrawer;
+    private bool _showStats;
+    private string _exportTaskId = string.Empty;
+    string _exportFormat = "Csv";
+
+    private string _importFileName = string.Empty;
+    private string _importContent = string.Empty;
+    private string _importContentType = "application/json";
+
+    private ResultStatsData? _resultStats;
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling(_total / (double)_pageSize));
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        await LoadPageAsync();
+        _ready = true;
+    }
+
+    private async Task LoadPageAsync()
+    {
+        bool? isDuplicate = string.IsNullOrWhiteSpace(_filterDuplicate) ? null : bool.Parse(_filterDuplicate);
+        var response = await ApiClient.GetResultsAsync(
+            taskId: string.IsNullOrWhiteSpace(_filterTaskId) ? null : _filterTaskId.Trim(),
+            keyword: string.IsNullOrWhiteSpace(_filterKeyword) ? null : _filterKeyword.Trim(),
+            isDuplicate: isDuplicate,
+            pageIndex: _pageIndex,
+            pageSize: _pageSize);
+
+        _results = response?.Results ?? new List<CollectionResultDto>();
+        _total = response?.Total ?? 0;
+        _jumpPageIndex = _pageIndex;
+    }
+
+    private async Task SearchAsync()
+    {
+        _pageIndex = 1;
+        await LoadPageAsync();
+    }
+
+    private async Task PrevPageAsync()
+    {
+        if (_pageIndex <= 1) return;
+        _pageIndex--;
+        await LoadPageAsync();
+    }
+
+    private async Task NextPageAsync()
+    {
+        if (_pageIndex >= TotalPages) return;
+        _pageIndex++;
+        await LoadPageAsync();
+    }
+
+    private async Task JumpPageAsync()
+    {
+        if (_jumpPageIndex < 1 || _jumpPageIndex > TotalPages)
+        {
+            NotificationService.Warning("页码无效", $"页码范围应为 1 到 {TotalPages}。");
+            return;
+        }
+        _pageIndex = _jumpPageIndex;
+        await LoadPageAsync();
+    }
+
+    private void ToggleSelect(string resultId)
+    {
+        if (_selectedResultIds.Contains(resultId))
+            _selectedResultIds.Remove(resultId);
+        else
+            _selectedResultIds.Add(resultId);
+    }
+
+    private void ToggleSelectAll(ChangeEventArgs e)
+    {
+        if (e.Value is true)
+        {
+            foreach (var r in _results) _selectedResultIds.Add(r.ResultId);
+        }
+        else
+        {
+            _selectedResultIds.Clear();
+        }
+    }
+
+    private async Task BatchDeleteAsync()
+    {
+        if (_selectedResultIds.Count == 0) return;
+
+        var (success, message) = await ApiClient.BatchDeleteResultsAsync(_selectedResultIds.ToList());
+        if (!success)
+        {
+            NotificationService.Error("删除失败", message);
+            return;
+        }
+
+        NotificationService.Success("删除成功", $"已删除 {_selectedResultIds.Count} 条结果。");
+        _selectedResultIds.Clear();
+        await LoadPageAsync();
+    }
+
+    private void ShowDetailAsync(CollectionResultDto result)
+    {
+        _detailResult = result;
+        _showDetailDrawer = true;
+    }
+
+    private void CloseDetailDrawer()
+    {
+        _showDetailDrawer = false;
+        _detailResult = null;
+    }
+
+    private void OpenExportDrawer()
+    {
+        _showExportDrawer = true;
+    }
+
+    private void CloseExportDrawer()
+    {
+        _showExportDrawer = false;
+    }
+
+    private void OpenImportDrawer()
+    {
+        _importFileName = string.Empty;
+        _importContent = string.Empty;
+        _importContentType = "application/json";
+        _showImportDrawer = true;
+    }
+
+    private void CloseImportDrawer()
+    {
+        _showImportDrawer = false;
+    }
+
+    private async Task ImportAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_importContent))
+        {
+            NotificationService.Warning("导入失败", "导入内容不能为空。");
+            return;
+        }
+
+        var (success, message) = await ApiClient.ImportResultsAsync(new ImportCollectionResultsRequest(
+            _importFileName,
+            _importContent,
+            _importContentType));
+
+        if (!success)
+        {
+            NotificationService.Error("导入失败", message);
+            return;
+        }
+
+        NotificationService.Success("导入成功", string.IsNullOrWhiteSpace(message) ? "数据已导入。" : message);
+        _showImportDrawer = false;
+        await LoadPageAsync();
+    }
+
+    private async Task LoadStatsAsync()
+    {
+        _showStats = !_showStats;
+        if (_showStats)
+        {
+            var taskId = string.IsNullOrWhiteSpace(_filterTaskId) ? null : _filterTaskId.Trim();
+            var statsObj = await ApiClient.GetResultStatsAsync(taskId);
+            if (statsObj is Dictionary<string, object> dict)
+            {
+                _resultStats = new ResultStatsData
+                {
+                    TaskId = dict.TryGetValue("taskId", out var tid) ? tid?.ToString() : null,
+                    TotalResults = dict.TryGetValue("totalResults", out var tr) ? Convert.ToInt64(tr) : (long?)null
+                };
+            }
+        }
+    }
+
+    private class ResultStatsData
+    {
+        public string? TaskId { get; set; }
+        public long? TotalResults { get; set; }
+    }
+
+    private async Task ExportAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_exportTaskId))
+        {
+            NotificationService.Warning("导出失败", "请输入任务 ID。");
+            return;
+        }
+
+        var exportResult = await ApiClient.ExportResultsAsync(new ExportRequest(
+            _exportTaskId.Trim(),
+            Enum.Parse<ExportFormat>(_exportFormat)));
+
+        if (exportResult == null)
+        {
+            NotificationService.Error("导出失败", "导出请求失败。");
+            return;
+        }
+
+        NotificationService.Success("导出成功", $"文件：{exportResult.FileName}，共 {exportResult.TotalRecords} 条记录。");
+        _showExportDrawer = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showDetailDrawer || _showExportDrawer ? "results-page" : null);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("drawerUx.forceClose");
+        }
+        catch { }
+    }
+}

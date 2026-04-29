@@ -1,11 +1,14 @@
 @page "/admin/agents"
+@using Microsoft.JSInterop
 @layout AdminLayout
+@implements IAsyncDisposable
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
 @inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
-<PageTitle>Agent 配置 - ResourceSpider</PageTitle>
+<PageTitle>Agent 管理 - ResourceSpider</PageTitle>
 
 @if (!_ready)
 {
@@ -15,7 +18,11 @@
 }
 else
 {
-    <h1>Agent 配置</h1>
+    <h1>Agent 管理</h1>
+
+    <div class="action-row">
+        <button class="btn btn-secondary" type="button" @onclick="LoadAgentsAsync">刷新</button>
+    </div>
 
     @if (_agents.Count == 0)
     {
@@ -33,6 +40,7 @@ else
                             <h2>@agent.AgentName</h2>
                             <code class="agent-id">@agent.AgentId</code>
                         </div>
+                        <span class="status-badge @GetAgentStatusBadgeClass(agent.Status)">@GetAgentStatusLabel(agent.Status)</span>
                     </div>
                     <div class="agent-body">
                         <div class="agent-info-row">
@@ -40,20 +48,95 @@ else
                             <span class="agent-info-value">@agent.IpAddress:@agent.Port</span>
                         </div>
                         <div class="agent-info-row">
-                            <span class="agent-info-label">状态：</span>
-                            <span class="status-badge @GetAgentStatusBadgeClass(agent.Status)">@GetAgentStatusLabel(agent.Status)</span>
+                            <span class="agent-info-label">CPU：</span>
+                            <span class="agent-info-value">@(agent.CpuUsage.HasValue ? $"{agent.CpuUsage.Value:F1}%" : "-")</span>
+                        </div>
+                        <div class="agent-info-row">
+                            <span class="agent-info-label">内存：</span>
+                            <span class="agent-info-value">@(agent.MemoryUsage.HasValue ? $"{agent.MemoryUsage.Value:F1}%" : "-")</span>
                         </div>
                         <div class="agent-info-row">
                             <span class="agent-info-label">任务数：</span>
                             <span class="agent-info-value">@agent.TaskCount</span>
                         </div>
+                        @if (!string.IsNullOrEmpty(agent.GroupId))
+                        {
+                            <div class="agent-info-row">
+                                <span class="agent-info-label">分组：</span>
+                                <span class="agent-info-value">@agent.GroupId</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(agent.OS))
+                        {
+                            <div class="agent-info-row">
+                                <span class="agent-info-label">系统：</span>
+                                <span class="agent-info-value">@agent.OS</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(agent.Version))
+                        {
+                            <div class="agent-info-row">
+                                <span class="agent-info-label">版本：</span>
+                                <span class="agent-info-value">@agent.Version</span>
+                            </div>
+                        }
+                        @if (agent.Tags != null && agent.Tags.Count > 0)
+                        {
+                            <div class="agent-info-row">
+                                <span class="agent-info-label">标签：</span>
+                                <span class="agent-info-value">@string.Join(", ", agent.Tags)</span>
+                            </div>
+                        }
                         <div class="agent-info-row">
                             <span class="agent-info-label">最后心跳：</span>
-                            <span class="agent-info-value">@agent.LastHeartbeat</span>
+                            <span class="agent-info-value">@(agent.LastHeartbeat.HasValue ? agent.LastHeartbeat.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</span>
                         </div>
+                    </div>
+                    <div class="agent-actions">
+                        <button class="btn btn-secondary btn-sm" type="button" @onclick="() => OpenEditDrawer(agent)">编辑</button>
+                        <button class="btn btn-sm" type="button" @onclick="() => RestartAgentAsync(agent.AgentId)" title="重启">🔄 重启</button>
+                        <button class="btn btn-sm" type="button" @onclick="() => UpdateAgentVersionAsync(agent.AgentId)" title="更新">⬆️ 更新</button>
+                        <button class="btn btn-danger btn-sm" type="button" @onclick="() => StopAllAgentTasksAsync(agent.AgentId)" title="紧急停止">🛑 停止</button>
+                        @if (_confirmDeleteAgentId == agent.AgentId)
+                        {
+                            <button class="btn btn-danger btn-sm" type="button" @onclick="() => DeleteAgentAsync(agent.AgentId)">确认删除</button>
+                            <button class="btn btn-secondary btn-sm" type="button" @onclick="CancelDelete">取消</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-danger btn-sm" type="button" @onclick="() => PrepareDelete(agent.AgentId)">删除</button>
+                        }
                     </div>
                 </section>
             }
+        </div>
+    }
+
+    @if (_showEditDrawer && _editingAgent != null)
+    {
+        <div class="drawer-mask" @onclick="CloseEditDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>编辑 Agent</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseEditDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <div class="detail-group">
+                        <label class="detail-label">Agent ID</label>
+                        <div class="detail-value"><code>@_editingAgent.AgentId</code></div>
+                    </div>
+                    <label class="form-label">名称</label>
+                    <input class="input" @bind="_editAgentName" />
+                    <label class="form-label">分组 ID</label>
+                    <input class="input" placeholder="输入分组 ID" @bind="_editGroupId" />
+                    <label class="form-label">标签（逗号分隔）</label>
+                    <input class="input" placeholder="标签1,标签2" @bind="_editTags" />
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="SaveAgentAsync">保存</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseEditDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
         </div>
     }
 }
@@ -61,6 +144,13 @@ else
 @code {
     private bool _ready;
     private List<AgentDto> _agents = new();
+    private string? _confirmDeleteAgentId;
+
+    private bool _showEditDrawer;
+    private AgentDto? _editingAgent;
+    private string _editAgentName = string.Empty;
+    private string _editGroupId = string.Empty;
+    private string _editTags = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,13 +160,107 @@ else
             return;
         }
 
-        _agents = await ApiClient.GetAgentsAsync();
+        await LoadAgentsAsync();
         _ready = true;
+    }
 
-        if (_agents.Count == 0)
+    private async Task LoadAgentsAsync()
+    {
+        _agents = await ApiClient.GetAgentsAsync();
+    }
+
+    private void OpenEditDrawer(AgentDto agent)
+    {
+        _editingAgent = agent;
+        _editAgentName = agent.AgentName;
+        _editGroupId = agent.GroupId ?? string.Empty;
+        _editTags = agent.Tags != null ? string.Join(",", agent.Tags) : string.Empty;
+        _showEditDrawer = true;
+    }
+
+    private void CloseEditDrawer()
+    {
+        _showEditDrawer = false;
+        _editingAgent = null;
+    }
+
+    private async Task SaveAgentAsync()
+    {
+        if (_editingAgent == null) return;
+
+        List<string>? tags = null;
+        if (!string.IsNullOrWhiteSpace(_editTags))
         {
-            NotificationService.Info("暂无数据", "当前没有可展示的 Agent 记录。");
+            tags = _editTags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
         }
+
+        var (success, message) = await ApiClient.UpdateAgentAsync(
+            _editingAgent.AgentId,
+            new UpdateAgentRequest(
+                _editAgentName,
+                tags,
+                string.IsNullOrWhiteSpace(_editGroupId) ? null : _editGroupId.Trim()));
+
+        if (!success)
+        {
+            NotificationService.Error("保存失败", message);
+            return;
+        }
+
+        NotificationService.Success("保存成功", string.IsNullOrWhiteSpace(message) ? "Agent 配置已更新。" : message);
+        CloseEditDrawer();
+        await LoadAgentsAsync();
+    }
+
+    private void PrepareDelete(string agentId)
+    {
+        _confirmDeleteAgentId = agentId;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmDeleteAgentId = null;
+    }
+
+    private async Task DeleteAgentAsync(string agentId)
+    {
+        var (success, message) = await ApiClient.DeleteAgentAsync(agentId);
+        if (!success)
+        {
+            NotificationService.Error("删除失败", message);
+            return;
+        }
+
+        NotificationService.Success("删除成功", string.IsNullOrWhiteSpace(message) ? "Agent 已注销。" : message);
+        _confirmDeleteAgentId = null;
+        await LoadAgentsAsync();
+    }
+
+    private async Task RestartAgentAsync(string agentId)
+    {
+        var (success, message) = await ApiClient.RestartAgentAsync(agentId);
+        if (success)
+            NotificationService.Success("指令已发送", "重启指令已发送给 Agent。");
+        else
+            NotificationService.Error("发送失败", message);
+    }
+
+    private async Task UpdateAgentVersionAsync(string agentId)
+    {
+        var (success, message) = await ApiClient.UpdateAgentVersionAsync(agentId);
+        if (success)
+            NotificationService.Success("指令已发送", "更新指令已发送给 Agent。");
+        else
+            NotificationService.Error("发送失败", message);
+    }
+
+    private async Task StopAllAgentTasksAsync(string agentId)
+    {
+        var (success, message) = await ApiClient.StopAllAgentTasksAsync(agentId);
+        if (success)
+            NotificationService.Success("指令已发送", "紧急停止指令已发送给 Agent。");
+        else
+            NotificationService.Error("发送失败", message);
     }
 
     private static string GetAgentStatusBadgeClass(int status)
@@ -99,5 +283,19 @@ else
             2 => "空闲",
             _ => $"未知({status})"
         };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showEditDrawer ? "agents-page" : null);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("drawerUx.forceClose");
+        }
+        catch { }
     }
 }

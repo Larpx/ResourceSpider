@@ -20,6 +20,7 @@ else
 
     <div class="action-row">
         <button id="proxy-create-button" class="btn" type="button" @onclick="OpenCreateDrawer">新增代理</button>
+        <button class="btn btn-secondary" type="button" @onclick="OpenTestDrawer">测试代理</button>
         <button class="btn btn-secondary" type="button" @onclick="SearchAsync">刷新</button>
     </div>
 
@@ -163,11 +164,52 @@ else
             </aside>
         </div>
     }
+
+    @if (_showTestDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseTestDrawer">
+            <aside class="drawer-panel" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>测试代理</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseTestDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <label class="form-label">代理 ID（可选）</label>
+                    <input class="input" placeholder="输入代理 ID" @bind="_testProxyId" />
+                    <p style="color:var(--color-text-secondary);font-size:0.85em;">或者输入主机和端口：</p>
+                    <label class="form-label">主机</label>
+                    <input class="input" placeholder="主机地址" @bind="_testHost" />
+                    <label class="form-label">端口</label>
+                    <input class="input" type="number" min="1" max="65535" placeholder="端口" @bind="_testPort" />
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="TestProxyAsync" disabled="@_testing">@(_testing ? "测试中..." : "开始测试")</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseTestDrawer">取消</button>
+                    </div>
+
+                    @if (_testResult != null)
+                    {
+                        <div style="margin-top:1rem;">
+                            @if (_testResult.IsAvailable)
+                            {
+                                <p style="color:var(--color-success);">✅ 代理可用，响应时间：@(_testResult.DurationMs.HasValue ? $"{_testResult.DurationMs.Value}ms" : "-")</p>
+                            }
+                            else
+                            {
+                                <p style="color:var(--color-danger);">❌ 代理不可用@(_testResult.Error != null ? $"：{_testResult.Error}" : "")</p>
+                            }
+                        </div>
+                    }
+                </div>
+            </aside>
+        </div>
+    }
 }
 
 @code {
     private bool _ready;
     private bool _showCreateDrawer;
+    private bool _showTestDrawer;
+    private bool _testing;
     private List<ProxyDto> _proxies = new();
     private string _message = string.Empty;
 
@@ -185,6 +227,11 @@ else
     private int _editStatus;
 
     private string? _confirmDeleteProxyId;
+
+    private string _testProxyId = string.Empty;
+    private string _testHost = string.Empty;
+    private int _testPort = 80;
+    private ProxyTestResponse? _testResult;
 
     private int _pageIndex = 1;
     private int _pageSize = 20;
@@ -437,9 +484,45 @@ else
         };
     }
 
+    private void OpenTestDrawer()
+    {
+        _testResult = null;
+        _testProxyId = string.Empty;
+        _testHost = string.Empty;
+        _testPort = 80;
+        _showTestDrawer = true;
+    }
+
+    private void CloseTestDrawer()
+    {
+        _showTestDrawer = false;
+    }
+
+    private async Task TestProxyAsync()
+    {
+        _testing = true;
+        _testResult = null;
+
+        try
+        {
+            _testResult = await ApiClient.TestProxyAsync(new ProxyTestRequest(
+                string.IsNullOrWhiteSpace(_testProxyId) ? null : _testProxyId.Trim(),
+                string.IsNullOrWhiteSpace(_testHost) ? null : _testHost.Trim(),
+                _testPort > 0 ? _testPort : null));
+        }
+        catch (Exception ex)
+        {
+            _testResult = new ProxyTestResponse(false, null, ex.Message);
+        }
+        finally
+        {
+            _testing = false;
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showCreateDrawer ? "proxy-create-button" : null);
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showCreateDrawer || _showTestDrawer ? "proxy-create-button" : null);
     }
 
     public async ValueTask DisposeAsync()

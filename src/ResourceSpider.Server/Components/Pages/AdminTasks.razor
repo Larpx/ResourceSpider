@@ -95,6 +95,23 @@ else
                                 <td>@task.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
                                 <td>
                                     <div class="table-actions">
+                                        @if (task.Status == 0)
+                                        {
+                                            <button class="btn" type="button" @onclick="() => ExecuteTaskAsync(task.TaskId)" title="执行">▶ 执行</button>
+                                        }
+                                        @if (task.Status == 1)
+                                        {
+                                            <button class="btn btn-secondary" type="button" @onclick="() => PauseTaskAsync(task.TaskId)" title="暂停">⏸ 暂停</button>
+                                        }
+                                        @if (task.Status == 4)
+                                        {
+                                            <button class="btn" type="button" @onclick="() => ResumeTaskAsync(task.TaskId)" title="恢复">▶ 恢复</button>
+                                        }
+                                        @if (task.Status == 1 || task.Status == 4)
+                                        {
+                                            <button class="btn btn-danger" type="button" @onclick="() => StopTaskAsync(task.TaskId)" title="终止">⏹ 终止</button>
+                                        }
+                                        <button class="btn btn-secondary" type="button" @onclick="() => ShowTaskDetailAsync(task)">详情</button>
                                         <button class="btn btn-secondary" type="button" @onclick="() => BeginTaskEdit(task)">编辑</button>
                                         @if (_confirmDeleteTaskId == task.TaskId)
                                         {
@@ -148,15 +165,147 @@ else
             </aside>
         </div>
     }
+
+    @if (_showDetailDrawer && _detailTask != null)
+    {
+        <div class="drawer-mask" @onclick="CloseDetailDrawer">
+            <aside class="drawer-panel drawer-panel-wide" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>任务详情 - @_detailTask.TaskName</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseDetailDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <div class="detail-group">
+                        <label class="detail-label">任务 ID</label>
+                        <div class="detail-value"><code>@_detailTask.TaskId</code></div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">状态</label>
+                        <div class="detail-value">@GetTaskStatusLabel(_detailTask.Status)</div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">优先级</label>
+                        <div class="detail-value">@_detailTask.Priority</div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">进度</label>
+                        <div class="detail-value">@_detailTask.Progress%</div>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">创建时间</label>
+                        <div class="detail-value">@_detailTask.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</div>
+                    </div>
+
+                    <h3 style="margin-top:1rem;">执行历史</h3>
+                    @if (_taskExecutions.Count == 0)
+                    {
+                        <p>暂无执行记录。</p>
+                    }
+                    else
+                    {
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>执行 ID</th>
+                                    <th>状态</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>耗时(ms)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exec in _taskExecutions.Take(20))
+                                {
+                                    <tr>
+                                        <td><code>@(exec.ExecutionId?.Substring(0, Math.Min(8, exec.ExecutionId?.Length ?? 0)) ?? "...")</code></td>
+                                        <td>@(exec.Status ?? "-")</td>
+                                        <td>@(exec.StartTime.HasValue ? exec.StartTime.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</td>
+                                        <td>@(exec.EndTime.HasValue ? exec.EndTime.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</td>
+                                        <td>@(exec.Duration.HasValue ? exec.Duration.Value.ToString() : "-")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                    <h3 style="margin-top:1rem;">步骤状态</h3>
+                    @if (_taskSteps.Count == 0)
+                    {
+                        <p>暂无步骤信息。</p>
+                    }
+                    else
+                    {
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>顺序</th>
+                                    <th>步骤名称</th>
+                                    <th>状态</th>
+                                    <th>类型</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var step in _taskSteps)
+                                {
+                                    <tr>
+                                        <td>@step.StepOrder</td>
+                                        <td>@step.StepName</td>
+                                        <td>@GetStepStatusLabel(step.State)</td>
+                                        <td>@step.StepType</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                    <h3 style="margin-top:1rem;">配置版本</h3>
+                    @if (_configVersions.Count == 0)
+                    {
+                        <p>暂无配置版本记录。</p>
+                    }
+                    else
+                    {
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>版本</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ver in _configVersions)
+                                {
+                                    <tr>
+                                        <td>v@ver.Version</td>
+                                        <td>@ver.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                        <td>
+                                            <button class="btn btn-secondary btn-sm" type="button" @onclick="() => RollbackConfigAsync(_detailTask.TaskId, ver.Version)">回滚到此版本</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </aside>
+        </div>
+    }
 }
 
 @code {
     private bool _ready;
     private bool _showCreateDrawer;
+    private bool _showDetailDrawer;
     private string _newTaskName = string.Empty;
     private string _newTaskType = "Generic";
     private int _newTaskPriority = 5;
     private string _message = string.Empty;
+
+    private TaskDto? _detailTask;
+    private List<TaskExecutionDto> _taskExecutions = new();
+    private List<TaskStepDto> _taskSteps = new();
+    private List<ConfigVersionDto> _configVersions = new();
 
     private string? _editingTaskId;
     private string _editTaskName = string.Empty;
@@ -419,6 +568,88 @@ else
             5 => "已取消",
             6 => "已终止",
             _ => $"未知({status})"
+        };
+    }
+
+    private async Task ExecuteTaskAsync(string taskId)
+    {
+        var (success, message) = await ApiClient.ExecuteTaskAsync(taskId);
+        if (success)
+            NotificationService.Success("执行成功", "任务已触发执行。");
+        else
+            NotificationService.Error("执行失败", message);
+        await LoadPageAsync();
+    }
+
+    private async Task PauseTaskAsync(string taskId)
+    {
+        var (success, message) = await ApiClient.PauseTaskAsync(taskId);
+        if (success)
+            NotificationService.Success("暂停成功", "任务已暂停。");
+        else
+            NotificationService.Error("暂停失败", message);
+        await LoadPageAsync();
+    }
+
+    private async Task ResumeTaskAsync(string taskId)
+    {
+        var (success, message) = await ApiClient.ResumeTaskAsync(taskId);
+        if (success)
+            NotificationService.Success("恢复成功", "任务已恢复执行。");
+        else
+            NotificationService.Error("恢复失败", message);
+        await LoadPageAsync();
+    }
+
+    private async Task StopTaskAsync(string taskId)
+    {
+        var (success, message) = await ApiClient.StopTaskAsync(taskId);
+        if (success)
+            NotificationService.Success("终止成功", "任务已终止。");
+        else
+            NotificationService.Error("终止失败", message);
+        await LoadPageAsync();
+    }
+
+    private async Task ShowTaskDetailAsync(TaskDto task)
+    {
+        _detailTask = task;
+        _showDetailDrawer = true;
+
+        _taskExecutions = await ApiClient.GetTaskExecutionsAsync(task.TaskId) ?? new();
+        _taskSteps = await ApiClient.GetTaskStepsStatusAsync(task.TaskId) ?? new();
+        _configVersions = await ApiClient.GetTaskConfigVersionsAsync(task.TaskId) ?? new();
+    }
+
+    private void CloseDetailDrawer()
+    {
+        _showDetailDrawer = false;
+        _detailTask = null;
+        _taskExecutions = new();
+        _taskSteps = new();
+        _configVersions = new();
+    }
+
+    private async Task RollbackConfigAsync(string taskId, int version)
+    {
+        var (success, message) = await ApiClient.RollbackTaskConfigAsync(taskId, version);
+        if (success)
+            NotificationService.Success("回滚成功", $"配置已回滚到 v{version}。");
+        else
+            NotificationService.Error("回滚失败", message);
+    }
+
+    private static string GetStepStatusLabel(int state)
+    {
+        return state switch
+        {
+            0 => "等待中",
+            1 => "就绪",
+            2 => "运行中",
+            3 => "已完成",
+            4 => "已失败",
+            5 => "已跳过",
+            _ => $"未知({state})"
         };
     }
 

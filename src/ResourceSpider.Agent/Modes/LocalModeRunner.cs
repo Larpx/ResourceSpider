@@ -10,12 +10,33 @@ using ResourceSpider.Core.Models;
 
 namespace ResourceSpider.Agent.Modes;
 
+/// <summary>
+/// 本地模式运行器，继承 BackgroundService，用于本地独立运行爬虫任务
+/// 从本地目录加载 JSON 任务配置，执行后按配置格式保存结果到本地文件
+/// </summary>
 public class LocalModeRunner : BackgroundService
 {
+    /// <summary>
+    /// 任务执行器
+    /// </summary>
     private readonly ITaskExecutor _taskExecutor;
+
+    /// <summary>
+    /// Agent 配置选项
+    /// </summary>
     private readonly AgentOptions _agentOptions;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     private readonly ILogger<LocalModeRunner> _logger;
 
+    /// <summary>
+    /// 初始化本地模式运行器
+    /// </summary>
+    /// <param name="taskExecutor">任务执行器</param>
+    /// <param name="agentOptions">Agent 配置选项</param>
+    /// <param name="logger">日志记录器</param>
     public LocalModeRunner(
         ITaskExecutor taskExecutor,
         IOptions<AgentOptions> agentOptions,
@@ -26,6 +47,10 @@ public class LocalModeRunner : BackgroundService
         _logger = logger;
     }
 
+    /// <summary>
+    /// 后台服务主循环，加载本地任务并顺序执行
+    /// </summary>
+    /// <param name="stoppingToken">取消令牌</param>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Local 模式启动，任务配置目录: {TaskDir}", _agentOptions.LocalMode?.TaskDirectory);
@@ -63,6 +88,10 @@ public class LocalModeRunner : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 从本地目录加载所有 JSON 任务配置文件
+    /// </summary>
+    /// <returns>加载的爬虫任务列表</returns>
     private List<SpiderTask> LoadLocalTasks()
     {
         var tasks = new List<SpiderTask>();
@@ -95,6 +124,11 @@ public class LocalModeRunner : BackgroundService
         return tasks;
     }
 
+    /// <summary>
+    /// 保存执行结果到本地文件，根据配置格式选择 JSON、CSV 或 TXT 格式
+    /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果</param>
     private async Task SaveResultAsync(SpiderTask task, ExecutionResult result)
     {
         var outputDir = BuildOutputDirectory(task);
@@ -120,6 +154,11 @@ public class LocalModeRunner : BackgroundService
         _logger.LogInformation("结果已保存到: {OutputDir}", outputDir);
     }
 
+    /// <summary>
+    /// 构建输出目录路径，格式为：基础目录/AgentID/日期/任务ID
+    /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <returns>输出目录的绝对路径</returns>
     private string BuildOutputDirectory(SpiderTask task)
     {
         var baseDir = _agentOptions.LocalMode?.OutputDirectory ?? "results";
@@ -129,6 +168,13 @@ public class LocalModeRunner : BackgroundService
         return Path.Combine(baseDir, agentId, dateDir, task.TaskId);
     }
 
+    /// <summary>
+    /// 保存结果为 JSON 格式，包含完整的数据记录和元信息
+    /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果</param>
+    /// <param name="outputDir">输出目录</param>
+    /// <param name="timestamp">时间戳字符串</param>
     private static async Task SaveAsJsonAsync(SpiderTask task, ExecutionResult result, string outputDir, string timestamp)
     {
         var outputFile = Path.Combine(outputDir, $"result_{timestamp}.json");
@@ -158,6 +204,13 @@ public class LocalModeRunner : BackgroundService
         await File.WriteAllTextAsync(outputFile, json);
     }
 
+    /// <summary>
+    /// 保存结果为 CSV 格式，每行一条数据记录
+    /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果</param>
+    /// <param name="outputDir">输出目录</param>
+    /// <param name="timestamp">时间戳字符串</param>
     private static async Task SaveAsCsvAsync(SpiderTask task, ExecutionResult result, string outputDir, string timestamp)
     {
         var outputFile = Path.Combine(outputDir, $"result_{timestamp}.csv");
@@ -190,6 +243,13 @@ public class LocalModeRunner : BackgroundService
         await File.WriteAllTextAsync(outputFile, sb.ToString());
     }
 
+    /// <summary>
+    /// 保存结果为 TXT 格式，包含任务概要和详细数据记录
+    /// </summary>
+    /// <param name="task">爬虫任务</param>
+    /// <param name="result">执行结果</param>
+    /// <param name="outputDir">输出目录</param>
+    /// <param name="timestamp">时间戳字符串</param>
     private static async Task SaveAsTxtAsync(SpiderTask task, ExecutionResult result, string outputDir, string timestamp)
     {
         var outputFile = Path.Combine(outputDir, $"result_{timestamp}.txt");
@@ -226,6 +286,11 @@ public class LocalModeRunner : BackgroundService
         await File.WriteAllTextAsync(outputFile, sb.ToString());
     }
 
+    /// <summary>
+    /// 转义 CSV 字段值，对包含逗号、引号或换行的字段添加双引号包裹
+    /// </summary>
+    /// <param name="field">原始字段值</param>
+    /// <returns>转义后的字段值</returns>
     private static string EscapeCsvField(string field)
     {
         if (field.Contains(',') || field.Contains('"') || field.Contains('\n') || field.Contains('\r'))

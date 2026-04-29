@@ -1,0 +1,177 @@
+@page "/admin/config"
+@layout AdminLayout
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
+
+<PageTitle>配置工具 - ResourceSpider</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载...</p>
+}
+else
+{
+    <h1>配置工具</h1>
+
+    <section class="card runtime-section">
+        <h2>表达式测试</h2>
+        <p>在线测试 XPath、CSS 选择器、正则表达式和 JSONPath 提取表达式。</p>
+
+        <div class="form-group">
+            <label class="form-label">表达式类型</label>
+            <select class="input" @bind="_testExpressionType">
+                <option value="xpath">XPath</option>
+                <option value="cssselector">CSS Selector</option>
+                <option value="regex">正则表达式</option>
+                <option value="jsonpath">JSON Path</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">待测试内容</label>
+            <textarea class="input" rows="8" placeholder="请输入 HTML / JSON / 文本内容" @bind="_testContent"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">提取表达式</label>
+            <input class="input" placeholder="请输入提取表达式" @bind="_testExpression" />
+        </div>
+
+        <div class="action-row">
+            <button class="btn" type="button" @onclick="TestExtractionAsync" disabled="@_testing">
+                @(_testing ? "测试中..." : "执行测试")
+            </button>
+        </div>
+
+        @if (_testResult != null)
+        {
+            <div class="test-result-section">
+                @if (_testResult.Success)
+                {
+                    <h3 style="color:var(--color-success);">✅ 提取成功</h3>
+                    @if (_testResult.Results != null && _testResult.Results.Count > 0)
+                    {
+                        <p>共提取到 <strong>@_testResult.Results.Count</strong> 条结果：</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>提取结果</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < _testResult.Results.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@_testResult.Results[i]</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>表达式未匹配到任何结果。</p>
+                    }
+                }
+                else
+                {
+                    <h3 style="color:var(--color-danger);">❌ 提取失败</h3>
+                    <p>@_testResult.Error</p>
+                }
+            </div>
+        }
+    </section>
+
+    <section class="card runtime-section">
+        <h2>配置模板</h2>
+        @if (_templates.Count == 0)
+        {
+            <p class="empty-state">暂无配置模板。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模板名称</th>
+                        <th>描述</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var template in _templates)
+                    {
+                        <tr>
+                            <td>@template.Name</td>
+                            <td>@template.Description</td>
+                            <td>
+                                <button class="btn btn-secondary" type="button" @onclick="() => ApplyTemplate(template)">应用</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+}
+
+@code {
+    private bool _ready;
+    private bool _testing;
+
+    private string _testExpressionType = "xpath";
+    private string _testContent = string.Empty;
+    private string _testExpression = string.Empty;
+    private TestExtractionResponse? _testResult;
+
+    private List<ConfigTemplateDto> _templates = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        _templates = await ApiClient.GetConfigTemplatesAsync() ?? new List<ConfigTemplateDto>();
+        _ready = true;
+    }
+
+    private async Task TestExtractionAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_testContent) || string.IsNullOrWhiteSpace(_testExpression))
+        {
+            NotificationService.Warning("测试失败", "内容和表达式不能为空。");
+            return;
+        }
+
+        _testing = true;
+        _testResult = null;
+
+        try
+        {
+            _testResult = await ApiClient.TestExtractionAsync(new TestExtractionRequest(
+                _testContent,
+                _testExpressionType,
+                _testExpression));
+        }
+        catch (Exception ex)
+        {
+            _testResult = new TestExtractionResponse(false, null, ex.Message);
+        }
+        finally
+        {
+            _testing = false;
+        }
+    }
+
+    private void ApplyTemplate(ConfigTemplateDto template)
+    {
+        NotificationService.Info("应用模板", $"模板 \"{template.Name}\" 的配置内容已准备好，可复制到任务配置中使用。");
+    }
+}
