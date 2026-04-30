@@ -1,0 +1,141 @@
+@page "/admin/profile"
+@layout AdminLayout
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
+
+<PageTitle>管理员信息 - ResourceSpider</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载管理员信息...</p>
+}
+else
+{
+    <h1>管理员信息</h1>
+
+    <section class="card runtime-section profile-card">
+        <h2>基本信息</h2>
+        @if (_userInfo == null)
+        {
+            <p class="empty-state">未获取到管理员信息。</p>
+        }
+        else
+        {
+            <div class="detail-group">
+                <label class="detail-label">用户 ID</label>
+                <div class="detail-value"><code>@_userInfo.UserId</code></div>
+            </div>
+            <div class="detail-group">
+                <label class="detail-label">角色</label>
+                <div class="detail-value">@_userInfo.Role</div>
+            </div>
+            <div class="detail-group">
+                <label class="detail-label">状态</label>
+                <div class="detail-value">@(_userInfo.Status == 1 ? "启用" : "禁用")</div>
+            </div>
+            <div class="detail-group">
+                <label class="detail-label">创建时间</label>
+                <div class="detail-value">@_userInfo.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</div>
+            </div>
+        }
+    </section>
+
+    <section class="card runtime-section profile-card">
+        <h2>修改用户名</h2>
+        <label class="form-label">用户名</label>
+        <input class="input" @bind="_editUsername" placeholder="请输入新用户名" />
+        <div class="action-row">
+            <button class="btn" type="button" @onclick="UpdateProfileAsync">保存用户名</button>
+        </div>
+    </section>
+
+    <section class="card runtime-section profile-card">
+        <h2>修改密码</h2>
+        <label class="form-label">当前密码</label>
+        <input class="input" type="password" @bind="_currentPassword" placeholder="请输入当前密码" />
+        <label class="form-label">新密码</label>
+        <input class="input" type="password" @bind="_newPassword" placeholder="请输入新密码" />
+        <label class="form-label">确认新密码</label>
+        <input class="input" type="password" @bind="_confirmPassword" placeholder="请再次输入新密码" />
+        <div class="action-row">
+            <button class="btn" type="button" @onclick="ChangePasswordAsync">修改密码</button>
+        </div>
+    </section>
+}
+
+@code {
+    private bool _ready;
+    private UserInfoDto? _userInfo;
+    private string _editUsername = string.Empty;
+    private string _currentPassword = string.Empty;
+    private string _newPassword = string.Empty;
+    private string _confirmPassword = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        await LoadCurrentUserAsync();
+        _ready = true;
+    }
+
+    private async Task LoadCurrentUserAsync()
+    {
+        _userInfo = await ApiClient.GetCurrentAdminInfoAsync();
+        _editUsername = _userInfo?.Username ?? Session.Username ?? string.Empty;
+    }
+
+    private async Task UpdateProfileAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_editUsername))
+        {
+            NotificationService.Warning("保存失败", "用户名不能为空。");
+            return;
+        }
+
+        var username = _editUsername.Trim();
+        var (success, message) = await ApiClient.UpdateAdminProfileAsync(new UpdateAdminProfileRequest(username));
+        if (!success)
+        {
+            NotificationService.Error("保存失败", message);
+            return;
+        }
+
+        Session.UpdateUsername(username);
+        NotificationService.Success("保存成功", string.IsNullOrWhiteSpace(message) ? "管理员信息已更新。" : message);
+        await LoadCurrentUserAsync();
+    }
+
+    private async Task ChangePasswordAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_currentPassword) || string.IsNullOrWhiteSpace(_newPassword) || string.IsNullOrWhiteSpace(_confirmPassword))
+        {
+            NotificationService.Warning("修改失败", "请完整填写密码信息。");
+            return;
+        }
+
+        if (!string.Equals(_newPassword, _confirmPassword, StringComparison.Ordinal))
+        {
+            NotificationService.Warning("修改失败", "两次输入的新密码不一致。");
+            return;
+        }
+
+        var (success, message) = await ApiClient.ChangeAdminPasswordAsync(new ChangeAdminPasswordRequest(_currentPassword, _newPassword));
+        if (!success)
+        {
+            NotificationService.Error("修改失败", message);
+            return;
+        }
+
+        _currentPassword = string.Empty;
+        _newPassword = string.Empty;
+        _confirmPassword = string.Empty;
+        NotificationService.Success("修改成功", string.IsNullOrWhiteSpace(message) ? "密码已更新。" : message);
+    }
+}

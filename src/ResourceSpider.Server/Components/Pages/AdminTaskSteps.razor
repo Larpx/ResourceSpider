@@ -1,0 +1,419 @@
+@page "/admin/task-steps"
+@using Microsoft.JSInterop
+@layout AdminLayout
+@implements IAsyncDisposable
+@inject AdminSessionState Session
+@inject AdminApiClient ApiClient
+@inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
+
+<PageTitle>任务步骤管理</PageTitle>
+
+@if (!_ready)
+{
+    <p>正在加载任务数据...</p>
+}
+else
+{
+    <h1>任务步骤管理</h1>
+
+    <section class="card runtime-section">
+        <h2>任务选择</h2>
+        <div class="filter-row filter-row-task-step">
+            <select class="input" @bind="_selectedTaskId" @bind:after="OnTaskChangedAsync">
+                <option value="">请选择任务</option>
+                @foreach (var task in _tasks)
+                {
+                    <option value="@task.TaskId">@task.TaskName (@task.TaskType)</option>
+                }
+            </select>
+            <button class="btn btn-secondary" type="button" @onclick="ReloadTasksAsync">刷新任务</button>
+            <button class="btn" type="button" @onclick="OpenCreateDrawer" disabled="@string.IsNullOrWhiteSpace(_selectedTaskId)">新增步骤</button>
+        </div>
+    </section>
+
+    <section class="card runtime-section">
+        <h2>步骤列表</h2>
+
+        @if (string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            <p class="empty-state">请先选择一个任务。</p>
+        }
+        else if (_steps.Count == 0)
+        {
+            <p class="empty-state">当前任务暂无步骤。</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>顺序</th>
+                        <th>步骤名称</th>
+                        <th>采集模式</th>
+                        <th>分组</th>
+                        <th>状态</th>
+                        <th>依赖步骤</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var step in _steps.OrderBy(x => x.StepOrder))
+                    {
+                        <tr>
+                            <td>@step.StepOrder</td>
+                            <td>@step.StepName</td>
+                            <td>@step.CollectionMode</td>
+                            <td>@(string.IsNullOrWhiteSpace(step.AgentGroupId) ? "-" : step.AgentGroupId)</td>
+                            <td>@GetStepStateLabel(step.State)</td>
+                            <td>@(step.DependsOnStepIds == null || step.DependsOnStepIds.Count == 0 ? "-" : string.Join(",", step.DependsOnStepIds))</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn btn-secondary" type="button" @onclick="() => BeginEdit(step)">编辑</button>
+                                    @if (_confirmDeleteStepId == step.StepId)
+                                    {
+                                        <button class="btn btn-danger" type="button" @onclick="() => DeleteStepAsync(step.StepId)">确认删除</button>
+                                        <button class="btn btn-secondary" type="button" @onclick="CancelDelete">取消</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-danger" type="button" @onclick="() => PrepareDelete(step.StepId)">删除</button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    @if (_showDrawer)
+    {
+        <div class="drawer-mask" @onclick="CloseDrawer">
+            <aside class="drawer-panel drawer-panel-wide" @onclick:stopPropagation="true">
+                <div class="drawer-header">
+                    <h2>@(_isEditMode ? "编辑步骤" : "新增步骤")</h2>
+                    <button class="btn btn-secondary" type="button" @onclick="CloseDrawer">关闭</button>
+                </div>
+                <div class="drawer-body">
+                    <label class="form-label">步骤名称</label>
+                    <input class="input" @bind="_formStepName" placeholder="如：分页列表采集" />
+
+                    <label class="form-label">执行顺序</label>
+                    <input class="input" type="number" min="1" max="100" @bind="_formStepOrder" />
+
+                    <label class="form-label">采集模式</label>
+                    <select class="input" @bind="_formCollectionMode">
+                        <option value="HttpClient">HttpClient</option>
+                        <option value="Playwright">Playwright</option>
+                        <option value="BrowserAutomation">BrowserAutomation</option>
+                    </select>
+
+                    <label class="form-label">Agent 分组（可选）</label>
+                    <input class="input" @bind="_formAgentGroupId" placeholder="如：cn-group" />
+
+                    <label class="form-label">依赖步骤 ID（逗号分隔，可选）</label>
+                    <input class="input" @bind="_formDependsOn" placeholder="stepA,stepB" />
+
+                    <label class="form-label">请求配置 JSON</label>
+                    <textarea class="input" rows="5" @bind="_formRequestConfig"></textarea>
+
+                    <label class="form-label">提取规则 JSON</label>
+                    <textarea class="input" rows="5" @bind="_formExtractionRules"></textarea>
+
+                    <label class="form-label">变量映射 JSON（可选）</label>
+                    <textarea class="input" rows="4" @bind="_formVariableMappings"></textarea>
+
+                    <label class="form-label">分页配置 JSON（可选）</label>
+                    <textarea class="input" rows="4" @bind="_formPaginationConfig"></textarea>
+
+                    <label class="form-label">输出配置 JSON（可选）</label>
+                    <textarea class="input" rows="4" @bind="_formOutputConfig"></textarea>
+
+                    <label class="form-label">开始条件（可选）</label>
+                    <input class="input" @bind="_formStartCondition" />
+
+                    <label class="form-label">结束条件（可选）</label>
+                    <input class="input" @bind="_formEndCondition" />
+
+                    <label class="form-label">步骤状态配置 JSON（可选）</label>
+                    <textarea class="input" rows="3" @bind="_formStepConfig"></textarea>
+
+                    <div class="action-row">
+                        <button class="btn" type="button" @onclick="SaveStepAsync">保存</button>
+                        <button class="btn btn-secondary" type="button" @onclick="CloseDrawer">取消</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    }
+}
+
+@code {
+    private bool _ready;
+    private List<TaskDto> _tasks = new();
+    private List<TaskStepDto> _steps = new();
+
+    private string _selectedTaskId = string.Empty;
+    private string? _confirmDeleteStepId;
+
+    private bool _showDrawer;
+    private bool _isEditMode;
+    private string? _editingStepId;
+
+    private string _formStepName = string.Empty;
+    private int _formStepOrder = 1;
+    private string _formCollectionMode = "HttpClient";
+    private string _formAgentGroupId = string.Empty;
+    private string _formDependsOn = string.Empty;
+    private string _formRequestConfig = "{}";
+    private string _formExtractionRules = "[]";
+    private string _formVariableMappings = string.Empty;
+    private string _formPaginationConfig = string.Empty;
+    private string _formOutputConfig = string.Empty;
+    private string _formStartCondition = string.Empty;
+    private string _formEndCondition = string.Empty;
+    private string _formStepConfig = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/admin/login", replace: true);
+            return;
+        }
+
+        await ReloadTasksAsync();
+        _ready = true;
+    }
+
+    private async Task ReloadTasksAsync()
+    {
+        var response = await ApiClient.GetTasksAsync(1, 100, null, null);
+        _tasks = response?.Tasks ?? new List<TaskDto>();
+
+        if (!string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            await LoadStepsAsync();
+        }
+    }
+
+    private async Task OnTaskChangedAsync()
+    {
+        await LoadStepsAsync();
+    }
+
+    private async Task LoadStepsAsync()
+    {
+        _confirmDeleteStepId = null;
+        _steps = string.IsNullOrWhiteSpace(_selectedTaskId)
+            ? new List<TaskStepDto>()
+            : await ApiClient.GetTaskStepsAsync(_selectedTaskId);
+    }
+
+    private void OpenCreateDrawer()
+    {
+        if (string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            return;
+        }
+
+        _isEditMode = false;
+        _editingStepId = null;
+        _formStepName = string.Empty;
+        _formStepOrder = _steps.Count == 0 ? 1 : _steps.Max(x => x.StepOrder) + 1;
+        _formCollectionMode = "HttpClient";
+        _formAgentGroupId = string.Empty;
+        _formDependsOn = string.Empty;
+        _formRequestConfig = "{}";
+        _formExtractionRules = "[]";
+        _formVariableMappings = string.Empty;
+        _formPaginationConfig = string.Empty;
+        _formOutputConfig = string.Empty;
+        _formStartCondition = string.Empty;
+        _formEndCondition = string.Empty;
+        _formStepConfig = string.Empty;
+        _showDrawer = true;
+    }
+
+    private void BeginEdit(TaskStepDto step)
+    {
+        _isEditMode = true;
+        _editingStepId = step.StepId;
+        _formStepName = step.StepName;
+        _formStepOrder = step.StepOrder;
+        _formCollectionMode = step.CollectionMode;
+        _formAgentGroupId = step.AgentGroupId ?? string.Empty;
+        _formDependsOn = step.DependsOnStepIds == null ? string.Empty : string.Join(",", step.DependsOnStepIds);
+        _formRequestConfig = step.RequestConfig;
+        _formExtractionRules = step.ExtractionRules;
+        _formVariableMappings = step.VariableMappings ?? string.Empty;
+        _formPaginationConfig = step.PaginationConfig ?? string.Empty;
+        _formOutputConfig = step.OutputConfig ?? string.Empty;
+        _formStartCondition = step.StartCondition ?? string.Empty;
+        _formEndCondition = step.EndCondition ?? string.Empty;
+        _formStepConfig = step.StepConfig ?? string.Empty;
+        _showDrawer = true;
+    }
+
+    private void CloseDrawer()
+    {
+        _showDrawer = false;
+        _editingStepId = null;
+    }
+
+    private async Task SaveStepAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            NotificationService.Warning("保存失败", "请先选择任务。");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_formStepName))
+        {
+            NotificationService.Warning("保存失败", "步骤名称不能为空。");
+            return;
+        }
+
+        var dependsOn = ParseDependsOnStepIds();
+
+        if (_isEditMode && !string.IsNullOrWhiteSpace(_editingStepId))
+        {
+            var request = new UpdateTaskStepRequest(
+                _formStepName.Trim(),
+                _formStepOrder,
+                _formCollectionMode,
+                string.IsNullOrWhiteSpace(_formAgentGroupId) ? null : _formAgentGroupId.Trim(),
+                _formRequestConfig,
+                _formExtractionRules,
+                NormalizeNullable(_formVariableMappings),
+                NormalizeNullable(_formPaginationConfig),
+                NormalizeNullable(_formOutputConfig),
+                NormalizeNullable(_formStartCondition),
+                NormalizeNullable(_formEndCondition),
+                dependsOn,
+                NormalizeNullable(_formStepConfig),
+                null);
+
+            var (success, message) = await ApiClient.UpdateTaskStepAsync(_selectedTaskId, _editingStepId, request);
+            if (!success)
+            {
+                NotificationService.Error("保存失败", message);
+                return;
+            }
+
+            NotificationService.Success("保存成功", string.IsNullOrWhiteSpace(message) ? "步骤已更新。" : message);
+        }
+        else
+        {
+            var request = new CreateTaskStepRequest(
+                _formStepName.Trim(),
+                _formStepOrder,
+                _formCollectionMode,
+                string.IsNullOrWhiteSpace(_formAgentGroupId) ? null : _formAgentGroupId.Trim(),
+                _formRequestConfig,
+                _formExtractionRules,
+                NormalizeNullable(_formVariableMappings),
+                NormalizeNullable(_formPaginationConfig),
+                NormalizeNullable(_formOutputConfig),
+                NormalizeNullable(_formStartCondition),
+                NormalizeNullable(_formEndCondition),
+                dependsOn,
+                NormalizeNullable(_formStepConfig));
+
+            var (success, message) = await ApiClient.CreateTaskStepAsync(_selectedTaskId, request);
+            if (!success)
+            {
+                NotificationService.Error("创建失败", message);
+                return;
+            }
+
+            NotificationService.Success("创建成功", string.IsNullOrWhiteSpace(message) ? "步骤已创建。" : message);
+        }
+
+        _showDrawer = false;
+        await LoadStepsAsync();
+    }
+
+    private void PrepareDelete(string stepId)
+    {
+        _confirmDeleteStepId = stepId;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmDeleteStepId = null;
+    }
+
+    private async Task DeleteStepAsync(string stepId)
+    {
+        if (string.IsNullOrWhiteSpace(_selectedTaskId))
+        {
+            return;
+        }
+
+        var (success, message) = await ApiClient.DeleteTaskStepAsync(_selectedTaskId, stepId);
+        if (!success)
+        {
+            NotificationService.Error("删除失败", message);
+            return;
+        }
+
+        NotificationService.Success("删除成功", string.IsNullOrWhiteSpace(message) ? "步骤已删除。" : message);
+        _confirmDeleteStepId = null;
+        await LoadStepsAsync();
+    }
+
+    private List<string>? ParseDependsOnStepIds()
+    {
+        if (string.IsNullOrWhiteSpace(_formDependsOn))
+        {
+            return null;
+        }
+
+        var values = _formDependsOn
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        return values.Count == 0 ? null : values;
+    }
+
+    private static string? NormalizeNullable(string value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    }
+
+    private static string GetStepStateLabel(int state)
+    {
+        return state switch
+        {
+            0 => "等待中",
+            1 => "就绪",
+            2 => "运行中",
+            3 => "已完成",
+            4 => "已失败",
+            5 => "已跳过",
+            _ => $"未知({state})"
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("drawerUx.syncState", _showDrawer ? "task-step-page" : null);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("drawerUx.forceClose");
+        }
+        catch
+        {
+        }
+    }
+}
