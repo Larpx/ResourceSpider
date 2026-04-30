@@ -27,7 +27,10 @@ public record TaskExecutionDto(
     int SuccessCount,
     int FailCount,
     string? ErrorMessage,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    DateTime? StartTime = null,
+    DateTime? EndTime = null,
+    long? Duration = null
 );
 
 /// <summary>

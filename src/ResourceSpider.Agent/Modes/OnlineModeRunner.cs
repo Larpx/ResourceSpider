@@ -206,6 +206,37 @@ public class OnlineModeRunner : BackgroundService
                 metrics.QueuedTaskCount = _taskQueue.Count;
 
                 await _signalRClient.SendHeartbeatAsync(metrics, ct);
+
+                var heartbeatResult = await _serverApiClient.HeartbeatAsync(
+                    new HeartbeatRequest(
+                        _agentId,
+                        _options.AgentToken ?? string.Empty,
+                        (decimal?)metrics.CpuUsagePercent,
+                        (decimal?)metrics.MemoryUsageMB,
+                        metrics.RunningTaskCount,
+                        1,
+                        $"{Environment.OSVersion}",
+                        null));
+
+                if (heartbeatResult?.NewToken != null)
+                {
+                    _options.AgentToken = heartbeatResult.NewToken;
+                    _logger.LogInformation("Agent Token 已更新（服务端轮换）");
+                }
+
+                if (heartbeatResult?.OtaUpdate != null)
+                {
+                    _logger.LogInformation(
+                        "检测到 OTA 更新: {LatestVersion}，下载地址: {DownloadUrl}，强制更新: {ForceUpdate}",
+                        heartbeatResult.OtaUpdate.LatestVersion,
+                        heartbeatResult.OtaUpdate.DownloadUrl,
+                        heartbeatResult.OtaUpdate.ForceUpdate);
+
+                    if (heartbeatResult.OtaUpdate.ForceUpdate)
+                    {
+                        _logger.LogWarning("服务端要求强制更新到版本 {LatestVersion}，Agent 将在当前任务完成后退出", heartbeatResult.OtaUpdate.LatestVersion);
+                    }
+                }
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {

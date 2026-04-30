@@ -37,3 +37,17 @@ public record ConfigVersionListResponse(
 public record RollbackConfigRequest(
     int Version
 );
+
+/// <summary>
+/// 配置差异项，表示两个版本之间某个字段的变更
+/// </summary>
+/// <param name="FieldPath">字段路径（点分隔，如 RequestConfig.Url）</param>
+/// <param name="OldValue">源版本的值</param>
+/// <param name="NewValue">目标版本的值</param>
+/// <param name="ChangeType">变更类型：Added（新增）、Modified（修改）、Removed（删除）</param>
+public record ConfigDiffItem(
+    string FieldPath,
+    string? OldValue,
+    string? NewValue,
+    string ChangeType
+);

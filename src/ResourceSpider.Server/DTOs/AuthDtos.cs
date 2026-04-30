@@ -53,3 +53,21 @@ public record UserInfoDto(
     int Status,
     DateTime CreatedAt
 );
+
+/// <summary>
+/// 更新管理员资料请求
+/// </summary>
+/// <param name="Username">新用户名</param>
+public record UpdateAdminProfileRequest(
+    [Required, StringLength(128)] string Username
+);
+
+/// <summary>
+/// 修改管理员密码请求
+/// </summary>
+/// <param name="CurrentPassword">当前密码</param>
+/// <param name="NewPassword">新密码</param>
+public record ChangeAdminPasswordRequest(
+    [Required] string CurrentPassword,
+    [Required] string NewPassword
+);

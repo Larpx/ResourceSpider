@@ -218,7 +218,7 @@ else
                                 {
                                     <tr>
                                         <td><code>@(exec.ExecutionId?.Substring(0, Math.Min(8, exec.ExecutionId?.Length ?? 0)) ?? "...")</code></td>
-                                        <td>@(exec.Status ?? "-")</td>
+                                        <td>@exec.Status</td>
                                         <td>@(exec.StartTime.HasValue ? exec.StartTime.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</td>
                                         <td>@(exec.EndTime.HasValue ? exec.EndTime.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "-")</td>
                                         <td>@(exec.Duration.HasValue ? exec.Duration.Value.ToString() : "-")</td>

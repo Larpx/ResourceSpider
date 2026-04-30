@@ -36,22 +36,35 @@ public class RabbitMqOptions
     /// 队列名称
     /// </summary>
     public string QueueName { get; set; } = "resource_spider_queue";
+
+    /// <summary>
+    /// 连接超时时间（毫秒），默认 10 秒
+    /// </summary>
+    public int ConnectionTimeoutMs { get; set; } = 10000;
+
+    /// <summary>
+    /// 握手超时时间（毫秒），默认 10 秒
+    /// </summary>
+    public int HandshakeTimeoutMs { get; set; } = 10000;
 }
 
 /// <summary>
 /// 基于 RabbitMQ 的分布式消息队列实现，支持跨进程消息传递
 /// 适用于分布式部署场景，消息持久化在 RabbitMQ 中
+/// 采用延迟初始化模式，避免构造函数中同步阻塞异步方法
 /// </summary>
 public class RabbitMqMessageQueue : IMessageQueue, IDisposable, IAsyncDisposable
 {
     private readonly RabbitMqOptions _options;
     private readonly ILogger<RabbitMqMessageQueue> _logger;
-    private readonly IConnection _connection;
-    private readonly IChannel _channel;
+    private readonly SemaphoreSlim _initLock = new(1, 1);
+    private IConnection? _connection;
+    private IChannel? _channel;
     private bool _disposed;
+    private bool _initialized;
 
     /// <summary>
-    /// 初始化 RabbitMQ 消息队列，自动创建连接和声明队列
+    /// 初始化 RabbitMQ 消息队列
     /// </summary>
     /// <param name="options">RabbitMQ 配置选项</param>
     /// <param name="logger">日志记录器</param>
@@ -61,22 +74,53 @@ public class RabbitMqMessageQueue : IMessageQueue, IDisposable, IAsyncDisposable
     {
         _options = options.Value;
         _logger = logger;
+    }
 
-        var factory = new ConnectionFactory
+    /// <summary>
+    /// 异步初始化 RabbitMQ 连接和通道，确保队列已声明
+    /// 使用双重检查锁定避免重复初始化
+    /// </summary>
+    /// <param name="ct">取消令牌</param>
+    private async Task EnsureInitializedAsync(CancellationToken ct = default)
+    {
+        if (_initialized) return;
+
+        await _initLock.WaitAsync(ct);
+        try
         {
-            HostName = _options.Host,
-            Port = _options.Port,
-            UserName = _options.Username,
-            Password = _options.Password
-        };
+            if (_initialized) return;
 
-        _connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
-        _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
-        _channel.QueueDeclareAsync(
-            queue: _options.QueueName,
-            durable: true,
-            exclusive: false,
-            autoDelete: false).GetAwaiter().GetResult();
+            var factory = new ConnectionFactory
+            {
+                HostName = _options.Host,
+                Port = _options.Port,
+                UserName = _options.Username,
+                Password = _options.Password,
+                RequestedConnectionTimeout = TimeSpan.FromMilliseconds(_options.ConnectionTimeoutMs),
+                HandshakeContinuationTimeout = TimeSpan.FromMilliseconds(_options.HandshakeTimeoutMs)
+            };
+
+            _connection = await factory.CreateConnectionAsync(ct);
+            _channel = await _connection.CreateChannelAsync(cancellationToken: ct);
+            await _channel.QueueDeclareAsync(
+                queue: _options.QueueName,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                cancellationToken: ct);
+
+            _initialized = true;
+            _logger.LogInformation("RabbitMQ 连接初始化完成: {Host}:{Port}/{Queue}", _options.Host, _options.Port, _options.QueueName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "RabbitMQ 连接初始化失败: {Host}:{Port}", _options.Host, _options.Port);
+            throw;
+        }
+        finally
+        {
+            _initLock.Release();
+        }
     }
 
     /// <summary>
@@ -89,6 +133,8 @@ public class RabbitMqMessageQueue : IMessageQueue, IDisposable, IAsyncDisposable
     {
         if (message == null) return;
 
+        await EnsureInitializedAsync(ct);
+
         var json = JsonSerializer.Serialize(message);
         var body = Encoding.UTF8.GetBytes(json);
 
@@ -98,7 +144,7 @@ public class RabbitMqMessageQueue : IMessageQueue, IDisposable, IAsyncDisposable
             DeliveryMode = DeliveryModes.Persistent
         };
 
-        await _channel.BasicPublishAsync(
+        await _channel!.BasicPublishAsync(
             exchange: string.Empty,
             routingKey: _options.QueueName,
             mandatory: false,
@@ -149,6 +195,7 @@ public class RabbitMqMessageQueue : IMessageQueue, IDisposable, IAsyncDisposable
         _disposed = true;
         _channel?.Dispose();
         _connection?.Dispose();
+        _initLock.Dispose();
     }
 
     /// <summary>
@@ -162,5 +209,6 @@ public class RabbitMqMessageQueue : IMessageQueue, IDisposable, IAsyncDisposable
             await _channel.DisposeAsync();
         if (_connection != null)
             await _connection.DisposeAsync();
+        _initLock.Dispose();
     }
 }

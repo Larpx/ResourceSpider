@@ -62,10 +62,30 @@ public record HeartbeatRequest(
 /// <param name="Ack">心跳确认标识，true 表示令牌有效</param>
 /// <param name="NewTasks">新分配的任务列表，可选</param>
 /// <param name="ConfigUpdate">配置更新数据，可选</param>
+/// <param name="NewToken">轮换后的新令牌，Agent 需在后续通信中使用新令牌，可选</param>
+/// <param name="OtaUpdate">OTA 版本更新信息，当有新版本可用时返回，可选</param>
 public record HeartbeatResponse(
     bool Ack,
     List<TaskDto>? NewTasks,
-    Dictionary<string, object>? ConfigUpdate
+    Dictionary<string, object>? ConfigUpdate,
+    string? NewToken,
+    OtaUpdateInfo? OtaUpdate
+);
+
+/// <summary>
+/// OTA 版本更新信息，服务端推送新版本给 Agent
+/// </summary>
+/// <param name="LatestVersion">最新版本号</param>
+/// <param name="DownloadUrl">新版本下载地址</param>
+/// <param name="Checksum">安装包校验和（SHA256），可选</param>
+/// <param name="ReleaseNotes">版本更新说明，可选</param>
+/// <param name="ForceUpdate">是否强制更新，可选</param>
+public record OtaUpdateInfo(
+    string LatestVersion,
+    string DownloadUrl,
+    string? Checksum,
+    string? ReleaseNotes,
+    bool ForceUpdate
 );
 
 /// <summary>

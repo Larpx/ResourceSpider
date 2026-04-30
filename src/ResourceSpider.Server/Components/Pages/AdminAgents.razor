@@ -199,7 +199,8 @@ else
             new UpdateAgentRequest(
                 _editAgentName,
                 tags,
-                string.IsNullOrWhiteSpace(_editGroupId) ? null : _editGroupId.Trim()));
+                string.IsNullOrWhiteSpace(_editGroupId) ? null : _editGroupId.Trim(),
+                null));
 
         if (!success)
         {

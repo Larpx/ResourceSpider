@@ -316,6 +316,7 @@ public class Startup
         services.AddSingleton<IDuplicateRemover, HashSetDuplicateRemover>();
         services.AddSingleton<IScheduler, BreadthFirstScheduler>();
         services.AddTransient<PlaywrightDownloader>();
+        services.AddTransient<CdpDownloader>();
         services.AddSingleton<IDownloaderFactory, DefaultDownloaderFactory>();
         services.AddSingleton<IParserFactory, DefaultParserFactory>();
         services.AddSingleton<IProxyPool, ProxyPool>();

@@ -39,4 +39,14 @@ public class AdminSessionState
         ExpiresAt = null;
         OnChange?.Invoke();
     }
+
+    /// <summary>
+    /// 更新当前会话的用户名
+    /// </summary>
+    /// <param name="username">新用户名</param>
+    public void UpdateUsername(string username)
+    {
+        Username = username;
+        OnChange?.Invoke();
+    }
 }

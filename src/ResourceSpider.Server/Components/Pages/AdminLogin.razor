@@ -61,7 +61,6 @@
 @code {
     private readonly LoginFormModel _model = new();
     private bool _isSubmitting;
-    private string? _errorMessage;
 
     protected override void OnInitialized()
     {
@@ -74,7 +73,6 @@
     private async Task HandleLoginAsync()
     {
         _isSubmitting = true;
-        _errorMessage = null;
 
         var (success, message) = await ApiClient.LoginAsync(_model.Username, _model.Password);
         _isSubmitting = false;

@@ -14,11 +14,12 @@ public class InMemoryMessageQueueTests
     [Fact]
     public async Task EnqueueAndDequeue_ShouldReturnMessage()
     {
+        var ct = TestContext.Current.CancellationToken;
         var queue = new InMemoryMessageQueue();
         var message = new TestMessage { Id = 1, Name = "test" };
 
-        await queue.EnqueueAsync(message);
-        var result = await queue.DequeueAsync<TestMessage>();
+        await queue.EnqueueAsync(message, ct);
+        var result = await queue.DequeueAsync<TestMessage>(ct);
 
         result.ShouldNotBeNull();
         result!.Id.ShouldBe(1);
@@ -28,8 +29,9 @@ public class InMemoryMessageQueueTests
     [Fact]
     public async Task TryEnqueue_ShouldReturnTrue()
     {
+        var ct = TestContext.Current.CancellationToken;
         var queue = new InMemoryMessageQueue();
-        var result = await queue.TryEnqueueAsync("test message");
+        var result = await queue.TryEnqueueAsync("test message", ct);
         result.ShouldBeTrue();
     }
 
@@ -45,14 +47,15 @@ public class InMemoryMessageQueueTests
     [Fact]
     public async Task Enqueue_MultipleMessages_ShouldReturnInOrder()
     {
+        var ct = TestContext.Current.CancellationToken;
         var queue = new InMemoryMessageQueue();
-        await queue.EnqueueAsync("first");
-        await queue.EnqueueAsync("second");
-        await queue.EnqueueAsync("third");
+        await queue.EnqueueAsync("first", ct);
+        await queue.EnqueueAsync("second", ct);
+        await queue.EnqueueAsync("third", ct);
 
-        var result1 = await queue.DequeueAsync<string>();
-        var result2 = await queue.DequeueAsync<string>();
-        var result3 = await queue.DequeueAsync<string>();
+        var result1 = await queue.DequeueAsync<string>(ct);
+        var result2 = await queue.DequeueAsync<string>(ct);
+        var result3 = await queue.DequeueAsync<string>(ct);
 
         result1.ShouldBe("first");
         result2.ShouldBe("second");
@@ -68,11 +71,12 @@ public class HashSetDuplicateRemoverTests
     [Fact]
     public async Task AddAndCheck_ShouldReturnTrue()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
         var fingerprint = "test-fingerprint";
 
-        await remover.AddAsync(fingerprint);
-        var isDuplicate = await remover.IsDuplicateAsync(fingerprint);
+        await remover.AddAsync(fingerprint, ct);
+        var isDuplicate = await remover.IsDuplicateAsync(fingerprint, ct);
 
         isDuplicate.ShouldBeTrue();
     }
@@ -80,19 +84,21 @@ public class HashSetDuplicateRemoverTests
     [Fact]
     public async Task CheckNonExistent_ShouldReturnFalse()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
-        var isDuplicate = await remover.IsDuplicateAsync("non-existent");
+        var isDuplicate = await remover.IsDuplicateAsync("non-existent", ct);
         isDuplicate.ShouldBeFalse();
     }
 
     [Fact]
     public async Task GetCount_ShouldReturnCorrectCount()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
 
-        await remover.AddAsync("fp1");
-        await remover.AddAsync("fp2");
-        var count = await remover.GetCountAsync();
+        await remover.AddAsync("fp1", ct);
+        await remover.AddAsync("fp2", ct);
+        var count = await remover.GetCountAsync(ct);
 
         count.ShouldBe(2);
     }
@@ -100,11 +106,12 @@ public class HashSetDuplicateRemoverTests
     [Fact]
     public async Task AddDuplicate_ShouldNotIncreaseCount()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
 
-        await remover.AddAsync("fp1");
-        await remover.AddAsync("fp1");
-        var count = await remover.GetCountAsync();
+        await remover.AddAsync("fp1", ct);
+        await remover.AddAsync("fp1", ct);
+        var count = await remover.GetCountAsync(ct);
 
         count.ShouldBe(1);
     }
@@ -118,30 +125,32 @@ public class BreadthFirstSchedulerTests
     [Fact]
     public async Task AddDuplicateRequest_ShouldNotAdd()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
         var scheduler = new Infrastructure.Scheduler.BreadthFirstScheduler(remover);
 
         var request1 = new Request { Url = "http://example.com", Fingerprint = "fp1" };
         var request2 = new Request { Url = "http://example.com/2", Fingerprint = "fp1" };
 
-        await scheduler.EnqueueAsync(new[] { request1 });
-        await scheduler.EnqueueAsync(new[] { request2 });
+        await scheduler.EnqueueAsync(new[] { request1 }, ct);
+        await scheduler.EnqueueAsync(new[] { request2 }, ct);
 
-        var isDuplicate = await scheduler.IsDuplicateAsync(request2);
+        var isDuplicate = await scheduler.IsDuplicateAsync(request2, ct);
         isDuplicate.ShouldBeTrue();
     }
 
     [Fact]
     public async Task Dequeue_ShouldReturnRequestsInOrder()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
         var scheduler = new Infrastructure.Scheduler.BreadthFirstScheduler(remover);
 
         var request1 = new Request { Url = "http://example.com/1", Fingerprint = "fp1" };
         var request2 = new Request { Url = "http://example.com/2", Fingerprint = "fp2" };
 
-        await scheduler.EnqueueAsync(new[] { request1, request2 });
-        var requests = (await scheduler.DequeueAsync(2)).ToList();
+        await scheduler.EnqueueAsync(new[] { request1, request2 }, ct);
+        var requests = (await scheduler.DequeueAsync(2, ct)).ToList();
 
         requests.Count.ShouldBe(2);
         requests[0].Url.ShouldBe("http://example.com/1");
@@ -151,13 +160,14 @@ public class BreadthFirstSchedulerTests
     [Fact]
     public async Task Dequeue_MoreThanAvailable_ShouldReturnOnlyAvailable()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
         var scheduler = new Infrastructure.Scheduler.BreadthFirstScheduler(remover);
 
         var request = new Request { Url = "http://example.com", Fingerprint = "fp1" };
-        await scheduler.EnqueueAsync(new[] { request });
+        await scheduler.EnqueueAsync(new[] { request }, ct);
 
-        var requests = await scheduler.DequeueAsync(10);
+        var requests = await scheduler.DequeueAsync(10, ct);
         requests.Count().ShouldBe(1);
     }
 }
@@ -170,14 +180,15 @@ public class DepthFirstSchedulerTests
     [Fact]
     public async Task Dequeue_ShouldReturnInReverseOrder()
     {
+        var ct = TestContext.Current.CancellationToken;
         var remover = new HashSetDuplicateRemover();
         var scheduler = new Infrastructure.Scheduler.DepthFirstScheduler(remover);
 
         var request1 = new Request { Url = "http://example.com/1", Fingerprint = "fp1" };
         var request2 = new Request { Url = "http://example.com/2", Fingerprint = "fp2" };
 
-        await scheduler.EnqueueAsync(new[] { request1, request2 });
-        var requests = (await scheduler.DequeueAsync(2)).ToList();
+        await scheduler.EnqueueAsync(new[] { request1, request2 }, ct);
+        var requests = (await scheduler.DequeueAsync(2, ct)).ToList();
 
         requests.Count.ShouldBe(2);
         requests[0].Url.ShouldBe("http://example.com/2");

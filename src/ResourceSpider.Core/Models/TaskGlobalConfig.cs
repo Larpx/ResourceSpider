@@ -1,7 +1,9 @@
 namespace ResourceSpider.Core.Models;
 
+using ResourceSpider.Core.Enums;
+
 /// <summary>
-/// 任务全局配置模型，定义所有步骤共享的全局变量、请求头、代理和速率限制
+/// 任务全局配置模型，定义所有步骤共享的全局变量、请求头、代理、速率限制和去重策略
 /// </summary>
 public class TaskGlobalConfig
 {
@@ -24,6 +26,32 @@ public class TaskGlobalConfig
     /// 速率限制配置，控制请求间隔
     /// </summary>
     public RateLimitConfig? RateLimit { get; set; }
+
+    /// <summary>
+    /// 结果数据去重配置，定义去重策略和参与去重的字段
+    /// </summary>
+    public DeduplicationConfig? Deduplication { get; set; }
+}
+
+/// <summary>
+/// 去重配置模型，定义去重策略和参与去重计算的字段
+/// </summary>
+public class DeduplicationConfig
+{
+    /// <summary>
+    /// 去重策略，默认基于全字段指纹去重
+    /// </summary>
+    public DeduplicationStrategy Strategy { get; set; } = DeduplicationStrategy.FullFingerprint;
+
+    /// <summary>
+    /// 参与去重计算的字段名列表，仅在 FieldCombination 策略下生效
+    /// </summary>
+    public List<string>? DeduplicationFields { get; set; }
+
+    /// <summary>
+    /// 主键字段名列表，仅在 PrimaryKey 策略下生效
+    /// </summary>
+    public List<string>? PrimaryKeyFields { get; set; }
 }
 
 /// <summary>

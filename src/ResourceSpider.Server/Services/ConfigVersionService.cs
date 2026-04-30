@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace ResourceSpider.Server.Services;
 
 /// <summary>
-/// 配置版本服务接口，提供任务配置的版本管理和回滚功能
+/// 配置版本服务接口，提供任务配置的版本管理、回滚和差异对比功能
 /// </summary>
 public interface IConfigVersionService
 {
@@ -34,6 +34,15 @@ public interface IConfigVersionService
     /// <param name="version">目标版本号</param>
     /// <returns>回滚成功返回 true，版本不存在返回 false</returns>
     Task<bool> RollbackAsync(string taskId, int version);
+
+    /// <summary>
+    /// 对比两个版本的配置差异，返回逐字段的变更列表
+    /// </summary>
+    /// <param name="taskId">任务唯一标识</param>
+    /// <param name="fromVersion">源版本号</param>
+    /// <param name="toVersion">目标版本号</param>
+    /// <returns>差异项列表，若任一版本不存在返回 null</returns>
+    Task<List<ConfigDiffItem>?> DiffAsync(string taskId, int fromVersion, int toVersion);
 }
 
 /// <summary>
@@ -204,6 +213,105 @@ public class ConfigVersionService : IConfigVersionService
         catch (System.Text.Json.JsonException)
         {
             return null;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<List<ConfigDiffItem>?> DiffAsync(string taskId, int fromVersion, int toVersion)
+    {
+        var fromEntity = await _repository.GetByVersionAsync(taskId, fromVersion);
+        var toEntity = await _repository.GetByVersionAsync(taskId, toVersion);
+        if (fromEntity == null || toEntity == null) return null;
+
+        var fromDict = FlattenJson(fromEntity.ConfigContent);
+        var toDict = FlattenJson(toEntity.ConfigContent);
+
+        var diffs = new List<ConfigDiffItem>();
+
+        foreach (var (path, oldValue) in fromDict)
+        {
+            if (!toDict.TryGetValue(path, out var newValue))
+            {
+                diffs.Add(new ConfigDiffItem(path, oldValue, null, "Removed"));
+            }
+            else if (oldValue != newValue)
+            {
+                diffs.Add(new ConfigDiffItem(path, oldValue, newValue, "Modified"));
+            }
+        }
+
+        foreach (var (path, newValue) in toDict)
+        {
+            if (!fromDict.ContainsKey(path))
+            {
+                diffs.Add(new ConfigDiffItem(path, null, newValue, "Added"));
+            }
+        }
+
+        return diffs;
+    }
+
+    /// <summary>
+    /// 将 JSON 字符串展平为点分隔路径的键值字典
+    /// </summary>
+    /// <param name="json">JSON 字符串</param>
+    /// <returns>展平后的键值对字典</returns>
+    private static Dictionary<string, string?> FlattenJson(string json)
+    {
+        var result = new Dictionary<string, string?>();
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            FlattenElement(doc.RootElement, string.Empty, result);
+        }
+        catch
+        {
+            result[string.Empty] = json;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 递归展平 JsonElement 为点分隔路径的键值对
+    /// </summary>
+    /// <param name="element">当前 JSON 元素</param>
+    /// <param name="prefix">当前路径前缀</param>
+    /// <param name="result">结果字典</param>
+    private static void FlattenElement(JsonElement element, string prefix, Dictionary<string, string?> result)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                foreach (var property in element.EnumerateObject())
+                {
+                    var path = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+                    FlattenElement(property.Value, path, result);
+                }
+                break;
+            case JsonValueKind.Array:
+                var index = 0;
+                foreach (var item in element.EnumerateArray())
+                {
+                    FlattenElement(item, $"{prefix}[{index}]", result);
+                    index++;
+                }
+                break;
+            case JsonValueKind.String:
+                result[prefix] = element.GetString();
+                break;
+            case JsonValueKind.Number:
+                result[prefix] = element.GetRawText();
+                break;
+            case JsonValueKind.True:
+            case JsonValueKind.False:
+                result[prefix] = element.GetRawText();
+                break;
+            case JsonValueKind.Null:
+                result[prefix] = null;
+                break;
+            default:
+                result[prefix] = element.GetRawText();
+                break;
         }
     }
 }

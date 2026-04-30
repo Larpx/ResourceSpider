@@ -205,6 +205,17 @@ public record HeartbeatResponse
     public bool Ack { get; set; }
     public List<TaskDto>? NewTasks { get; set; }
     public Dictionary<string, object>? ConfigUpdate { get; set; }
+    public string? NewToken { get; set; }
+    public OtaUpdateInfo? OtaUpdate { get; set; }
+}
+
+public record OtaUpdateInfo
+{
+    public string LatestVersion { get; set; } = string.Empty;
+    public string DownloadUrl { get; set; } = string.Empty;
+    public string? Checksum { get; set; }
+    public string? ReleaseNotes { get; set; }
+    public bool ForceUpdate { get; set; }
 }
 
 public record PullTasksRequest(string AgentId, string AgentToken, int MaxCount);

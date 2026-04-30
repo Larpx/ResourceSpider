@@ -72,6 +72,35 @@ public class AdminApiClient
     #region 系统监控
 
     /// <summary>
+    /// 获取当前管理员信息
+    /// </summary>
+    public async Task<UserInfoDto?> GetCurrentAdminInfoAsync()
+    {
+        var payload = await GetAuthorizedAsync<UserInfoDto>("api/admin/auth/me");
+        return payload?.Data;
+    }
+
+    /// <summary>
+    /// 更新管理员资料
+    /// </summary>
+    /// <param name="request">更新资料请求</param>
+    public async Task<(bool Success, string Message)> UpdateAdminProfileAsync(UpdateAdminProfileRequest request)
+    {
+        var result = await SendAuthorizedForMessageAsync<object>(HttpMethod.Put, "api/admin/auth/profile", request);
+        return (result.Success, result.Message);
+    }
+
+    /// <summary>
+    /// 修改管理员密码
+    /// </summary>
+    /// <param name="request">修改密码请求</param>
+    public async Task<(bool Success, string Message)> ChangeAdminPasswordAsync(ChangeAdminPasswordRequest request)
+    {
+        var result = await SendAuthorizedForMessageAsync<object>(HttpMethod.Post, "api/admin/auth/change-password", request);
+        return (result.Success, result.Message);
+    }
+
+    /// <summary>
     /// 获取系统统计概览
     /// </summary>
     public async Task<SystemStatisticsDto?> GetSystemStatisticsAsync()
@@ -421,6 +450,50 @@ public class AdminApiClient
         return payload?.Data;
     }
 
+    /// <summary>
+    /// 获取任务步骤列表
+    /// </summary>
+    /// <param name="taskId">任务 ID</param>
+    public async Task<List<TaskStepDto>> GetTaskStepsAsync(string taskId)
+    {
+        var payload = await GetAuthorizedAsync<List<TaskStepDto>>($"api/admin/tasks/{taskId}/steps");
+        return payload?.Data ?? new List<TaskStepDto>();
+    }
+
+    /// <summary>
+    /// 创建任务步骤
+    /// </summary>
+    /// <param name="taskId">任务 ID</param>
+    /// <param name="request">创建步骤请求</param>
+    public async Task<(bool Success, string Message)> CreateTaskStepAsync(string taskId, CreateTaskStepRequest request)
+    {
+        var result = await SendAuthorizedForMessageAsync<TaskStepDto>(HttpMethod.Post, $"api/admin/tasks/{taskId}/steps", request);
+        return (result.Success, result.Message);
+    }
+
+    /// <summary>
+    /// 更新任务步骤
+    /// </summary>
+    /// <param name="taskId">任务 ID</param>
+    /// <param name="stepId">步骤 ID</param>
+    /// <param name="request">更新步骤请求</param>
+    public async Task<(bool Success, string Message)> UpdateTaskStepAsync(string taskId, string stepId, UpdateTaskStepRequest request)
+    {
+        var result = await SendAuthorizedForMessageAsync<object>(HttpMethod.Put, $"api/admin/tasks/{taskId}/steps/{stepId}", request);
+        return (result.Success, result.Message);
+    }
+
+    /// <summary>
+    /// 删除任务步骤
+    /// </summary>
+    /// <param name="taskId">任务 ID</param>
+    /// <param name="stepId">步骤 ID</param>
+    public async Task<(bool Success, string Message)> DeleteTaskStepAsync(string taskId, string stepId)
+    {
+        var result = await SendAuthorizedForMessageAsync<object>(HttpMethod.Delete, $"api/admin/tasks/{taskId}/steps/{stepId}");
+        return (result.Success, result.Message);
+    }
+
     #endregion
 
     #region 采集结果管理
@@ -680,15 +753,6 @@ public class AdminApiClient
     #endregion
 
     #region 统计分析
-
-    /// <summary>
-    /// 获取系统统计概览
-    /// </summary>
-    public async Task<SystemStatisticsDto?> GetSystemStatisticsAsync()
-    {
-        var payload = await GetAuthorizedAsync<SystemStatisticsDto>("api/admin/statistics/system");
-        return payload?.Data;
-    }
 
     /// <summary>
     /// 获取代理统计数据

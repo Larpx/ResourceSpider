@@ -108,6 +108,12 @@ public class TaskStep
     public StepRetryPolicy? RetryPolicy { get; set; }
 
     /// <summary>
+    /// 断点续传页码，记录上次中断时的页码，恢复时从此页继续采集
+    /// 为 null 或 0 表示从头开始
+    /// </summary>
+    public int? ResumeFromPage { get; set; }
+
+    /// <summary>
     /// 步骤创建时间（UTC）
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

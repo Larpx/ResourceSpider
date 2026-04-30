@@ -16,6 +16,11 @@ public enum DownloadType
     Playwright,
 
     /// <summary>
+    /// 基于 CDP（Chrome DevTools Protocol）连接远程浏览器的下载器
+    /// </summary>
+    Cdp,
+
+    /// <summary>
     /// 自定义下载器
     /// </summary>
     Custom

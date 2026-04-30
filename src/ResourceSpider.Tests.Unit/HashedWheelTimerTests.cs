@@ -58,7 +58,7 @@ public class HashedWheelTimerTests
 
         timer.AddTask(task, TimeSpan.FromMilliseconds(60));
 
-        await Task.Delay(250);
+        await Task.Delay(250, TestContext.Current.CancellationToken);
         executed.ShouldBeFalse();
     }
 

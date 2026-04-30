@@ -398,7 +398,7 @@ public class TaskExecutor : ITaskExecutor
 
     /// <summary>
     /// 根据步骤的采集模式获取对应的下载器
-    /// Playwright 和 BrowserAutomation 模式使用 Playwright 下载器，其他使用默认 HTTP 下载器
+    /// Playwright 模式使用 Playwright 下载器，BrowserAutomation 模式使用 CDP 下载器，其他使用默认 HTTP 下载器
     /// </summary>
     /// <param name="step">任务步骤</param>
     /// <returns>对应的下载器实例</returns>
@@ -407,7 +407,7 @@ public class TaskExecutor : ITaskExecutor
         return step.CollectionMode switch
         {
             CollectionMode.Playwright => _downloaderFactory.CreateDownloader(DownloadType.Playwright),
-            CollectionMode.BrowserAutomation => _downloaderFactory.CreateDownloader(DownloadType.Playwright),
+            CollectionMode.BrowserAutomation => _downloaderFactory.CreateDownloader(DownloadType.Cdp),
             _ => _downloader
         };
     }
@@ -713,6 +713,18 @@ public class TaskExecutor : ITaskExecutor
         var currentPage = pagination.StartPage;
         var maxPages = pagination.MaxPages ?? int.MaxValue;
         var pageCount = 0;
+
+        if (step.ResumeFromPage.HasValue && step.ResumeFromPage.Value > 0)
+        {
+            var resumePage = step.ResumeFromPage.Value;
+            var skippedPages = resumePage - pagination.StartPage;
+            if (skippedPages > 0)
+            {
+                pageCount = skippedPages / Math.Max(pagination.PageIncrement, 1);
+                currentPage = resumePage;
+                _logger.LogInformation("步骤 {StepName} 从断点页码 {ResumePage} 恢复采集", step.StepName, resumePage);
+            }
+        }
 
         while (pageCount < maxPages && !ct.IsCancellationRequested)
         {

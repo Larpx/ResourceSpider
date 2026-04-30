@@ -32,6 +32,7 @@ public class DefaultDownloaderFactory : IDownloaderFactory
         {
             DownloadType.HttpClient => _serviceProvider.GetRequiredService<HttpClientDownloader>(),
             DownloadType.Playwright => _serviceProvider.GetRequiredService<PlaywrightDownloader>(),
+            DownloadType.Cdp => _serviceProvider.GetRequiredService<CdpDownloader>(),
             _ => throw new ArgumentException($"Unsupported download type: {type}")
         };
     }

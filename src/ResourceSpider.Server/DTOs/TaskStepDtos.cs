@@ -105,5 +105,6 @@ public record TaskStepDto(
     List<string>? DependsOnStepIds,
     string? StepConfig,
     int State,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    string? StepType = null
 );

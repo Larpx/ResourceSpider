@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using ResourceSpider.Core.Enums;
+using ResourceSpider.Core.Models;
 using ResourceSpider.Server.DTOs;
 using ResourceSpider.Server.Entities;
 using ResourceSpider.Server.Repositories;
@@ -129,13 +131,17 @@ public class CollectionResultService : ICollectionResultService
         var task = await _taskRepository.GetByIdAsync(taskId);
         var taskName = task?.TaskName;
         var taskStatus = task == null ? null : task.Status.ToString();
+        var deduplication = task?.GlobalConfig != null
+            ? DeserializeGlobalConfig(task.GlobalConfig)?.Deduplication
+            : null;
 
         var entities = new List<CollectionResultEntity>(results.Count);
         foreach (var result in results)
         {
             var normalizedFields = NormalizeFields(result.Fields);
-            var fingerprint = ComputeFingerprint(taskId, agentId, normalizedFields);
-            var isDuplicate = await _resultRepository.ExistsByFingerprintAsync(taskId, agentId, fingerprint);
+            var fingerprint = ComputeFingerprint(taskId, agentId, normalizedFields, result.SourceUrl, deduplication);
+            var isDuplicate = deduplication?.Strategy != DeduplicationStrategy.None
+                && await _resultRepository.ExistsByFingerprintAsync(taskId, agentId, fingerprint);
 
             entities.Add(new CollectionResultEntity
             {
@@ -363,10 +369,64 @@ public class CollectionResultService : ICollectionResultService
         return Convert.ToHexString(bytes).ToLowerInvariant();
     }
 
-    private static string ComputeFingerprint(string taskId, string agentId, Dictionary<string, object?> fields)
+    private static string ComputeFingerprint(string taskId, string agentId, Dictionary<string, object?> fields, string? sourceUrl, DeduplicationConfig? deduplication)
     {
-        var payload = JsonSerializer.Serialize(new { taskId, agentId, fields });
+        var strategy = deduplication?.Strategy ?? DeduplicationStrategy.FullFingerprint;
+
+        var payload = strategy switch
+        {
+            DeduplicationStrategy.None => $"{taskId}:{agentId}:{Guid.NewGuid():N}",
+            DeduplicationStrategy.Url => $"{taskId}:{sourceUrl ?? string.Empty}",
+            DeduplicationStrategy.FieldCombination => BuildFieldCombinationPayload(taskId, fields, deduplication?.DeduplicationFields),
+            DeduplicationStrategy.PrimaryKey => BuildFieldCombinationPayload(taskId, fields, deduplication?.PrimaryKeyFields),
+            _ => JsonSerializer.Serialize(new { taskId, agentId, fields })
+        };
+
         return ComputeHash(payload);
+    }
+
+    /// <summary>
+    /// 根据指定字段列表构建去重指纹的负载字符串
+    /// </summary>
+    /// <param name="taskId">任务标识</param>
+    /// <param name="fields">数据字段字典</param>
+    /// <param name="fieldNames">参与去重的字段名列表</param>
+    /// <returns>拼接后的负载字符串</returns>
+    private static string BuildFieldCombinationPayload(string taskId, Dictionary<string, object?> fields, List<string>? fieldNames)
+    {
+        if (fieldNames == null || fieldNames.Count == 0)
+        {
+            return JsonSerializer.Serialize(new { taskId, fields });
+        }
+
+        var selectedFields = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var fieldName in fieldNames)
+        {
+            if (fields.TryGetValue(fieldName, out var value))
+            {
+                selectedFields[fieldName] = value;
+            }
+        }
+
+        return $"{taskId}:{JsonSerializer.Serialize(selectedFields)}";
+    }
+
+    /// <summary>
+    /// 反序列化任务全局配置 JSON 字符串
+    /// </summary>
+    /// <param name="globalConfigJson">全局配置 JSON 字符串</param>
+    /// <returns>反序列化后的 TaskGlobalConfig 对象</returns>
+    private static TaskGlobalConfig? DeserializeGlobalConfig(string globalConfigJson)
+    {
+        if (string.IsNullOrWhiteSpace(globalConfigJson)) return null;
+        try
+        {
+            return JsonSerializer.Deserialize<TaskGlobalConfig>(globalConfigJson);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private static void ParseJsonImport(string content, List<CollectionResultItemDto> items, ref string taskId, ref string agentId, ref string? expressionId)

@@ -71,6 +71,7 @@ public class Program
 
                 services.AddTransient<HttpClientDownloader>();
                 services.AddTransient<PlaywrightDownloader>();
+                services.AddTransient<CdpDownloader>();
                 services.AddHttpClient<HttpClientDownloader>();
                 services.AddSingleton<IDownloaderFactory, DefaultDownloaderFactory>();
                 services.AddSingleton<IDownloader>(sp =>
