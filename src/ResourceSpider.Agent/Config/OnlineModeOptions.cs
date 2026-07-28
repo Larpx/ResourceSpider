@@ -1,4 +1,4 @@
-namespace ResourceSpider.Agent.Config;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Config;
 
 /// <summary>
 /// 在线模式配置选项，定义 Agent 与服务端通信所需的连接参数

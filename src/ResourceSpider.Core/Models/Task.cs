@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 爬虫任务模型，定义一个完整的采集任务，包含请求配置、调度策略、重试策略、表达式配置及执行步骤

@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 using System.Text;
 using System.Text.Json;
 
-namespace ResourceSpider.Infrastructure.MessageQueue;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.MessageQueue;
 
 /// <summary>
 /// RabbitMQ 消息队列配置选项

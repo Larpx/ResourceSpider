@@ -5,14 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using ResourceSpider.Core.DataFlow;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Infrastructure.DataFlow;
-using ResourceSpider.Infrastructure.Downloader;
-using ResourceSpider.Infrastructure.Duplicate;
-using ResourceSpider.Infrastructure.Scheduler;
+using Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Downloader;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Duplicate;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Scheduler;
 
-namespace ResourceSpider.Infrastructure.Spider;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Spider;
 
 /// <summary>
 /// 爬虫构建器，继承自 HostBuilder，提供爬虫应用的默认配置和依赖注入设置

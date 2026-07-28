@@ -1,8 +1,8 @@
 using System.Text.Json;
-using ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 using StackExchange.Redis;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 public interface IAgentTaskContentCache
 {

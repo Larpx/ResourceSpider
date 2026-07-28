@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Infrastructure.Downloader;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Downloader;
 
-namespace ResourceSpider.Infrastructure.Downloader;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Downloader;
 
 /// <summary>
 /// 默认下载器工厂实现，根据下载类型从依赖注入容器中获取对应的下载器实例

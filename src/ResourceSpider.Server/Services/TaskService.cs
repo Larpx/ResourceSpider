@@ -1,10 +1,10 @@
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Models;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Entities;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// 任务管理服务接口，定义任务的创建、查询、更新、暂停、恢复、停止和删除操作

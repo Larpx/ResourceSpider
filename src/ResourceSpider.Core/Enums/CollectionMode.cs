@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Enums;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
 /// <summary>
 /// 数据采集模式枚举，定义不同的页面获取方式

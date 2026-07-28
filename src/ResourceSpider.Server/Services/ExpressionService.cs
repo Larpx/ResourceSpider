@@ -1,8 +1,8 @@
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Entities;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// 表达式服务接口，提供采集表达式的增删改查、配置获取及可用性管理功能

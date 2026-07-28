@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using ResourceSpider.Server.Hubs;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.Hubs;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 
-namespace ResourceSpider.Server.Controllers;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Controllers;
 
 /// <summary>
 /// 代理管理控制器，提供代理节点的管理功能

@@ -341,3 +341,16 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database 
 healthchecksdb
+# Local / tool configs — do not push to remote
+.codegraph/
+.github/
+.trae/
+.vs/
+reasonix.toml
+
+# 软著材料
+docs/软件著作权申请资料/
+
+# 大体量模型（超过托管商单文件限制时）
+Models/*
+!Models/README.md

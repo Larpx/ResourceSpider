@@ -1,4 +1,4 @@
-namespace ResourceSpider.Server.Observability;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Observability;
 
 /// <summary>
 /// 运行监控实时推送配置。

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ResourceSpider.Server.DTOs;
+namespace Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 
 /// <summary>
 /// 代理注册请求

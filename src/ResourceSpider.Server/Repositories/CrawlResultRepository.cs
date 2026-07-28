@@ -1,7 +1,7 @@
 using SqlSugar;
-using ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
-namespace ResourceSpider.Server.Repositories;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
 /// <summary>
 /// 爬取结果数据仓储接口，定义爬取结果实体的数据访问操作

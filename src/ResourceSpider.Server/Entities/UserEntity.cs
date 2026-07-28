@@ -1,6 +1,6 @@
 using SqlSugar;
 
-namespace ResourceSpider.Server.Entities;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
 /// <summary>
 /// 用户实体，映射数据库 users 表

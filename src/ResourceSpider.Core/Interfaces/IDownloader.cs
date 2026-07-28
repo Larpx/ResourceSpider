@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 下载器接口，定义页面内容下载的通用契约

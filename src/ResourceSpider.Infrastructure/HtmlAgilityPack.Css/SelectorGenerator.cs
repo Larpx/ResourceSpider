@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
 
 public class SelectorGenerator<TElement> : ISelectorGenerator
 {

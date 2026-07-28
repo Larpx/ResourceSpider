@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Utils;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Utils;
 
 /// <summary>
 /// 请求指纹生成器，基于请求的 Method、URL 和 Body 生成唯一指纹

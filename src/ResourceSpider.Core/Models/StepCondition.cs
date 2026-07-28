@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 步骤开始条件模型，定义步骤执行的前置条件，支持手动触发、步骤依赖、资源阈值和表达式判断

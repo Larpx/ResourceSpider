@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 
-namespace ResourceSpider.Server.Controllers;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Controllers;
 
 /// <summary>
 /// 配置控制器，提供表达式测试和配置模板功能
@@ -55,7 +55,7 @@ public class ConfigController : ControllerBase
                     break;
 
                 case "cssselector":
-                    results = ResourceSpider.Infrastructure.Parser.AngleSharpCssParser.Extract(request.Content, request.Expression);
+                    results = Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser.AngleSharpCssParser.Extract(request.Content, request.Expression);
                     break;
 
                 case "regex":

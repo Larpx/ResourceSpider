@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 步骤请求配置模型，定义步骤中 HTTP 请求的完整参数，包括 URL、方法、头部、超时和重试策略

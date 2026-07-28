@@ -1,7 +1,7 @@
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Agent.Config;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Config;
 
 /// <summary>
 /// Agent 配置选项模型，定义 Agent 的运行模式、并发数、心跳间隔等核心配置

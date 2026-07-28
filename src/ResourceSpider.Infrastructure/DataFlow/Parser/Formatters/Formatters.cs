@@ -1,4 +1,4 @@
-namespace ResourceSpider.Infrastructure.DataFlow.Parser.Formatters;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Parser.Formatters;
 
 /// <summary>
 /// 去除首尾空白字符的格式化器

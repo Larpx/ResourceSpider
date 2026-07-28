@@ -1,4 +1,4 @@
-namespace ResourceSpider.Server.Middleware;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Middleware;
 
 /// <summary>
 /// 安全头中间件，为每个 HTTP 响应添加安全相关的响应头

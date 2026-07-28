@@ -1,19 +1,19 @@
 using Microsoft.Extensions.Options;
-using ResourceSpider.Agent.Config;
-using ResourceSpider.Agent.Modes;
-using ResourceSpider.Agent.Services;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
-using ResourceSpider.Infrastructure.Downloader;
-using ResourceSpider.Infrastructure.Duplicate;
-using ResourceSpider.Infrastructure.MessageQueue;
-using ResourceSpider.Infrastructure.Parser;
-using ResourceSpider.Infrastructure.Proxy;
-using ResourceSpider.Infrastructure.Scheduler;
-using ResourceSpider.Infrastructure.Storage;
+using Larpx.PersonalTools.ResourceSpider.Agent.Config;
+using Larpx.PersonalTools.ResourceSpider.Agent.Modes;
+using Larpx.PersonalTools.ResourceSpider.Agent.Services;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Downloader;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Duplicate;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.MessageQueue;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Proxy;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Scheduler;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Storage;
 using Serilog;
 
-namespace ResourceSpider.Agent;
+namespace Larpx.PersonalTools.ResourceSpider.Agent;
 
 /// <summary>
 /// Agent 程序入口类，负责配置日志、依赖注入和服务启动

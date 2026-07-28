@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 解析器接口，定义从响应内容中提取结构化数据的通用契约

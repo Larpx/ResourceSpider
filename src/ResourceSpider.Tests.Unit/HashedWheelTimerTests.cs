@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
-using ResourceSpider.Infrastructure.Utils;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Utils;
 using Shouldly;
 using Xunit;
 
-namespace ResourceSpider.Tests.Unit;
+namespace Larpx.PersonalTools.ResourceSpider.Tests.Unit;
 
 /// <summary>
 /// <see cref="HashedWheelTimer"/> 单元测试。

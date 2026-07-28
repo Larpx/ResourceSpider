@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 数据上下文，封装单次请求处理过程中的响应数据、提取记录和上下文信息

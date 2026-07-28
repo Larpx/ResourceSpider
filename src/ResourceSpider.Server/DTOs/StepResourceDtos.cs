@@ -1,4 +1,4 @@
-namespace ResourceSpider.Server.DTOs;
+namespace Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 
 public record StepResourceDto(
     string ResourceId,

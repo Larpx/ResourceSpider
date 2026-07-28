@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 统一 API 响应模型，所有 API 接口统一使用此格式返回数据

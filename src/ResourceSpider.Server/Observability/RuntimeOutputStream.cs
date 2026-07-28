@@ -4,7 +4,7 @@ using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Display;
 
-namespace ResourceSpider.Server.Observability;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Observability;
 
 /// <summary>
 /// 运行时输出日志项，用于在管理页面展示应用输出。

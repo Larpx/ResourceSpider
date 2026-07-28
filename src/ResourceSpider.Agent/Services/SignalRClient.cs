@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.SignalR.Client;
-using ResourceSpider.Agent.Config;
-using ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Agent.Config;
+using Larpx.PersonalTools.ResourceSpider.Core;
 
-namespace ResourceSpider.Agent.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Services;
 
 /// <summary>
 /// SignalR 客户端接口，定义 Agent 与服务端之间的实时通信操作

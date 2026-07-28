@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 爬取结果模型，存储单次请求提取的结构化数据

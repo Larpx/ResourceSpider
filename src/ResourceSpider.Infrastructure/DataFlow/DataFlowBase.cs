@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
 
-namespace ResourceSpider.Infrastructure.DataFlow;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow;
 
 /// <summary>
 /// 数据流处理基类，提供日志注入和上下文空值判断的通用实现

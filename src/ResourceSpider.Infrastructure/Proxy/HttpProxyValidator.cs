@@ -1,9 +1,9 @@
 using System.Net;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.Models;
-using ProxyModel = ResourceSpider.Core.Models.Proxy;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using ProxyModel = Larpx.PersonalTools.ResourceSpider.Core.Models.Proxy;
 
-namespace ResourceSpider.Infrastructure.Proxy;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Proxy;
 
 /// <summary>
 /// HTTP 代理验证器，通过实际发送 HTTP 请求来验证代理的可用性

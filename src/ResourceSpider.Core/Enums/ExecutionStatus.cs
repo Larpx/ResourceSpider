@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Enums;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
 /// <summary>
 /// 任务执行状态枚举，描述任务执行的生命周期

@@ -1,4 +1,4 @@
-namespace ResourceSpider.Server.DTOs;
+namespace Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 
 /// <summary>
 /// 导出格式枚举

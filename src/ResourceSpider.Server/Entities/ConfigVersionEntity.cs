@@ -1,6 +1,6 @@
 using SqlSugar;
 
-namespace ResourceSpider.Server.Entities;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
 /// <summary>
 /// 配置版本实体，映射数据库 config_versions 表

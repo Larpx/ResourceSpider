@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Exceptions;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Exceptions;
 
 /// <summary>
 /// 爬虫基础异常类，所有爬虫相关自定义异常的基类

@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Observability;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Observability;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// 运行时快照服务，统一生成运行监控页所需的系统状态数据。

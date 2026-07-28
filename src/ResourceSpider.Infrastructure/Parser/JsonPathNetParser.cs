@@ -1,7 +1,7 @@
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Parser;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser;
 
 /// <summary>
 /// JsonPath 解析器，基于 Newtonsoft.Json 的 SelectTokens 实现

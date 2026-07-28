@@ -1,8 +1,8 @@
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Entities;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// 系统日志服务接口，提供日志记录和查询功能

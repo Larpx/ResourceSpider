@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
 
 public static class Tokener
 {

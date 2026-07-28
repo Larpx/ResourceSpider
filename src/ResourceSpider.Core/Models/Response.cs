@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 响应模型，表示 HTTP 请求的响应数据

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// JSON 可选择对象，基于 Newtonsoft.Json 的 JToken 实现

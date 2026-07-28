@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
 /// <summary>
 /// 选择器类型枚举，定义支持的选择器语法

@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 变量解析器接口，用于解析模板字符串中的变量占位符

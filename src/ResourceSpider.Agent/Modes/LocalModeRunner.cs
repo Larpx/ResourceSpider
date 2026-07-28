@@ -3,12 +3,12 @@ using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ResourceSpider.Agent.Config;
-using ResourceSpider.Agent.Services;
-using ResourceSpider.Core;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Agent.Config;
+using Larpx.PersonalTools.ResourceSpider.Agent.Services;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Agent.Modes;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Modes;
 
 /// <summary>
 /// 本地模式运行器，继承 BackgroundService，用于本地独立运行爬虫任务

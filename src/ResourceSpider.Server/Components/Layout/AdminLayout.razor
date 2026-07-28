@@ -3,7 +3,7 @@
 @inject AdminSessionState Session
 @inject AdminApiClient ApiClient
 @inject NavigationManager Navigation
-@inject ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
+@inject Larpx.PersonalTools.ResourceSpider.Server.Components.Services.AdminNotificationService NotificationService
 
 <div class="admin-app">
     <header class="admin-topbar">
@@ -161,7 +161,7 @@
     private string _notificationFilter = string.Empty;
     private string _lastUpdate = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
 
-    private IEnumerable<ResourceSpider.Server.Components.Services.AdminNotificationItem> FilteredNotifications =>
+    private IEnumerable<Larpx.PersonalTools.ResourceSpider.Server.Components.Services.AdminNotificationItem> FilteredNotifications =>
         string.IsNullOrWhiteSpace(_notificationFilter)
             ? NotificationService.Items
             : NotificationService.Items.Where(x => x.Level == _notificationFilter);

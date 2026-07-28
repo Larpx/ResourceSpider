@@ -1,6 +1,6 @@
 using SqlSugar;
 
-namespace ResourceSpider.Server.Entities;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
 /// <summary>
 /// 代理分组实体，映射数据库 agent_groups 表

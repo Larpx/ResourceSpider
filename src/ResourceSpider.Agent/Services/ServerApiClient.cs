@@ -1,10 +1,10 @@
 using System.Net.Http.Json;
-using ResourceSpider.Agent.Config;
-using ResourceSpider.Core;
-using ResourceSpider.Core.Exceptions;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Agent.Config;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Exceptions;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Agent.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Services;
 
 /// <summary>
 /// 服务端 API 客户端接口，定义 Agent 与服务端通信的所有方法

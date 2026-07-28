@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 并发控制器接口，用于管理爬虫任务的并发执行

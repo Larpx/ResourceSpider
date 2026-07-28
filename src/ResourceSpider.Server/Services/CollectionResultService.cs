@@ -1,13 +1,13 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Models;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Entities;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// 采集结果服务接口，提供采集结果的存储、查询和统计功能

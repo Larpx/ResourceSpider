@@ -1,6 +1,6 @@
 using SqlSugar;
 
-namespace ResourceSpider.Server.Entities;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
 /// <summary>
 /// 采集结果实体，映射数据库 collection_results 表

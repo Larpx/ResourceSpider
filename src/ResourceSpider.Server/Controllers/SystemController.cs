@@ -3,12 +3,12 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Observability;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Observability;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 using StackExchange.Redis;
 
-namespace ResourceSpider.Server.Controllers;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Controllers;
 
 /// <summary>
 /// 系统控制器，提供系统健康检查和日志查询功能

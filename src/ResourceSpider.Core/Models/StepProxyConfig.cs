@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 步骤代理配置模型，定义步骤请求使用的代理服务器设置

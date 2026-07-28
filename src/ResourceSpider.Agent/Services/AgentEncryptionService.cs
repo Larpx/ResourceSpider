@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace ResourceSpider.Agent.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Services;
 
 /// <summary>
 /// Agent 加密服务接口，定义 AES 加密/解密操作，用于保护 Agent 与服务端之间的通信数据

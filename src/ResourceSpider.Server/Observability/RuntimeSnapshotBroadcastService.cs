@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.SignalR;
-using ResourceSpider.Server.Hubs;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.Hubs;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 
-namespace ResourceSpider.Server.Observability;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Observability;
 
 /// <summary>
 /// 将系统运行时快照实时广播到管理端 SignalR 分组。

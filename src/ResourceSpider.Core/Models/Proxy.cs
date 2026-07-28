@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 代理模型，表示一个 HTTP 代理服务器

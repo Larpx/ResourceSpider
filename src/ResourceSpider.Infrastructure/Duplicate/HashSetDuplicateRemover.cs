@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
-namespace ResourceSpider.Infrastructure.Duplicate;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Duplicate;
 
 /// <summary>
 /// 基于 HashSet 的内存去重器实现，使用线程安全的哈希集合存储请求指纹

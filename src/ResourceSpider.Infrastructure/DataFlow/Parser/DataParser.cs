@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ResourceSpider.Core.DataFlow;
-using ResourceSpider.Core.Models;
-using ResourceSpider.Core.Selector;
-using ResourceSpider.Infrastructure.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
-namespace ResourceSpider.Infrastructure.DataFlow.Parser;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Parser;
 
 /// <summary>
 /// 数据解析器抽象基类，提供页面内容解析和后续请求提取的通用逻辑

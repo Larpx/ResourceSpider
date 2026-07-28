@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
-namespace ResourceSpider.Infrastructure.DataFlow.Parser;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Parser;
 
 /// <summary>
 /// 选择器特性基类，用于标注数据提取的选择器类型和表达式

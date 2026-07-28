@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 去重器接口，用于判断请求是否重复以避免重复爬取

@@ -1,7 +1,7 @@
-using ResourceSpider.Server.Observability;
+using Larpx.PersonalTools.ResourceSpider.Server.Observability;
 using Serilog;
 
-namespace ResourceSpider.Server;
+namespace Larpx.PersonalTools.ResourceSpider.Server;
 
 /// <summary>
 /// ResourceSpider 服务器应用程序入口点

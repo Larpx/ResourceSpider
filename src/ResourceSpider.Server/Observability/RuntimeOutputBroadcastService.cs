@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.SignalR;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Hubs;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Hubs;
 
-namespace ResourceSpider.Server.Observability;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Observability;
 
 /// <summary>
 /// 将运行时日志输出实时广播到管理端 SignalR 分组。

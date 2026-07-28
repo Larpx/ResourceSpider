@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Enums;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
 /// <summary>
 /// 任务状态枚举，描述爬虫任务从创建到结束的完整生命周期

@@ -1,9 +1,9 @@
 using System;
 using System.Text.RegularExpressions;
-using ResourceSpider.Core.Selector;
-using ResourceSpider.Infrastructure.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
-namespace ResourceSpider.Infrastructure.DataFlow.Parser;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Parser;
 
 /// <summary>
 /// 选择器属性扩展方法，提供选择器属性到选择器实例的转换和文本提取功能

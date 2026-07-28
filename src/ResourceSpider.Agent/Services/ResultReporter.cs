@@ -1,8 +1,8 @@
-using ResourceSpider.Core;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Agent.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Services;
 
 /// <summary>
 /// 结果上报器接口，定义采集结果的上报和本地存储方法

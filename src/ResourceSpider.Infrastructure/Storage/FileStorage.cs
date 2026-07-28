@@ -1,10 +1,10 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Storage;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Storage;
 
 /// <summary>
 /// 文件存储配置选项，定义输出路径、格式和采集元数据信息

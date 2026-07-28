@@ -1,10 +1,10 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using ResourceSpider.Core;
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Agent.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Services;
 
 /// <summary>
 /// 离线任务存储接口，定义断网场景下任务结果和检查点的持久化操作

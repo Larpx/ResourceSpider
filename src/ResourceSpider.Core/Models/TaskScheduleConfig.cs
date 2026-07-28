@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 任务调度配置模型，定义任务的定时执行策略，支持 Cron 表达式、固定间隔和一次性执行

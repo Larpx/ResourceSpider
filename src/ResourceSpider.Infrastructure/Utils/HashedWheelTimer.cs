@@ -1,4 +1,4 @@
-namespace ResourceSpider.Infrastructure.Utils;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Utils;
 
 /// <summary>
 /// 哈希时间轮定时器，使用时间轮算法高效管理大量延迟任务

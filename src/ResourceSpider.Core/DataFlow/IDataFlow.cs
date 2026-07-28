@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Core.DataFlow;
+namespace Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
 
 /// <summary>
 /// 响应处理委托，用于数据流管道中的中间件模式

@@ -1,8 +1,8 @@
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Entities;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// Agent 任务调度服务接口，定义 Agent 拉取任务、上报结果等通信操作

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// 正则表达式选择器实现，使用 Regex 对文本进行模式匹配和提取

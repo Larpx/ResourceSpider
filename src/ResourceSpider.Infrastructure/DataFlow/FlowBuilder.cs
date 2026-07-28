@@ -2,9 +2,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
 
-namespace ResourceSpider.Infrastructure.DataFlow;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow;
 
 /// <summary>
 /// 数据流构建器，负责组装和构建数据流处理管道

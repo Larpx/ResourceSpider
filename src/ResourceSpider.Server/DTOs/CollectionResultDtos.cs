@@ -1,4 +1,4 @@
-namespace ResourceSpider.Server.DTOs;
+namespace Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 
 /// <summary>
 /// 采集结果数据传输对象

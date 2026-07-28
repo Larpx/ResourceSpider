@@ -1,4 +1,4 @@
-namespace ResourceSpider.Server.Observability;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Observability;
 
 /// <summary>
 /// 启动阶段状态快照，用于健康检查和运维排障

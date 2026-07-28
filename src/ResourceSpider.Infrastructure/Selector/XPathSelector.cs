@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 using HtmlNode = HtmlAgilityPack.HtmlNode;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// XPath 选择器实现，支持 XPath 表达式对 HTML 文档进行节点选取

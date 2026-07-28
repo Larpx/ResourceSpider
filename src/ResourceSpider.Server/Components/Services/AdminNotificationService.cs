@@ -1,4 +1,4 @@
-namespace ResourceSpider.Server.Components.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Components.Services;
 
 /// <summary>
 /// 后台管理通知项。

@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Enums;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
 /// <summary>
 /// 表达式类型枚举，定义支持的选择器语法

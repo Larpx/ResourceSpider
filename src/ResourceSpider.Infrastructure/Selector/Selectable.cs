@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// 可选择对象抽象基类，提供 XPath、CSS、JsonPath、Regex 等选择器的统一调用接口

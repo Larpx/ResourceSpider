@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.DataFlow;
+namespace Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
 
 /// <summary>
 /// 爬虫配置选项，控制爬虫的运行行为和调度策略

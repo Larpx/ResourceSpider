@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 代理节点模型，表示一个执行爬取任务的工作节点

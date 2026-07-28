@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Playwright;
-using ResourceSpider.Core;
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Downloader;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Downloader;
 
 public class PlaywrightOptions
 {

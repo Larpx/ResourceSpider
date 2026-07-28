@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
-namespace ResourceSpider.Infrastructure.Duplicate;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Duplicate;
 
 /// <summary>
 /// 基于 Redis 的分布式去重器实现，使用 Redis 的键存在性判断实现跨进程去重

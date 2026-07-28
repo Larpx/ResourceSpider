@@ -1,6 +1,6 @@
-using ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 
-namespace ResourceSpider.Server.Components.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Components.Services;
 
 /// <summary>
 /// 后台管理会话状态

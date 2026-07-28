@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
 
-namespace ResourceSpider.Infrastructure.DataFlow.Storage.Entity;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Storage.Entity;
 
 /// <summary>
 /// 实体存储基类，从数据流上下文中提取 IEntity 类型的实体数据

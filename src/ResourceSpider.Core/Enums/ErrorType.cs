@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Enums;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
 /// <summary>
 /// 错误类型枚举，对系统运行时产生的错误进行分类

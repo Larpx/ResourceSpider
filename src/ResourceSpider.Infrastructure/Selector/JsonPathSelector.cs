@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// JsonPath 选择器实现，使用 Newtonsoft.Json 的 SelectToken/SelectTokens 方法

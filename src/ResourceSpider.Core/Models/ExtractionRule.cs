@@ -1,6 +1,6 @@
-using ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 数据提取规则模型，定义单个字段的提取和转换逻辑

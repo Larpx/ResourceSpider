@@ -1,6 +1,6 @@
 using System;
 
-namespace ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
 
 public struct Token : IEquatable<Token>
 {

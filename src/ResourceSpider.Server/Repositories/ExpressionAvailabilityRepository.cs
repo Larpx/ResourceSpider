@@ -1,7 +1,7 @@
-using ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
 using SqlSugar;
 
-namespace ResourceSpider.Server.Repositories;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
 /// <summary>
 /// 表达式可用性数据仓储接口，定义表达式可用性实体的数据访问操作

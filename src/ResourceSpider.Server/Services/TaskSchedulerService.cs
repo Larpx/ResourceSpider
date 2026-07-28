@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 public class TaskSchedulerService : BackgroundService
 {

@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
-using ProxyModel = ResourceSpider.Core.Models.Proxy;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using ProxyModel = Larpx.PersonalTools.ResourceSpider.Core.Models.Proxy;
 
-namespace ResourceSpider.Infrastructure.Proxy;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Proxy;
 
 /// <summary>
 /// 代理供应器接口，定义获取代理列表的方法

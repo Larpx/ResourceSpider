@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json;
 
-namespace ResourceSpider.Server.Middleware;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Middleware;
 
 /// <summary>
 /// 全局异常处理中间件，捕获未处理的异常并返回统一的错误响应

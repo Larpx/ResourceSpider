@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
 
-namespace ResourceSpider.Infrastructure.DataFlow.Storage;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Storage;
 
 /// <summary>
 /// 控制台存储，将数据流上下文中的数据输出到控制台

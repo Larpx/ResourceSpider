@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SqlSugar;
 
-namespace ResourceSpider.Server.Observability;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Observability;
 
 /// <summary>
 /// 数据库健康检查，结合启动初始化状态和运行时连通性

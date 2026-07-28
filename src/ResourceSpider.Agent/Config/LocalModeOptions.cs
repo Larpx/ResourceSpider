@@ -1,4 +1,4 @@
-namespace ResourceSpider.Agent.Config;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Config;
 
 /// <summary>
 /// 本地模式配置选项，定义本地模式下任务文件的加载路径和结果输出方式

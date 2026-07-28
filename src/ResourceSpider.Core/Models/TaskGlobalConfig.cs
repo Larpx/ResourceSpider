@@ -1,6 +1,6 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-using ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
 
 /// <summary>
 /// 任务全局配置模型，定义所有步骤共享的全局变量、请求头、代理、速率限制和去重策略

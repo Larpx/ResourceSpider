@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 public interface IDataEncryptionService
 {

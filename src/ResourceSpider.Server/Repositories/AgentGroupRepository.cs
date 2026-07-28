@@ -1,7 +1,7 @@
 using SqlSugar;
-using ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
-namespace ResourceSpider.Server.Repositories;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
 /// <summary>
 /// 代理分组数据仓储接口，定义代理分组实体的数据访问操作

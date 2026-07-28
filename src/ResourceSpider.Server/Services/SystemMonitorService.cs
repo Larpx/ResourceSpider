@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Hosting;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 public interface ISystemMonitorService
 {

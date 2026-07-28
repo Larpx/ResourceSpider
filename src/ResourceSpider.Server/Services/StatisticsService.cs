@@ -1,7 +1,7 @@
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// 统计服务接口，提供 Agent、任务和系统级别的统计数据查询功能

@@ -1,7 +1,7 @@
 using SqlSugar;
-using ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
-namespace ResourceSpider.Server.Repositories;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Repositories;
 
 /// <summary>
 /// 任务执行记录数据仓储接口，定义任务执行记录的数据访问操作

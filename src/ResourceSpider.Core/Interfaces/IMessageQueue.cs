@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 消息队列接口，提供异步消息的入队和出队操作

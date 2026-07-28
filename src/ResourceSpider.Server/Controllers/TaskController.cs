@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 
-namespace ResourceSpider.Server.Controllers;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Controllers;
 
 /// <summary>
 /// 爬虫任务控制器，提供任务的完整生命周期管理

@@ -1,7 +1,7 @@
-using ResourceSpider.Core.Models;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
-namespace ResourceSpider.Core.DataFlow;
+namespace Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
 
 /// <summary>
 /// 数据流上下文，在数据流管道中传递请求数据、响应数据和中间处理结果

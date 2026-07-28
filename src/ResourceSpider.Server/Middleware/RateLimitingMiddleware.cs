@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Threading.RateLimiting;
 
-namespace ResourceSpider.Server.Middleware;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Middleware;
 
 /// <summary>
 /// 请求限流中间件，基于客户端标识（IP 或 Agent ID）进行滑动窗口限流

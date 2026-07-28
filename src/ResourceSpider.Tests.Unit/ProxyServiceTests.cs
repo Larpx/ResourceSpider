@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Moq;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Entities;
-using ResourceSpider.Server.Repositories;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 using Shouldly;
 using Xunit;
 
-namespace ResourceSpider.Tests.Unit;
+namespace Larpx.PersonalTools.ResourceSpider.Tests.Unit;
 
 /// <summary>
 /// <see cref="ProxyService"/> 单元测试。

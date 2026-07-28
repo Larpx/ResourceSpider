@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace ResourceSpider.Infrastructure.DataFlow.Storage.Entity;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Storage.Entity;
 
 /// <summary>
 /// 实体接口，定义获取表元数据的方法

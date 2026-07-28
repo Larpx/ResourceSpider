@@ -1,12 +1,12 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ResourceSpider.Server.DTOs;
-using ResourceSpider.Server.Entities;
-using ResourceSpider.Server.Repositories;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Server.Repositories;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 
-namespace ResourceSpider.Server.Controllers;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Controllers;
 
 /// <summary>
 /// 任务步骤控制器，提供任务步骤的增删改查接口。

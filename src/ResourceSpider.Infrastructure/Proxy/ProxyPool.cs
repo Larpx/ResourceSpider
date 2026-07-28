@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
-using ProxyModel = ResourceSpider.Core.Models.Proxy;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using ProxyModel = Larpx.PersonalTools.ResourceSpider.Core.Models.Proxy;
 
-namespace ResourceSpider.Infrastructure.Proxy;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Proxy;
 
 /// <summary>
 /// 代理池实现，使用并发字典管理可用代理

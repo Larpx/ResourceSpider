@@ -2,9 +2,9 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 
-namespace ResourceSpider.Server.Components.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Components.Services;
 
 /// <summary>
 /// 后台管理页面 API 客户端，仅调用管理 API 路由

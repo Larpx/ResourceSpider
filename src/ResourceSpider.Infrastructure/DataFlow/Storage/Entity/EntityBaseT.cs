@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
-using ResourceSpider.Core.Exceptions;
+using Larpx.PersonalTools.ResourceSpider.Core.Exceptions;
 
-namespace ResourceSpider.Infrastructure.DataFlow.Storage.Entity;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow.Storage.Entity;
 
 public abstract class EntityBase<T> : IEntity where T : class, new()
 {

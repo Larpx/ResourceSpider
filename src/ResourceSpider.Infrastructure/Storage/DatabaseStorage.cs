@@ -1,7 +1,7 @@
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Storage;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Storage;
 
 /// <summary>
 /// 数据库存储实现，通过外部委托函数将数据记录存储到数据库

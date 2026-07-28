@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Interfaces;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
 /// <summary>
 /// 下载器类型枚举，定义支持的下载方式

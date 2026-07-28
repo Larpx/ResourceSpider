@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core;
-using ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
-namespace ResourceSpider.Infrastructure.Utils;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Utils;
 
 public class VariableResolver : IVariableResolver
 {

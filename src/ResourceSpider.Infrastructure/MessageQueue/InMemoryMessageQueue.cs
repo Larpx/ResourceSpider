@@ -1,7 +1,7 @@
 using System.Threading.Channels;
-using ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
-namespace ResourceSpider.Infrastructure.MessageQueue;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.MessageQueue;
 
 /// <summary>
 /// 基于内存通道的消息队列实现，使用 System.Threading.Channels 实现高效的生产者-消费者模式

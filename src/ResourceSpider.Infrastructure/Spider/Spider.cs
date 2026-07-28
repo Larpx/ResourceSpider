@@ -8,12 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ResourceSpider.Core.DataFlow;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
-using ResourceSpider.Infrastructure.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.DataFlow;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.DataFlow;
 
-namespace ResourceSpider.Infrastructure.Spider;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Spider;
 
 /// <summary>
 /// 爬虫抽象基类，继承自 BackgroundService，提供完整的爬虫执行生命周期管理

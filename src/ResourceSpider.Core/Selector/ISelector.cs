@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace ResourceSpider.Core.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
 /// <summary>
 /// 选择器接口，定义从文本中选取内容的通用契约

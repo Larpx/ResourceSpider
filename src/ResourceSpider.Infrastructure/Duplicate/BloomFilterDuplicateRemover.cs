@@ -1,7 +1,7 @@
 using System.Collections;
-using ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
 
-namespace ResourceSpider.Infrastructure.Duplicate;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Duplicate;
 
 /// <summary>
 /// 基于布隆过滤器的去重器实现，使用位数组和多重哈希函数实现空间高效的去重判断

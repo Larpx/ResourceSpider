@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Server.Entities;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Server.Entities;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// Agent 离线检测服务，继承自 BackgroundService，定期检查 Agent 的心跳状态

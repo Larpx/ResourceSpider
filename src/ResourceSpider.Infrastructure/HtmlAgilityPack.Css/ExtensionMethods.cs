@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
 
 internal static class ExtensionMethods
 {

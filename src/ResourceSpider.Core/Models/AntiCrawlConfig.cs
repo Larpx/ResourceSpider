@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Models;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Models;
 
 /// <summary>
 /// 反爬策略配置模型，定义请求间隔、User-Agent 轮换、代理轮换等反检测措施

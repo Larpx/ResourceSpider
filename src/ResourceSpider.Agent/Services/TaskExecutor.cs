@@ -1,11 +1,11 @@
-using ResourceSpider.Core;
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
-using ResourceSpider.Infrastructure.Downloader;
-using ResourceSpider.Infrastructure.Parser;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Downloader;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser;
 
-namespace ResourceSpider.Agent.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Services;
 
 /// <summary>
 /// 任务执行器接口，定义爬虫任务的执行方法

@@ -3,13 +3,13 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ResourceSpider.Agent.Config;
-using ResourceSpider.Agent.Services;
-using ResourceSpider.Core;
-using ResourceSpider.Core.Enums;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Agent.Config;
+using Larpx.PersonalTools.ResourceSpider.Agent.Services;
+using Larpx.PersonalTools.ResourceSpider.Core;
+using Larpx.PersonalTools.ResourceSpider.Core.Enums;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Agent.Modes;
+namespace Larpx.PersonalTools.ResourceSpider.Agent.Modes;
 
 /// <summary>
 /// 在线模式运行器，继承 BackgroundService，用于连接服务端并接收任务调度

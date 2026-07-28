@@ -1,9 +1,9 @@
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
-using ResourceSpider.Infrastructure.Parser;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
-namespace ResourceSpider.Infrastructure.Parser;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser;
 
 /// <summary>
 /// 默认解析器工厂实现，根据解析器类型或表达式配置创建对应的解析器实例

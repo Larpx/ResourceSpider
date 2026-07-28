@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Scheduler;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Scheduler;
 
 /// <summary>
 /// 广度优先调度器实现，使用并发队列按先进先出顺序调度请求

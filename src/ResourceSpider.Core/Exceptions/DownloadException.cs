@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core.Exceptions;
+namespace Larpx.PersonalTools.ResourceSpider.Core.Exceptions;
 
 /// <summary>
 /// 下载异常，在请求下载过程中发生错误时抛出

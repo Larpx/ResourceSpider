@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
-using ResourceSpider.Server.Observability;
-using ResourceSpider.Server.Services;
+using Larpx.PersonalTools.ResourceSpider.Server.Observability;
+using Larpx.PersonalTools.ResourceSpider.Server.Services;
 
-namespace ResourceSpider.Server.Hubs;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Hubs;
 
 /// <summary>
 /// 爬虫 SignalR Hub，提供代理节点与服务端之间的实时通信功能

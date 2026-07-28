@@ -1,6 +1,6 @@
 using StackExchange.Redis;
 
-namespace ResourceSpider.Server.Services;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Services;
 
 /// <summary>
 /// Redis 功能开关服务接口，用于描述 Redis 模块的启用状态与运行信息。

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
-using ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.HtmlAgilityPack.Css;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// CSS 选择器实现，使用 HtmlAgilityPack.Css 扩展对 HTML 文档进行 CSS 选择器查询

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 using HtmlNode = HtmlAgilityPack.HtmlNode;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// HTML 可选择对象，基于 HtmlAgilityPack 的 HtmlNode 实现

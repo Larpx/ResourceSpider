@@ -1,8 +1,8 @@
 using HtmlAgilityPack;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Parser;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser;
 
 /// <summary>
 /// CSS 选择器解析器，基于 HtmlAgilityPack 实现

@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ResourceSpider.Core.Interfaces;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Core.Interfaces;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Infrastructure.Parser;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Parser;
 
 /// <summary>
 /// JSON 解析器，基于 Newtonsoft.Json 实现

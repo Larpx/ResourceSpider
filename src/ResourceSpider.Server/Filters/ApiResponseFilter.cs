@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ResourceSpider.Server.DTOs;
+using Larpx.PersonalTools.ResourceSpider.Server.DTOs;
 
-namespace ResourceSpider.Server.Filters;
+namespace Larpx.PersonalTools.ResourceSpider.Server.Filters;
 
 /// <summary>
 /// API 响应过滤器，自动将控制器返回值包装为统一的 ApiResponse 格式
@@ -50,7 +50,7 @@ public class ApiResponseFilter : IAsyncResultFilter
                 return true;
             }
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ResourceSpider.Core.Models.ApiResponse<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Larpx.PersonalTools.ResourceSpider.Core.Models.ApiResponse<>))
             {
                 return true;
             }

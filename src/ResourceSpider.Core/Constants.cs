@@ -1,4 +1,4 @@
-namespace ResourceSpider.Core;
+namespace Larpx.PersonalTools.ResourceSpider.Core;
 
 /// <summary>
 /// 系统全局常量定义，集中管理所有重复使用的固定字符串

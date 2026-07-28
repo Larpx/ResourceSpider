@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
-using ResourceSpider.Core.Selector;
+using Larpx.PersonalTools.ResourceSpider.Core.Selector;
 
-namespace ResourceSpider.Infrastructure.Selector;
+namespace Larpx.PersonalTools.ResourceSpider.Infrastructure.Selector;
 
 /// <summary>
 /// 选择器工厂类，提供各种类型选择器的创建方法，并缓存已创建的选择器实例

@@ -1,10 +1,10 @@
 using Xunit;
 using Shouldly;
-using ResourceSpider.Infrastructure.Duplicate;
-using ResourceSpider.Infrastructure.MessageQueue;
-using ResourceSpider.Core.Models;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.Duplicate;
+using Larpx.PersonalTools.ResourceSpider.Infrastructure.MessageQueue;
+using Larpx.PersonalTools.ResourceSpider.Core.Models;
 
-namespace ResourceSpider.Tests.Unit;
+namespace Larpx.PersonalTools.ResourceSpider.Tests.Unit;
 
 /// <summary>
 /// 内存消息队列单元测试
